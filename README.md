@@ -27,8 +27,17 @@
 	"StaffAuthentication": {
 		"WtRealm": "https://localhost:45667",
 		"MetadataAddress": "https://adfs.preprod.skillsfunding.service.gov.uk/FederationMetadata/2007-06/FederationMetadata.xml"
+	},
+	"RoatpApplicationApiAuthentication": {
+		"TenantId": "tenantId Guid",
+		"ClientId": "clientId Guid",
+		"ClientSecret": "hidden password",
+		"ResourceId": "url to resource id",
+		"ApiBaseAddress": "https://localhost:6000"
 	}
-}.
+}
+
+Note for the RoatpApplicationApiAuthentication, you can copy the settings for TenantId, ClientId, ClientSecret, ResourceId from the das-apply-service configuration json file from [das-employer-config](https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-apply-service/SFA.DAS.ApplyService.json) using the settings under section 'AssessorServiceApiAuthentication'
 
 ### Running the code
 

@@ -22,7 +22,7 @@
 ##### Code
 
 - Create a Configuration table in your (Development) local Azure Storage account.
-- Add a row to the Configuration table with fields: PartitionKey: LOCAL, RowKey: SFA.DAS.RoatpOversite_1.0, Data: {
+- Add a row to the Configuration table with fields: PartitionKey: LOCAL, RowKey: SFA.DAS.RoatpOversight_1.0, Data: {
 	"SessionRedisConnectionString": "localhost",
 	"StaffAuthentication": {
 		"WtRealm": "https://localhost:45667",

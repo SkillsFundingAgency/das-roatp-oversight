@@ -6,7 +6,7 @@
 
 #### Requirements
 
-- Install [.NET Core 2.1](https://www.microsoft.com/net/download)
+- Install [.NET Core 2.2](https://www.microsoft.com/net/download)
 - Install [Azure Storage Emulator](https://go.microsoft.com/fwlink/?linkid=717179&clcid=0x409) (Make sure you are on v5.3)
 - Install [Azure Storage Explorer](http://storageexplorer.com/)
 - Install the editor of your choice:

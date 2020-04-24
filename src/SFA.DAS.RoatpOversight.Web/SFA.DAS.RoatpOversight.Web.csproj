@@ -23,4 +23,8 @@
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.RoatpOversight.Domain\SFA.DAS.RoatpOversight.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,71 @@
+﻿@model SFA.DAS.RoatpOversight.Web.ViewModels.OverallOutcomeViewModel
+
+@{
+    ViewData["Title"] = "ESFA Application Outcomes";
+}
+
+<h1>RoATP application outcomes</h1>
+
+
+@if (Model.ApplicationCount == 0 && Model.OverallOutcomeCount == 0)
+{
+    <span>No applications to assess</span>
+}
+else
+{
+
+    <h2>Applications (@Model.ApplicationCount)</h2>
+    @if (Model.ApplicationCount > 0)
+    {
+        <table>
+            <tr>
+                <td>Organisation name</td>
+                <td>UKPRN</td>
+                <td>Provider route</td>
+                <td>Application reference number</td>
+                <td>Application submitted date</td>
+            </tr>
+            @foreach (var application in Model.ApplicationDetails)
+            {
+                <tr>
+                    <td> <a class="govuk-link" asp-action="Outcome" asp-route-id="@application.Ukprn" >@application.OrganisationName</a></td>
+                    <td>@application.Ukprn</td>
+                    <td>@application.ProviderRoute</td>
+                    <td>@application.ApplicationReferenceNumber</td>
+                    <td>@application.ApplicationSubmittedDate</td>
+                </tr>
+            }
+        </table>
+    }
+
+
+    <h2>Overall outcome (@Model.OverallOutcomeCount)</h2>
+    @if (Model.OverallOutcomeCount > 0)
+    {
+        <table>
+            <tr>
+                <td>Organisation name</td>
+                <td>UKPRN</td>
+                <td>Provider route</td>
+                <td>Application reference number</td>
+                <td>Application submitted date</td>
+                <td>Application determined date</td>
+                <td>Overall outcome</td>
+            </tr>
+            @foreach (var outcome in Model.OverallOutcomeDetails)
+            {
+                <tr>
+                    <td>@outcome.OrganisationName</td>
+                    <td>@outcome.Ukprn</td>
+                    <td>@outcome.ProviderRoute</td>
+                    <td>@outcome.ApplicationReferenceNumber</td>
+                    <td>@outcome.ApplicationSubmittedDate</td>
+                    <td>@outcome.ApplicationDeterminedDate</td>
+                    <td>@outcome.Outcome</td>
+                </tr>
+            }
+        </table>
+    }
+
+    <a class="govuk-link" asp-controller="Home" asp-action="Index">Back</a> <!-- MFCMFC added cos it felt right-->
+}

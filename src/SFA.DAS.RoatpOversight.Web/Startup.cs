@@ -111,7 +111,7 @@ namespace SFA.DAS.RoatpOversight.Web
 
         private void AddAuthentication(IServiceCollection services)
         {
-            // TODO: Need to request DevOps to setup - "WtRealm": "https://localhost:45667",
+            // TODO: Need to request DevOps to setup - "WtRealm": "https://localhost:45667"
             services.AddAuthentication(sharedOptions =>
             {
                 sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -149,11 +149,6 @@ namespace SFA.DAS.RoatpOversight.Web
         private void ConfigureDependencyInjection(IServiceCollection services)
         {
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
-
-            services.Scan(x => x.FromCallingAssembly()
-                .AddClasses()
-                .AsImplementedInterfaces()
-                .WithTransientLifetime());
 
             services.AddTransient(x => ApplicationConfiguration);
 

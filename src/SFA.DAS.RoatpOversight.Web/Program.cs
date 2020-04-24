@@ -28,7 +28,7 @@ namespace SFA.DAS.RoatpOversight.Web
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseUrls("https://localhost:45667")
+                .UseUrls("https://localhost:44347")
                 .UseNLog();
     }
 }

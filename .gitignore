@@ -274,7 +274,7 @@ src/Tools/PhantomJS/tools/phantomjs/ChangeLog
 *.min.css
 
 # Developer appsettings
-*.development.json
+# *.development.json
 
 # Azurite
 __blobstorage__

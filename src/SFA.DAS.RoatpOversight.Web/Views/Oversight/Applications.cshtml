@@ -4,6 +4,7 @@
     ViewData["Title"] = "ESFA Application Outcomes";
 }
 
+<p><a class="govuk-link" asp-controller="Home" asp-action="Index">RoATP dashboard</a> > Roatp Application Outcomes</p>
 <h1>RoATP application outcomes</h1>
 
 
@@ -28,7 +29,7 @@ else
             @foreach (var application in Model.ApplicationDetails)
             {
                 <tr>
-                    <td> <a class="govuk-link" asp-action="Outcome" asp-route-id="@application.Ukprn" >@application.OrganisationName</a></td>
+                    <td> <a class="govuk-link" asp-action="Outcome" asp-route-id="@application.Ukprn">@application.OrganisationName</a></td>
                     <td>@application.Ukprn</td>
                     <td>@application.ProviderRoute</td>
                     <td>@application.ApplicationReferenceNumber</td>

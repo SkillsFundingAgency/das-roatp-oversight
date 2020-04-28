@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
@@ -29,7 +30,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             return View(viewModel);
         }
 
-        [Route("Oversight/Outcome/{ukprn}")]
+        [HttpGet("Oversight/Outcome/{ukprn}")]
         public IActionResult Outcome(string ukprn)
         {
             var stubbedViewModel = GetStubbedViewModel();
@@ -45,6 +46,145 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
 
             return View(vm);
+        }
+
+        [HttpPost("Oversight/Outcome/{ukprn}")]
+        public IActionResult EvaluateOutcome(string ukprn, string status)
+        {
+            var stubbedViewModel = GetStubbedViewModel();
+            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.Ukprn == ukprn);
+            var viewModel = new OutcomeViewModel
+            {
+                ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
+                ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
+                OrganisationName = applicationDetails.OrganisationName,
+                ProviderRoute = applicationDetails.ProviderRoute,
+                Ukprn = applicationDetails.Ukprn
+            };
+
+            viewModel.ErrorMessages = new List<ValidationErrorDetail>();
+            if (string.IsNullOrEmpty(status))
+            {
+                viewModel.ErrorMessages.Add(new ValidationErrorDetail
+                    {ErrorMessage = "error message", ValidationStatusCode = new ValidationStatusCode()});
+
+                return View($"~/Views/Oversight/Outcome.cshtml", viewModel);
+            }
+
+            if (status.ToLower() == "successful")
+            {
+                var viewModelSuccessful = new OutcomeSuccessfulViewModel
+                {
+                    ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
+                    ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
+                    OrganisationName = applicationDetails.OrganisationName,
+                    ProviderRoute = applicationDetails.ProviderRoute,
+                    Ukprn = applicationDetails.Ukprn
+                };
+                return View("~/Views/Oversight/OutcomeSuccessful.cshtml",viewModelSuccessful);
+            }
+
+            var viewModelUnsuccessful = new OutcomeUnsuccessfulViewModel
+            {
+                ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
+                ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
+                OrganisationName = applicationDetails.OrganisationName,
+                ProviderRoute = applicationDetails.ProviderRoute,
+                Ukprn = applicationDetails.Ukprn
+            };
+            return View("~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModelUnsuccessful);
+        }
+
+
+
+        [HttpPost("Oversight/Outcome/Successful/{ukprn}")]
+        public IActionResult Successful(string ukprn, string status)
+        {
+            var stubbedViewModel = GetStubbedViewModel();
+            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.Ukprn == ukprn);
+            var viewModel = new OutcomeSuccessfulViewModel
+            {
+                ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
+                ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
+                OrganisationName = applicationDetails.OrganisationName,
+                ProviderRoute = applicationDetails.ProviderRoute,
+                Ukprn = applicationDetails.Ukprn
+            };
+
+            viewModel.ErrorMessages = new List<ValidationErrorDetail>();
+            if (string.IsNullOrEmpty(status))
+            {
+                viewModel.ErrorMessages.Add(new ValidationErrorDetail
+                { ErrorMessage = "error message", ValidationStatusCode = new ValidationStatusCode() });
+
+                return View($"~/Views/Oversight/OutcomeSuccessful.cshtml", viewModel);
+            }
+
+            if (status.ToLower()=="no")
+            {
+                var viewModelOutcome = new OutcomeViewModel
+                {
+                    ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
+                    ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
+                    OrganisationName = applicationDetails.OrganisationName,
+                    ProviderRoute = applicationDetails.ProviderRoute,
+                    Ukprn = applicationDetails.Ukprn,
+                    ApplicationStatus = "Successful"
+                };
+
+                return View($"~/Views/Oversight/Outcome.cshtml", viewModelOutcome);
+            }
+
+
+            // record in database it's a success
+            var viewModelDone = new OutcomeDoneViewModel { Ukprn = ukprn, Status = "Successful" };
+
+            return View("~/Views/Oversight/OutcomeDone.cshtml", viewModelDone);
+        }
+
+        [HttpPost("Oversight/Outcome/Unsuccessful/{ukprn}")]
+        public IActionResult Unsuccessful(string ukprn, string status)
+        {
+            var stubbedViewModel = GetStubbedViewModel();
+            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.Ukprn == ukprn);
+            var viewModel = new OutcomeUnsuccessfulViewModel
+            {
+                ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
+                ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
+                OrganisationName = applicationDetails.OrganisationName,
+                ProviderRoute = applicationDetails.ProviderRoute,
+                Ukprn = applicationDetails.Ukprn
+            };
+
+            viewModel.ErrorMessages = new List<ValidationErrorDetail>();
+            if (string.IsNullOrEmpty(status))
+            {
+                viewModel.ErrorMessages.Add(new ValidationErrorDetail
+                    { ErrorMessage = "error message", ValidationStatusCode = new ValidationStatusCode() });
+
+                return View($"~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModel);
+            }
+
+            if (status.ToLower() == "no")
+            {
+                var viewModelOutcome = new OutcomeViewModel
+                {
+                    ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
+                    ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
+                    OrganisationName = applicationDetails.OrganisationName,
+                    ProviderRoute = applicationDetails.ProviderRoute,
+                    Ukprn = applicationDetails.Ukprn,
+                    ApplicationStatus = "Unsuccessful"
+                };
+
+                return View($"~/Views/Oversight/Outcome.cshtml", viewModelOutcome);
+            }
+
+            // record value in database
+
+            var viewModelDone = new OutcomeDoneViewModel {Ukprn = ukprn, Status = "Unsuccessful"};
+
+                return View("~/Views/Oversight/OutcomeDone.cshtml",viewModelDone);
         }
 
 

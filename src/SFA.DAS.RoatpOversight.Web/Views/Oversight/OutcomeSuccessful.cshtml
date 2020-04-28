@@ -1,14 +1,14 @@
-﻿@model SFA.DAS.RoatpOversight.Web.ViewModels.OutcomeViewModel
+﻿@model SFA.DAS.RoatpOversight.Web.ViewModels.OutcomeSuccessfulViewModel
 @{
-    ViewData["Title"] = "Outcome";
+    ViewData["Title"] = "Outcome - Successful";
 }
 @{
     var formGroupError = Model.ErrorMessages != null && Model.ErrorMessages.Any() ? "govuk-form-group--error" : "";
 }
-<p><a class="govuk-link" asp-controller="Home" asp-action="Index">RoATP dashboard</a> > <a class="govuk-link" asp-controller="Oversight" asp-action="Applications">RoATP Application Outcomes</a> > What's the overall outcome of this application?</p>
+<p><a class="govuk-link" asp-controller="Home" asp-action="Index">RoATP dashboard</a> > <a class="govuk-link" asp-controller="Oversight" asp-action="Applications">RoATP Application Outcomes</a> > Overall outcome</p>
 
 <h1>Overall outcome</h1>
-<h1>What's the overall outcome of this application?</h1>
+<h1>Are you sure this is a successful application?</h1>
 
 
 @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
@@ -28,24 +28,36 @@
 <p>Application submitted date: @Model.ApplicationSubmittedDate</p>
 <p>Application determined date: @DateTime.Today</p>
 
-<p>We’ll send this outcome to the applicant.</p>
+<p>
+    We'll send the applicant:
+
+    <ul>
+        <li>an overall outcome</li>
+        <li>a financial health grade</li>
+        <li>their next steps </li>
+    </ul>
+    We’ll also set this provider's status as 'on-boarding' on the staff app.
+</p>
+
+
+
 @{
-    var radioCheckedSuccessful = Model.ApplicationStatus?.ToLower() == "successful" ? "checked" : "";
-    var radioCheckedUnsuccessful = Model.ApplicationStatus?.ToLower() == "unsuccessful" ? "checked" : "";
+    var radioCheckedYes = Model.AreYouSureStatus?.ToLower() == "yes" ? "checked" : "";
+    var radioCheckedNo = Model.AreYouSureStatus?.ToLower() == "no" ? "checked" : "";
 }
-<form class="js-disable-on-submit" asp-action="Outcome" asp-controller="Oversight">
+<form class="js-disable-on-submit" asp-action="Successful" asp-controller="Oversight">
     <input type="hidden" asp-for="Ukprn" />
     <div class="govuk-radios__item">
         <input class="govuk-radios__input"
                type="radio"
                id="OptionYes"
                name="Status"
-               value="Successful"
+               value="Yes"
                data-aria-controls="conditional-OptionYes"
-               @radioCheckedSuccessful />
+               @radioCheckedYes />
 
         <label class="govuk-label govuk-radios__label" for="OptionYes">
-            Successful application
+            Yes
         </label>
     </div>
     <div class="govuk-radios__item">
@@ -53,11 +65,11 @@
                type="radio"
                id="OptionNo"
                name="Status"
-               value="Unsuccessful"
+               value="No"
                data-aria-controls="conditional-OptionNo"
-               @radioCheckedUnsuccessful />
+               @radioCheckedNo />
         <label class="govuk-label govuk-radios__label" for="OptionNo">
-            Unsuccessful application
+            No
         </label>
     </div>
     <button class="govuk-button" type="submit">Save and continue</button>

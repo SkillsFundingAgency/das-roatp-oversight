@@ -45,7 +45,7 @@
     var radioCheckedYes = Model.AreYouSureStatus?.ToLower() == "yes" ? "checked" : "";
     var radioCheckedNo = Model.AreYouSureStatus?.ToLower() == "no" ? "checked" : "";
 }
-<form class="js-disable-on-submit" asp-action="Successful" asp-controller="Oversight">
+<form asp-action="Successful" asp-controller="Oversight">
     <input type="hidden" asp-for="Ukprn" />
     <div class="govuk-radios__item">
         <input class="govuk-radios__input"

@@ -5,62 +5,81 @@
 @{
     var formGroupError = Model.ErrorMessages != null && Model.ErrorMessages.Any() ? "govuk-form-group--error" : "";
 }
-<p><a class="govuk-link" asp-controller="Home" asp-action="Index">RoATP dashboard</a> > <a class="govuk-link" asp-controller="Oversight" asp-action="Applications">RoATP Application Outcomes</a> > What's the overall outcome of this application?</p>
 
-<h1>Overall outcome</h1>
-<h1>What's the overall outcome of this application?</h1>
+<div class="govuk-breadcrumbs">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" asp-controller="Home" asp-action="Index">RoATP dashboard</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" asp-controller="Oversight" asp-action="Applications">RoATP application outcomes</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item" aria-current="page">What's the overall outcome of this application?</li>
+  </ol>
+</div>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
+            {
+                @foreach (var error in Model.ErrorMessages)
+                {
+                    <span class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
+                    </span>
+                }
+            }
 
 
-@if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
-{
-    @foreach (var error in Model.ErrorMessages)
-    {
-        <span class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
-        </span>
-    }
-}
+            <span class="govuk-caption-xl">Overall outcome</span>
+            <h1 class="govuk-heading-xl">What's the overall outcome of this application?</h1>
+
+            <p class="govuk-body govuk-!-margin-bottom-0">UKPRN: @Model.Ukprn</p>
+            <p class="govuk-body govuk-!-margin-bottom-0">Legal Name: @Model.OrganisationName</p>
+            <p class="govuk-body govuk-!-margin-bottom-0">Provider route: @Model.ProviderRoute</p>
+            <p class="govuk-body govuk-!-margin-bottom-0">Application submitted date: @Model.ApplicationSubmittedDate</p>
+            <p class="govuk-body">Application determined date: @DateTime.Today</p>
+
+            <p class="govuk-body">We'll send this outcome to the applicant.</p>
+
+            @{
+                var radioCheckedSuccessful = Model.ApplicationStatus?.ToLower() == "successful" ? "checked" : "";
+                var radioCheckedUnsuccessful = Model.ApplicationStatus?.ToLower() == "unsuccessful" ? "checked" : "";
+            }
 
 
-<p>UKPRN: @Model.Ukprn</p>
-<p>Legal Name: @Model.OrganisationName</p>
-<p>Provider route: @Model.ProviderRoute</p>
-<p>Application submitted date: @Model.ApplicationSubmittedDate</p>
-<p>Application determined date: @DateTime.Today</p>
+            <form asp-action="Outcome" asp-controller="Oversight">
+                <input type="hidden" asp-for="Ukprn" />
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input"
+                        type="radio"
+                        id="OptionYes"
+                        name="Status"
+                        value="Successful"
+                        data-aria-controls="conditional-OptionYes"
+                        @radioCheckedSuccessful />
 
-<p>We’ll send this outcome to the applicant.</p>
-@{
-    var radioCheckedSuccessful = Model.ApplicationStatus?.ToLower() == "successful" ? "checked" : "";
-    var radioCheckedUnsuccessful = Model.ApplicationStatus?.ToLower() == "unsuccessful" ? "checked" : "";
-}
-<form class="js-disable-on-submit" asp-action="Outcome" asp-controller="Oversight">
-    <input type="hidden" asp-for="Ukprn" />
-    <div class="govuk-radios__item">
-        <input class="govuk-radios__input"
-               type="radio"
-               id="OptionYes"
-               name="Status"
-               value="Successful"
-               data-aria-controls="conditional-OptionYes"
-               @radioCheckedSuccessful />
-
-        <label class="govuk-label govuk-radios__label" for="OptionYes">
-            Successful application
-        </label>
+                    <label class="govuk-label govuk-radios__label" for="OptionYes">
+                        Successful application
+                    </label>
+                </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input"
+                        type="radio"
+                        id="OptionNo"
+                        name="Status"
+                        value="Unsuccessful"
+                        data-aria-controls="conditional-OptionNo"
+                        @radioCheckedUnsuccessful />
+                    <label class="govuk-label govuk-radios__label" for="OptionNo">
+                        Unsuccessful application
+                    </label>
+                </div>
+                <button class="govuk-button" type="submit">Save and continue</button>
+            </form>
+        </div>
     </div>
-    <div class="govuk-radios__item">
-        <input class="govuk-radios__input"
-               type="radio"
-               id="OptionNo"
-               name="Status"
-               value="Unsuccessful"
-               data-aria-controls="conditional-OptionNo"
-               @radioCheckedUnsuccessful />
-        <label class="govuk-label govuk-radios__label" for="OptionNo">
-            Unsuccessful application
-        </label>
-    </div>
-    <button class="govuk-button" type="submit">Save and continue</button>
-</form>
-
+</main>
 

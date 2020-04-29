@@ -30,11 +30,11 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             return View(viewModel);
         }
 
-        [HttpGet("Oversight/Outcome/{ukprn}")]
-        public IActionResult Outcome(string ukprn)
+        [HttpGet("Oversight/Outcome/{applicationId}")]
+        public IActionResult Outcome(Guid applicationId)
         {
             var stubbedViewModel = GetStubbedViewModel();
-            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.Ukprn == ukprn);
+            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.ApplicationId == applicationId);
             var vm = new OutcomeViewModel
             {
                 ApplicationReferenceNumber =  applicationDetails.ApplicationReferenceNumber,
@@ -48,11 +48,11 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("Oversight/Outcome/{ukprn}")]
-        public IActionResult EvaluateOutcome(string ukprn, string status)
+        [HttpPost("Oversight/Outcome/{applicationId}")]
+        public IActionResult EvaluateOutcome(Guid applicationId, string status)
         {
             var stubbedViewModel = GetStubbedViewModel();
-            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.Ukprn == ukprn);
+            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.ApplicationId == applicationId);
             var viewModel = new OutcomeViewModel
             {
                 ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
@@ -97,11 +97,11 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
 
 
-        [HttpPost("Oversight/Outcome/Successful/{ukprn}")]
-        public IActionResult Successful(string ukprn, string status)
+        [HttpPost("Oversight/Outcome/Successful/{applicationId}")]
+        public IActionResult Successful(Guid applicationId, string status)
         {
             var stubbedViewModel = GetStubbedViewModel();
-            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.Ukprn == ukprn);
+            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.ApplicationId == applicationId);
             var viewModel = new OutcomeSuccessfulViewModel
             {
                 ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
@@ -137,16 +137,16 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
 
             // record in database it's a success
-            var viewModelDone = new OutcomeDoneViewModel { Ukprn = ukprn, Status = "Successful" };
+            var viewModelDone = new OutcomeDoneViewModel { Ukprn = applicationDetails.Ukprn, Status = "Successful" };
 
             return View("~/Views/Oversight/OutcomeDone.cshtml", viewModelDone);
         }
 
-        [HttpPost("Oversight/Outcome/Unsuccessful/{ukprn}")]
-        public IActionResult Unsuccessful(string ukprn, string status)
+        [HttpPost("Oversight/Outcome/Unsuccessful/{applicationId}")]
+        public IActionResult Unsuccessful(Guid applicationId, string status)
         {
             var stubbedViewModel = GetStubbedViewModel();
-            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.Ukprn == ukprn);
+            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.ApplicationId == applicationId);
             var viewModel = new OutcomeUnsuccessfulViewModel
             {
                 ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
@@ -182,7 +182,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
             // record value in database
 
-            var viewModelDone = new OutcomeDoneViewModel {Ukprn = ukprn, Status = "Unsuccessful"};
+            var viewModelDone = new OutcomeDoneViewModel {Ukprn = applicationDetails.Ukprn, Status = "Unsuccessful"};
 
                 return View("~/Views/Oversight/OutcomeDone.cshtml",viewModelDone);
         }
@@ -197,6 +197,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             {
                 new ApplicationDetails
                 {
+                    ApplicationId = new Guid("2e8ffe21-f622-4eef-af93-22e0ad0c6737"),
                     OrganisationName = "ZZZ Limited",
                     Ukprn = "123456768",
                     ProviderRoute = "Main",
@@ -205,6 +206,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 },
                 new ApplicationDetails
                 {
+                    ApplicationId = new Guid("a0fb2cdc-edf1-457c-96d7-2dc69cd5d8e8"),
                     OrganisationName = "AAA Limited",
                     Ukprn = "223456768",
                     ProviderRoute = "Employer",
@@ -213,6 +215,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 },
                 new ApplicationDetails
                 {
+                    ApplicationId = new Guid("cb84760b-931b-4724-a7fc-81e68659da10"),
                     OrganisationName = "BBB BBB Limited",
                     Ukprn = "523456765",
                     ProviderRoute = "Supporting",

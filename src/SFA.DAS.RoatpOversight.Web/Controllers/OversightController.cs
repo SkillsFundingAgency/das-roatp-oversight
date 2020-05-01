@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
@@ -14,42 +15,30 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
     public class OversightController: Controller
     {
 
-        public IOversightOrchestrator _orchestrator;
+        private readonly IOversightOrchestrator _orchestrator;
         private readonly ILogger<OversightController> _logger;
 
-        public OversightController(IOversightOrchestrator orchestrator)
+        public OversightController(IOversightOrchestrator orchestrator, ILogger<OversightController> logger)
         {
             _orchestrator = orchestrator;
+            _logger = logger;
         }
 
-        public async Task<IActionResult> Applications(string flag)
+        public async Task<IActionResult> Applications()
         {
-            //var viewModel = GetStubbedViewModel();
-
-            //if (flag == "no-applications" || flag=="no-details")
-            //{
-            //    viewModel.ApplicationDetails = new List<ApplicationDetails>();
-            //    viewModel.ApplicationCount = 0;
-            //}
-
-            //if (flag == "no-outcomes" || flag == "no-details")
-            //{
-            //    viewModel.OverallOutcomeDetails = new List<OverallOutcomeDetails>();
-            //    viewModel.OverallOutcomeCount = 0;
-            //}
-
             var viewModel = await _orchestrator.GetOversightOverviewViewModel();
 
             return View(viewModel);
         }
 
-        [HttpGet("Oversight/OversightStatus/{applicationId}")]
+        [HttpGet("Oversight/Outcome/{applicationId}")]
         public IActionResult Outcome(Guid applicationId)
         {
             var stubbedViewModel = GetStubbedViewModel();
             var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault();
             var vm = new OutcomeViewModel
             {
+                ApplicationId = applicationId,
                 ApplicationReferenceNumber =  applicationDetails.ApplicationReferenceNumber,
                 ApplicationSubmittedDate =  applicationDetails.ApplicationSubmittedDate,
                 OrganisationName =  "THIS IS A DUMMY PAGE",
@@ -61,7 +50,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("Oversight/OversightStatus/{applicationId}")]
+        [HttpPost("Oversight/Outcome/{applicationId}")]
         public IActionResult EvaluateOutcome(Guid applicationId, string status)
         {
             var stubbedViewModel = GetStubbedViewModel();
@@ -81,13 +70,14 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 viewModel.ErrorMessages.Add(new ValidationErrorDetail
                     {ErrorMessage = "error message", ValidationStatusCode = new ValidationStatusCode()});
 
-                return View($"~/Views/Oversight/OversightStatus.cshtml", viewModel);
+                return View($"~/Views/Oversight/Outcome.cshtml", viewModel);
             }
 
             if (status.ToLower() == "successful")
             {
                 var viewModelSuccessful = new OutcomeSuccessfulViewModel
                 {
+                    ApplicationId =  applicationDetails.ApplicationId,
                     ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                     ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                     OrganisationName = "THIS IS A DUMMY PAGE",
@@ -99,6 +89,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
             var viewModelUnsuccessful = new OutcomeUnsuccessfulViewModel
             {
+                ApplicationId =  applicationDetails.ApplicationId,
                 ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                 OrganisationName = "THIS IS A DUMMY RECORD",
@@ -110,13 +101,14 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
 
 
-        [HttpPost("Oversight/OversightStatus/Successful/{applicationId}")]
+        [HttpPost("Oversight/Outcome/Successful/{applicationId}")]
         public IActionResult Successful(Guid applicationId, string status)
         {
             var stubbedViewModel = GetStubbedViewModel();
             var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.ApplicationId == applicationId);
             var viewModel = new OutcomeSuccessfulViewModel
             {
+                ApplicationId =  applicationId,
                 ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                 OrganisationName = "THIS IS A DUMMY PAGE",
@@ -137,6 +129,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             {
                 var viewModelOutcome = new OutcomeViewModel
                 {
+                    ApplicationId =  applicationId,
                     ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                     ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                     OrganisationName = "THIS IS A DUMMY PAGE",
@@ -145,7 +138,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                     ApplicationStatus = "Successful"
                 };
 
-                return View($"~/Views/Oversight/OversightStatus.cshtml", viewModelOutcome);
+                return View($"~/Views/Oversight/Outcome.cshtml", viewModelOutcome);
             }
 
 
@@ -155,13 +148,14 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             return View("~/Views/Oversight/OutcomeDone.cshtml", viewModelDone);
         }
 
-        [HttpPost("Oversight/OversightStatus/Unsuccessful/{applicationId}")]
+        [HttpPost("Oversight/Outcome/Unsuccessful/{applicationId}")]
         public IActionResult Unsuccessful(Guid applicationId, string status)
         {
             var stubbedViewModel = GetStubbedViewModel();
             var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault();
             var viewModel = new OutcomeUnsuccessfulViewModel
             {
+                ApplicationId = applicationId,
                 ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                 OrganisationName = "THIS IS A DUMMY PAGE",
@@ -182,6 +176,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             {
                 var viewModelOutcome = new OutcomeViewModel
                 {
+                    ApplicationId = applicationId,
                     ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                     ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                     OrganisationName = "THIS IS A DUMMY PAGE",
@@ -190,7 +185,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                     ApplicationStatus = "Unsuccessful"
                 };
 
-                return View($"~/Views/Oversight/OversightStatus.cshtml", viewModelOutcome);
+                return View($"~/Views/Oversight/Outcome.cshtml", viewModelOutcome);
             }
 
             // record value in database

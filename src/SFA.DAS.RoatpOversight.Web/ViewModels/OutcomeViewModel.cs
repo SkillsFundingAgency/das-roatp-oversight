@@ -6,6 +6,7 @@ namespace SFA.DAS.RoatpOversight.Web.ViewModels
 {
     public class OutcomeViewModel
     {
+        public Guid ApplicationId { get; set; }
         public string OrganisationName { get; set; }
         public string Ukprn { get; set; }
         public string ProviderRoute { get; set; }

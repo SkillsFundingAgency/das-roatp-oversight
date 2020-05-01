@@ -6,6 +6,7 @@ namespace SFA.DAS.RoatpOversight.Web.ViewModels
 {
     public class OutcomeSuccessfulViewModel
     {
+        public Guid ApplicationId { get; set; }
         public string OrganisationName { get; set; }
         public string Ukprn { get; set; }
         public string ProviderRoute { get; set; }
@@ -14,7 +15,6 @@ namespace SFA.DAS.RoatpOversight.Web.ViewModels
         public string AreYouSureStatus { get; set; }
 
         public List<ValidationErrorDetail> ErrorMessages { get; set; }
-
 
     }
 }

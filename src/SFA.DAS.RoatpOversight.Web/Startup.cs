@@ -20,6 +20,7 @@ using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Extensions;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService;
+using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Settings;
 
 namespace SFA.DAS.RoatpOversight.Web
@@ -153,7 +154,7 @@ namespace SFA.DAS.RoatpOversight.Web
             services.AddTransient(x => ApplicationConfiguration);
 
             services.AddTransient<IRoatpApplicationTokenService, RoatpApplicationTokenService>();
-
+            services.AddTransient<IOversightOrchestrator, OversightOrchestrator>();
 
             UserExtensions.Logger = services.BuildServiceProvider().GetService<ILogger<ClaimsPrincipal>>();
         }

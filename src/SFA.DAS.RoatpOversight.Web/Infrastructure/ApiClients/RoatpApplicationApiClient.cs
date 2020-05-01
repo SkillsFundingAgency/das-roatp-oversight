@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService;
 
 namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
@@ -13,5 +16,15 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         }
 
         // Add end points below
+        public async Task<IEnumerable<ApplicationDetails>> GetOversightsPending()
+        {
+            return await Get<List<ApplicationDetails>>($"/Oversights/Pending");
+        }
+
+        public async Task<IEnumerable<OverallOutcomeDetails>> GetOversightsCompleted()
+        {
+            return await Get<List<OverallOutcomeDetails>>($"/Oversights/Completed");
+
+        }
     }
 }

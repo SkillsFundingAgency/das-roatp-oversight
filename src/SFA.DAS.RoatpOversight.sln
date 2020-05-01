@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpOversight.Web.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpOversight.Web.Extensions", "SFA.DAS.RoatpOversight.Web.Extensions\SFA.DAS.RoatpOversight.Web.Extensions.csproj", "{EFBDB917-8BC2-4007-BD69-25EA25642098}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.RoatpOversight.Domain", "SFA.DAS.RoatpOversight.Domain\SFA.DAS.RoatpOversight.Domain.csproj", "{8E44D3F9-8927-4F26-BA73-9B54290185AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpOversight.Domain", "SFA.DAS.RoatpOversight.Domain\SFA.DAS.RoatpOversight.Domain.csproj", "{8E44D3F9-8927-4F26-BA73-9B54290185AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

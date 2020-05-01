@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
+using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
@@ -11,35 +13,46 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
     //[Authorize]
     public class OversightController: Controller
     {
-        public IActionResult Applications(string flag)
+
+        public IOversightOrchestrator _orchestrator;
+        private readonly ILogger<OversightController> _logger;
+
+        public OversightController(IOversightOrchestrator orchestrator)
         {
-            var viewModel = GetStubbedViewModel();
+            _orchestrator = orchestrator;
+        }
 
-            if (flag == "no-applications" || flag=="no-details")
-            {
-                viewModel.ApplicationDetails = new List<ApplicationDetails>();
-                viewModel.ApplicationCount = 0;
-            }
+        public async Task<IActionResult> Applications(string flag)
+        {
+            //var viewModel = GetStubbedViewModel();
 
-            if (flag == "no-outcomes" || flag == "no-details")
-            {
-                viewModel.OverallOutcomeDetails = new List<OverallOutcomeDetails>();
-                viewModel.OverallOutcomeCount = 0;
-            }
+            //if (flag == "no-applications" || flag=="no-details")
+            //{
+            //    viewModel.ApplicationDetails = new List<ApplicationDetails>();
+            //    viewModel.ApplicationCount = 0;
+            //}
+
+            //if (flag == "no-outcomes" || flag == "no-details")
+            //{
+            //    viewModel.OverallOutcomeDetails = new List<OverallOutcomeDetails>();
+            //    viewModel.OverallOutcomeCount = 0;
+            //}
+
+            var viewModel = await _orchestrator.GetOversightOverviewViewModel();
 
             return View(viewModel);
         }
 
-        [HttpGet("Oversight/Outcome/{applicationId}")]
+        [HttpGet("Oversight/OversightStatus/{applicationId}")]
         public IActionResult Outcome(Guid applicationId)
         {
             var stubbedViewModel = GetStubbedViewModel();
-            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.ApplicationId == applicationId);
+            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault();
             var vm = new OutcomeViewModel
             {
                 ApplicationReferenceNumber =  applicationDetails.ApplicationReferenceNumber,
                 ApplicationSubmittedDate =  applicationDetails.ApplicationSubmittedDate,
-                OrganisationName =  applicationDetails.OrganisationName,
+                OrganisationName =  "THIS IS A DUMMY PAGE",
                 ProviderRoute = applicationDetails.ProviderRoute,
                 Ukprn =  applicationDetails.Ukprn
             };
@@ -48,16 +61,16 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             return View(vm);
         }
 
-        [HttpPost("Oversight/Outcome/{applicationId}")]
+        [HttpPost("Oversight/OversightStatus/{applicationId}")]
         public IActionResult EvaluateOutcome(Guid applicationId, string status)
         {
             var stubbedViewModel = GetStubbedViewModel();
-            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.ApplicationId == applicationId);
+            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault();
             var viewModel = new OutcomeViewModel
             {
                 ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
-                OrganisationName = applicationDetails.OrganisationName,
+                OrganisationName = "THIS IS A DUMMY PAGE",
                 ProviderRoute = applicationDetails.ProviderRoute,
                 Ukprn = applicationDetails.Ukprn
             };
@@ -68,7 +81,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 viewModel.ErrorMessages.Add(new ValidationErrorDetail
                     {ErrorMessage = "error message", ValidationStatusCode = new ValidationStatusCode()});
 
-                return View($"~/Views/Oversight/Outcome.cshtml", viewModel);
+                return View($"~/Views/Oversight/OversightStatus.cshtml", viewModel);
             }
 
             if (status.ToLower() == "successful")
@@ -77,7 +90,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 {
                     ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                     ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
-                    OrganisationName = applicationDetails.OrganisationName,
+                    OrganisationName = "THIS IS A DUMMY PAGE",
                     ProviderRoute = applicationDetails.ProviderRoute,
                     Ukprn = applicationDetails.Ukprn
                 };
@@ -88,7 +101,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             {
                 ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
-                OrganisationName = applicationDetails.OrganisationName,
+                OrganisationName = "THIS IS A DUMMY RECORD",
                 ProviderRoute = applicationDetails.ProviderRoute,
                 Ukprn = applicationDetails.Ukprn
             };
@@ -97,7 +110,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
 
 
-        [HttpPost("Oversight/Outcome/Successful/{applicationId}")]
+        [HttpPost("Oversight/OversightStatus/Successful/{applicationId}")]
         public IActionResult Successful(Guid applicationId, string status)
         {
             var stubbedViewModel = GetStubbedViewModel();
@@ -106,7 +119,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             {
                 ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
-                OrganisationName = applicationDetails.OrganisationName,
+                OrganisationName = "THIS IS A DUMMY PAGE",
                 ProviderRoute = applicationDetails.ProviderRoute,
                 Ukprn = applicationDetails.Ukprn
             };
@@ -126,13 +139,13 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 {
                     ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                     ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
-                    OrganisationName = applicationDetails.OrganisationName,
+                    OrganisationName = "THIS IS A DUMMY PAGE",
                     ProviderRoute = applicationDetails.ProviderRoute,
                     Ukprn = applicationDetails.Ukprn,
                     ApplicationStatus = "Successful"
                 };
 
-                return View($"~/Views/Oversight/Outcome.cshtml", viewModelOutcome);
+                return View($"~/Views/Oversight/OversightStatus.cshtml", viewModelOutcome);
             }
 
 
@@ -142,16 +155,16 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             return View("~/Views/Oversight/OutcomeDone.cshtml", viewModelDone);
         }
 
-        [HttpPost("Oversight/Outcome/Unsuccessful/{applicationId}")]
+        [HttpPost("Oversight/OversightStatus/Unsuccessful/{applicationId}")]
         public IActionResult Unsuccessful(Guid applicationId, string status)
         {
             var stubbedViewModel = GetStubbedViewModel();
-            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.ApplicationId == applicationId);
+            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault();
             var viewModel = new OutcomeUnsuccessfulViewModel
             {
                 ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
-                OrganisationName = applicationDetails.OrganisationName,
+                OrganisationName = "THIS IS A DUMMY PAGE",
                 ProviderRoute = applicationDetails.ProviderRoute,
                 Ukprn = applicationDetails.Ukprn
             };
@@ -171,13 +184,13 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 {
                     ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                     ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
-                    OrganisationName = applicationDetails.OrganisationName,
+                    OrganisationName = "THIS IS A DUMMY PAGE",
                     ProviderRoute = applicationDetails.ProviderRoute,
                     Ukprn = applicationDetails.Ukprn,
                     ApplicationStatus = "Unsuccessful"
                 };
 
-                return View($"~/Views/Oversight/Outcome.cshtml", viewModelOutcome);
+                return View($"~/Views/Oversight/OversightStatus.cshtml", viewModelOutcome);
             }
 
             // record value in database
@@ -237,7 +250,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                     ApplicationReferenceNumber = "APR000132",
                     ApplicationSubmittedDate = new DateTime(2019, 10, 21),
                     ApplicationDeterminedDate = new DateTime(2019, 10, 01),
-                    Outcome = "SUCCESSFUL"
+                    OversightStatus = "SUCCESSFUL"
                 },
                 new OverallOutcomeDetails
                 {
@@ -247,7 +260,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                     ApplicationReferenceNumber = "APR000120",
                     ApplicationSubmittedDate = new DateTime(2019, 10, 20),
                     ApplicationDeterminedDate = new DateTime(2019, 10, 29),
-                    Outcome = "UNSUCCESSFUL"
+                    OversightStatus = "UNSUCCESSFUL"
                 }
             };
 

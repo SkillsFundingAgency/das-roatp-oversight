@@ -94,7 +94,7 @@
                     @if (Model.OverallOutcomeCount > 0)
                     {
                         <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="outcomes">
-                            @*<h2 class="govuk-heading-l">Overall outcome (@Model.OverallOutcomeCount)</h2>*@
+                            @*<h2 class="govuk-heading-l">Overall outcome (@Model.OverallOversightStatusCount)</h2>*@
                             <table class="govuk-table das-table--condensed">
                                 <thead class="govuk-table__head">
                                     <tr class="govuk-table__row">
@@ -117,7 +117,7 @@
                                             <td class="govuk-table__cell">@outcome.ApplicationReferenceNumber</td>
                                             <td class="govuk-table__cell">@outcome.ApplicationSubmittedDate</td>
                                             <td class="govuk-table__cell">@outcome.ApplicationDeterminedDate</td>
-                                            <td class="govuk-table__cell">@outcome.Outcome</td>
+                                            <td class="govuk-table__cell">@outcome.OversightStatus</td>
                                         </tr>
                                     }
                                 </tbody>

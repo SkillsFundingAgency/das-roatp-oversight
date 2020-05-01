@@ -37,6 +37,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.ApplicationId == applicationId);
             var vm = new OutcomeViewModel
             {
+                ApplicationId = applicationId,
                 ApplicationReferenceNumber =  applicationDetails.ApplicationReferenceNumber,
                 ApplicationSubmittedDate =  applicationDetails.ApplicationSubmittedDate,
                 OrganisationName =  applicationDetails.OrganisationName,
@@ -75,6 +76,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             {
                 var viewModelSuccessful = new OutcomeSuccessfulViewModel
                 {
+                    ApplicationId =  applicationDetails.ApplicationId,
                     ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                     ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                     OrganisationName = applicationDetails.OrganisationName,
@@ -86,6 +88,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
             var viewModelUnsuccessful = new OutcomeUnsuccessfulViewModel
             {
+                ApplicationId =  applicationDetails.ApplicationId,
                 ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                 OrganisationName = applicationDetails.OrganisationName,
@@ -104,6 +107,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.ApplicationId == applicationId);
             var viewModel = new OutcomeSuccessfulViewModel
             {
+                ApplicationId =  applicationId,
                 ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                 OrganisationName = applicationDetails.OrganisationName,
@@ -124,6 +128,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             {
                 var viewModelOutcome = new OutcomeViewModel
                 {
+                    ApplicationId =  applicationId,
                     ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                     ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                     OrganisationName = applicationDetails.OrganisationName,
@@ -149,6 +154,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.ApplicationId == applicationId);
             var viewModel = new OutcomeUnsuccessfulViewModel
             {
+                ApplicationId = applicationId,
                 ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                 OrganisationName = applicationDetails.OrganisationName,
@@ -169,6 +175,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             {
                 var viewModelOutcome = new OutcomeViewModel
                 {
+                    ApplicationId = applicationId,
                     ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                     ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                     OrganisationName = applicationDetails.OrganisationName,
@@ -237,7 +244,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                     ApplicationReferenceNumber = "APR000132",
                     ApplicationSubmittedDate = new DateTime(2019, 10, 21),
                     ApplicationDeterminedDate = new DateTime(2019, 10, 01),
-                    Outcome = "SUCCESSFUL"
+                    OversightStatus = "SUCCESSFUL"
                 },
                 new OverallOutcomeDetails
                 {
@@ -247,7 +254,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                     ApplicationReferenceNumber = "APR000120",
                     ApplicationSubmittedDate = new DateTime(2019, 10, 20),
                     ApplicationDeterminedDate = new DateTime(2019, 10, 29),
-                    Outcome = "UNSUCCESSFUL"
+                    OversightStatus = "UNSUCCESSFUL"
                 }
             };
 

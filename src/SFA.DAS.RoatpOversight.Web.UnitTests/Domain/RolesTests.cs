@@ -22,7 +22,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Domain
         [Test]
         public void When_valid_role__HasValidRole_returns_True()
         {
-            var knownValidRole = Roles.RoatpOversightTeam;
+            var knownValidRole = Roles.RoatpApplicationOversightTeam;
             var user = MockedUser.Setup(knownValidRole);
 
             var actualResult = Roles.HasValidRole(user);

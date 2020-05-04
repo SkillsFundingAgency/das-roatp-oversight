@@ -56,11 +56,48 @@
                             <h1 class="govuk-heading-xl">Are you sure this is a successful application?</h1>
                         </legend>
 
-                        <p class="govuk-body govuk-!-margin-bottom-0">UKPRN: @Model.Ukprn</p>
-                        <p class="govuk-body govuk-!-margin-bottom-0">Legal Name: @Model.OrganisationName</p>
-                        <p class="govuk-body govuk-!-margin-bottom-0">Provider route: @Model.ProviderRoute</p>
-                        <p class="govuk-body govuk-!-margin-bottom-0">Application submitted date: @Model.ApplicationSubmittedDate</p>
-                        <p class="govuk-body govuk-!-margin-bottom-8">Application determined date: @DateTime.Today</p>
+                        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    UKPRN
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @Model.Ukprn
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Legal Name
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @Model.OrganisationName
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Provider route
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @Model.ProviderRoute
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Application submitted date
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @Model.ApplicationSubmittedDate
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Application determined date
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @DateTime.Today
+                                </dd>
+                            </div>
+                        </dl>
 
                         <p class="govuk-body">We'll send the applicant:</p>
 

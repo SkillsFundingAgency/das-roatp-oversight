@@ -9,6 +9,7 @@ variables:
     value: 'release'
   - name: buildPlatform
     value: 'anycpu'
+  - group: 'Prod Management Resources'
 
 resources:
   repositories:

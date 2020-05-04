@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -39,14 +40,12 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             expectedViewModel.ApplicationCount = expectedViewModel.ApplicationDetails.Count;
             expectedViewModel.OverallOutcomeCount = expectedViewModel.OverallOutcomeDetails.Count;
 
-
-
-            Assert.AreEqual(actualViewModel.ApplicationDetails.Count, expectedViewModel.ApplicationDetails.Count);
-
-
-            //Assert.That(viewModel.OverallOutcomeDetails, Is.SameAs(GetApplicationsDone()));
-           // Assert.AreEqual(GetApplicationsPending().Count,viewModel.ApplicationCount);
-           // Assert.AreEqual(GetApplicationsDone().Count, viewModel.OverallOutcomeCount);
+            Assert.AreEqual(actualViewModel.ApplicationCount, expectedViewModel.ApplicationCount);
+            Assert.AreEqual(actualViewModel.OverallOutcomeCount, expectedViewModel.OverallOutcomeCount);
+            Assert.AreEqual(actualViewModel.ApplicationDetails.Count, expectedViewModel.ApplicationCount);
+            Assert.AreEqual(actualViewModel.OverallOutcomeDetails.Count, expectedViewModel.OverallOutcomeCount);
+            Assert.AreEqual(actualViewModel.ApplicationDetails.First().ApplicationId, expectedViewModel.ApplicationDetails.First().ApplicationId);
+            Assert.AreEqual(actualViewModel.OverallOutcomeDetails.First().Ukprn, expectedViewModel.OverallOutcomeDetails.First().Ukprn);
         }
 
 

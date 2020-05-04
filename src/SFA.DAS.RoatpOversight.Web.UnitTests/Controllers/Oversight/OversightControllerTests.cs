@@ -51,11 +51,9 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 
             _orchestrator.Setup(x => x.GetOversightOverviewViewModel()).ReturnsAsync(viewModel);
 
-            // act
             var result = await _controller.Applications() as ViewResult;
             var actualViewModel = result?.Model as OverallOutcomeViewModel;
 
-            // assert
             Assert.That(result, Is.Not.Null);
             Assert.That(actualViewModel, Is.Not.Null);
             Assert.That(actualViewModel, Is.SameAs(viewModel));

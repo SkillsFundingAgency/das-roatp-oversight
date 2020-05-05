@@ -36,5 +36,23 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
            return viewModel;
         }
+
+        public async Task<OutcomeViewModel> GetOversightDetailsViewModel(Guid applicationId)
+        {
+            var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
+
+            var viewModel = new OutcomeViewModel
+            {
+                ApplicationId = applicationId,
+                ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
+                ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
+                OrganisationName = applicationDetails.OrganisationName,
+                Ukprn = applicationDetails.Ukprn,
+                ProviderRoute = applicationDetails.ProviderRoute
+            };
+
+
+            return viewModel;
+        }
     }
 }

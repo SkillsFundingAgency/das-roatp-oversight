@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -25,6 +26,11 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         {
             return await Get<List<OverallOutcomeDetails>>($"/Oversights/Completed");
 
+        }
+
+        public async Task<ApplicationDetails> GetOversightDetails(Guid applicationId)
+        {
+            return await Get<ApplicationDetails>($"/Oversights/{applicationId}");
         }
     }
 }

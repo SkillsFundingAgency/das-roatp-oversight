@@ -32,20 +32,9 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         }
 
         [HttpGet("Oversight/Outcome/{applicationId}")]
-        public IActionResult Outcome(Guid applicationId)
+        public async Task<IActionResult> Outcome(Guid applicationId)
         {
-            var stubbedViewModel = GetStubbedViewModel();
-            var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault();
-            var vm = new OutcomeViewModel
-            {
-                ApplicationId = applicationId,
-                ApplicationReferenceNumber =  applicationDetails.ApplicationReferenceNumber,
-                ApplicationSubmittedDate =  applicationDetails.ApplicationSubmittedDate,
-                OrganisationName =  "THIS IS A DUMMY PAGE",
-                ProviderRoute = applicationDetails.ProviderRoute,
-                Ukprn =  applicationDetails.Ukprn
-            };
-
+            var vm = await _orchestrator.GetOversightDetailsViewModel(applicationId);
 
             return View(vm);
         }

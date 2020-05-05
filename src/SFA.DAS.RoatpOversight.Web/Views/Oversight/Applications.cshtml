@@ -5,12 +5,12 @@
 }
 
 <div class="govuk-breadcrumbs">
-  <ol class="govuk-breadcrumbs__list">
-    <li class="govuk-breadcrumbs__list-item">
-      <a class="govuk-breadcrumbs__link" asp-controller="Home" asp-action="Index">RoATP dashboard</a>
-    </li>
-    <li class="govuk-breadcrumbs__list-item" aria-current="page">RoATP application outcomes</li>
-  </ol>
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" asp-controller="Home" asp-action="Index">RoATP dashboard</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">RoATP application outcomes</li>
+    </ol>
 </div>
 
 <main class="govuk-main-wrapper">
@@ -83,7 +83,10 @@
                                             <td data-label="UKPRN" class="govuk-table__cell">@application.Ukprn</td>
                                             <td data-label="Provider route" class="govuk-table__cell">@application.ProviderRoute</td>
                                             <td data-label="Application reference number" class="govuk-table__cell">@application.ApplicationReferenceNumber</td>
-                                            <td data-label="Application submitted date" class="govuk-table__cell">@application.ApplicationSubmittedDate</td>
+                                            @{
+                                                var submittedDate = $"{application.ApplicationSubmittedDate:dd MMM yyyy}";
+                                            }
+                                            <td data-label="Application submitted date" class="govuk-table__cell">@submittedDate</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -93,7 +96,7 @@
 
                     @if (Model.OverallOutcomeCount > 0)
                     {
-                        <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="outcomes">
+                        <div class="govuk-tabs__panelgovuk-tabs__panel--hidden" id="outcomes">
                             <table class="govuk-table das-table--condensed das-table--responsive-wide">
                                 <caption class="govuk-table__caption govuk-heading-l">Overall outcome</caption>
                                 <thead class="govuk-table__head">
@@ -115,8 +118,12 @@
                                             <td data-label="UKPRN" class="govuk-table__cell">@outcome.Ukprn</td>
                                             <td data-label="Provider route" class="govuk-table__cell">@outcome.ProviderRoute</td>
                                             <td data-label="Application reference number" class="govuk-table__cell">@outcome.ApplicationReferenceNumber</td>
-                                            <td data-label="Application submitted date" class="govuk-table__cell">@outcome.ApplicationSubmittedDate</td>
-                                            <td data-label="Application determined date" class="govuk-table__cell">@outcome.ApplicationDeterminedDate</td>
+                                            @{
+                                                var submittedDate = $"{outcome.ApplicationSubmittedDate:dd MMM yyyy}";
+                                                var determinedDate = $"{outcome.ApplicationDeterminedDate:dd MMM yyyy}";
+                                            }
+                                            <td data-label="Application submitted date" class="govuk-table__cell">@submittedDate</td>
+                                            <td data-label="Application determined date" class="govuk-table__cell">@determinedDate</td>
                                             <td data-label="Overall outcome" class="govuk-table__cell">@outcome.OversightStatus</td>
                                         </tr>
                                     }
@@ -131,9 +138,9 @@
 
     @*
 
-    <p class="govuk-body">
-        <a class="govuk-link" asp-controller="Home" asp-action="Index">Back</a>
-    </p>
+        <p class="govuk-body">
+            <a class="govuk-link" asp-controller="Home" asp-action="Index">Back</a>
+        </p>
 
     *@
 

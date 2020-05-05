@@ -86,7 +86,10 @@
                                     Application submitted date
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    @Model.ApplicationSubmittedDate
+                                    @{
+                                        var submittedDate = $"{Model.ApplicationSubmittedDate:dd MMM yyyy}";
+                                    }
+                                    @submittedDate
                                 </dd>
                             </div>
                             <div class="govuk-summary-list__row">
@@ -94,7 +97,8 @@
                                     Application determined date
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    @DateTime.Today
+
+                                    @DateTime.Today.ToString("dd MMM yyyy")
                                 </dd>
                             </div>
                         </dl>

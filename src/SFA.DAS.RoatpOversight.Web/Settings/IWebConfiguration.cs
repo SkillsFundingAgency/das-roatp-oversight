@@ -7,5 +7,7 @@
         AuthSettings StaffAuthentication { get; set; }
 
         ClientApiAuthentication RoatpApplicationApiAuthentication { get; set; }
+
+        ClientApiAuthentication RoatpRegisterApiAuthentication { get; set; }
     }
 }

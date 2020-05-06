@@ -1,16 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
+using SFA.DAS.RoatpOversight.Web.Services;
+using Microsoft.AspNetCore.Http;
+using SFA.DAS.RoatpOversight.Web.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
 {
     //[Authorize]
-    public class OversightController: Controller
+    public class OversightController : Controller
     {
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IApplicationOutcomeOrchestrator _orchestrator;
+        public OversightController(IHttpContextAccessor contextAccessor, IApplicationOutcomeOrchestrator orchestrator)
+        {
+            _contextAccessor = contextAccessor;
+            _orchestrator = orchestrator;
+        }
         public IActionResult Applications(string flag)
         {
             var viewModel = GetStubbedViewModel();
@@ -71,7 +81,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
                 return View($"~/Views/Oversight/Outcome.cshtml", viewModel);
             }
-
+                        
             if (status.ToLower() == "successful")
             {
                 var viewModelSuccessful = new OutcomeSuccessfulViewModel
@@ -101,7 +111,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
 
         [HttpPost("Oversight/Outcome/Successful/{applicationId}")]
-        public IActionResult Successful(Guid applicationId, string status)
+        public async Task<IActionResult> Successful(Guid applicationId, string status)
         {
             var stubbedViewModel = GetStubbedViewModel();
             var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.ApplicationId == applicationId);
@@ -140,15 +150,15 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 return View($"~/Views/Oversight/Outcome.cshtml", viewModelOutcome);
             }
 
+            await _orchestrator.RecordOutcome(applicationId, OversightReviewStatus.Successful, _contextAccessor.HttpContext.User.UserDisplayName());
 
-            // record in database it's a success
             var viewModelDone = new OutcomeDoneViewModel { Ukprn = applicationDetails.Ukprn, Status = "Successful" };
 
             return View("~/Views/Oversight/OutcomeDone.cshtml", viewModelDone);
         }
 
         [HttpPost("Oversight/Outcome/Unsuccessful/{applicationId}")]
-        public IActionResult Unsuccessful(Guid applicationId, string status)
+        public async Task<IActionResult> Unsuccessful(Guid applicationId, string status)
         {
             var stubbedViewModel = GetStubbedViewModel();
             var applicationDetails = stubbedViewModel.ApplicationDetails.FirstOrDefault(x => x.ApplicationId == applicationId);
@@ -187,7 +197,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 return View($"~/Views/Oversight/Outcome.cshtml", viewModelOutcome);
             }
 
-            // record value in database
+            await _orchestrator.RecordOutcome(applicationId, OversightReviewStatus.Unsuccessful, _contextAccessor.HttpContext.User.UserDisplayName());
 
             var viewModelDone = new OutcomeDoneViewModel {Ukprn = applicationDetails.Ukprn, Status = "Unsuccessful"};
 

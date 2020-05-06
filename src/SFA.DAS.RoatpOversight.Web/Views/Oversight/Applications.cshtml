@@ -37,29 +37,24 @@
                     <h2 class="govuk-tabs__title">
                         Contents
                     </h2>
+
                     <ul class="govuk-tabs__list">
-                        @if (Model.ApplicationCount > 0)
-                        {
                             <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
                                 <a class="govuk-tabs__tab" href="#applications">
                                     Applications (@Model.ApplicationCount)
                                 </a>
                             </li>
-                        }
 
-                        @if (Model.OverallOutcomeCount > 0)
-                        {
                             <li class="govuk-tabs__list-item">
                                 <a class="govuk-tabs__tab" href="#outcomes">
                                     Overall outcome (@Model.OverallOutcomeCount)
                                 </a>
                             </li>
-                        }
                     </ul>
 
-                    @if (Model.ApplicationCount > 0)
-                    {
-                        <div class="govuk-tabs__panel" id="applications">
+                    <div class="govuk-tabs__panel" id="applications">
+                        @if (Model.ApplicationCount > 0)
+                        {
                             <table class="govuk-table das-table--condensed das-table--responsive-wide">
                                 <caption class="govuk-table__caption govuk-heading-l">Applications</caption>
                                 <thead class="govuk-table__head">
@@ -91,12 +86,16 @@
                                     }
                                 </tbody>
                             </table>
-                        </div>
-                    }
+                        }
+                        else
+                        {
+                            <p class="govuk-body-l">No applications to assess.</p>
+                        }
+                    </div>
 
-                    @if (Model.OverallOutcomeCount > 0)
-                    {
-                        <div class="govuk-tabs__panelgovuk-tabs__panel--hidden" id="outcomes">
+                    <div class="govuk-tabs__panel" id="outcomes">
+                        @if (Model.OverallOutcomeCount > 0)
+                        {
                             <table class="govuk-table das-table--condensed das-table--responsive-wide">
                                 <caption class="govuk-table__caption govuk-heading-l">Overall outcome</caption>
                                 <thead class="govuk-table__head">
@@ -113,6 +112,7 @@
                                 <tbody class="govuk-table__body">
                                     @foreach (var outcome in Model.OverallOutcomeDetails)
                                     {
+                                        
                                         <tr class="govuk-table__row">
                                             <td data-label="Organisation name" class="govuk-table__cell">@outcome.OrganisationName</td>
                                             <td data-label="UKPRN" class="govuk-table__cell">@outcome.Ukprn</td>
@@ -124,13 +124,31 @@
                                             }
                                             <td data-label="Application submitted date" class="govuk-table__cell">@submittedDate</td>
                                             <td data-label="Application determined date" class="govuk-table__cell">@determinedDate</td>
-                                            <td data-label="Overall outcome" class="govuk-table__cell">@outcome.OversightStatus</td>
+                                            @{
+                                                var tagCssClass = "";
+                                                if (@outcome.OversightStatus == "SUCCESSFUL")
+                                                {
+                                                    tagCssClass = "govuk-tag--solid-green";
+                                                }
+
+                                                if (@outcome.OversightStatus == "UNSUCCESSFUL")
+                                                {
+                                                    tagCssClass = "govuk-tag--solid-red";
+                                                }
+                                            }
+                                            <td data-label="Overall outcome" class="govuk-table__cell">
+                                                <span class="govuk-tag @tagCssClass">@outcome.OversightStatus</span>
+                                            </td>
                                         </tr>
                                     }
                                 </tbody>
                             </table>
-                        </div>
-                    }
+                        }
+                        else
+                        {
+                            <p class="govuk-body-l">No overall outcomes.</p>
+                        }
+                    </div>
                 </div>
             </div>
         </div>

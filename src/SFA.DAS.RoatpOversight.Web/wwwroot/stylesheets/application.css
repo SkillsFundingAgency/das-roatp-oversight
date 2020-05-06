@@ -287,3 +287,15 @@
 .das-table--responsive-wide .govuk-table__body tr td:empty {
   display: none;
 }
+
+.das-table--condensed .govuk-table__body tr td .govuk-tag {
+  font-size: 15px;
+}
+
+.govuk-tag--solid-green {
+  background-color: #00703c;
+}
+
+.govuk-tag--solid-red {
+  background-color: #d4351c;
+}

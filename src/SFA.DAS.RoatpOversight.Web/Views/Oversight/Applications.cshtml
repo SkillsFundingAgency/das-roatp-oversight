@@ -5,12 +5,12 @@
 }
 
 <div class="govuk-breadcrumbs">
-  <ol class="govuk-breadcrumbs__list">
-    <li class="govuk-breadcrumbs__list-item">
-      <a class="govuk-breadcrumbs__link" asp-controller="Home" asp-action="Index">RoATP dashboard</a>
-    </li>
-    <li class="govuk-breadcrumbs__list-item" aria-current="page">RoATP application outcomes</li>
-  </ol>
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" asp-controller="Home" asp-action="Index">RoATP dashboard</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">RoATP application outcomes</li>
+    </ol>
 </div>
 
 <main class="govuk-main-wrapper">
@@ -21,119 +21,133 @@
         </div>
     </div>
 
-    @if (Model.ApplicationCount == 0 && Model.OverallOutcomeCount == 0)
-    {
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <p class="govuk-body-l">No applications to assess.</p>
-            </div>
-        </div>
-    }
-    else
-    {
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <div class="govuk-tabs" data-module="govuk-tabs">
-                    <h2 class="govuk-tabs__title">
-                        Oversight applications and outcomes
-                    </h2>
-                    <ul class="govuk-tabs__list">
-                        @if (Model.ApplicationCount > 0)
-                        {
-                            <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
-                                <a class="govuk-tabs__tab" href="#applications">
-                                    Applications (@Model.ApplicationCount)
-                                </a>
-                            </li>
-                        }
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <div class="govuk-tabs" data-module="govuk-tabs">
+                <h2 class="govuk-tabs__title">
+                    Contents
+                </h2>
 
-                        @if (Model.OverallOutcomeCount > 0)
-                        {
-                            <li class="govuk-tabs__list-item">
-                                <a class="govuk-tabs__tab" href="#outcomes">
-                                    Overall outcome (@Model.OverallOutcomeCount)
-                                </a>
-                            </li>
-                        }
-                    </ul>
+                <ul class="govuk-tabs__list">
+                        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                            <a class="govuk-tabs__tab" href="#applications">
+                                Applications (@Model.ApplicationCount)
+                            </a>
+                        </li>
 
+                        <li class="govuk-tabs__list-item">
+                            <a class="govuk-tabs__tab" href="#outcomes">
+                                Overall outcome (@Model.OverallOutcomeCount)
+                            </a>
+                        </li>
+                </ul>
+
+                <div class="govuk-tabs__panel" id="applications">
                     @if (Model.ApplicationCount > 0)
                     {
-                        <div class="govuk-tabs__panel" id="applications">
-                            @*<h2 class="govuk-heading-l">Applications (@Model.ApplicationCount)</h2>*@
-                            <table class="govuk-table das-table--condensed">
-                                <thead class="govuk-table__head">
+                        <table class="govuk-table das-table--condensed das-table--responsive-wide">
+                            <caption class="govuk-table__caption govuk-heading-l">Applications</caption>
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">Organisation name</th>
+                                    <th scope="col" class="govuk-table__header">UKPRN</th>
+                                    <th scope="col" class="govuk-table__header">Provider route</th>
+                                    <th scope="col" class="govuk-table__header">Application reference number</th>
+                                    <th scope="col" class="govuk-table__header">Application submitted date</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                @foreach (var application in Model.ApplicationDetails)
+                                {
                                     <tr class="govuk-table__row">
-                                        <th scope="col" class="govuk-table__header">Organisation name</th>
-                                        <th scope="col" class="govuk-table__header">UKPRN</th>
-                                        <th scope="col" class="govuk-table__header">Provider route</th>
-                                        <th scope="col" class="govuk-table__header">Application reference number</th>
-                                        <th scope="col" class="govuk-table__header">Application submitted date</th>
+                                        <td data-label="Organisation name" class="govuk-table__cell">
+                                            <a class="govuk-link govuk-!-margin-bottom-0" asp-action="Outcome" asp-route-id="@application.ApplicationId">
+                                                @application.OrganisationName
+                                            </a>
+                                        </td>
+                                        <td data-label="UKPRN" class="govuk-table__cell">@application.Ukprn</td>
+                                        <td data-label="Provider route" class="govuk-table__cell">@application.ProviderRoute</td>
+                                        <td data-label="Application reference number" class="govuk-table__cell">@application.ApplicationReferenceNumber</td>
+                                        @{
+                                            var submittedDate = $"{application.ApplicationSubmittedDate:dd MMM yyyy}";
+                                        }
+                                        <td data-label="Application submitted date" class="govuk-table__cell">@submittedDate</td>
                                     </tr>
-                                </thead>
-                                <tbody class="govuk-table__body">
-                                    @foreach (var application in Model.ApplicationDetails)
-                                    {
-                                        <tr class="govuk-table__row">
-                                            <td class="govuk-table__cell">
-                                                <a class="govuk-link govuk-!-margin-bottom-0" asp-action="Outcome" asp-route-id="@application.ApplicationId">
-                                                    @application.OrganisationName
-                                                </a>
-                                            </td>
-                                            <td class="govuk-table__cell">@application.Ukprn</td>
-                                            <td class="govuk-table__cell">@application.ProviderRoute</td>
-                                            <td class="govuk-table__cell">@application.ApplicationReferenceNumber</td>
-                                            <td class="govuk-table__cell">@application.ApplicationSubmittedDate</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                                }
+                            </tbody>
+                        </table>
                     }
+                    else
+                    {
+                        <p class="govuk-body-l">No applications to assess.</p>
+                    }
+                </div>
 
+                <div class="govuk-tabs__panel" id="outcomes">
                     @if (Model.OverallOutcomeCount > 0)
                     {
-                        <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="outcomes">
-                            @*<h2 class="govuk-heading-l">Overall outcome (@Model.OverallOutcomeCount)</h2>*@
-                            <table class="govuk-table das-table--condensed">
-                                <thead class="govuk-table__head">
+                        <table class="govuk-table das-table--condensed das-table--responsive-wide">
+                            <caption class="govuk-table__caption govuk-heading-l">Overall outcome</caption>
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">Organisation name</th>
+                                    <th scope="col" class="govuk-table__header">UKPRN</th>
+                                    <th scope="col" class="govuk-table__header">Provider route</th>
+                                    <th scope="col" class="govuk-table__header">Application reference number</th>
+                                    <th scope="col" class="govuk-table__header">Application submitted date</th>
+                                    <th scope="col" class="govuk-table__header">Application determined date</th>
+                                    <th scope="col" class="govuk-table__header">Overall outcome</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                @foreach (var outcome in Model.OverallOutcomeDetails)
+                                {
+                                    
                                     <tr class="govuk-table__row">
-                                        <th scope="col" class="govuk-table__header">Organisation name</th>
-                                        <th scope="col" class="govuk-table__header">UKPRN</th>
-                                        <th scope="col" class="govuk-table__header">Provider route</th>
-                                        <th scope="col" class="govuk-table__header">Application reference number</th>
-                                        <th scope="col" class="govuk-table__header">Application submitted date</th>
-                                        <th scope="col" class="govuk-table__header">Application determined date</th>
-                                        <th scope="col" class="govuk-table__header">Overall outcome</th>
+                                        <td data-label="Organisation name" class="govuk-table__cell">@outcome.OrganisationName</td>
+                                        <td data-label="UKPRN" class="govuk-table__cell">@outcome.Ukprn</td>
+                                        <td data-label="Provider route" class="govuk-table__cell">@outcome.ProviderRoute</td>
+                                        <td data-label="Application reference number" class="govuk-table__cell">@outcome.ApplicationReferenceNumber</td>
+                                        @{
+                                            var submittedDate = $"{outcome.ApplicationSubmittedDate:dd MMM yyyy}";
+                                            var determinedDate = $"{outcome.ApplicationDeterminedDate:dd MMM yyyy}";
+                                        }
+                                        <td data-label="Application submitted date" class="govuk-table__cell">@submittedDate</td>
+                                        <td data-label="Application determined date" class="govuk-table__cell">@determinedDate</td>
+                                        @{
+                                            var tagCssClass = "";
+                                            if (@outcome.OversightStatus == "SUCCESSFUL")
+                                            {
+                                                tagCssClass = "govuk-tag--solid-green";
+                                            }
+
+                                            if (@outcome.OversightStatus == "UNSUCCESSFUL")
+                                            {
+                                                tagCssClass = "govuk-tag--solid-red";
+                                            }
+                                        }
+                                        <td data-label="Overall outcome" class="govuk-table__cell">
+                                            <span class="govuk-tag @tagCssClass">@outcome.OversightStatus</span>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody class="govuk-table__body">
-                                    @foreach (var outcome in Model.OverallOutcomeDetails)
-                                    {
-                                        <tr class="govuk-table__row">
-                                            <td class="govuk-table__cell">@outcome.OrganisationName</td>
-                                            <td class="govuk-table__cell">@outcome.Ukprn</td>
-                                            <td class="govuk-table__cell">@outcome.ProviderRoute</td>
-                                            <td class="govuk-table__cell">@outcome.ApplicationReferenceNumber</td>
-                                            <td class="govuk-table__cell">@outcome.ApplicationSubmittedDate</td>
-                                            <td class="govuk-table__cell">@outcome.ApplicationDeterminedDate</td>
-                                            <td class="govuk-table__cell">@outcome.Outcome</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="govuk-body-l">No overall outcomes.</p>
                     }
                 </div>
             </div>
         </div>
-    }
+    </div>
 
     @*
 
-    <p class="govuk-body">
-        <a class="govuk-link" asp-controller="Home" asp-action="Index">Back</a>
-    </p>
+        <p class="govuk-body">
+            <a class="govuk-link" asp-controller="Home" asp-action="Index">Back</a>
+        </p>
 
     *@
 

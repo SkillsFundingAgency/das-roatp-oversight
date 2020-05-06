@@ -140,7 +140,7 @@ namespace SFA.DAS.RoatpOversight.Web
 
             services.AddHttpClient<IRoatpApplicationApiClient, RoatpApplicationApiClient>(config =>
             {
-                config.BaseAddress = new Uri(ApplicationConfiguration.RoatpApplicationApiAuthentication.ApiBaseAddress);
+                config.BaseAddress = new Uri(ApplicationConfiguration.ApplyApiAuthentication.ApiBaseAddress);
                 config.DefaultRequestHeaders.Add(acceptHeaderName, acceptHeaderValue);
             })
             .SetHandlerLifetime(handlerLifeTime)

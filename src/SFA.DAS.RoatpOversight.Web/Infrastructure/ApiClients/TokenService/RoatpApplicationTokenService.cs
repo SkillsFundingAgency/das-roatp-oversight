@@ -18,10 +18,10 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService
             if (baseUri != null && baseUri.IsLoopback)
                 return string.Empty;
 
-            var tenantId = _configuration.RoatpApplicationApiAuthentication.TenantId;
-            var clientId = _configuration.RoatpApplicationApiAuthentication.ClientId;
-            var appKey = _configuration.RoatpApplicationApiAuthentication.ClientSecret;
-            var resourceId = _configuration.RoatpApplicationApiAuthentication.ResourceId;
+            var tenantId = _configuration.ApplyApiAuthentication.TenantId;
+            var clientId = _configuration.ApplyApiAuthentication.ClientId;
+            var appKey = _configuration.ApplyApiAuthentication.ClientSecret;
+            var resourceId = _configuration.ApplyApiAuthentication.ResourceId;
 
             var authority = $"https://login.microsoftonline.com/{tenantId}";
             var clientCredential = new ClientCredential(clientId, appKey);

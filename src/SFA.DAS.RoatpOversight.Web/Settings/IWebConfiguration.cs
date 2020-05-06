@@ -6,6 +6,6 @@
 
         AuthSettings StaffAuthentication { get; set; }
 
-        ClientApiAuthentication RoatpApplicationApiAuthentication { get; set; }
+        ClientApiAuthentication ApplyApiAuthentication { get; set; }
     }
 }

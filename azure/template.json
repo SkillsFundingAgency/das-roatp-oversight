@@ -72,9 +72,6 @@
                     },
                     "keyVaultResourceGroup": {
                         "value": "[parameters('sharedManagementResourceGroup')]"
-                    },
-                    "serverFarmId": {
-                        "value": "[resourceId(parameters('sharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('sharedFrontEndAppServicePlanName'))]"
                     }
                 }
             }
@@ -184,7 +181,7 @@
         }
     ],
     "outputs": {
-        "appServiceName": {
+        "AppServiceName": {
             "type": "string",
             "value": "[variables('appServiceName')]"
         }

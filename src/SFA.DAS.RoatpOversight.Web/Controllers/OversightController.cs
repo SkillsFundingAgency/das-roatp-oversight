@@ -44,10 +44,11 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         public async Task<IActionResult> EvaluateOutcome(Guid applicationId, string status)
         {
             var errorMessages = OverallOutcomeValidator.ValidateOverallOutcome(status);
+            var viewModel = await _orchestrator.GetOversightDetailsViewModel(applicationId);
+
             if (errorMessages.Any())
             {
-                var viewModel = await _orchestrator.GetOversightDetailsViewModel(applicationId);
-                viewModel.ErrorMessages = errorMessages;
+                    viewModel.ErrorMessages = errorMessages;
                 return View($"~/Views/Oversight/Outcome.cshtml", viewModel);
             }
 
@@ -57,11 +58,11 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 var viewModelSuccessful = new OutcomeSuccessfulViewModel
                 {
                     ApplicationId =  applicationId,
-                    ApplicationReferenceNumber = "DUMMY REFERENCE NUMBER",
+                    ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
                     ApplicationSubmittedDate = DateTime.Today,
-                    OrganisationName = "THIS IS A DUMMY PAGE",
-                    ProviderRoute = "DUMMY ROUTE",
-                    Ukprn = "DUMMY UKPRN"
+                    OrganisationName = viewModel.OrganisationName,
+                    ProviderRoute = viewModel.ProviderRoute,
+                    Ukprn = viewModel.Ukprn
                 };
                 return View("~/Views/Oversight/OutcomeSuccessful.cshtml",viewModelSuccessful);
             }
@@ -69,16 +70,14 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             var viewModelUnsuccessful = new OutcomeUnsuccessfulViewModel
             {
                 ApplicationId = applicationId,
-                ApplicationReferenceNumber = "DUMMY REFERENCE NUMBER",
+                ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = DateTime.Today,
-                OrganisationName = "THIS IS A DUMMY PAGE",
-                ProviderRoute = "DUMMY ROUTE",
-                Ukprn = "DUMMY UKPRN"
+                OrganisationName = viewModel.OrganisationName,
+                ProviderRoute = viewModel.ProviderRoute,
+                Ukprn = viewModel.Ukprn
             };
             return View("~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModelUnsuccessful);
         }
-
-
 
         [HttpPost("Oversight/Outcome/Successful/{applicationId}")]
         public IActionResult Successful(Guid applicationId, string status)

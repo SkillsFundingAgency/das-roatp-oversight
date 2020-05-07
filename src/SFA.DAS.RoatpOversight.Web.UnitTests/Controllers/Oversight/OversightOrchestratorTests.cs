@@ -17,6 +17,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
     {
         private OversightOrchestrator _orchestrator;
         private Mock<IRoatpApplicationApiClient> _apiClient;
+        private readonly Guid _applicationId = new Guid("2e8ffe21-f622-4eef-af93-22e0ad0c6737");
 
         [SetUp]
         public void SetUp()
@@ -48,6 +49,21 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(actualViewModel.OverallOutcomeDetails.First().Ukprn, expectedViewModel.OverallOutcomeDetails.First().Ukprn);
         }
 
+        [Test]
+        public async Task Orchestrator_builds_view_model_details_from_api()
+        {
+            var expectedApplicationDetails = GetApplicationsPending().First();
+            _apiClient.Setup(x => x.GetOversightDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
+              var actualViewModel = await _orchestrator.GetOversightDetailsViewModel(_applicationId);
+
+            Assert.AreEqual(expectedApplicationDetails.ApplicationId, _applicationId);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationId, actualViewModel.ApplicationId);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationReferenceNumber, actualViewModel.ApplicationReferenceNumber);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationSubmittedDate, actualViewModel.ApplicationSubmittedDate);
+            Assert.AreEqual(expectedApplicationDetails.OrganisationName, actualViewModel.OrganisationName);
+            Assert.AreEqual(expectedApplicationDetails.ProviderRoute, actualViewModel.ProviderRoute);
+            Assert.AreEqual(expectedApplicationDetails.Ukprn, actualViewModel.Ukprn);
+        }
 
 
         private static List<ApplicationDetails> GetApplicationsPending()

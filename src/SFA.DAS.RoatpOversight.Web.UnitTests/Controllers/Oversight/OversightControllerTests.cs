@@ -33,7 +33,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         }
 
         [Test]
-        public async Task ViewApplication_returns_view_with_expected_viewmodel()
+        public async Task GetApplications_returns_view_with_expected_viewmodel()
         {
 
             var applicationsPending = new List<ApplicationDetails>
@@ -59,6 +59,79 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.That(actualViewModel, Is.SameAs(viewModel));
             Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationDetails.FirstOrDefault().ApplicationId);
             Assert.AreEqual(_ukprnOfCompletedOversightApplication, actualViewModel.OverallOutcomeDetails.FirstOrDefault().Ukprn);
+        }
+
+        [Test]
+        public async Task GetOutcome_returns_view_with_expected_viewModel()
+        {
+            var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId };
+            _orchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
+
+            var result = await _controller.Outcome(_applicationDetailsApplicationId) as ViewResult;
+            var actualViewModel = result?.Model as OutcomeViewModel;
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(actualViewModel, Is.Not.Null);
+            Assert.That(actualViewModel, Is.SameAs(viewModel));
+            Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationId);
+        }
+
+
+        [Test]
+        public async Task EvaluateOutcome_posts_successful_answer_returns_successful_view_as_expected()
+        {
+            var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId };
+            var expectedViewModel = new OutcomeSuccessfulViewModel { ApplicationId = _applicationDetailsApplicationId, ApplicationSubmittedDate = DateTime.Today };
+            var status = "successful";
+            _orchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
+
+            var result = await _controller.EvaluateOutcome(_applicationDetailsApplicationId, status) as ViewResult;
+            var actualViewModel = result?.Model as OutcomeSuccessfulViewModel;
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(actualViewModel, Is.Not.Null);
+            
+            Assert.AreEqual(expectedViewModel.ApplicationId,actualViewModel.ApplicationId);
+            Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationId);
+        }
+
+
+        [Test]
+        public async Task EvaluateOutcome_posts_unsuccessful_answer_returns_unsuccessful_view_as_expected()
+        {
+            var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId };
+            var expectedViewModel = new OutcomeUnsuccessfulViewModel { ApplicationId = _applicationDetailsApplicationId, ApplicationSubmittedDate = DateTime.Today };
+            var status = "unsuccessful";
+            _orchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
+
+            var result = await _controller.EvaluateOutcome(_applicationDetailsApplicationId, status) as ViewResult;
+            var actualViewModel = result?.Model as OutcomeUnsuccessfulViewModel;
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(actualViewModel, Is.Not.Null);
+
+            Assert.AreEqual(expectedViewModel.ApplicationId, actualViewModel.ApplicationId);
+            Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationId);
+        }
+
+
+
+        [Test]
+        public async Task EvaluateOutcome_posts_no_answer_returns_original_view_with_error_messages_as_expected()
+        {
+            var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId };
+            var status = string.Empty;
+            _orchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
+
+            var result = await _controller.EvaluateOutcome(_applicationDetailsApplicationId, status) as ViewResult;
+            var actualViewModel = result?.Model as OutcomeViewModel;
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(actualViewModel, Is.Not.Null);
+
+            Assert.AreEqual(viewModel.ApplicationId, actualViewModel.ApplicationId);
+            Assert.AreEqual(1,actualViewModel.ErrorMessages.Count);
+            Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationId);
         }
     }
 }

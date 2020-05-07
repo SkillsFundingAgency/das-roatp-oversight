@@ -9,7 +9,6 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
     {
         Task<IEnumerable<ApplicationDetails>> GetOversightsPending();
         Task<IEnumerable<OverallOutcomeDetails>> GetOversightsCompleted();
-
         Task<ApplicationDetails> GetOversightDetails(Guid applicationId);
     }
 }

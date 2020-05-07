@@ -25,7 +25,6 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         public async Task<IEnumerable<OverallOutcomeDetails>> GetOversightsCompleted()
         {
             return await Get<List<OverallOutcomeDetails>>($"/Oversights/Completed");
-
         }
 
         public async Task<ApplicationDetails> GetOversightDetails(Guid applicationId)

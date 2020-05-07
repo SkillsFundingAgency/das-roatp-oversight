@@ -12,12 +12,10 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
             var errorMessages = new List<ValidationErrorDetail>();
             if (string.IsNullOrEmpty(outcomeStatus))
             {
-
                 errorMessages.Add(new ValidationErrorDetail
                 {
                     ErrorMessage = MissingOverallOutcomeErrorMessage, Field = "Status"
                 });
-               
             }
             return errorMessages;
         }

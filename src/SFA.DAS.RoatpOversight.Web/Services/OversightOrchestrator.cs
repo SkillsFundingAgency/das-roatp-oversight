@@ -51,7 +51,6 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ProviderRoute = applicationDetails.ProviderRoute
             };
 
-
             return viewModel;
         }
     }

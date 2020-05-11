@@ -164,7 +164,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
             // record value in database
 
-            var viewModelDone = new OutcomeDoneViewModel {Ukprn = "DUMMY UKPRN", Status = "Unsuccessful"};
+            var viewModelDone = new OutcomeDoneViewModel {Ukprn = "DUMMY UKPRN", Status = OversightReviewStatus.Unsuccessful};
 
                 return View("~/Views/Oversight/OutcomeDone.cshtml",viewModelDone);
         }

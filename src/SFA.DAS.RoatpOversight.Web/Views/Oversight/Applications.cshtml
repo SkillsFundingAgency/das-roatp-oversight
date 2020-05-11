@@ -117,12 +117,12 @@
                                         <td data-label="Application determined date" class="govuk-table__cell">@determinedDate</td>
                                         @{
                                             var tagCssClass = "";
-                                            if (String.Equals(@outcome.OversightStatus, OversightReviewStatus.Successful, StringComparison.CurrentCultureIgnoreCase))
+                                            if (String.Equals(@outcome.OversightStatus, OversightReviewStatus.Successful, StringComparison.InvariantCultureIgnoreCase))
                                             {
                                                 tagCssClass = "govuk-tag--solid-green";
                                             }
 
-                                            if (String.Equals(@outcome.OversightStatus, OversightReviewStatus.Unsuccessful, StringComparison.CurrentCultureIgnoreCase))
+                                            if (String.Equals(@outcome.OversightStatus, OversightReviewStatus.Unsuccessful, StringComparison.InvariantCultureIgnoreCase))
                                             {
                                                 tagCssClass = "govuk-tag--solid-red";
                                             }

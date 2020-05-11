@@ -113,7 +113,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                     ApplicationReferenceNumber = "APR000132",
                     ApplicationSubmittedDate = new DateTime(2019, 10, 21),
                     ApplicationDeterminedDate = new DateTime(2019, 10, 01),
-                    OversightStatus = "SUCCESSFUL"
+                    OversightStatus = OversightReviewStatus.Successful
                 },
                 new OverallOutcomeDetails
                 {
@@ -123,7 +123,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                     ApplicationReferenceNumber = "APR000120",
                     ApplicationSubmittedDate = new DateTime(2019, 10, 20),
                     ApplicationDeterminedDate = new DateTime(2019, 10, 29),
-                    OversightStatus = "UNSUCCESSFUL"
+                    OversightStatus = OversightReviewStatus.Unsuccessful
                 }
             };
         }

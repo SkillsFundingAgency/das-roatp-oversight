@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using NUnit.Framework;
+using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Validators;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
@@ -9,8 +10,8 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
     {
         [TestCase("", true)]
         [TestCase(null, true)]
-        [TestCase("successful", false)]
-        [TestCase("unsuccessful", false)]
+        [TestCase(OversightReviewStatus.Successful, false)]
+        [TestCase(OversightReviewStatus.Unsuccessful, false)]
         public void OversightOutcomeValidator_returns_error_when_status_is_empty(string status, bool errorsExpected)
         {
             var validationDetails = OverallOutcomeValidator.ValidateOverallOutcome(status);

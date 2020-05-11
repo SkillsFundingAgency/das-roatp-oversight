@@ -1,4 +1,5 @@
-﻿@model SFA.DAS.RoatpOversight.Web.ViewModels.OutcomeViewModel
+﻿@using SFA.DAS.RoatpOversight.Domain
+@model SFA.DAS.RoatpOversight.Web.ViewModels.OutcomeViewModel
 @{
     ViewData["Title"] = "Outcome";
 }
@@ -42,8 +43,8 @@
             }
 
             @{
-                var radioCheckedSuccessful = Model.ApplicationStatus?.ToLower() == "successful" ? "checked" : "";
-                var radioCheckedUnsuccessful = Model.ApplicationStatus?.ToLower() == "unsuccessful" ? "checked" : "";
+                var radioCheckedSuccessful = Model.ApplicationStatus?.ToLower() == OversightReviewStatus.Successful.ToLower() ? "checked" : "";
+                var radioCheckedUnsuccessful = Model.ApplicationStatus?.ToLower() ==  OversightReviewStatus.Unsuccessful.ToLower() ? "checked" : "";
             }
 
             <form asp-action="Outcome" asp-controller="Oversight">
@@ -122,7 +123,7 @@
                                     type="radio"
                                     id="OptionYes"
                                     name="Status"
-                                    value="Successful"
+                                    value=@OversightReviewStatus.Successful
                                     data-aria-controls="conditional-OptionYes"
                                     @radioCheckedSuccessful
                                 />
@@ -135,7 +136,7 @@
                                     type="radio"
                                     id="OptionNo"
                                     name="Status"
-                                    value="Unsuccessful"
+                                    value=@OversightReviewStatus.Unsuccessful
                                     data-aria-controls="conditional-OptionNo"
                                     @radioCheckedUnsuccessful
                                 />

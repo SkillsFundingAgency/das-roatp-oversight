@@ -81,12 +81,12 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         public async Task EvaluateOutcome_posts_successful_answer_returns_successful_view_as_expected()
         {
             var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId };
-            var expectedViewModel = new OutcomeSuccessfulViewModel { ApplicationId = _applicationDetailsApplicationId, ApplicationSubmittedDate = DateTime.Today };
-            var status = "successful";
+            var expectedViewModel = new OutcomeSuccessViewModel { ApplicationId = _applicationDetailsApplicationId, ApplicationSubmittedDate = DateTime.Today };
+            var status = OversightReviewStatus.Successful;
             _orchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
 
             var result = await _controller.EvaluateOutcome(_applicationDetailsApplicationId, status) as ViewResult;
-            var actualViewModel = result?.Model as OutcomeSuccessfulViewModel;
+            var actualViewModel = result?.Model as OutcomeSuccessViewModel;
 
             Assert.That(result, Is.Not.Null);
             Assert.That(actualViewModel, Is.Not.Null);
@@ -100,12 +100,12 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         public async Task EvaluateOutcome_posts_unsuccessful_answer_returns_unsuccessful_view_as_expected()
         {
             var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId };
-            var expectedViewModel = new OutcomeUnsuccessfulViewModel { ApplicationId = _applicationDetailsApplicationId, ApplicationSubmittedDate = DateTime.Today };
-            var status = "unsuccessful";
+            var expectedViewModel = new OutcomeSuccessViewModel { ApplicationId = _applicationDetailsApplicationId, ApplicationSubmittedDate = DateTime.Today };
+            var status = OversightReviewStatus.Unsuccessful;
             _orchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
 
             var result = await _controller.EvaluateOutcome(_applicationDetailsApplicationId, status) as ViewResult;
-            var actualViewModel = result?.Model as OutcomeUnsuccessfulViewModel;
+            var actualViewModel = result?.Model as OutcomeSuccessViewModel;
 
             Assert.That(result, Is.Not.Null);
             Assert.That(actualViewModel, Is.Not.Null);

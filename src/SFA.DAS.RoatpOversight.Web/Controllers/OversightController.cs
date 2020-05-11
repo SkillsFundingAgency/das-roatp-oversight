@@ -52,10 +52,10 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 return View($"~/Views/Oversight/Outcome.cshtml", viewModel);
             }
 
-            if (status.ToLower() == "successful")
+            if (status == OversightReviewStatus.Successful)
             {
 
-                var viewModelSuccessful = new OutcomeSuccessfulViewModel
+                var viewModelSuccessful = new OutcomeSuccessViewModel
                 {
                     ApplicationId =  applicationId,
                     ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
@@ -67,7 +67,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 return View("~/Views/Oversight/OutcomeSuccessful.cshtml",viewModelSuccessful);
             }
 
-            var viewModelUnsuccessful = new OutcomeUnsuccessfulViewModel
+            var viewModelUnsuccessful = new OutcomeSuccessViewModel
             {
                 ApplicationId = applicationId,
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
@@ -82,7 +82,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         [HttpPost("Oversight/Outcome/Successful/{applicationId}")]
         public IActionResult Successful(Guid applicationId, string status)
         {
-            var viewModel = new OutcomeSuccessfulViewModel
+            var viewModel = new OutcomeSuccessViewModel
             {
                 ApplicationId = applicationId,
                 ApplicationReferenceNumber = "DUMMY REFERENCE NUMBER",
@@ -111,7 +111,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                     OrganisationName = "THIS IS A DUMMY PAGE",
                     ProviderRoute = "DUMMY ROUTE",
                     Ukprn = "DUMMY UKPRN",
-                    ApplicationStatus = "Successful"
+                    ApplicationStatus = OversightReviewStatus.Successful
                 };
 
                 return View($"~/Views/Oversight/Outcome.cshtml", viewModelOutcome);
@@ -119,7 +119,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
 
             // record in database it's a success
-            var viewModelDone = new OutcomeDoneViewModel { Ukprn ="DUMMY UKPRN", Status = "Successful" };
+            var viewModelDone = new OutcomeDoneViewModel { Ukprn ="DUMMY UKPRN", Status = OversightReviewStatus.Successful };
 
             return View("~/Views/Oversight/OutcomeDone.cshtml", viewModelDone);
         }
@@ -127,18 +127,18 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         [HttpPost("Oversight/Outcome/Unsuccessful/{applicationId}")]
         public IActionResult Unsuccessful(Guid applicationId, string status)
         {
-          
-            var viewModel = new OutcomeUnsuccessfulViewModel
+
+            var viewModel = new OutcomeSuccessViewModel
             {
                 ApplicationId = applicationId,
                 ApplicationReferenceNumber = "DUMMY REFERENCE NUMBER",
                 ApplicationSubmittedDate = DateTime.Today,
                 OrganisationName = "THIS IS A DUMMY PAGE",
                 ProviderRoute = "DUMMY ROUTE",
-                Ukprn = "DUMMY UKPRN"
+                Ukprn = "DUMMY UKPRN",
+                ErrorMessages = new List<ValidationErrorDetail>()
             };
 
-            viewModel.ErrorMessages = new List<ValidationErrorDetail>();
             if (string.IsNullOrEmpty(status))
             {
                 viewModel.ErrorMessages.Add(new ValidationErrorDetail
@@ -156,7 +156,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                     OrganisationName = "THIS IS A DUMMY PAGE",
                     ProviderRoute = "DUMMY ROUTE",
                     Ukprn = "DUMMY UKPRN",
-                    ApplicationStatus = "Unsuccessful"
+                    ApplicationStatus = OversightReviewStatus.Unsuccessful
                 };
 
                 return View($"~/Views/Oversight/Outcome.cshtml", viewModelOutcome);

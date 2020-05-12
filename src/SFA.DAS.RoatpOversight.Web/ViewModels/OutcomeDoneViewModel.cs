@@ -9,5 +9,6 @@ namespace SFA.DAS.RoatpOversight.Web.ViewModels
     {
         public string Ukprn { get; set; }
         public string Status { get; set; }
+        public string EsfaAdminServicesBaseUrl { get; set; }
     }
 }

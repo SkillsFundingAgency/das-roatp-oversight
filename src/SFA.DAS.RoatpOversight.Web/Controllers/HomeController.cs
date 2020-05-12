@@ -15,7 +15,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Applications", "Oversight");
         }
 
     }

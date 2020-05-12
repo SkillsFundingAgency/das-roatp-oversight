@@ -16,7 +16,7 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         public RoatpRegisterApiClient(HttpClient httpClient, ILogger<RoatpRegisterApiClient> logger, IRoatpRegisterTokenService tokenService) 
             : base(httpClient.BaseAddress.ToString(), logger, tokenService)
         {
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenService.GetToken());
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenService.GetToken(_client.BaseAddress));
         }
         public async Task<bool> CreateOrganisation(CreateRoatpOrganisationRequest organisationRequest)
         {

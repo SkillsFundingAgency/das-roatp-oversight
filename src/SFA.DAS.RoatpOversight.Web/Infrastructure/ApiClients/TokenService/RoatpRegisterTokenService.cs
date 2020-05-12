@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using SFA.DAS.RoatpOversight.Web.Settings;
+using System;
 
 namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService
 {
@@ -14,9 +15,9 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService
             _hostingEnvironment = hostingEnvironment;
         }
 
-        public string GetToken()
+        public string GetToken(Uri baseUri)
         {
-            if (_hostingEnvironment.IsDevelopment())
+            if (baseUri != null && baseUri.IsLoopback)
                 return string.Empty;
 
             var tenantId = _configuration.RoatpRegisterApiAuthentication.TenantId;

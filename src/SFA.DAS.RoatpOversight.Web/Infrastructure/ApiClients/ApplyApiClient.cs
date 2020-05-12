@@ -8,9 +8,9 @@ using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService;
 
 namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
 {
-    public class RoatpApplicationApiClient : ApiClientBase<RoatpApplicationApiClient>, IRoatpApplicationApiClient
+    public class ApplyApiClient : ApiClientBase<ApplyApiClient>, IApplyApiClient
     {
-        public RoatpApplicationApiClient(HttpClient httpClient, ILogger<RoatpApplicationApiClient> logger, IRoatpApplicationTokenService tokenService) : base(httpClient, logger)
+        public ApplyApiClient(HttpClient httpClient, ILogger<ApplyApiClient> logger, IRoatpApplicationTokenService tokenService) : base(httpClient, logger)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenService.GetToken(_httpClient.BaseAddress));
         }

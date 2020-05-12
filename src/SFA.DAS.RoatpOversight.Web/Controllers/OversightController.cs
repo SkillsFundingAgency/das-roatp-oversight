@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Services;
+using SFA.DAS.RoatpOversight.Web.Settings;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
@@ -14,7 +15,6 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
     //[Authorize]
     public class OversightController: Controller
     {
-
         private readonly IOversightOrchestrator _orchestrator;
         private readonly ILogger<OversightController> _logger;
 
@@ -196,7 +196,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         }
 
 
-        private static OverallOutcomeViewModel GetStubbedViewModel()
+        private  OverallOutcomeViewModel GetStubbedViewModel()
         {
             var viewModel = new OverallOutcomeViewModel();
 

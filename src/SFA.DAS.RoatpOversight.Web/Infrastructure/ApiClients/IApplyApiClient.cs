@@ -4,7 +4,7 @@ using SFA.DAS.RoatpOversight.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
 {
-    public interface IRoatpApplicationApiClient
+    public interface IApplyApiClient
     {
         Task<IEnumerable<ApplicationDetails>> GetOversightsPending();
         Task<IEnumerable<OverallOutcomeDetails>> GetOversightsCompleted();

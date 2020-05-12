@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RoatpOversight.Domain;
+using SFA.DAS.RoatpOversight.Web.Settings;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
 using SFA.DAS.RoatpOversight.Web.Services;
 using Microsoft.AspNetCore.Http;
@@ -16,15 +17,19 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IApplicationOutcomeOrchestrator _orchestrator;
-        public OversightController(IHttpContextAccessor contextAccessor, IApplicationOutcomeOrchestrator orchestrator)
+        
+        private IWebConfiguration _configuration;
+        public OversightController(IHttpContextAccessor contextAccessor, IApplicationOutcomeOrchestrator orchestrator, IWebConfiguration configuration)
         {
             _contextAccessor = contextAccessor;
             _orchestrator = orchestrator;
+            _configuration = configuration;
         }
+
         public IActionResult Applications(string flag)
         {
             var viewModel = GetStubbedViewModel();
-
+     
             if (flag == "no-applications" || flag=="no-details")
             {
                 viewModel.ApplicationDetails = new List<ApplicationDetails>();
@@ -52,7 +57,8 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 ApplicationSubmittedDate =  applicationDetails.ApplicationSubmittedDate,
                 OrganisationName =  applicationDetails.OrganisationName,
                 ProviderRoute = applicationDetails.ProviderRoute,
-                Ukprn =  applicationDetails.Ukprn
+                Ukprn =  applicationDetails.Ukprn,
+                EsfaAdminServicesBaseUrl = stubbedViewModel.EsfaAdminServicesBaseUrl
             };
 
 
@@ -70,7 +76,8 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                 OrganisationName = applicationDetails.OrganisationName,
                 ProviderRoute = applicationDetails.ProviderRoute,
-                Ukprn = applicationDetails.Ukprn
+                Ukprn = applicationDetails.Ukprn,
+                EsfaAdminServicesBaseUrl = stubbedViewModel.EsfaAdminServicesBaseUrl
             };
 
             viewModel.ErrorMessages = new List<ValidationErrorDetail>();
@@ -91,7 +98,8 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                     ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                     OrganisationName = applicationDetails.OrganisationName,
                     ProviderRoute = applicationDetails.ProviderRoute,
-                    Ukprn = applicationDetails.Ukprn
+                    Ukprn = applicationDetails.Ukprn,
+                    EsfaAdminServicesBaseUrl = stubbedViewModel.EsfaAdminServicesBaseUrl
                 };
                 return View("~/Views/Oversight/OutcomeSuccessful.cshtml",viewModelSuccessful);
             }
@@ -103,7 +111,8 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                 OrganisationName = applicationDetails.OrganisationName,
                 ProviderRoute = applicationDetails.ProviderRoute,
-                Ukprn = applicationDetails.Ukprn
+                Ukprn = applicationDetails.Ukprn,
+                EsfaAdminServicesBaseUrl = stubbedViewModel.EsfaAdminServicesBaseUrl
             };
             return View("~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModelUnsuccessful);
         }
@@ -122,7 +131,8 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                 OrganisationName = applicationDetails.OrganisationName,
                 ProviderRoute = applicationDetails.ProviderRoute,
-                Ukprn = applicationDetails.Ukprn
+                Ukprn = applicationDetails.Ukprn,
+                EsfaAdminServicesBaseUrl = stubbedViewModel.EsfaAdminServicesBaseUrl
             };
 
             viewModel.ErrorMessages = new List<ValidationErrorDetail>();
@@ -144,7 +154,8 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                     OrganisationName = applicationDetails.OrganisationName,
                     ProviderRoute = applicationDetails.ProviderRoute,
                     Ukprn = applicationDetails.Ukprn,
-                    ApplicationStatus = "Successful"
+                    ApplicationStatus = "Successful",
+                    EsfaAdminServicesBaseUrl = stubbedViewModel.EsfaAdminServicesBaseUrl
                 };
 
                 return View($"~/Views/Oversight/Outcome.cshtml", viewModelOutcome);
@@ -169,7 +180,8 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                 OrganisationName = applicationDetails.OrganisationName,
                 ProviderRoute = applicationDetails.ProviderRoute,
-                Ukprn = applicationDetails.Ukprn
+                Ukprn = applicationDetails.Ukprn,
+                EsfaAdminServicesBaseUrl = stubbedViewModel.EsfaAdminServicesBaseUrl
             };
 
             viewModel.ErrorMessages = new List<ValidationErrorDetail>();
@@ -191,7 +203,8 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                     OrganisationName = applicationDetails.OrganisationName,
                     ProviderRoute = applicationDetails.ProviderRoute,
                     Ukprn = applicationDetails.Ukprn,
-                    ApplicationStatus = "Unsuccessful"
+                    ApplicationStatus = "Unsuccessful",
+                    EsfaAdminServicesBaseUrl = stubbedViewModel.EsfaAdminServicesBaseUrl
                 };
 
                 return View($"~/Views/Oversight/Outcome.cshtml", viewModelOutcome);
@@ -205,9 +218,10 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         }
 
 
-        private static OverallOutcomeViewModel GetStubbedViewModel()
+        private  OverallOutcomeViewModel GetStubbedViewModel()
         {
             var viewModel = new OverallOutcomeViewModel();
+            viewModel.EsfaAdminServicesBaseUrl = _configuration.EsfaAdminServicesBaseUrl;
 
             // dummy data that enables Greg to assess
             var applicationDetails = new List<ApplicationDetails>

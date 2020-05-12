@@ -17,7 +17,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.AuthorizeAttributeTests
             "PingController",
             "ErrorPageController",
             "HomeController",
-            "OversightController"   // TEMPORARILY UNTIL SECURITY IS INTEGRATED
+            "OversightController" // THIS NEEDS TO BE REMOVED ONCE AUTHORISATION IS IN
         };
 
         [Test]

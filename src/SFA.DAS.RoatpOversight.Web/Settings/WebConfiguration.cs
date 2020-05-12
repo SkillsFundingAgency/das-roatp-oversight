@@ -16,5 +16,7 @@ namespace SFA.DAS.RoatpOversight.Web.Settings
         [JsonRequired] 
         public ClientApiAuthentication RoatpRegisterApiAuthentication { get; set; }
 
+        [JsonRequired]
+        public string EsfaAdminServicesBaseUrl { get; set; }
     }
 }

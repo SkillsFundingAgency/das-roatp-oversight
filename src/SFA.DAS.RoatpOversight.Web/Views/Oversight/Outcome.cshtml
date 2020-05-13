@@ -1,4 +1,5 @@
-﻿@model SFA.DAS.RoatpOversight.Web.ViewModels.OutcomeViewModel
+﻿@using SFA.DAS.RoatpOversight.Domain
+@model SFA.DAS.RoatpOversight.Web.ViewModels.OutcomeViewModel
 @{
     ViewData["Title"] = "Outcome";
 }
@@ -9,7 +10,7 @@
 <div class="govuk-breadcrumbs">
   <ol class="govuk-breadcrumbs__list">
     <li class="govuk-breadcrumbs__list-item">
-        <a class="govuk-breadcrumbs__link" href="@Model.EsfaAdminServicesBaseUrl/Dashboard">RoATP dashboard</a>
+        <a class="govuk-breadcrumbs__link" asp-controller="Home" asp-action="Dashboard">RoATP dashboard</a>
     </li>
     <li class="govuk-breadcrumbs__list-item">
       <a class="govuk-breadcrumbs__link" asp-controller="Oversight" asp-action="Applications">RoATP application outcomes</a>
@@ -42,8 +43,8 @@
             }
 
             @{
-                var radioCheckedSuccessful = Model.ApplicationStatus?.ToLower() == "successful" ? "checked" : "";
-                var radioCheckedUnsuccessful = Model.ApplicationStatus?.ToLower() == "unsuccessful" ? "checked" : "";
+                var radioCheckedSuccessful = string.Equals(Model.ApplicationStatus, OversightReviewStatus.Successful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+                var radioCheckedUnsuccessful = string.Equals(Model.ApplicationStatus, OversightReviewStatus.Unsuccessful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
             }
 
             <form asp-action="Outcome" asp-controller="Oversight">
@@ -122,7 +123,7 @@
                                     type="radio"
                                     id="OptionYes"
                                     name="Status"
-                                    value="Successful"
+                                    value=@OversightReviewStatus.Successful
                                     data-aria-controls="conditional-OptionYes"
                                     @radioCheckedSuccessful
                                 />
@@ -135,7 +136,7 @@
                                     type="radio"
                                     id="OptionNo"
                                     name="Status"
-                                    value="Unsuccessful"
+                                    value=@OversightReviewStatus.Unsuccessful
                                     data-aria-controls="conditional-OptionNo"
                                     @radioCheckedUnsuccessful
                                 />
@@ -148,7 +149,7 @@
                 </div>
 
                 <button class="govuk-button" type="submit" data-module="govuk-button">
-                    Save and continue
+                    Save overall outcome
                 </button>
 
             </form>

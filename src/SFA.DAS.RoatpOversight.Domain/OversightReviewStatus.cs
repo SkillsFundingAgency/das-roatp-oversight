@@ -1,5 +1,4 @@
-﻿
-namespace SFA.DAS.RoatpOversight.Domain
+﻿namespace SFA.DAS.RoatpOversight.Domain
 {
     public static class OversightReviewStatus
     {

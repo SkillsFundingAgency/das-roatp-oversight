@@ -1,4 +1,4 @@
-﻿@model SFA.DAS.RoatpOversight.Web.ViewModels.OutcomeSuccessfulViewModel
+﻿@model SFA.DAS.RoatpOversight.Web.ViewModels.OutcomeSuccessStatusViewModel
 @{
     ViewData["Title"] = "Outcome - Successful";
 }
@@ -9,7 +9,7 @@
 <div class="govuk-breadcrumbs">
   <ol class="govuk-breadcrumbs__list">
       <li class="govuk-breadcrumbs__list-item">
-          <a class="govuk-breadcrumbs__link" href="@Model.EsfaAdminServicesBaseUrl/Dashboard">RoATP dashboard</a>
+          <a class="govuk-breadcrumbs__link" asp-controller="Home" asp-action="Dashboard">RoATP dashboard</a>
       </li>
     <li class="govuk-breadcrumbs__list-item">
       <a class="govuk-breadcrumbs__link" asp-controller="Oversight" asp-action="Applications">RoATP application outcomes</a>

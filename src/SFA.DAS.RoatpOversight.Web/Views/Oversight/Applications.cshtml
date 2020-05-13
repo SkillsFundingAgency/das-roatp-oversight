@@ -1,4 +1,5 @@
-﻿@using SFA.DAS.RoatpOversight.Web.Settings
+﻿@using SFA.DAS.RoatpOversight.Domain
+@using SFA.DAS.RoatpOversight.Web.Settings
 @model SFA.DAS.RoatpOversight.Web.ViewModels.OverallOutcomeViewModel
 
 @{
@@ -8,7 +9,7 @@
 <div class="govuk-breadcrumbs">
     <ol class="govuk-breadcrumbs__list">
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="@Model.EsfaAdminServicesBaseUrl/Dashboard">RoATP dashboard</a>
+            <a class="govuk-breadcrumbs__link" asp-controller="Home" asp-action="Dashboard">RoATP dashboard</a>
         </li>
         <li class="govuk-breadcrumbs__list-item" aria-current="page">RoATP application outcomes</li>
     </ol>
@@ -18,7 +19,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-xl">Oversight</span>
-            <h1 class="govuk-heading-xl">RoATP applications</h1>
+            <h1 class="govuk-heading-xl">RoATP application outcomes</h1>
         </div>
     </div>
 
@@ -117,12 +118,12 @@
                                         <td data-label="Application determined date" class="govuk-table__cell">@determinedDate</td>
                                         @{
                                             var tagCssClass = "";
-                                            if (@outcome.OversightStatus == "SUCCESSFUL")
+                                            if (String.Equals(@outcome.OversightStatus, OversightReviewStatus.Successful, StringComparison.InvariantCultureIgnoreCase))
                                             {
                                                 tagCssClass = "govuk-tag--solid-green";
                                             }
 
-                                            if (@outcome.OversightStatus == "UNSUCCESSFUL")
+                                            if (String.Equals(@outcome.OversightStatus, OversightReviewStatus.Unsuccessful, StringComparison.InvariantCultureIgnoreCase))
                                             {
                                                 tagCssClass = "govuk-tag--solid-red";
                                             }

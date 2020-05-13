@@ -13,7 +13,6 @@ namespace SFA.DAS.RoatpOversight.Web.ViewModels
         public string ApplicationReferenceNumber { get; set; }
         public DateTime ApplicationSubmittedDate { get; set; }
         public string ApplicationStatus { get; set; }
-        public string EsfaAdminServicesBaseUrl { get; set; }
 
         public List<ValidationErrorDetail> ErrorMessages { get; set; }
 

@@ -10,7 +10,5 @@ namespace SFA.DAS.RoatpOversight.Web.ViewModels
         public List<OverallOutcomeDetails> OverallOutcomeDetails { get; set; }
         public int OverallOutcomeCount { get; set; }
 
-        public string EsfaAdminServicesBaseUrl { get; set; }
-
     }
 }

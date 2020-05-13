@@ -4,7 +4,7 @@ using SFA.DAS.RoatpOversight.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.ViewModels
 {
-    public class OutcomeSuccessfulViewModel
+    public class OutcomeSuccessStatusViewModel
     {
         public Guid ApplicationId { get; set; }
         public string OrganisationName { get; set; }
@@ -13,7 +13,6 @@ namespace SFA.DAS.RoatpOversight.Web.ViewModels
         public string ApplicationReferenceNumber { get; set; }
         public DateTime ApplicationSubmittedDate { get; set; }
         public string AreYouSureStatus { get; set; }
-        public string EsfaAdminServicesBaseUrl { get; set; }
 
         public List<ValidationErrorDetail> ErrorMessages { get; set; }
 

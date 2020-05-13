@@ -116,7 +116,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 return View($"~/Views/Oversight/Outcome.cshtml", oversightViewModel);
             }
 
-            await _orchestrator.RecordOutcome(applicationId, OversightReviewStatus.Successful, _contextAccessor.HttpContext.User.UserDisplayName());
+            await _outcomeOrchestrator.RecordOutcome(applicationId, OversightReviewStatus.Successful, _contextAccessor.HttpContext.User.UserDisplayName());
 
             // record in database it's a success
             var viewModelDone = new OutcomeDoneViewModel { Ukprn = oversightViewModel.Ukprn, Status = OversightReviewStatus.Successful };
@@ -153,7 +153,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 return View($"~/Views/Oversight/Outcome.cshtml", oversightViewModel);
             }
 
-            await _orchestrator.RecordOutcome(applicationId, OversightReviewStatus.Unsuccessful, _contextAccessor.HttpContext.User.UserDisplayName());
+            await _outcomeOrchestrator.RecordOutcome(applicationId, OversightReviewStatus.Unsuccessful, _contextAccessor.HttpContext.User.UserDisplayName());
 
             var viewModelDone = new OutcomeDoneViewModel { Ukprn = oversightViewModel.Ukprn, Status = OversightReviewStatus.Unsuccessful };
 

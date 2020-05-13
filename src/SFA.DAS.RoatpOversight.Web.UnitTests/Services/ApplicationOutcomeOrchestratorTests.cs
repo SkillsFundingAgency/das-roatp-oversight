@@ -12,7 +12,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
     [TestFixture]
     public class ApplicationOutcomeOrchestratorTests
     {
-        private Mock<IRoatpApplicationApiClient> _applicationApiClient;
+        private Mock<IApplyApiClient> _applicationApiClient;
         private Mock<IRoatpRegisterApiClient> _roatpRegisterApiClient;
         private Mock<ILogger<ApplicationOutcomeOrchestrator>> _logger;
         private ApplicationOutcomeOrchestrator _orchestrator;
@@ -22,7 +22,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         [SetUp]
         public void Before_each_test()
         {
-            _applicationApiClient = new Mock<IRoatpApplicationApiClient>();
+            _applicationApiClient = new Mock<IApplyApiClient>();
             _roatpRegisterApiClient = new Mock<IRoatpRegisterApiClient>();
             _logger = new Mock<ILogger<ApplicationOutcomeOrchestrator>>();
             _applicationId = Guid.NewGuid();

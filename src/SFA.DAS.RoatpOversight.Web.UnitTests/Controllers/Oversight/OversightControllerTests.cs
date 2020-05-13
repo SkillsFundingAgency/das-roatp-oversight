@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Controllers;
+using SFA.DAS.RoatpOversight.Web.Services;
+using SFA.DAS.RoatpOversight.Web.Settings;
 using SFA.DAS.RoatpOversight.Web.UnitTests.MockedObjects;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
 
@@ -16,7 +19,11 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
     [TestFixture]
     public class OversightControllerTests
     {
-        private Mock<Services.IOversightOrchestrator> _orchestrator;
+        private Mock<IOversightOrchestrator> _oversightOrchestrator;
+        private Mock<IApplicationOutcomeOrchestrator> _outcomeOrchestrator;
+        private Mock<IHttpContextAccessor> _contextAccessor;
+        private Mock<IWebConfiguration> _configuration;
+
         private OversightController _controller;
         private readonly Guid _applicationDetailsApplicationId = Guid.NewGuid();
         private string _ukprnOfCompletedOversightApplication = "11112222";
@@ -24,9 +31,13 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [SetUp]
         public void SetUp()
         {
-            _orchestrator = new Mock<Services.IOversightOrchestrator>();
+            _oversightOrchestrator = new Mock<IOversightOrchestrator>();
+            _outcomeOrchestrator = new Mock<IApplicationOutcomeOrchestrator>();
+            _contextAccessor = new Mock<IHttpContextAccessor>();
+            _configuration = new Mock<IWebConfiguration>();
 
-            _controller = new OversightController(_orchestrator.Object, Mock.Of<ILogger<OversightController>>())
+            _controller = new OversightController(_contextAccessor.Object, _outcomeOrchestrator.Object, _configuration.Object, 
+                                                  _oversightOrchestrator.Object, Mock.Of<ILogger<OversightController>>())
             {
                 ControllerContext = MockedControllerContext.Setup()
             };
@@ -49,7 +60,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 
             var viewModel = new OverallOutcomeViewModel {ApplicationDetails = applicationsPending,ApplicationCount = 1, OverallOutcomeDetails = applicationsDone, OverallOutcomeCount = 1};
 
-            _orchestrator.Setup(x => x.GetOversightOverviewViewModel()).ReturnsAsync(viewModel);
+            _oversightOrchestrator.Setup(x => x.GetOversightOverviewViewModel()).ReturnsAsync(viewModel);
 
             var result = await _controller.Applications() as ViewResult;
             var actualViewModel = result?.Model as OverallOutcomeViewModel;
@@ -65,7 +76,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         public async Task GetOutcome_returns_view_with_expected_viewModel()
         {
             var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId };
-            _orchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
+            _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
 
             var result = await _controller.Outcome(_applicationDetailsApplicationId) as ViewResult;
             var actualViewModel = result?.Model as OutcomeViewModel;
@@ -83,7 +94,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId };
             var expectedViewModel = new OutcomeSuccessStatusViewModel { ApplicationId = _applicationDetailsApplicationId, ApplicationSubmittedDate = DateTime.Today };
             var status = OversightReviewStatus.Successful;
-            _orchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
+            _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
 
             var result = await _controller.EvaluateOutcome(_applicationDetailsApplicationId, status) as ViewResult;
             var actualViewModel = result?.Model as OutcomeSuccessStatusViewModel;
@@ -102,7 +113,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId };
             var expectedViewModel = new OutcomeSuccessStatusViewModel { ApplicationId = _applicationDetailsApplicationId, ApplicationSubmittedDate = DateTime.Today };
             var status = OversightReviewStatus.Unsuccessful;
-            _orchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
+            _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
 
             var result = await _controller.EvaluateOutcome(_applicationDetailsApplicationId, status) as ViewResult;
             var actualViewModel = result?.Model as OutcomeSuccessStatusViewModel;
@@ -121,7 +132,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         {
             var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId };
             var status = string.Empty;
-            _orchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
+            _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
 
             var result = await _controller.EvaluateOutcome(_applicationDetailsApplicationId, status) as ViewResult;
             var actualViewModel = result?.Model as OutcomeViewModel;

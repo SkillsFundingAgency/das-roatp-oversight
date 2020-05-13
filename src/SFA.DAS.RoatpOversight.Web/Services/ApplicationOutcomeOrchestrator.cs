@@ -8,11 +8,11 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 {
     public class ApplicationOutcomeOrchestrator : IApplicationOutcomeOrchestrator
     {
-        private readonly IRoatpApplicationApiClient _applicationApiClient;
+        private readonly IApplyApiClient _applicationApiClient;
         private readonly IRoatpRegisterApiClient _registerApiClient;
         private readonly ILogger<ApplicationOutcomeOrchestrator> _logger;
 
-        public ApplicationOutcomeOrchestrator(IRoatpApplicationApiClient applicationApiClient, IRoatpRegisterApiClient registerApiClient,
+        public ApplicationOutcomeOrchestrator(IApplyApiClient applicationApiClient, IRoatpRegisterApiClient registerApiClient,
                                               ILogger<ApplicationOutcomeOrchestrator> logger)
         {
             _applicationApiClient = applicationApiClient;

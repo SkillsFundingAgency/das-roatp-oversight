@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Validators;
+using SFA.DAS.RoatpOversight.Web.Settings;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
@@ -28,7 +29,6 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         public async Task<IActionResult> Applications()
         {
             var viewModel = await _orchestrator.GetOversightOverviewViewModel();
-
             return View(viewModel);
         }
 
@@ -36,14 +36,13 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         public async Task<IActionResult> Outcome(Guid applicationId)
         {
             var vm = await _orchestrator.GetOversightDetailsViewModel(applicationId);
-
             return View(vm);
         }
 
         [HttpPost("Oversight/Outcome/{applicationId}")]
         public async Task<IActionResult> EvaluateOutcome(Guid applicationId, string status)
         {
-            var errorMessages = OverallOutcomeValidator.ValidateOverallOutcome(status);
+            var errorMessages = OversightValidator.ValidateOverallOutcome(status);
             var viewModel = await _orchestrator.GetOversightDetailsViewModel(applicationId);
 
             if (errorMessages.Any())
@@ -80,93 +79,75 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         }
 
         [HttpPost("Oversight/Outcome/Successful/{applicationId}")]
-        public IActionResult Successful(Guid applicationId, string status)
+        public async Task<IActionResult> Successful(Guid applicationId, string status)
         {
+            var errorMessages = OversightValidator.ValidateOutcomeSuccessful(status);
+            var oversightViewModel = await _orchestrator.GetOversightDetailsViewModel(applicationId);
+
             var viewModel = new OutcomeSuccessViewModel
             {
                 ApplicationId = applicationId,
-                ApplicationReferenceNumber = "DUMMY REFERENCE NUMBER",
+                ApplicationReferenceNumber = oversightViewModel.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = DateTime.Today,
-                OrganisationName = "THIS IS A DUMMY PAGE",
-                ProviderRoute = "DUMMY ROUTE",
-                Ukprn = "DUMMY UKPRN"
+                OrganisationName = oversightViewModel.OrganisationName,
+                ProviderRoute = oversightViewModel.ProviderRoute,
+                Ukprn = oversightViewModel.Ukprn
             };
 
-            viewModel.ErrorMessages = new List<ValidationErrorDetail>();
-            if (string.IsNullOrEmpty(status))
+            if (errorMessages.Any())
             {
-                viewModel.ErrorMessages.Add(new ValidationErrorDetail
-                { ErrorMessage = "error message", ValidationStatusCode = new ValidationStatusCode() });
-
+                viewModel.ErrorMessages = errorMessages;
                 return View($"~/Views/Oversight/OutcomeSuccessful.cshtml", viewModel);
             }
+            
 
             if (status.ToLower()=="no")
             {
-                var viewModelOutcome = new OutcomeViewModel
-                {
-                    ApplicationId = applicationId,
-                    ApplicationReferenceNumber = "DUMMY REFERENCE NUMBER",
-                    ApplicationSubmittedDate = DateTime.Today,
-                    OrganisationName = "THIS IS A DUMMY PAGE",
-                    ProviderRoute = "DUMMY ROUTE",
-                    Ukprn = "DUMMY UKPRN",
-                    ApplicationStatus = OversightReviewStatus.Successful
-                };
-
-                return View($"~/Views/Oversight/Outcome.cshtml", viewModelOutcome);
+                oversightViewModel.ApplicationStatus = OversightReviewStatus.Successful;
+                return View($"~/Views/Oversight/Outcome.cshtml", oversightViewModel);
             }
 
 
             // record in database it's a success
-            var viewModelDone = new OutcomeDoneViewModel { Ukprn ="DUMMY UKPRN", Status = OversightReviewStatus.Successful };
+            var viewModelDone = new OutcomeDoneViewModel { Ukprn = oversightViewModel.Ukprn, Status = OversightReviewStatus.Successful };
 
             return View("~/Views/Oversight/OutcomeDone.cshtml", viewModelDone);
         }
 
         [HttpPost("Oversight/Outcome/Unsuccessful/{applicationId}")]
-        public IActionResult Unsuccessful(Guid applicationId, string status)
+        public async Task<IActionResult> Unsuccessful(Guid applicationId, string status)
         {
+            var errorMessages = OversightValidator.ValidateOutcomeUnsuccessful(status);
+            var oversightViewModel = await _orchestrator.GetOversightDetailsViewModel(applicationId);
 
             var viewModel = new OutcomeSuccessViewModel
             {
                 ApplicationId = applicationId,
-                ApplicationReferenceNumber = "DUMMY REFERENCE NUMBER",
+                ApplicationReferenceNumber = oversightViewModel.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = DateTime.Today,
-                OrganisationName = "THIS IS A DUMMY PAGE",
-                ProviderRoute = "DUMMY ROUTE",
-                Ukprn = "DUMMY UKPRN",
-                ErrorMessages = new List<ValidationErrorDetail>()
+                OrganisationName = oversightViewModel.OrganisationName,
+                ProviderRoute = oversightViewModel.ProviderRoute,
+                Ukprn = oversightViewModel.Ukprn
             };
 
-            if (string.IsNullOrEmpty(status))
+            if (errorMessages.Any())
             {
-                viewModel.ErrorMessages.Add(new ValidationErrorDetail
-                    { ErrorMessage = "error message", ValidationStatusCode = new ValidationStatusCode() });
-
+                viewModel.ErrorMessages = errorMessages;
                 return View($"~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModel);
             }
 
+
             if (status.ToLower() == "no")
             {
-                var viewModelOutcome = new OutcomeViewModel
-                {
-                    ApplicationReferenceNumber = "DUMMY REFERENCE NUMBER",
-                    ApplicationSubmittedDate = DateTime.Today,
-                    OrganisationName = "THIS IS A DUMMY PAGE",
-                    ProviderRoute = "DUMMY ROUTE",
-                    Ukprn = "DUMMY UKPRN",
-                    ApplicationStatus = OversightReviewStatus.Unsuccessful
-                };
-
-                return View($"~/Views/Oversight/Outcome.cshtml", viewModelOutcome);
+                oversightViewModel.ApplicationStatus = OversightReviewStatus.Unsuccessful;
+                return View($"~/Views/Oversight/Outcome.cshtml", oversightViewModel);
             }
 
             // record value in database
 
-            var viewModelDone = new OutcomeDoneViewModel {Ukprn = "DUMMY UKPRN", Status = OversightReviewStatus.Unsuccessful};
+            var viewModelDone = new OutcomeDoneViewModel { Ukprn = oversightViewModel.Ukprn, Status = OversightReviewStatus.Unsuccessful };
 
-                return View("~/Views/Oversight/OutcomeDone.cshtml",viewModelDone);
+            return View("~/Views/Oversight/OutcomeDone.cshtml",viewModelDone);
         }
     }
 }

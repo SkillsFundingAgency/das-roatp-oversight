@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
+using SFA.DAS.RoatpOversight.Web.Settings;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
 
 namespace SFA.DAS.RoatpOversight.Web.Services
@@ -12,9 +13,9 @@ namespace SFA.DAS.RoatpOversight.Web.Services
     public class OversightOrchestrator:IOversightOrchestrator
     {
         private readonly ILogger<OversightOrchestrator> _logger;
-        private readonly IRoatpApplicationApiClient _applyApiClient;
+        private readonly IApplyApiClient _applyApiClient;
 
-        public OversightOrchestrator(IRoatpApplicationApiClient applyApiClient, ILogger<OversightOrchestrator> logger)
+        public OversightOrchestrator(IApplyApiClient applyApiClient, ILogger<OversightOrchestrator> logger)
         {
             _applyApiClient = applyApiClient;
             _logger = logger;

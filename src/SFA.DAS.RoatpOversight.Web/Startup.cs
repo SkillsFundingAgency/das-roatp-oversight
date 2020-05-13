@@ -138,7 +138,7 @@ namespace SFA.DAS.RoatpOversight.Web
             var acceptHeaderValue = "application/json";
             var handlerLifeTime = TimeSpan.FromMinutes(5);
 
-            services.AddHttpClient<IRoatpApplicationApiClient, RoatpApplicationApiClient>(config =>
+            services.AddHttpClient<IApplyApiClient, ApplyApiClient>(config =>
             {
                 config.BaseAddress = new Uri(ApplicationConfiguration.ApplyApiAuthentication.ApiBaseAddress);
                 config.DefaultRequestHeaders.Add(acceptHeaderName, acceptHeaderValue);

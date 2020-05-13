@@ -8,6 +8,7 @@ using NUnit.Framework;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Services;
+using SFA.DAS.RoatpOversight.Web.Settings;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
@@ -16,14 +17,18 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
     public class OversightOrchestratorTests
     {
         private OversightOrchestrator _orchestrator;
-        private Mock<IRoatpApplicationApiClient> _apiClient;
-        private readonly Guid _applicationId = new Guid("2e8ffe21-f622-4eef-af93-22e0ad0c6737");
-
+        private Mock<IApplyApiClient> _apiClient;
+        private Mock<IWebConfiguration> _configuration;
+        private string _dashboardAddress;
+        private Guid _applicationId;
         [SetUp]
         public void SetUp()
         {
-            _apiClient = new Mock<IRoatpApplicationApiClient>();
-            _orchestrator = new OversightOrchestrator(_apiClient.Object, Mock.Of<ILogger<OversightOrchestrator>>());
+            _applicationId = Guid.NewGuid();
+            _apiClient = new Mock<IApplyApiClient>();
+            _configuration = new Mock<IWebConfiguration>();
+             _dashboardAddress   = "https://dashboard";
+            _orchestrator = new OversightOrchestrator(_apiClient.Object,  Mock.Of<ILogger<OversightOrchestrator>>());
         }
 
         [Test]
@@ -32,6 +37,8 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var expectedApplicationsPending = GetApplicationsPending();
             _apiClient.Setup(x => x.GetOversightsPending()).ReturnsAsync(expectedApplicationsPending);
             _apiClient.Setup(x => x.GetOversightsCompleted()).ReturnsAsync(GetApplicationsDone());
+            string dashboardAddress;
+            _configuration.Setup(x => x.EsfaAdminServicesBaseUrl).Returns(_dashboardAddress);
             var actualViewModel = await _orchestrator.GetOversightOverviewViewModel();
 
             var expectedViewModel = new OverallOutcomeViewModel
@@ -66,13 +73,13 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         }
 
 
-        private static List<ApplicationDetails> GetApplicationsPending()
+        private  List<ApplicationDetails> GetApplicationsPending()
         {
             return new List<ApplicationDetails>
             {
                 new ApplicationDetails
                 {
-                    ApplicationId = new Guid("2e8ffe21-f622-4eef-af93-22e0ad0c6737"),
+                    ApplicationId = _applicationId,
                     OrganisationName = "ZZZ Limited",
                     Ukprn = "123456768",
                     ProviderRoute = "Main",

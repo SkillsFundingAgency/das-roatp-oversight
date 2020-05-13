@@ -17,7 +17,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.AuthorizeAttributeTests
             "PingController",
             "ErrorPageController",
             "HomeController",
-            "OversightController" //MFCMFC REMOVE THIS ONCE OVERSIGHT CONTROLLER HAS AUTHORISE - In parent story APR-1567
+            "OversightController" // THIS NEEDS TO BE REMOVED ONCE AUTHORISATION IS IN
         };
 
         [Test]

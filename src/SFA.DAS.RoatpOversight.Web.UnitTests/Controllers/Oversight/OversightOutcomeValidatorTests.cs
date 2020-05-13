@@ -14,15 +14,15 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [TestCase(OversightReviewStatus.Unsuccessful, false)]
         public void OversightOutcomeValidator_returns_error_when_status_is_empty(string status, bool errorsExpected)
         {
-            var validationDetails = OverallOutcomeValidator.ValidateOverallOutcome(status);
+            var validationDetails = OversightValidator.ValidateOverallOutcome(status);
             Assert.AreEqual(errorsExpected,validationDetails.Count>0);
         }
 
         [Test]
         public void OversightOutcomeValidator_returns_expected_error_message_when_status_is_empty()
         {
-            var validationDetails = OverallOutcomeValidator.ValidateOverallOutcome(string.Empty);
-            Assert.AreEqual(OverallOutcomeValidator.MissingOverallOutcomeErrorMessage, validationDetails.First().ErrorMessage);
+            var validationDetails = OversightValidator.ValidateOverallOutcome(string.Empty);
+            Assert.AreEqual(OversightValidator.MissingOverallOutcomeErrorMessage, validationDetails.First().ErrorMessage);
         }
     }
 }

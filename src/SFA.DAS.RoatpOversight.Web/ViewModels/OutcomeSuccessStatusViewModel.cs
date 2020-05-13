@@ -4,7 +4,7 @@ using SFA.DAS.RoatpOversight.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.ViewModels
 {
-    public class OutcomeSuccessViewModel
+    public class OutcomeSuccessStatusViewModel
     {
         public Guid ApplicationId { get; set; }
         public string OrganisationName { get; set; }

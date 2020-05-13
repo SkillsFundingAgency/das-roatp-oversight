@@ -54,7 +54,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             if (status == OversightReviewStatus.Successful)
             {
 
-                var viewModelSuccessful = new OutcomeSuccessViewModel
+                var viewModelSuccessful = new OutcomeSuccessStatusViewModel
                 {
                     ApplicationId =  applicationId,
                     ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
@@ -66,7 +66,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 return View("~/Views/Oversight/OutcomeSuccessful.cshtml",viewModelSuccessful);
             }
 
-            var viewModelUnsuccessful = new OutcomeSuccessViewModel
+            var viewModelUnsuccessful = new OutcomeSuccessStatusViewModel
             {
                 ApplicationId = applicationId,
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
@@ -84,7 +84,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             var errorMessages = OversightValidator.ValidateOutcomeSuccessful(status);
             var oversightViewModel = await _orchestrator.GetOversightDetailsViewModel(applicationId);
 
-            var viewModel = new OutcomeSuccessViewModel
+            var viewModel = new OutcomeSuccessStatusViewModel
             {
                 ApplicationId = applicationId,
                 ApplicationReferenceNumber = oversightViewModel.ApplicationReferenceNumber,
@@ -120,7 +120,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             var errorMessages = OversightValidator.ValidateOutcomeUnsuccessful(status);
             var oversightViewModel = await _orchestrator.GetOversightDetailsViewModel(applicationId);
 
-            var viewModel = new OutcomeSuccessViewModel
+            var viewModel = new OutcomeSuccessStatusViewModel
             {
                 ApplicationId = applicationId,
                 ApplicationReferenceNumber = oversightViewModel.ApplicationReferenceNumber,

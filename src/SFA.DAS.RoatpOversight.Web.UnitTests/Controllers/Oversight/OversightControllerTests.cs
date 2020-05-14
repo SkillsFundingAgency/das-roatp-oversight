@@ -77,6 +77,18 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         }
 
 
+        [TestCase(OversightReviewStatus.Successful)]
+        [TestCase(OversightReviewStatus.Unsuccessful)]
+        public async Task GetOutcome_returns_applications_view_when_oversight_status_is_successful_or_unsuccessful(string status)
+        {
+            var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId, OversightStatus = status};
+            _orchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
+
+            var result = await _controller.Outcome(_applicationDetailsApplicationId) as ViewResult;
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.ViewName, Is.EqualTo("~/Views/Oversight/Applications.cshtml"));
+        }
+
         [Test]
         public async Task EvaluateOutcome_posts_successful_answer_returns_successful_view_as_expected()
         {

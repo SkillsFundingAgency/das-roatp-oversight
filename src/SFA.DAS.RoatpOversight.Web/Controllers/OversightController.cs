@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Validators;
-using SFA.DAS.RoatpOversight.Web.Settings;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
@@ -36,59 +33,59 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         public async Task<IActionResult> Outcome(Guid applicationId)
         {
             var vm = await _orchestrator.GetOversightDetailsViewModel(applicationId);
-            return View(vm);
+            var oversightStatus = vm.OversightStatus;
+
+            if (CheckForBackButtonAfterSubmission(oversightStatus, out var outcome)) return outcome;
+ 
+             return View(vm);
         }
+
 
         [HttpPost("Oversight/Outcome/{applicationId}")]
         public async Task<IActionResult> EvaluateOutcome(Guid applicationId, string status)
         {
-            var errorMessages = OversightValidator.ValidateOverallOutcome(status);
             var viewModel = await _orchestrator.GetOversightDetailsViewModel(applicationId);
 
+            if (CheckForBackButtonAfterSubmission(viewModel.OversightStatus, out var outcome)) return outcome;
+
+            var errorMessages = OversightValidator.ValidateOverallOutcome(status);
+       
             if (errorMessages.Any())
             {
                     viewModel.ErrorMessages = errorMessages;
                 return View($"~/Views/Oversight/Outcome.cshtml", viewModel);
             }
 
-            if (status == OversightReviewStatus.Successful)
-            {
-
-                var viewModelSuccessful = new OutcomeSuccessStatusViewModel
-                {
-                    ApplicationId =  applicationId,
-                    ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
-                    ApplicationSubmittedDate = DateTime.Today,
-                    OrganisationName = viewModel.OrganisationName,
-                    ProviderRoute = viewModel.ProviderRoute,
-                    Ukprn = viewModel.Ukprn
-                };
-                return View("~/Views/Oversight/OutcomeSuccessful.cshtml",viewModelSuccessful);
-            }
-
-            var viewModelUnsuccessful = new OutcomeSuccessStatusViewModel
+            var viewModelSuccess = new OutcomeSuccessStatusViewModel
             {
                 ApplicationId = applicationId,
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
-                ApplicationSubmittedDate = DateTime.Today,
+                ApplicationSubmittedDate = viewModel.ApplicationSubmittedDate,
                 OrganisationName = viewModel.OrganisationName,
                 ProviderRoute = viewModel.ProviderRoute,
                 Ukprn = viewModel.Ukprn
             };
-            return View("~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModelUnsuccessful);
+
+            if (status == OversightReviewStatus.Successful)
+            {
+                return View("~/Views/Oversight/OutcomeSuccessful.cshtml",viewModelSuccess);
+            }
+
+            return View("~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModelSuccess);
         }
 
         [HttpPost("Oversight/Outcome/Successful/{applicationId}")]
         public async Task<IActionResult> Successful(Guid applicationId, string status)
         {
-            var errorMessages = OversightValidator.ValidateOutcomeSuccessful(status);
             var oversightViewModel = await _orchestrator.GetOversightDetailsViewModel(applicationId);
-
+            if (CheckForBackButtonAfterSubmission(oversightViewModel.OversightStatus, out var outcome)) return outcome;
+            var errorMessages = OversightValidator.ValidateOutcomeSuccessful(status);
+          
             var viewModel = new OutcomeSuccessStatusViewModel
             {
                 ApplicationId = applicationId,
                 ApplicationReferenceNumber = oversightViewModel.ApplicationReferenceNumber,
-                ApplicationSubmittedDate = DateTime.Today,
+                ApplicationSubmittedDate = oversightViewModel.ApplicationSubmittedDate,
                 OrganisationName = oversightViewModel.OrganisationName,
                 ProviderRoute = oversightViewModel.ProviderRoute,
                 Ukprn = oversightViewModel.Ukprn
@@ -117,14 +114,15 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         [HttpPost("Oversight/Outcome/Unsuccessful/{applicationId}")]
         public async Task<IActionResult> Unsuccessful(Guid applicationId, string status)
         {
-            var errorMessages = OversightValidator.ValidateOutcomeUnsuccessful(status);
             var oversightViewModel = await _orchestrator.GetOversightDetailsViewModel(applicationId);
-
+            if (CheckForBackButtonAfterSubmission(oversightViewModel.OversightStatus, out var outcome)) return outcome;
+            var errorMessages = OversightValidator.ValidateOutcomeUnsuccessful(status);
+  
             var viewModel = new OutcomeSuccessStatusViewModel
             {
                 ApplicationId = applicationId,
                 ApplicationReferenceNumber = oversightViewModel.ApplicationReferenceNumber,
-                ApplicationSubmittedDate = DateTime.Today,
+                ApplicationSubmittedDate = oversightViewModel.ApplicationSubmittedDate,
                 OrganisationName = oversightViewModel.OrganisationName,
                 ProviderRoute = oversightViewModel.ProviderRoute,
                 Ukprn = oversightViewModel.Ukprn
@@ -148,6 +146,22 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             var viewModelDone = new OutcomeDoneViewModel { Ukprn = oversightViewModel.Ukprn, Status = OversightReviewStatus.Unsuccessful };
 
             return View("~/Views/Oversight/OutcomeDone.cshtml",viewModelDone);
+        }
+
+
+        private bool CheckForBackButtonAfterSubmission(string oversightStatus, out IActionResult outcome)
+        {
+            outcome = null;
+            if (oversightStatus == OversightReviewStatus.Successful || oversightStatus == OversightReviewStatus.Unsuccessful)
+            {
+                var viewModel = _orchestrator.GetOversightOverviewViewModel().Result;
+                {
+                    outcome = View($"~/Views/Oversight/Applications.cshtml", viewModel);
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

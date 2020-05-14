@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Logging;
 using Polly;
 using Polly.Extensions.Http;
 using SFA.DAS.RoatpOversight.Web.Domain;
@@ -112,7 +113,6 @@ namespace SFA.DAS.RoatpOversight.Web
 
         private void AddAuthentication(IServiceCollection services)
         {
-            // TODO: Need to request DevOps to setup - "WtRealm": "https://localhost:45667", 
             services.AddAuthentication(sharedOptions =>
             {
                 sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;

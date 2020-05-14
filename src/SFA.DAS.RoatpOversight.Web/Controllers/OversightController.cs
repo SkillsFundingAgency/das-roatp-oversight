@@ -10,13 +10,12 @@ using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Validators;
 using SFA.DAS.RoatpOversight.Web.Settings;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
-using SFA.DAS.RoatpOversight.Web.Services;
 using Microsoft.AspNetCore.Http;
 using SFA.DAS.RoatpOversight.Web.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class OversightController : Controller
     {
         private readonly IHttpContextAccessor _contextAccessor;

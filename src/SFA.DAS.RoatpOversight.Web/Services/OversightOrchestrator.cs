@@ -49,7 +49,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
                 OrganisationName = applicationDetails.OrganisationName,
                 Ukprn = applicationDetails.Ukprn,
-                ProviderRoute = applicationDetails.ProviderRoute
+                ProviderRoute = applicationDetails.ProviderRoute,
+                OversightStatus = applicationDetails.OversightStatus
             };
 
             return viewModel;

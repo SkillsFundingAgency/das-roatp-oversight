@@ -165,9 +165,8 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             outcome = null;
             if (oversightStatus == OversightReviewStatus.Successful || oversightStatus == OversightReviewStatus.Unsuccessful)
             {
-                var viewModel = _oversightOrchestrator.GetOversightOverviewViewModel().Result;
                 {
-                    outcome = View($"~/Views/Oversight/Applications.cshtml", viewModel);
+                    outcome = new RedirectToActionResult("Applications", "Oversight", null);
                     return true;
                 }
             }

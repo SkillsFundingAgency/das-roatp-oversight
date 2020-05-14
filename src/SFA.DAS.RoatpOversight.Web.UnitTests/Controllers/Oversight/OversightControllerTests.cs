@@ -95,9 +95,9 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId, OversightStatus = status};
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
 
-            var result = await _controller.Outcome(_applicationDetailsApplicationId) as ViewResult;
+            var result = await _controller.Outcome(_applicationDetailsApplicationId) as RedirectToActionResult;
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.ViewName, Is.EqualTo("~/Views/Oversight/Applications.cshtml"));
+            Assert.That(result.ActionName, Is.EqualTo("Applications"));
         }
 
         [Test]

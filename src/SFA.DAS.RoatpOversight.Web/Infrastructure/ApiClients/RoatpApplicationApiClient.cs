@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService;
+using SFA.DAS.AdminService.Common.Infrastructure;
 
 namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
 {

@@ -16,8 +16,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Extensions.Http;
+using SFA.DAS.AdminService.Common;
+using SFA.DAS.AdminService.Common.Extensions;
 using SFA.DAS.RoatpOversight.Web.Domain;
-using SFA.DAS.RoatpOversight.Web.Extensions;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService;
 using SFA.DAS.RoatpOversight.Web.Settings;
@@ -155,7 +156,7 @@ namespace SFA.DAS.RoatpOversight.Web
             services.AddTransient<IRoatpApplicationTokenService, RoatpApplicationTokenService>();
 
 
-            UserExtensions.Logger = services.BuildServiceProvider().GetService<ILogger<ClaimsPrincipal>>();
+            DependencyInjection.ConfigureDependencyInjection(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

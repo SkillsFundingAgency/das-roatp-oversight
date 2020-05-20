@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.RoatpOversight.Web.Settings
+﻿using SFA.DAS.AdminService.Common.Settings;
+
+namespace SFA.DAS.RoatpOversight.Web.Settings
 {
     public interface IWebConfiguration
     {

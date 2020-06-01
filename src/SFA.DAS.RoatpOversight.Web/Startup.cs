@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Logging;
 using Polly;
 using Polly.Extensions.Http;
 using SFA.DAS.AdminService.Common;
@@ -21,6 +22,7 @@ using SFA.DAS.AdminService.Common.Extensions;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService;
+using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Settings;
 
 namespace SFA.DAS.RoatpOversight.Web
@@ -112,7 +114,6 @@ namespace SFA.DAS.RoatpOversight.Web
 
         private void AddAuthentication(IServiceCollection services)
         {
-            // TODO: Need to request DevOps to setup - "WtRealm": "https://localhost:45667",
             services.AddAuthentication(sharedOptions =>
             {
                 sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -138,13 +139,21 @@ namespace SFA.DAS.RoatpOversight.Web
             var acceptHeaderValue = "application/json";
             var handlerLifeTime = TimeSpan.FromMinutes(5);
 
-            services.AddHttpClient<IRoatpApplicationApiClient, RoatpApplicationApiClient>(config =>
+            services.AddHttpClient<IApplyApiClient, ApplyApiClient>(config =>
             {
                 config.BaseAddress = new Uri(ApplicationConfiguration.ApplyApiAuthentication.ApiBaseAddress);
                 config.DefaultRequestHeaders.Add(acceptHeaderName, acceptHeaderValue);
             })
             .SetHandlerLifetime(handlerLifeTime)
             .AddPolicyHandler(GetRetryPolicy());
+
+            services.AddHttpClient<IRoatpRegisterApiClient, RoatpRegisterApiClient>(config =>
+            {
+                config.BaseAddress = new Uri(ApplicationConfiguration.RoatpRegisterApiAuthentication.ApiBaseAddress);
+                config.DefaultRequestHeaders.Add(acceptHeaderName, acceptHeaderValue);
+            })
+           .SetHandlerLifetime(handlerLifeTime)
+           .AddPolicyHandler(GetRetryPolicy());
         }
 
         private void ConfigureDependencyInjection(IServiceCollection services)
@@ -154,7 +163,9 @@ namespace SFA.DAS.RoatpOversight.Web
             services.AddTransient(x => ApplicationConfiguration);
 
             services.AddTransient<IRoatpApplicationTokenService, RoatpApplicationTokenService>();
-
+            services.AddTransient<IApplicationOutcomeOrchestrator, ApplicationOutcomeOrchestrator>();
+            services.AddTransient<IRoatpRegisterTokenService, RoatpRegisterTokenService>();
+            services.AddTransient<IOversightOrchestrator, OversightOrchestrator>();
 
             DependencyInjection.ConfigureDependencyInjection(services);
         }

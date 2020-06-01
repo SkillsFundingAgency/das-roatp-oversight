@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpOversight.Web"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpOversight.Web.UnitTests", "SFA.DAS.RoatpOversight.Web.UnitTests\SFA.DAS.RoatpOversight.Web.UnitTests.csproj", "{B105B056-DA4D-4A52-9AFE-804CC26E9E5D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpOversight.Domain", "SFA.DAS.RoatpOversight.Domain\SFA.DAS.RoatpOversight.Domain.csproj", "{8E44D3F9-8927-4F26-BA73-9B54290185AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B105B056-DA4D-4A52-9AFE-804CC26E9E5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B105B056-DA4D-4A52-9AFE-804CC26E9E5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B105B056-DA4D-4A52-9AFE-804CC26E9E5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E44D3F9-8927-4F26-BA73-9B54290185AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E44D3F9-8927-4F26-BA73-9B54290185AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E44D3F9-8927-4F26-BA73-9B54290185AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E44D3F9-8927-4F26-BA73-9B54290185AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

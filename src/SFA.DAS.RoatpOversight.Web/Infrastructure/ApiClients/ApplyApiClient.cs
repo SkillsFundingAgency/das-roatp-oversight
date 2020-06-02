@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService;
 using System.Net;
+using SFA.DAS.AdminService.Common.Infrastructure;
 
 namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
 {

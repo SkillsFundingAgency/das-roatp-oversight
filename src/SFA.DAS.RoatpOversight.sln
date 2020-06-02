@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.136
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpOversight.Web", "SFA.DAS.RoatpOversight.Web\SFA.DAS.RoatpOversight.Web.csproj", "{FFE4D7E7-4719-48E6-AE74-68721588DD7A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpOversight.Web.UnitTests", "SFA.DAS.RoatpOversight.Web.UnitTests\SFA.DAS.RoatpOversight.Web.UnitTests.csproj", "{B105B056-DA4D-4A52-9AFE-804CC26E9E5D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpOversight.Web.Extensions", "SFA.DAS.RoatpOversight.Web.Extensions\SFA.DAS.RoatpOversight.Web.Extensions.csproj", "{EFBDB917-8BC2-4007-BD69-25EA25642098}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpOversight.Domain", "SFA.DAS.RoatpOversight.Domain\SFA.DAS.RoatpOversight.Domain.csproj", "{8E44D3F9-8927-4F26-BA73-9B54290185AD}"
 EndProject
@@ -25,10 +23,6 @@ Global
 		{B105B056-DA4D-4A52-9AFE-804CC26E9E5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B105B056-DA4D-4A52-9AFE-804CC26E9E5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B105B056-DA4D-4A52-9AFE-804CC26E9E5D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EFBDB917-8BC2-4007-BD69-25EA25642098}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EFBDB917-8BC2-4007-BD69-25EA25642098}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EFBDB917-8BC2-4007-BD69-25EA25642098}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EFBDB917-8BC2-4007-BD69-25EA25642098}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8E44D3F9-8927-4F26-BA73-9B54290185AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8E44D3F9-8927-4F26-BA73-9B54290185AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E44D3F9-8927-4F26-BA73-9B54290185AD}.Release|Any CPU.ActiveCfg = Release|Any CPU

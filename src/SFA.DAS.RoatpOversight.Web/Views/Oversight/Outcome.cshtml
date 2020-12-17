@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.RoatpOversight.Domain
+@using SFA.DAS.AdminService.Common.Extensions;
 @model SFA.DAS.RoatpOversight.Web.ViewModels.OutcomeViewModel
 @{
     ViewData["Title"] = "Outcome";
@@ -8,15 +9,15 @@
 }
 
 <div class="govuk-breadcrumbs">
-  <ol class="govuk-breadcrumbs__list">
-    <li class="govuk-breadcrumbs__list-item">
-        <a class="govuk-breadcrumbs__link" asp-controller="Home" asp-action="Dashboard">RoATP dashboard</a>
-    </li>
-    <li class="govuk-breadcrumbs__list-item">
-      <a class="govuk-breadcrumbs__link" asp-controller="Oversight" asp-action="Applications">RoATP application outcomes</a>
-    </li>
-    <li class="govuk-breadcrumbs__list-item" aria-current="page">What's the overall outcome of this application?</li>
-  </ol>
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" asp-controller="Home" asp-action="Dashboard">RoATP dashboard</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" asp-controller="Oversight" asp-action="Applications">RoATP application outcomes</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">What's the overall outcome of this application?</li>
+    </ol>
 </div>
 
 <main class="govuk-main-wrapper">
@@ -86,10 +87,7 @@
                                     Application submitted date
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    @{
-                                        var submittedDate = $"{Model.ApplicationSubmittedDate:dd MMM yyyy}";
-                                    }
-                                    @submittedDate
+                                    @Model.ApplicationSubmittedDate.ToSfaShortDateString()
                                 </dd>
                             </div>
                             <div class="govuk-summary-list__row">
@@ -98,7 +96,7 @@
                                 </dt>
                                 <dd class="govuk-summary-list__value">
 
-                                    @DateTime.Today.ToString("dd MMM yyyy")
+                                    @DateTime.Today.ToSfaShortDateString()
                                 </dd>
                             </div>
                         </dl>
@@ -117,28 +115,25 @@
 
                         <div class="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input 
-                                    class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionYes"
-                                    name="Status"
-                                    value=@OversightReviewStatus.Successful
-                                    data-aria-controls="conditional-OptionYes"
-                                    @radioCheckedSuccessful
-                                />
+                                <input class="govuk-radios__input"
+                                       type="radio"
+                                       id="OptionYes"
+                                       name="Status"
+                                       value=@OversightReviewStatus.Successful
+                                       data-aria-controls="conditional-OptionYes"
+                                       @radioCheckedSuccessful />
                                 <label class="govuk-label govuk-radios__label" for="OptionYes">
                                     Successful application
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionNo"
-                                    name="Status"
-                                    value=@OversightReviewStatus.Unsuccessful
-                                    data-aria-controls="conditional-OptionNo"
-                                    @radioCheckedUnsuccessful
-                                />
+                                       type="radio"
+                                       id="OptionNo"
+                                       name="Status"
+                                       value=@OversightReviewStatus.Unsuccessful
+                                       data-aria-controls="conditional-OptionNo"
+                                       @radioCheckedUnsuccessful />
                                 <label class="govuk-label govuk-radios__label" for="OptionNo">
                                     Unsuccessful application
                                 </label>

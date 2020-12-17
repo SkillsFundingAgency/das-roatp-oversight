@@ -1,4 +1,5 @@
-﻿@model SFA.DAS.RoatpOversight.Web.ViewModels.OutcomeSuccessStatusViewModel
+﻿@using SFA.DAS.AdminService.Common.Extensions;
+@model SFA.DAS.RoatpOversight.Web.ViewModels.OutcomeSuccessStatusViewModel
 @{
     ViewData["Title"] = "Outcome - Successful";
 }
@@ -7,15 +8,15 @@
 }
 
 <div class="govuk-breadcrumbs">
-  <ol class="govuk-breadcrumbs__list">
-      <li class="govuk-breadcrumbs__list-item">
-          <a class="govuk-breadcrumbs__link" asp-controller="Home" asp-action="Dashboard">RoATP dashboard</a>
-      </li>
-    <li class="govuk-breadcrumbs__list-item">
-      <a class="govuk-breadcrumbs__link" asp-controller="Oversight" asp-action="Applications">RoATP application outcomes</a>
-    </li>
-    <li class="govuk-breadcrumbs__list-item" aria-current="page">Overall outcome</li>
-  </ol>
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" asp-controller="Home" asp-action="Dashboard">RoATP dashboard</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" asp-controller="Oversight" asp-action="Applications">RoATP application outcomes</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">Overall outcome</li>
+    </ol>
 </div>
 
 <main class="govuk-main-wrapper">
@@ -86,10 +87,7 @@
                                     Application submitted date
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    @{
-                                        var submittedDate = $"{Model.ApplicationSubmittedDate:dd MMM yyyy}";
-                                    }
-                                    @submittedDate
+                                    @Model.ApplicationSubmittedDate.ToSfaShortDateString()
                                 </dd>
                             </div>
                             <div class="govuk-summary-list__row">
@@ -97,7 +95,7 @@
                                     Application determined date
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    @DateTime.Today.ToString("dd MMM yyyy")
+                                    @DateTime.Today.ToSfaShortDateString()
                                 </dd>
                             </div>
                         </dl>
@@ -109,8 +107,8 @@
                             <li>a financial health grade</li>
                             <li>their next steps </li>
                         </ul>
-            
-                        <p class="govuk-body">We’ll also set this provider's status as 'on-boarding' on the staff app.</p>
+
+                        <p class="govuk-body">We'll also set this provider's status as 'on-boarding' on the staff app.</p>
 
                         @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
                         {
@@ -121,33 +119,29 @@
                                 </span>
                             }
                         }
-            
+
                         <div class="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input 
-                                    class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionYes"
-                                    name="Status"
-                                    value="Yes"
-                                    data-aria-controls="conditional-OptionYes"
-                                    @radioCheckedYes
-                                />
+                                <input class="govuk-radios__input"
+                                       type="radio"
+                                       id="OptionYes"
+                                       name="Status"
+                                       value="Yes"
+                                       data-aria-controls="conditional-OptionYes"
+                                       @radioCheckedYes />
 
                                 <label class="govuk-label govuk-radios__label" for="OptionYes">
                                     Yes
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input 
-                                    class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionNo"
-                                    name="Status"
-                                    value="No"
-                                    data-aria-controls="conditional-OptionNo"
-                                    @radioCheckedNo
-                                />
+                                <input class="govuk-radios__input"
+                                       type="radio"
+                                       id="OptionNo"
+                                       name="Status"
+                                       value="No"
+                                       data-aria-controls="conditional-OptionNo"
+                                       @radioCheckedNo />
                                 <label class="govuk-label govuk-radios__label" for="OptionNo">
                                     No
                                 </label>
@@ -155,11 +149,11 @@
                         </div>
                     </fieldset>
                 </div>
-                
+
                 <button class="govuk-button" type="submit" data-module="govuk-button">
                     Save and continue
                 </button>
-                
+
             </form>
         </div>
     </div>

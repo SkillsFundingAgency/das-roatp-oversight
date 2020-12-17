@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.AdminService.Common.Testing.MockedObjects;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Controllers;
 using SFA.DAS.RoatpOversight.Web.Services;
-using SFA.DAS.RoatpOversight.Web.Settings;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
@@ -21,23 +18,19 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
     {
         private Mock<IOversightOrchestrator> _oversightOrchestrator;
         private Mock<IApplicationOutcomeOrchestrator> _outcomeOrchestrator;
-        private Mock<IHttpContextAccessor> _contextAccessor;
-        private Mock<IWebConfiguration> _configuration;
 
         private OversightController _controller;
         private readonly Guid _applicationDetailsApplicationId = Guid.NewGuid();
-        private string _ukprnOfCompletedOversightApplication = "11112222";
+        private const string _ukprnOfCompletedOversightApplication = "11112222";
 
         [SetUp]
         public void SetUp()
         {
             _oversightOrchestrator = new Mock<IOversightOrchestrator>();
             _outcomeOrchestrator = new Mock<IApplicationOutcomeOrchestrator>();
-            _contextAccessor = new Mock<IHttpContextAccessor>();
-            _configuration = new Mock<IWebConfiguration>();
 
-            _controller = new OversightController(_contextAccessor.Object, _outcomeOrchestrator.Object, _configuration.Object, 
-                                                  _oversightOrchestrator.Object, Mock.Of<ILogger<OversightController>>())
+            _controller = new OversightController(_outcomeOrchestrator.Object,
+                                                  _oversightOrchestrator.Object)
             {
                 ControllerContext = MockedControllerContext.Setup()
             };
@@ -46,7 +39,6 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [Test]
         public async Task GetApplications_returns_view_with_expected_viewmodel()
         {
-
             var applicationsPending = new List<ApplicationDetails>
             {
                 new ApplicationDetails {ApplicationId = _applicationDetailsApplicationId}
@@ -56,7 +48,6 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             {
                 new OverallOutcomeDetails {Ukprn = _ukprnOfCompletedOversightApplication}
             };
-
 
             var viewModel = new OverallOutcomeViewModel {ApplicationDetails = applicationsPending,ApplicationCount = 1, OverallOutcomeDetails = applicationsDone, OverallOutcomeCount = 1};
 

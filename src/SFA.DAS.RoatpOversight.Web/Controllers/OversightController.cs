@@ -2,14 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Validators;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
-using SFA.DAS.RoatpOversight.Web.Settings;
 using SFA.DAS.AdminService.Common.Extensions;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
@@ -17,20 +15,14 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
     [Authorize]
     public class OversightController : Controller
     {
-        private readonly IHttpContextAccessor _contextAccessor;
         private readonly IApplicationOutcomeOrchestrator _outcomeOrchestrator;
-        
-        private IWebConfiguration _configuration;
         private readonly IOversightOrchestrator _oversightOrchestrator;
-        private readonly ILogger<OversightController> _logger;
-        public OversightController(IHttpContextAccessor contextAccessor, IApplicationOutcomeOrchestrator outcomeOrchestrator, IWebConfiguration configuration,
-                                   IOversightOrchestrator oversightOrchestrator, ILogger<OversightController> logger)
+
+        public OversightController(IApplicationOutcomeOrchestrator outcomeOrchestrator,
+                                   IOversightOrchestrator oversightOrchestrator)
         {
-            _contextAccessor = contextAccessor;
             _outcomeOrchestrator = outcomeOrchestrator;
-            _configuration = configuration;
             _oversightOrchestrator = oversightOrchestrator;
-            _logger = logger;
         }
 
         public async Task<IActionResult> Applications()
@@ -46,8 +38,8 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             var oversightStatus = vm.OversightStatus;
 
             if (CheckForBackButtonAfterSubmission(oversightStatus, out var outcome)) return outcome;
- 
-             return View(vm);
+
+            return View(vm);
         }
 
 
@@ -59,10 +51,10 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             if (CheckForBackButtonAfterSubmission(viewModel.OversightStatus, out var outcome)) return outcome;
 
             var errorMessages = OversightValidator.ValidateOverallOutcome(status);
-       
+
             if (errorMessages.Any())
             {
-                    viewModel.ErrorMessages = errorMessages;
+                viewModel.ErrorMessages = errorMessages;
                 return View($"~/Views/Oversight/Outcome.cshtml", viewModel);
             }
 
@@ -78,7 +70,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
             if (status == OversightReviewStatus.Successful)
             {
-                return View("~/Views/Oversight/OutcomeSuccessful.cshtml",viewModelSuccess);
+                return View("~/Views/Oversight/OutcomeSuccessful.cshtml", viewModelSuccess);
             }
 
             return View("~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModelSuccess);
@@ -106,15 +98,15 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 viewModel.ErrorMessages = errorMessages;
                 return View($"~/Views/Oversight/OutcomeSuccessful.cshtml", viewModel);
             }
-            
-
-            if (status.ToLower()=="no")
+            else if ("No".Equals(status, StringComparison.InvariantCultureIgnoreCase))
             {
                 oversightViewModel.ApplicationStatus = OversightReviewStatus.Successful;
                 return View($"~/Views/Oversight/Outcome.cshtml", oversightViewModel);
             }
 
-            await _outcomeOrchestrator.RecordOutcome(applicationId, OversightReviewStatus.Successful, _contextAccessor.HttpContext.User.UserDisplayName());
+            var userId = HttpContext.User.UserId();
+            var userName = HttpContext.User.UserDisplayName();
+            await _outcomeOrchestrator.RecordOutcome(applicationId, OversightReviewStatus.Successful, userId, userName);
 
             // record in database it's a success
             var viewModelDone = new OutcomeDoneViewModel { Ukprn = oversightViewModel.Ukprn, Status = OversightReviewStatus.Successful };
@@ -144,19 +136,19 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 viewModel.ErrorMessages = errorMessages;
                 return View($"~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModel);
             }
-
-
-            if (status.ToLower() == "no")
+            else if ("No".Equals(status, StringComparison.InvariantCultureIgnoreCase))
             {
                 oversightViewModel.ApplicationStatus = OversightReviewStatus.Unsuccessful;
                 return View($"~/Views/Oversight/Outcome.cshtml", oversightViewModel);
             }
 
-            await _outcomeOrchestrator.RecordOutcome(applicationId, OversightReviewStatus.Unsuccessful, _contextAccessor.HttpContext.User.UserDisplayName());
+            var userId = HttpContext.User.UserId();
+            var userName = HttpContext.User.UserDisplayName();
+            await _outcomeOrchestrator.RecordOutcome(applicationId, OversightReviewStatus.Unsuccessful, userId, userName);
 
             var viewModelDone = new OutcomeDoneViewModel { Ukprn = oversightViewModel.Ukprn, Status = OversightReviewStatus.Unsuccessful };
 
-            return View("~/Views/Oversight/OutcomeDone.cshtml",viewModelDone);
+            return View("~/Views/Oversight/OutcomeDone.cshtml", viewModelDone);
         }
 
 
@@ -165,10 +157,8 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             outcome = null;
             if (oversightStatus == OversightReviewStatus.Successful || oversightStatus == OversightReviewStatus.Unsuccessful)
             {
-                {
-                    outcome = new RedirectToActionResult("Applications", "Oversight", null);
-                    return true;
-                }
+                outcome = new RedirectToActionResult("Applications", "Oversight", null);
+                return true;
             }
 
             return false;

@@ -11,6 +11,6 @@ namespace SFA.DAS.RoatpOversight.Domain
         public DateTime ApplicationSubmittedDate { get; set; }
         public DateTime? ApplicationDeterminedDate { get; set; }
         public string OversightStatus { get; set; }
-
+        public string ApplicationStatus { get; set; }
     }
 }

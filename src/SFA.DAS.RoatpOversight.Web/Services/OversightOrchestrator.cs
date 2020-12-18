@@ -50,7 +50,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 OrganisationName = applicationDetails.OrganisationName,
                 Ukprn = applicationDetails.Ukprn,
                 ProviderRoute = applicationDetails.ProviderRoute,
-                OversightStatus = applicationDetails.OversightStatus
+                OversightStatus = applicationDetails.OversightStatus,
+                ApplicationStatus = applicationDetails.ApplicationStatus
             };
 
             return viewModel;

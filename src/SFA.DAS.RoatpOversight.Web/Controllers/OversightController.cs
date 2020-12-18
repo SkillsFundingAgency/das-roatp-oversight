@@ -100,7 +100,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             }
             else if ("No".Equals(status, StringComparison.InvariantCultureIgnoreCase))
             {
-                oversightViewModel.ApplicationStatus = OversightReviewStatus.Successful;
+                oversightViewModel.OversightStatus = OversightReviewStatus.Successful;
                 return View($"~/Views/Oversight/Outcome.cshtml", oversightViewModel);
             }
 
@@ -138,7 +138,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             }
             else if ("No".Equals(status, StringComparison.InvariantCultureIgnoreCase))
             {
-                oversightViewModel.ApplicationStatus = OversightReviewStatus.Unsuccessful;
+                oversightViewModel.OversightStatus = OversightReviewStatus.Unsuccessful;
                 return View($"~/Views/Oversight/Outcome.cshtml", oversightViewModel);
             }
 

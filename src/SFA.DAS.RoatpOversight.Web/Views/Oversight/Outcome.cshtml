@@ -44,8 +44,8 @@
             }
 
             @{
-                var radioCheckedSuccessful = string.Equals(Model.ApplicationStatus, OversightReviewStatus.Successful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-                var radioCheckedUnsuccessful = string.Equals(Model.ApplicationStatus, OversightReviewStatus.Unsuccessful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+                var radioCheckedSuccessful = string.Equals(Model.OversightStatus, OversightReviewStatus.Successful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+                var radioCheckedUnsuccessful = string.Equals(Model.OversightStatus, OversightReviewStatus.Unsuccessful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
             }
 
             <form asp-action="Outcome" asp-controller="Oversight">

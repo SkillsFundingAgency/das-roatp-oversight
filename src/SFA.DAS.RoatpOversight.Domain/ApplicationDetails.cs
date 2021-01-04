@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SFA.DAS.RoatpOversight.Domain
 {
@@ -13,5 +11,6 @@ namespace SFA.DAS.RoatpOversight.Domain
         public string ApplicationReferenceNumber { get; set; }
         public DateTime ApplicationSubmittedDate { get; set; }
         public string OversightStatus { get; set; }
+        public string ApplicationStatus { get; set; }
     }
 }

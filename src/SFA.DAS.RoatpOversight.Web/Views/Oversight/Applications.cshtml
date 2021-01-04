@@ -1,5 +1,5 @@
 ﻿@using SFA.DAS.RoatpOversight.Domain
-@using SFA.DAS.RoatpOversight.Web.Settings
+@using SFA.DAS.AdminService.Common.Extensions;
 @model SFA.DAS.RoatpOversight.Web.ViewModels.OverallOutcomeViewModel
 
 @{
@@ -31,17 +31,17 @@
                 </h2>
 
                 <ul class="govuk-tabs__list">
-                        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
-                            <a class="govuk-tabs__tab" href="#applications">
-                                Applications (@Model.ApplicationCount)
-                            </a>
-                        </li>
+                    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                        <a class="govuk-tabs__tab" href="#applications">
+                            Applications (@Model.ApplicationCount)
+                        </a>
+                    </li>
 
-                        <li class="govuk-tabs__list-item">
-                            <a class="govuk-tabs__tab" href="#outcomes">
-                                Overall outcome (@Model.OverallOutcomeCount)
-                            </a>
-                        </li>
+                    <li class="govuk-tabs__list-item">
+                        <a class="govuk-tabs__tab" href="#outcomes">
+                            Overall outcome (@Model.OverallOutcomeCount)
+                        </a>
+                    </li>
                 </ul>
 
                 <div class="govuk-tabs__panel" id="applications">
@@ -70,10 +70,7 @@
                                         <td data-label="UKPRN" class="govuk-table__cell">@application.Ukprn</td>
                                         <td data-label="Provider route" class="govuk-table__cell">@application.ProviderRoute</td>
                                         <td data-label="Application reference number" class="govuk-table__cell">@application.ApplicationReferenceNumber</td>
-                                        @{
-                                            var submittedDate = $"{application.ApplicationSubmittedDate:dd MMM yyyy}";
-                                        }
-                                        <td data-label="Application submitted date" class="govuk-table__cell">@submittedDate</td>
+                                        <td data-label="Application submitted date" class="govuk-table__cell">@application.ApplicationSubmittedDate.ToSfaShortDateString()</td>
                                     </tr>
                                 }
                             </tbody>
@@ -104,18 +101,14 @@
                             <tbody class="govuk-table__body">
                                 @foreach (var outcome in Model.OverallOutcomeDetails)
                                 {
-                                    
+
                                     <tr class="govuk-table__row">
                                         <td data-label="Organisation name" class="govuk-table__cell">@outcome.OrganisationName</td>
                                         <td data-label="UKPRN" class="govuk-table__cell">@outcome.Ukprn</td>
                                         <td data-label="Provider route" class="govuk-table__cell">@outcome.ProviderRoute</td>
                                         <td data-label="Application reference number" class="govuk-table__cell">@outcome.ApplicationReferenceNumber</td>
-                                        @{
-                                            var submittedDate = $"{outcome.ApplicationSubmittedDate:dd MMM yyyy}";
-                                            var determinedDate = $"{outcome.ApplicationDeterminedDate:dd MMM yyyy}";
-                                        }
-                                        <td data-label="Application submitted date" class="govuk-table__cell">@submittedDate</td>
-                                        <td data-label="Application determined date" class="govuk-table__cell">@determinedDate</td>
+                                        <td data-label="Application submitted date" class="govuk-table__cell">@outcome.ApplicationSubmittedDate.ToSfaShortDateString()</td>
+                                        <td data-label="Application determined date" class="govuk-table__cell">@outcome.ApplicationDeterminedDate.ToSfaShortDateString()</td>
                                         @{
                                             var tagCssClass = "";
                                             if (String.Equals(@outcome.OversightStatus, OversightReviewStatus.Successful, StringComparison.InvariantCultureIgnoreCase))

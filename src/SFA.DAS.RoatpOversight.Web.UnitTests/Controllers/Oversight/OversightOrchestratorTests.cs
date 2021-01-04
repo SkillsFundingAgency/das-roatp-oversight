@@ -32,12 +32,11 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         }
 
         [Test]
-        public async Task Orchestrator_builds_view_model_from_api()
+        public async Task Orchestrator_builds_overview_viewmodel_from_api()
         {
             var expectedApplicationsPending = GetApplicationsPending();
             _apiClient.Setup(x => x.GetOversightsPending()).ReturnsAsync(expectedApplicationsPending);
             _apiClient.Setup(x => x.GetOversightsCompleted()).ReturnsAsync(GetApplicationsDone());
-            string dashboardAddress;
             _configuration.Setup(x => x.EsfaAdminServicesBaseUrl).Returns(_dashboardAddress);
             var actualViewModel = await _orchestrator.GetOversightOverviewViewModel();
 
@@ -57,7 +56,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         }
 
         [Test]
-        public async Task Orchestrator_builds_view_model_details_from_api()
+        public async Task Orchestrator_builds_details_viewmodel_from_api()
         {
             var expectedApplicationDetails = GetApplicationsPending().First();
             _apiClient.Setup(x => x.GetOversightDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
@@ -70,6 +69,8 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(expectedApplicationDetails.OrganisationName, actualViewModel.OrganisationName);
             Assert.AreEqual(expectedApplicationDetails.ProviderRoute, actualViewModel.ProviderRoute);
             Assert.AreEqual(expectedApplicationDetails.Ukprn, actualViewModel.Ukprn);
+            Assert.AreEqual(expectedApplicationDetails.OversightStatus, actualViewModel.OversightStatus);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationStatus, actualViewModel.ApplicationStatus);
         }
 
 
@@ -120,7 +121,8 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                     ApplicationReferenceNumber = "APR000132",
                     ApplicationSubmittedDate = new DateTime(2019, 10, 21),
                     ApplicationDeterminedDate = new DateTime(2019, 10, 01),
-                    OversightStatus = OversightReviewStatus.Successful
+                    OversightStatus = OversightReviewStatus.Successful,
+                    ApplicationStatus = ApplicationStatus.Approved
                 },
                 new OverallOutcomeDetails
                 {
@@ -130,7 +132,8 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                     ApplicationReferenceNumber = "APR000120",
                     ApplicationSubmittedDate = new DateTime(2019, 10, 20),
                     ApplicationDeterminedDate = new DateTime(2019, 10, 29),
-                    OversightStatus = OversightReviewStatus.Unsuccessful
+                    OversightStatus = OversightReviewStatus.Unsuccessful,
+                    ApplicationStatus = ApplicationStatus.Rejected
                 }
             };
         }

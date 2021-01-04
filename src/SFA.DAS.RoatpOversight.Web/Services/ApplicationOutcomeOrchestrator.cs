@@ -19,16 +19,17 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             _registerApiClient = registerApiClient;
             _logger = logger;
         }
-        public async Task<bool> RecordOutcome(Guid applicationId, string outcome, string updatedBy)
+
+        public async Task<bool> RecordOutcome(Guid applicationId, string outcome, string userId, string userName)
         {
             _logger.LogInformation($"Recording an oversight outcome of {outcome} for application {applicationId}");
 
             var updateOutcomeCommand = new RecordOversightOutcomeCommand
             {
-                ApplicationDeterminedDate = DateTime.Today,
                 ApplicationId = applicationId,
                 OversightStatus = outcome,
-                UserName = updatedBy
+                UserId = userId,
+                UserName = userName
             };
 
             var updateOutcomeSuccess = await _applicationApiClient.RecordOutcome(updateOutcomeCommand);
@@ -41,17 +42,17 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
                 var updateRegisterResult = await _registerApiClient.CreateOrganisation(request);
 
-                return await Task.FromResult(updateRegisterResult);
+                return updateRegisterResult;
             }
 
-            return await Task.FromResult(updateOutcomeSuccess);
+            return updateOutcomeSuccess;
         }
 
         private static CreateRoatpOrganisationRequest BuildCreateOrganisationRequest(RecordOversightOutcomeCommand updateOutcomeCommand, RoatpRegistrationDetails registrationDetails)
         {
             return new CreateRoatpOrganisationRequest
             {
-                ApplicationDeterminedDate = updateOutcomeCommand.ApplicationDeterminedDate,
+                ApplicationDeterminedDate = DateTime.Now,
                 CharityNumber = registrationDetails.CharityNumber,
                 CompanyNumber = registrationDetails.CompanyNumber,
                 FinancialTrackRecord = true,

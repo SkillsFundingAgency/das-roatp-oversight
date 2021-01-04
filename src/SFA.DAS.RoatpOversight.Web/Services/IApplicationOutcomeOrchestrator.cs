@@ -5,6 +5,6 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 {
     public interface IApplicationOutcomeOrchestrator
     {
-        Task<bool> RecordOutcome(Guid applicationId, string outcome, string updatedBy);
+        Task<bool> RecordOutcome(Guid applicationId, string outcome, string userId, string userName);
     }
 }

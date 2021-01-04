@@ -6,6 +6,7 @@ using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Services;
 using System;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 {
@@ -17,6 +18,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         private Mock<ILogger<ApplicationOutcomeOrchestrator>> _logger;
         private ApplicationOutcomeOrchestrator _orchestrator;
         private const string UserName = "test user";
+        private const string UserId = "testUser";
         private Guid _applicationId;
 
         [SetUp]
@@ -29,7 +31,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         }
 
         [Test]
-        public void Application_status_and_register_updated_for_a_successful_oversight_review()
+        public async Task Application_status_and_register_updated_for_a_successful_oversight_review()
         {
             _applicationApiClient.Setup(x => x.RecordOutcome(It.Is<RecordOversightOutcomeCommand>(y => y.ApplicationId == _applicationId))).ReturnsAsync(true);
 
@@ -50,7 +52,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 
             _orchestrator = new ApplicationOutcomeOrchestrator(_applicationApiClient.Object, _roatpRegisterApiClient.Object, _logger.Object);
 
-            var result = _orchestrator.RecordOutcome(_applicationId, OversightReviewStatus.Successful, UserName).GetAwaiter().GetResult();
+            var result = await _orchestrator.RecordOutcome(_applicationId, OversightReviewStatus.Successful, UserId, UserName);
 
             result.Should().BeTrue();
 
@@ -61,13 +63,13 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
     
 
         [Test]
-        public void Application_status_updated_only_for_an_unsuccessful_oversight_review()
+        public async Task Application_status_updated_only_for_an_unsuccessful_oversight_review()
         {
             _applicationApiClient.Setup(x => x.RecordOutcome(It.Is<RecordOversightOutcomeCommand>(y => y.ApplicationId == _applicationId))).ReturnsAsync(true);
 
             _orchestrator = new ApplicationOutcomeOrchestrator(_applicationApiClient.Object, _roatpRegisterApiClient.Object, _logger.Object);
 
-            var result = _orchestrator.RecordOutcome(_applicationId, OversightReviewStatus.Unsuccessful, UserName).GetAwaiter().GetResult();
+            var result = await _orchestrator.RecordOutcome(_applicationId, OversightReviewStatus.Unsuccessful, UserId, UserName);
 
             result.Should().BeTrue();
 

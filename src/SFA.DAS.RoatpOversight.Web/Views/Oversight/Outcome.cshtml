@@ -6,7 +6,9 @@
     ViewData["Title"] = "Outcome";
 }
 @{
-    var formGroupError = Model.ErrorMessages != null && Model.ErrorMessages.Any() ? "govuk-form-group--error" : "";
+    var gatewayOutcomeFormGroupError = Model.ErrorMessages.Where(x=>x.Field=="ApproveGateway").Count() > 0 ? "govuk-form-group--error" : "";
+    var moderationOutcomeFormGroupError = Model.ErrorMessages.Where(x=>x.Field=="ApproveModeration").Count() > 0 ? "govuk-form-group--error" : "";
+    var overallOutcomeFormGroupError = Model.ErrorMessages.Where(x=>x.Field=="Status").Count() > 0 ? "govuk-form-group--error" : "";
 }
 
 <div class="govuk-breadcrumbs">
@@ -33,9 +35,9 @@
                     </h2>
                     <div class="govuk-error-summary__body">
                         <ul class="govuk-list govuk-error-summary__list">
-                            <li>
-                                @foreach (var error in Model.ErrorMessages)
-                                {
+                            @foreach (var error in Model.ErrorMessages)
+                            {
+                                <li>
                                     @if (error.Field == "Status")
                                     {
                                         <a href="#OptionSuccessful">@error.ErrorMessage</a>
@@ -50,210 +52,224 @@
                                     {
                                         <a href="#OptionApproveModerationYes">@error.ErrorMessage</a>
                                     }
-                                }
-                            </li>
+                                </li>
+                            }
                         </ul>
                     </div>
                 </div>
             }
 
-        @{
+            @{
+                var radioGatewayApproved = string.Equals(Model.ApproveGateway, ApprovalStatus.Approve, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+                var radioGatewayOverturned = string.Equals(Model.ApproveGateway, ApprovalStatus.Overturn, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+                var radioModerationApproved = string.Equals(Model.ApproveModeration, ApprovalStatus.Approve, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+                var radioModerationOverturned = string.Equals(Model.ApproveModeration, ApprovalStatus.Overturn, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
 
-            var radioGatewayApproved = string.Equals(Model.ApproveGateway, ApprovalStatus.Approve, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-            var radioGatewayOverturned = string.Equals(Model.ApproveGateway, ApprovalStatus.Overturn, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-            var radioModerationApproved = string.Equals(Model.ApproveModeration, ApprovalStatus.Approve, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-            var radioModerationOverturned = string.Equals(Model.ApproveModeration, ApprovalStatus.Overturn, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-
-            var radioCheckedSuccessful = string.Equals(Model.OversightStatus, OversightReviewStatus.Successful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-            var radioCheckedSuccessfulAlreadyActive = string.Equals(Model.OversightStatus, OversightReviewStatus.SuccessfulAlreadyActive, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-            var radioCheckedSuccessfulFitnessForFunding = string.Equals(Model.OversightStatus, OversightReviewStatus.SuccessfulFitnessForFunding, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-            var radioCheckedUnsuccessful = string.Equals(Model.OversightStatus, OversightReviewStatus.Unsuccessful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-            var radioCheckedInProgress = string.Equals(Model.OversightStatus, OversightReviewStatus.InProgress, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+                var radioCheckedSuccessful = string.Equals(Model.OversightStatus, OversightReviewStatus.Successful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+                var radioCheckedSuccessfulAlreadyActive = string.Equals(Model.OversightStatus, OversightReviewStatus.SuccessfulAlreadyActive, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+                var radioCheckedSuccessfulFitnessForFunding = string.Equals(Model.OversightStatus, OversightReviewStatus.SuccessfulFitnessForFunding, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+                var radioCheckedUnsuccessful = string.Equals(Model.OversightStatus, OversightReviewStatus.Unsuccessful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+                var radioCheckedInProgress = string.Equals(Model.OversightStatus, OversightReviewStatus.InProgress, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
             }
 
             <form asp-action="Outcome" asp-controller="Oversight">
                 <input type="hidden" asp-for="ApplicationId" />
 
-                <div class="govuk-form-group @formGroupError">
+                @* <div class="govuk-form-group @formGroupError"> *@
+
+
+                <h1 class="govuk-heading-xl">Application summary</h1>
+
+                <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            UKPRN
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.Ukprn
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Legal Name
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.OrganisationName
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Provider route
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.ProviderRoute
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Application reference
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.ApplicationReferenceNumber
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Applicant's email address
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.ApplicationEmailAddress
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Application submitted date
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.ApplicationSubmittedDate.ToSfaShortDateString()
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Assessment outcome
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @{
+                                var assessmentOutcomeTagClass = @Model.AssessmentOutcome == "Passed" ? "das-tag--solid-green" : "das-tag--solid-red";
+                            }
+
+                            <strong class="das-tag @assessmentOutcomeTagClass">
+                                @Model.AssessmentOutcome
+                            </strong>
+                        </dd> 
+                    </div>
+                </dl>
+
+                <h2 class="govuk-heading-l">Outcome details</h2>
+
+                
+
+                <div class="govuk-form-group @gatewayOutcomeFormGroupError">
                     <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-heading-xl">Application summary</h1>
-                        </legend>
-
-                        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    UKPRN
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @Model.Ukprn
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Legal Name
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @Model.OrganisationName
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Provider route
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @Model.ProviderRoute
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Application reference
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @Model.ApplicationReferenceNumber
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Applicant's email address
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @Model.ApplicationEmailAddress
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Application submitted date
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @Model.ApplicationSubmittedDate.ToSfaShortDateString()
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Assessment outcome
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-
-                                    @Model.AssessmentOutcome
-                                    @* Greg this is a logically derived field, so will always be either 'Failed' or 'Passed' *@
-                                </dd> 
-                            </div>
-                        </dl>
-
-
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h2 class="govuk-heading-l">Outcome details</h2>
-                        </legend>
-
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-m">Gateway outcome</h2>
                         </legend>
 
-                    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Outcome
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @if (Model.GatewayReviewStatus == GatewayReviewStatus.Pass)
-                                {
-                                    <text>Passed</text>
-                                }
-                                else
-                                {
-                                    <text>Failed</text>
-                                }
-                                
-                            </dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Outcome made date
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @Model.GatewayOutcomeMadeDate.ToSfaShortDateString()
-                            </dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Outcome made by
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @Model.GatewayOutcomeMadeBy
-                            </dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Comments
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @if (string.IsNullOrEmpty(Model.GatewayComments))
-                                {
-                                    <text>N/A</text>
-                                }
-                                else
-                                {
-                                    @Model.GatewayComments
-                                }
-                            </dd>
-                        </div>
-                    </dl>
-                    @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
-                    {
-                        @foreach (var error in Model.ErrorMessages.Where(x=>x.Field=="ApproveGateway"))
+                        <dl class="govuk-summary-list">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Outcome
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @if (Model.GatewayReviewStatus == GatewayReviewStatus.Pass)
+                                    {
+                                        <strong class="das-tag das-tag--solid-green">
+                                            Passed
+                                        </strong>
+                                    }
+                                    else
+                                    {
+                                        <strong class="das-tag das-tag--solid-red">
+                                            Failed
+                                        </strong>
+                                    }
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Outcome made date
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @Model.GatewayOutcomeMadeDate.ToSfaShortDateString()
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Outcome made by
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @Model.GatewayOutcomeMadeBy
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Comments
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @if (string.IsNullOrEmpty(Model.GatewayComments))
+                                    {
+                                        <text>N/A</text>
+                                    }
+                                    else
+                                    {
+                                        @Model.GatewayComments
+                                    }
+                                </dd>
+                            </div>
+                        </dl>
+
+                        @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
                         {
-                            <span class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
-                            </span>
+                            @foreach (var error in Model.ErrorMessages.Where(x=>x.Field=="ApproveGateway"))
+                            {
+                                <span class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
+                                </span>
+                            }
                         }
-                    }
-                        <div class="govuk-radios">
+
+                        <div class="govuk-radios govuk-radios--inline">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                       type="radio"
-                                       id="OptionApproveGatewayYes"
-                                       name="ApproveGateway"
-                                       value=@ApprovalStatus.Approve
-                                       data-aria-controls="conditional-OptionYes"
-                                       @radioGatewayApproved />
+                                    type="radio"
+                                    id="OptionApproveGatewayYes"
+                                    name="ApproveGateway"
+                                    value=@ApprovalStatus.Approve
+                                    data-aria-controls="conditional-OptionYes"
+                                    @radioGatewayApproved />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayYes">
                                     Approve this outcome
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                       type="radio"
-                                       id="OptionApproveGatewayNo"
-                                       name="ApproveGateway"
-                                       value=@ApprovalStatus.Overturn
-                                       data-aria-controls="conditional-OptionNo"
-                                       @radioGatewayOverturned />
+                                    type="radio"
+                                    id="OptionApproveGatewayNo"
+                                    name="ApproveGateway"
+                                    value=@ApprovalStatus.Overturn
+                                    data-aria-controls="conditional-OptionNo"
+                                    @radioGatewayOverturned />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayNo">
                                     Overturn this outcome
                                 </label>
                             </div>
                         </div>
+                    </fieldset>
+                </div>
 
-                        <br />
-
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-m">Financial health outcome</h2>
                         </legend>
-                        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                        <dl class="govuk-summary-list">
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
                                     Outcome
                                 </dt>
+                                <dd class="govuk-summary-list__value">
                                     @if (Model.FinancialReviewStatus == FinancialReviewStatus.Pass)
                                     {
-                                        <text>Passed</text>
+                                        <strong class="das-tag das-tag--solid-green">
+                                            Passed
+                                        </strong>
                                     }
                                     else
                                     {
-                                        <text>Failed</text>
+                                        <strong class="das-tag das-tag--solid-red">
+                                            Failed
+                                        </strong>
                                     }
-
                                 </dd>
                             </div>
                             <div class="govuk-summary-list__row">
@@ -281,99 +297,111 @@
                                 </dd>
                             </div>
                         </dl>
+                    </fieldset>
+                </div>
 
-                        <br />
+                <div class="govuk-form-group @moderationOutcomeFormGroupError">
+                    <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-m">Moderation outcome</h2>
                         </legend>
 
-                    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Outcome
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @if (Model.ModerationReviewStatus == ModerationReviewStatus.Pass)
-                                {
-                                    <text>Passed</text>
-                                }
-                                else
-                                {
-                                    <text>Failed</text>
-                                }
-                            </dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Outcome made date
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @Model.ModerationOutcomeMadeOn.ToSfaShortDateString()
-                            </dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Moderated by
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @Model.ModeratedBy
-                            </dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Comments
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @if (string.IsNullOrEmpty(Model.ModerationComments))
-                                {
-                                    <text>N/A</text>
-                                }
-                                else
-                                {
-                                    @Model.ModerationComments
-                                }
-                            </dd>
-                        </div>
-                    </dl>
-                    @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
-                    {
-                        @foreach (var error in Model.ErrorMessages.Where(x=>x.Field=="ApproveModeration"))
+                        <dl class="govuk-summary-list">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Outcome
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @if (Model.ModerationReviewStatus == ModerationReviewStatus.Pass)
+                                    {
+                                        <strong class="das-tag das-tag--solid-green">
+                                            Passed
+                                        </strong>
+                                    }
+                                    else
+                                    {
+                                        <strong class="das-tag das-tag--solid-red">
+                                            Failed
+                                        </strong>
+                                    }
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Outcome made date
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @Model.ModerationOutcomeMadeOn.ToSfaShortDateString()
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Moderated by
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @Model.ModeratedBy
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Comments
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @if (string.IsNullOrEmpty(Model.ModerationComments))
+                                    {
+                                        <text>N/A</text>
+                                    }
+                                    else
+                                    {
+                                        @Model.ModerationComments
+                                    }
+                                </dd>
+                            </div>
+                        </dl>
+                        @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
                         {
-                            <span class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
-                            </span>
+                            @foreach (var error in Model.ErrorMessages.Where(x=>x.Field=="ApproveModeration"))
+                            {
+                                <span class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
+                                </span>
+                            }
                         }
-                    }
-                        <div class="govuk-radios">
+                        <div class="govuk-radios govuk-radios--inline">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                       type="radio"
-                                       id="OptionApproveModerationYes"
-                                       name="ApproveModeration"
-                                       value=@ApprovalStatus.Approve
-                                       data-aria-controls="conditional-OptionYes"
-                                       @radioModerationApproved />
+                                    type="radio"
+                                    id="OptionApproveModerationYes"
+                                    name="ApproveModeration"
+                                    value=@ApprovalStatus.Approve
+                                    data-aria-controls="conditional-OptionYes"
+                                    @radioModerationApproved />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveModerationYes">
                                     Approve this outcome
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                       type="radio"
-                                       id="OptionApproveModerationNo"
-                                       name="ApproveModeration"
-                                       value=@ApprovalStatus.Overturn
-                                       data-aria-controls="conditional-OptionNo"
-                                       @radioModerationOverturned />
+                                    type="radio"
+                                    id="OptionApproveModerationNo"
+                                    name="ApproveModeration"
+                                    value=@ApprovalStatus.Overturn
+                                    data-aria-controls="conditional-OptionNo"
+                                    @radioModerationOverturned />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveModerationNo">
                                     Overturn this outcome
                                 </label>
                             </div>
                         </div>
+                    </fieldset>
+                </div>
 
-                        <br />
-                        <p class="govuk-body">We'll send this outcome to the applicant.</p>
-
+                <div class="govuk-form-group @overallOutcomeFormGroupError">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h2 class="govuk-heading-l">What is the overall outcome of this application?</h2>
+                        </legend>
+                        
                         @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
                         {
                             @foreach (var error in Model.ErrorMessages.Where(x=>x.Field=="Status"))
@@ -384,69 +412,69 @@
                             }
                         }
 
-                    <div class="govuk-radios">
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input"
-                                   type="radio"
-                                   id="OptionSuccessful"
-                                   name="OversightStatus"
-                                   value=@OversightReviewStatus.Successful
-                                   data-aria-controls="conditional-OptionSuccessful"
-                                   @radioCheckedSuccessful />
-                            <label class="govuk-label govuk-radios__label" for="OptionSuccessful">
-                                @OversightReviewStatus.Successful
-                            </label>
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                    type="radio"
+                                    id="OptionSuccessful"
+                                    name="OversightStatus"
+                                    value=@OversightReviewStatus.Successful
+                                    data-aria-controls="conditional-OptionSuccessful"
+                                    @radioCheckedSuccessful />
+                                <label class="govuk-label govuk-radios__label" for="OptionSuccessful">
+                                    @OversightReviewStatus.Successful
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                    type="radio"
+                                    id="OptionSuccessfulAlreadyActive"
+                                    name="OversightStatus"
+                                    value=@OversightReviewStatus.SuccessfulAlreadyActive
+                                    data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
+                                    @radioCheckedSuccessfulAlreadyActive />
+                                <label class="govuk-label govuk-radios__label" for="OptionSuccessfulAlreadyActive">
+                                    @OversightReviewStatus.SuccessfulAlreadyActive
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                    type="radio"
+                                    id="OptionSuccessfulFitnessForFunding"
+                                    name="OversightStatus"
+                                    value=@OversightReviewStatus.SuccessfulFitnessForFunding
+                                    data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
+                                    @radioCheckedSuccessfulFitnessForFunding />
+                                <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
+                                    @OversightReviewStatus.SuccessfulFitnessForFunding
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                    type="radio"
+                                    id="OptionNo"
+                                    name="OversightStatus"
+                                    value=@OversightReviewStatus.Unsuccessful
+                                    data-aria-controls="conditional-OptionNo"
+                                    @radioCheckedUnsuccessful />
+                                <label class="govuk-label govuk-radios__label" for="OptionNo">
+                                    Unsuccessful application
+                                </label>
+                            </div>
+                            <div class="govuk-radios__divider">or</div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                    type="radio"
+                                    id="OptionInProgress"
+                                    name="OversightStatus"
+                                    value=@OversightReviewStatus.InProgress
+                                    data-aria-controls="conditional-OptionInProgress"
+                                    @radioCheckedInProgress />
+                                <label class="govuk-label govuk-radios__label" for="OptionInProgress">
+                                    Set to 'in progress'
+                                </label>
+                            </div>
                         </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input"
-                                   type="radio"
-                                   id="OptionSuccessfulAlreadyActive"
-                                   name="OversightStatus"
-                                   value=@OversightReviewStatus.SuccessfulAlreadyActive
-                                   data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
-                                   @radioCheckedSuccessfulAlreadyActive />
-                            <label class="govuk-label govuk-radios__label" for="OptionSuccessfulAlreadyActive">
-                                @OversightReviewStatus.SuccessfulAlreadyActive
-                            </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input"
-                                   type="radio"
-                                   id="OptionSuccessfulFitnessForFunding"
-                                   name="OversightStatus"
-                                   value=@OversightReviewStatus.SuccessfulFitnessForFunding
-                                   data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
-                                   @radioCheckedSuccessfulFitnessForFunding />
-                            <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
-                                @OversightReviewStatus.SuccessfulFitnessForFunding
-                            </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input"
-                                   type="radio"
-                                   id="OptionNo"
-                                   name="OversightStatus"
-                                   value=@OversightReviewStatus.Unsuccessful
-                                   data-aria-controls="conditional-OptionNo"
-                                   @radioCheckedUnsuccessful />
-                            <label class="govuk-label govuk-radios__label" for="OptionNo">
-                                Unsuccessful application
-                            </label>
-                        </div>
-                        <div>or</div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input"
-                                   type="radio"
-                                   id="OptionInProgress"
-                                   name="OversightStatus"
-                                   value=@OversightReviewStatus.InProgress
-                                   data-aria-controls="conditional-OptionInProgress"
-                                   @radioCheckedInProgress />
-                            <label class="govuk-label govuk-radios__label" for="OptionInProgress">
-                                Set to 'in progress'
-                            </label>
-                        </div>
-                    </div>
                     </fieldset>
                 </div>
 

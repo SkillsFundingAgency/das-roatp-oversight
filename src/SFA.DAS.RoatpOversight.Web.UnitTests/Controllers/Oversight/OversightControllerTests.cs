@@ -8,6 +8,7 @@ using NUnit.Framework;
 using SFA.DAS.AdminService.Common.Testing.MockedObjects;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Controllers;
+using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
 
@@ -99,8 +100,8 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var status = OversightReviewStatus.Successful;
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
 
-            var result = await _controller.EvaluateOutcome(_applicationDetailsApplicationId, status) as ViewResult;
-            var actualViewModel = result?.Model as OutcomeSuccessStatusViewModel;
+            var result = await _controller.EvaluateOutcome(_applicationDetailsApplicationId, status, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass) as ViewResult;
+            var actualViewModel = result?.Model as OutcomeStatusViewModel;
 
             Assert.That(result, Is.Not.Null);
             Assert.That(actualViewModel, Is.Not.Null);
@@ -108,7 +109,6 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(expectedViewModel.ApplicationId,actualViewModel.ApplicationId);
             Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationId);
         }
-
 
         [Test]
         public async Task EvaluateOutcome_posts_unsuccessful_answer_returns_unsuccessful_view_as_expected()
@@ -118,8 +118,8 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var status = OversightReviewStatus.Unsuccessful;
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
 
-            var result = await _controller.EvaluateOutcome(_applicationDetailsApplicationId, status) as ViewResult;
-            var actualViewModel = result?.Model as OutcomeSuccessStatusViewModel;
+            var result = await _controller.EvaluateOutcome(_applicationDetailsApplicationId, status, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass) as ViewResult;
+            var actualViewModel = result?.Model as OutcomeStatusViewModel;
 
             Assert.That(result, Is.Not.Null);
             Assert.That(actualViewModel, Is.Not.Null);
@@ -128,8 +128,6 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationId);
         }
 
-
-
         [Test]
         public async Task EvaluateOutcome_posts_no_answer_returns_original_view_with_error_messages_as_expected()
         {
@@ -137,7 +135,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var status = string.Empty;
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId)).ReturnsAsync(viewModel);
 
-            var result = await _controller.EvaluateOutcome(_applicationDetailsApplicationId, status) as ViewResult;
+            var result = await _controller.EvaluateOutcome(_applicationDetailsApplicationId, status, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass) as ViewResult;
             var actualViewModel = result?.Model as OutcomeViewModel;
 
             Assert.That(result, Is.Not.Null);

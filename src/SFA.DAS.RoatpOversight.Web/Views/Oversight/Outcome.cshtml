@@ -3,12 +3,24 @@
 @using SFA.DAS.RoatpOversight.Web.Domain
 @model SFA.DAS.RoatpOversight.Web.ViewModels.OutcomeViewModel
 @{
-    ViewData["Title"] = "Outcome";
+    ViewData["Title"] = "RoATP application outcomes - Application summary";
 }
+
 @{
-    var gatewayOutcomeFormGroupError = Model.ErrorMessages.Where(x=>x.Field=="ApproveGateway").Count() > 0 ? "govuk-form-group--error" : "";
-    var moderationOutcomeFormGroupError = Model.ErrorMessages.Where(x=>x.Field=="ApproveModeration").Count() > 0 ? "govuk-form-group--error" : "";
-    var overallOutcomeFormGroupError = Model.ErrorMessages.Where(x=>x.Field=="Status").Count() > 0 ? "govuk-form-group--error" : "";
+    var gatewayOutcomeFormGroupError = Model.ErrorMessages != null && Model.ErrorMessages.Any() && Model.ErrorMessages.Where(x=>x.Field=="ApproveGateway").Count() > 0 ? "govuk-form-group--error" : "";
+    var moderationOutcomeFormGroupError = Model.ErrorMessages != null && Model.ErrorMessages.Any() && Model.ErrorMessages.Where(x=>x.Field=="ApproveModeration").Count() > 0 ? "govuk-form-group--error" : "";
+    var overallOutcomeFormGroupError = Model.ErrorMessages != null && Model.ErrorMessages.Any() && Model.ErrorMessages.Where(x=>x.Field=="Status").Count() > 0 ? "govuk-form-group--error" : "";
+
+    var radioGatewayApproved = string.Equals(Model.ApproveGateway, ApprovalStatus.Approve, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+    var radioGatewayOverturned = string.Equals(Model.ApproveGateway, ApprovalStatus.Overturn, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+    var radioModerationApproved = string.Equals(Model.ApproveModeration, ApprovalStatus.Approve, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+    var radioModerationOverturned = string.Equals(Model.ApproveModeration, ApprovalStatus.Overturn, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+
+    var radioCheckedSuccessful = string.Equals(Model.OversightStatus, OversightReviewStatus.Successful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+    var radioCheckedSuccessfulAlreadyActive = string.Equals(Model.OversightStatus, OversightReviewStatus.SuccessfulAlreadyActive, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+    var radioCheckedSuccessfulFitnessForFunding = string.Equals(Model.OversightStatus, OversightReviewStatus.SuccessfulFitnessForFunding, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+    var radioCheckedUnsuccessful = string.Equals(Model.OversightStatus, OversightReviewStatus.Unsuccessful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+    var radioCheckedInProgress = string.Equals(Model.OversightStatus, OversightReviewStatus.InProgress, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
 }
 
 <div class="govuk-breadcrumbs">
@@ -59,95 +71,85 @@
                 </div>
             }
 
-            @{
-                var radioGatewayApproved = string.Equals(Model.ApproveGateway, ApprovalStatus.Approve, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-                var radioGatewayOverturned = string.Equals(Model.ApproveGateway, ApprovalStatus.Overturn, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-                var radioModerationApproved = string.Equals(Model.ApproveModeration, ApprovalStatus.Approve, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-                var radioModerationOverturned = string.Equals(Model.ApproveModeration, ApprovalStatus.Overturn, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
+            <span class="govuk-caption-xl">
+                RoATP application outcomes
+            </span>
+            <h1 class="govuk-heading-xl">Application summary</h1>
 
-                var radioCheckedSuccessful = string.Equals(Model.OversightStatus, OversightReviewStatus.Successful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-                var radioCheckedSuccessfulAlreadyActive = string.Equals(Model.OversightStatus, OversightReviewStatus.SuccessfulAlreadyActive, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-                var radioCheckedSuccessfulFitnessForFunding = string.Equals(Model.OversightStatus, OversightReviewStatus.SuccessfulFitnessForFunding, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-                var radioCheckedUnsuccessful = string.Equals(Model.OversightStatus, OversightReviewStatus.Unsuccessful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-                var radioCheckedInProgress = string.Equals(Model.OversightStatus, OversightReviewStatus.InProgress, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-            }
+            <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        UKPRN
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.Ukprn
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Legal Name
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.OrganisationName
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Provider route
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.ProviderRoute
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Application reference
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.ApplicationReferenceNumber
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Applicant's email address
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.ApplicationEmailAddress
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Application submitted date
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.ApplicationSubmittedDate.ToSfaShortDateString()
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Assessment outcome
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @{
+                            var assessmentOutcomeTagClass = @Model.AssessmentOutcome == "Passed" ? "das-tag--solid-green" : "das-tag--solid-red";
+                        }
+
+                        <strong class="das-tag @assessmentOutcomeTagClass">
+                            @Model.AssessmentOutcome
+                        </strong>
+                    </dd> 
+                </div>
+            </dl>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
 
             <form asp-action="Outcome" asp-controller="Oversight">
                 <input type="hidden" asp-for="ApplicationId" />
 
-                @* <div class="govuk-form-group @formGroupError"> *@
-
-
-                <h1 class="govuk-heading-xl">Application summary</h1>
-
-                <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            UKPRN
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @Model.Ukprn
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Legal Name
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @Model.OrganisationName
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Provider route
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @Model.ProviderRoute
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Application reference
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @Model.ApplicationReferenceNumber
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Applicant's email address
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @Model.ApplicationEmailAddress
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Application submitted date
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @Model.ApplicationSubmittedDate.ToSfaShortDateString()
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Assessment outcome
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @{
-                                var assessmentOutcomeTagClass = @Model.AssessmentOutcome == "Passed" ? "das-tag--solid-green" : "das-tag--solid-red";
-                            }
-
-                            <strong class="das-tag @assessmentOutcomeTagClass">
-                                @Model.AssessmentOutcome
-                            </strong>
-                        </dd> 
-                    </div>
-                </dl>
-
                 <h2 class="govuk-heading-l">Outcome details</h2>
-
-                
 
                 <div class="govuk-form-group @gatewayOutcomeFormGroupError">
                     <fieldset class="govuk-fieldset">
@@ -198,7 +200,7 @@
                                 <dd class="govuk-summary-list__value">
                                     @if (string.IsNullOrEmpty(Model.GatewayComments))
                                     {
-                                        <text>N/A</text>
+                                        <text>Not applicable</text>
                                     }
                                     else
                                     {
@@ -218,7 +220,7 @@
                             }
                         }
 
-                        <div class="govuk-radios govuk-radios--inline">
+                        <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
                                     type="radio"
@@ -367,7 +369,7 @@
                                 </span>
                             }
                         }
-                        <div class="govuk-radios govuk-radios--inline">
+                        <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
                                     type="radio"

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpOversight.Domain;
+using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Settings;
@@ -55,7 +56,6 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(actualViewModel.OverallOutcomeDetails.First().Ukprn, expectedViewModel.OverallOutcomeDetails.First().Ukprn);
         }
 
-        [Test]
         public async Task Orchestrator_builds_details_viewmodel_from_api()
         {
             var expectedApplicationDetails = GetApplicationsPending().First();
@@ -71,6 +71,21 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(expectedApplicationDetails.Ukprn, actualViewModel.Ukprn);
             Assert.AreEqual(expectedApplicationDetails.OversightStatus, actualViewModel.OversightStatus);
             Assert.AreEqual(expectedApplicationDetails.ApplicationStatus, actualViewModel.ApplicationStatus);
+            Assert.AreEqual("Failed", actualViewModel.AssessmentOutcome );
+            Assert.AreEqual(expectedApplicationDetails.ApplicationEmailAddress, actualViewModel.ApplicationEmailAddress);
+            Assert.AreEqual(expectedApplicationDetails.AssessorReviewStatus, actualViewModel.AssessorReviewStatus); 
+            Assert.AreEqual(expectedApplicationDetails.GatewayReviewStatus, actualViewModel.GatewayReviewStatus); 
+            Assert.AreEqual(expectedApplicationDetails.GatewayOutcomeMadeDate, actualViewModel.GatewayOutcomeMadeDate); 
+            Assert.AreEqual(expectedApplicationDetails.GatewayOutcomeMadeBy, actualViewModel.GatewayOutcomeMadeBy); 
+            Assert.AreEqual(expectedApplicationDetails.GatewayComments, actualViewModel.GatewayComments); 
+            Assert.AreEqual(expectedApplicationDetails.FinancialReviewStatus, actualViewModel.FinancialReviewStatus); 
+            Assert.AreEqual(expectedApplicationDetails.FinancialGradeAwarded, actualViewModel.FinancialGradeAwarded); 
+            Assert.AreEqual(expectedApplicationDetails.FinancialHealthAssessedOn, actualViewModel.FinancialHealthAssessedOn);
+            Assert.AreEqual(expectedApplicationDetails.FinancialHealthAssessedBy, actualViewModel.FinancialHealthAssessedBy); 
+            Assert.AreEqual(expectedApplicationDetails.ModerationReviewStatus, actualViewModel.ModerationReviewStatus); 
+            Assert.AreEqual(expectedApplicationDetails.ModerationOutcomeMadeOn, actualViewModel.ModerationOutcomeMadeOn); 
+            Assert.AreEqual(expectedApplicationDetails.ModeratedBy, actualViewModel.ModeratedBy);
+            Assert.AreEqual(expectedApplicationDetails.ModerationComments, actualViewModel.ModerationComments);
         }
 
 
@@ -85,7 +100,21 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                     Ukprn = "123456768",
                     ProviderRoute = "Main",
                     ApplicationReferenceNumber = "APR000175",
-                    ApplicationSubmittedDate = new DateTime(2019, 10, 21)
+                    ApplicationSubmittedDate = new DateTime(2019, 10, 21),
+                    ApplicationEmailAddress = "test@test.com",
+                    AssessorReviewStatus = "Pass",
+                    GatewayReviewStatus = GatewayReviewStatus.Pass,
+                    GatewayOutcomeMadeDate  = DateTime.Today,
+                    GatewayOutcomeMadeBy = "joe",
+                    GatewayComments = "gateway commments",
+                    FinancialReviewStatus = FinancialReviewStatus.Pass,
+                    FinancialGradeAwarded = "Outstanding",
+                    FinancialHealthAssessedOn = DateTime.Today,
+                    FinancialHealthAssessedBy  = "josephine",
+                    ModerationReviewStatus= ModerationReviewStatus.Pass,
+                    ModerationOutcomeMadeOn = DateTime.Today,
+                    ModeratedBy = "Lesley",
+                    ModerationComments = "moderation comments"
                 },
                 new ApplicationDetails
                 {

@@ -6,8 +6,8 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
     public static class OversightValidator
     {
         public const string MissingOverallOutcomeErrorMessage = "Select the overall outcome of this application";
-        public const string MissingGatewayOutcomeErrorMessage = "Select what you want to do";
-        public const string MissingModerationOutcomeErrorMessage = "Select what you want to do";
+        public const string MissingGatewayOutcomeErrorMessage = "Select the gateway outcome for this application";
+        public const string MissingModerationOutcomeErrorMessage = "Select the moderation outcome for this application";
 
         public const string MissingOutcomeSuccessfulErrorMessage =
             "Select if you're sure this is a successful application";

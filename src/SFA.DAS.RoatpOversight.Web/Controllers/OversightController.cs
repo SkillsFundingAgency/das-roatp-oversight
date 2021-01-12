@@ -55,6 +55,11 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             viewModel.ApproveGateway = command.ApproveGateway;
             viewModel.ApproveModeration = command.ApproveModeration;
             viewModel.SuccessfulText = command.SuccessfulText;
+            viewModel.SuccessfulAlreadyActiveText = command.SuccessfulAlreadyActiveText;
+            viewModel.SuccessfulFitnessForFundingText = command.SuccessfulFitnessForFundingText;
+            viewModel.UnsuccessfulText = command.UnsuccessfulText;
+            viewModel.InProgressInternalText = command.InProgressInternalText;
+            viewModel.InProgressExternalText = command.InProgressExternalText;
 
             var errorMessages = OversightValidator.ValidateOverallOutcome(command.OversightStatus, command.ApproveGateway, command.ApproveModeration);
 
@@ -75,7 +80,12 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 ApproveGateway = viewModel.ApproveGateway,
                 ApproveModeration = viewModel.ApproveModeration,
                 OversightStatus = viewModel.OversightStatus,
-                SuccessfulText = viewModel.SuccessfulText
+                SuccessfulText = viewModel.SuccessfulText,
+                SuccessfulAlreadyActiveText = viewModel.SuccessfulAlreadyActiveText,
+                SuccessfulFitnessForFundingText = viewModel.SuccessfulFitnessForFundingText,
+                UnsuccessfulText =  viewModel.UnsuccessfulText,
+                InProgressInternalText = viewModel.InProgressInternalText,
+                InProgressExternalText = viewModel.InProgressExternalText
             };
 
             return View("~/Views/Oversight/OutcomeHoldingPage.cshtml", viewModelStatus);

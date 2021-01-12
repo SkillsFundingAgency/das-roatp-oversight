@@ -9,6 +9,7 @@ using SFA.DAS.RoatpOversight.Web.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.AdminService.Common.Extensions;
+using SFA.DAS.RoatpOversight.Web.Infrastructure;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
 {
@@ -44,17 +45,18 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
 
         [HttpPost("Oversight/Outcome/{applicationId}")]
-        public async Task<IActionResult> EvaluateOutcome(Guid applicationId, string oversightStatus, string approveGateway, string approveModeration)
+        public async Task<IActionResult> EvaluateOutcome(EvaluationOutcomeCommand command) 
         {
-            var viewModel = await _oversightOrchestrator.GetOversightDetailsViewModel(applicationId);
+            var viewModel = await _oversightOrchestrator.GetOversightDetailsViewModel(command.ApplicationId);
             
             if (CheckForBackButtonAfterSubmission(viewModel.OversightStatus, out var outcome)) return outcome;
            
-            viewModel.OversightStatus = oversightStatus;
-            viewModel.ApproveGateway = approveGateway;
-            viewModel.ApproveModeration = approveModeration;
+            viewModel.OversightStatus = command.OversightStatus;
+            viewModel.ApproveGateway = command.ApproveGateway;
+            viewModel.ApproveModeration = command.ApproveModeration;
+            viewModel.SuccessfulText = command.SuccessfulText;
 
-            var errorMessages = OversightValidator.ValidateOverallOutcome(oversightStatus, approveGateway, approveModeration);
+            var errorMessages = OversightValidator.ValidateOverallOutcome(command.OversightStatus, command.ApproveGateway, command.ApproveModeration);
 
             if (errorMessages.Any())
             {
@@ -64,7 +66,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
             var viewModelStatus = new OutcomeStatusViewModel
             {
-                ApplicationId = applicationId,
+                ApplicationId = command.ApplicationId,
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = viewModel.ApplicationSubmittedDate,
                 OrganisationName = viewModel.OrganisationName,
@@ -72,7 +74,8 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 Ukprn = viewModel.Ukprn,
                 ApproveGateway = viewModel.ApproveGateway,
                 ApproveModeration = viewModel.ApproveModeration,
-                OversightStatus = viewModel.OversightStatus
+                OversightStatus = viewModel.OversightStatus,
+                SuccessfulText = viewModel.SuccessfulText
             };
 
             return View("~/Views/Oversight/OutcomeHoldingPage.cshtml", viewModelStatus);

@@ -417,16 +417,32 @@
                         <div class="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionSuccessful"
-                                    name="OversightStatus"
-                                    value=@OversightReviewStatus.Successful
-                                    data-aria-controls="conditional-OptionSuccessful"
-                                    @radioCheckedSuccessful />
+                                       type="radio"
+                                       id="OptionSuccessful"
+                                       name="OversightStatus"
+                                       value=@OversightReviewStatus.Successful
+                                       data-aria-controls="conditional-OptionSuccessful"
+                                       @radioCheckedSuccessful />
                                 <label class="govuk-label govuk-radios__label" for="OptionSuccessful">
                                     @OversightReviewStatus.Successful
                                 </label>
                             </div>
+                            <div class="govuk-radios__conditional" id="conditional-OptionSuccessful">
+                                <div>
+                                    <div class="govuk-form-group">
+                                        <a name="OptionSuccessfulText"></a>
+                                        <label class="govuk-label" for="SuccessfulText">
+                                            Add your internal comments (optional)
+                                        </label>
+                                        <textarea class="govuk-textarea"
+                                          id="SuccessfulText"
+                                          name="SuccessfulText"
+                                          rows="5"
+                                          aria-describedby="OptionApprovedText-info">@Model.SuccessfulText</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
                                     type="radio"

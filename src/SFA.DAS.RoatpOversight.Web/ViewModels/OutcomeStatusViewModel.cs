@@ -18,5 +18,7 @@ namespace SFA.DAS.RoatpOversight.Web.ViewModels
         public string ApproveGateway { get; set; }
         public string ApproveModeration { get; set; }
         public string OversightStatus { get; set; }
+
+        public string SuccessfulText { get; set; }
     }
 }

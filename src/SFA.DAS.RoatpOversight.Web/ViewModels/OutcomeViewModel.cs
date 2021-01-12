@@ -44,6 +44,7 @@ namespace SFA.DAS.RoatpOversight.Web.ViewModels
         public string ApproveModeration { get; set; }
         public string OversightStatus { get; set; }
 
+        public string SuccessfulText { get; set; }   //MFCMFC new element
 
         public string AssessmentOutcome
         {

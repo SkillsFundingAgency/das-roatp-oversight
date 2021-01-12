@@ -32,6 +32,7 @@ namespace SFA.DAS.RoatpOversight.Web.ViewModels
 
         public DateTime? FinancialHealthAssessedOn { get; set; }
         public string FinancialHealthAssessedBy { get; set; }
+        public string FinancialHealthComments { get; set; }
 
         public string ModerationReviewStatus { get; set; }
 

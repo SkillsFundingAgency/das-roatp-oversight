@@ -16,8 +16,8 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [TestCase(OversightReviewStatus.Unsuccessful, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, false)]
         [TestCase(OversightReviewStatus.Successful, "", ModerationReviewStatus.Pass, true)]
         [TestCase(OversightReviewStatus.Unsuccessful, null, ModerationReviewStatus.Pass, true)]
-        [TestCase(OversightReviewStatus.Successful, GatewayReviewStatus.Pass, "", false)]
-        [TestCase(OversightReviewStatus.Unsuccessful, GatewayReviewStatus.Pass, null, false)]
+        [TestCase(OversightReviewStatus.Successful, GatewayReviewStatus.Pass, "", true)]
+        [TestCase(OversightReviewStatus.Unsuccessful, GatewayReviewStatus.Pass, null, true)]
         public void OversightOutcomeValidator_returns_error_when_status_is_empty(string oversightStatus, string approveGateway, string approveModeration, bool errorsExpected)
         {
             var validationDetails = OversightValidator.ValidateOverallOutcome(oversightStatus, approveGateway, approveModeration);

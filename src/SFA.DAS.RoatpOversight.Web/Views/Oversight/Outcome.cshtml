@@ -31,7 +31,7 @@
         <li class="govuk-breadcrumbs__list-item">
             <a class="govuk-breadcrumbs__link" asp-controller="Oversight" asp-action="Applications">RoATP application outcomes</a>
         </li>
-        <li class="govuk-breadcrumbs__list-item" aria-current="page">What's the overall outcome of this application?</li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">Application Summary</li>
     </ol>
 </div>
 
@@ -200,7 +200,7 @@
                                 <dd class="govuk-summary-list__value">
                                     @if (string.IsNullOrEmpty(Model.GatewayComments))
                                     {
-                                        <text>Not applicable</text>
+                                        <text>N/A</text>
                                     }
                                     else
                                     {
@@ -212,7 +212,7 @@
 
                         @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
                         {
-                            @foreach (var error in Model.ErrorMessages.Where(x=>x.Field=="ApproveGateway"))
+                            @foreach (var error in Model.ErrorMessages.Where(x => x.Field == "ApproveGateway"))
                             {
                                 <span class="govuk-error-message">
                                     <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
@@ -223,24 +223,24 @@
                         <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionApproveGatewayYes"
-                                    name="ApproveGateway"
-                                    value=@ApprovalStatus.Approve
-                                    data-aria-controls="conditional-OptionYes"
-                                    @radioGatewayApproved />
+                                       type="radio"
+                                       id="OptionApproveGatewayYes"
+                                       name="ApproveGateway"
+                                       value=@ApprovalStatus.Approve
+                                       data-aria-controls="conditional-OptionYes"
+                                       @radioGatewayApproved />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayYes">
                                     Approve this outcome
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionApproveGatewayNo"
-                                    name="ApproveGateway"
-                                    value=@ApprovalStatus.Overturn
-                                    data-aria-controls="conditional-OptionNo"
-                                    @radioGatewayOverturned />
+                                       type="radio"
+                                       id="OptionApproveGatewayNo"
+                                       name="ApproveGateway"
+                                       value=@ApprovalStatus.Overturn
+                                       data-aria-controls="conditional-OptionNo"
+                                       @radioGatewayOverturned />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayNo">
                                     Overturn this outcome
                                 </label>
@@ -298,6 +298,17 @@
                                     @Model.FinancialHealthAssessedBy
                                 </dd>
                             </div>
+                            @if (!string.IsNullOrEmpty(Model.FinancialHealthComments))
+                            {
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        Comments
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @Model.FinancialHealthComments
+                                    </dd>
+                                </div>
+                            }
                         </dl>
                     </fieldset>
                 </div>
@@ -362,7 +373,7 @@
                         </dl>
                         @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
                         {
-                            @foreach (var error in Model.ErrorMessages.Where(x=>x.Field=="ApproveModeration"))
+                            @foreach (var error in Model.ErrorMessages.Where(x => x.Field == "ApproveModeration"))
                             {
                                 <span class="govuk-error-message">
                                     <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
@@ -372,24 +383,24 @@
                         <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionApproveModerationYes"
-                                    name="ApproveModeration"
-                                    value=@ApprovalStatus.Approve
-                                    data-aria-controls="conditional-OptionYes"
-                                    @radioModerationApproved />
+                                       type="radio"
+                                       id="OptionApproveModerationYes"
+                                       name="ApproveModeration"
+                                       value=@ApprovalStatus.Approve
+                                       data-aria-controls="conditional-OptionYes"
+                                       @radioModerationApproved />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveModerationYes">
                                     Approve this outcome
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionApproveModerationNo"
-                                    name="ApproveModeration"
-                                    value=@ApprovalStatus.Overturn
-                                    data-aria-controls="conditional-OptionNo"
-                                    @radioModerationOverturned />
+                                       type="radio"
+                                       id="OptionApproveModerationNo"
+                                       name="ApproveModeration"
+                                       value=@ApprovalStatus.Overturn
+                                       data-aria-controls="conditional-OptionNo"
+                                       @radioModerationOverturned />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveModerationNo">
                                     Overturn this outcome
                                 </label>
@@ -403,10 +414,10 @@
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-l">What is the overall outcome of this application?</h2>
                         </legend>
-                        
+
                         @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
                         {
-                            @foreach (var error in Model.ErrorMessages.Where(x=>x.Field=="Status"))
+                            @foreach (var error in Model.ErrorMessages.Where(x => x.Field == "Status"))
                             {
                                 <span class="govuk-error-message">
                                     <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
@@ -445,36 +456,36 @@
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionSuccessfulAlreadyActive"
-                                    name="OversightStatus"
-                                    value=@OversightReviewStatus.SuccessfulAlreadyActive
-                                    data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
-                                    @radioCheckedSuccessfulAlreadyActive />
+                                       type="radio"
+                                       id="OptionSuccessfulAlreadyActive"
+                                       name="OversightStatus"
+                                       value=@OversightReviewStatus.SuccessfulAlreadyActive
+                                       data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
+                                       @radioCheckedSuccessfulAlreadyActive />
                                 <label class="govuk-label govuk-radios__label" for="OptionSuccessfulAlreadyActive">
                                     Successful - already active
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionSuccessfulFitnessForFunding"
-                                    name="OversightStatus"
-                                    value=@OversightReviewStatus.SuccessfulFitnessForFunding
-                                    data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
-                                    @radioCheckedSuccessfulFitnessForFunding />
+                                       type="radio"
+                                       id="OptionSuccessfulFitnessForFunding"
+                                       name="OversightStatus"
+                                       value=@OversightReviewStatus.SuccessfulFitnessForFunding
+                                       data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
+                                       @radioCheckedSuccessfulFitnessForFunding />
                                 <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
                                     Successful - fitness for funding
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionNo"
-                                    name="OversightStatus"
-                                    value=@OversightReviewStatus.Unsuccessful
-                                    data-aria-controls="conditional-OptionNo"
-                                    @radioCheckedUnsuccessful />
+                                       type="radio"
+                                       id="OptionNo"
+                                       name="OversightStatus"
+                                       value=@OversightReviewStatus.Unsuccessful
+                                       data-aria-controls="conditional-OptionNo"
+                                       @radioCheckedUnsuccessful />
                                 <label class="govuk-label govuk-radios__label" for="OptionNo">
                                     Unsuccessful
                                 </label>
@@ -482,12 +493,12 @@
                             <div class="govuk-radios__divider">or</div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionInProgress"
-                                    name="OversightStatus"
-                                    value=@OversightReviewStatus.InProgress
-                                    data-aria-controls="conditional-OptionInProgress"
-                                    @radioCheckedInProgress />
+                                       type="radio"
+                                       id="OptionInProgress"
+                                       name="OversightStatus"
+                                       value=@OversightReviewStatus.InProgress
+                                       data-aria-controls="conditional-OptionInProgress"
+                                       @radioCheckedInProgress />
                                 <label class="govuk-label govuk-radios__label" for="OptionInProgress">
                                     Set to 'in progress'
                                 </label>
@@ -499,7 +510,9 @@
                 <button class="govuk-button" type="submit" data-module="govuk-button">
                     Save and continue
                 </button>
-
+                <p class="govuk-body">
+                    <a class="govuk-link" asp-controller="Oversight" asp-action="Applications">Back to RoATP application outcomes</a>
+                </p>
             </form>
         </div>
     </div>

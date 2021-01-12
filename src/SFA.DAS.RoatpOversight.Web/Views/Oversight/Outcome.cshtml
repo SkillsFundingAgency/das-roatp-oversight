@@ -7,9 +7,9 @@
 }
 
 @{
-    var gatewayOutcomeFormGroupError = Model.ErrorMessages != null && Model.ErrorMessages.Any() && Model.ErrorMessages.Where(x=>x.Field=="ApproveGateway").Count() > 0 ? "govuk-form-group--error" : "";
-    var moderationOutcomeFormGroupError = Model.ErrorMessages != null && Model.ErrorMessages.Any() && Model.ErrorMessages.Where(x=>x.Field=="ApproveModeration").Count() > 0 ? "govuk-form-group--error" : "";
-    var overallOutcomeFormGroupError = Model.ErrorMessages != null && Model.ErrorMessages.Any() && Model.ErrorMessages.Where(x=>x.Field=="Status").Count() > 0 ? "govuk-form-group--error" : "";
+    var gatewayOutcomeFormGroupError = Model.ErrorMessages != null && Model.ErrorMessages.Count(x=>x.Field=="ApproveGateway") > 0 ? "govuk-form-group--error" : "";
+    var moderationOutcomeFormGroupError = Model.ErrorMessages != null && Model.ErrorMessages.Count(x=>x.Field=="ApproveModeration") > 0 ? "govuk-form-group--error" : "";
+    var overallOutcomeFormGroupError = Model.ErrorMessages != null &&  Model.ErrorMessages.Count(x=>x.Field=="Status") > 0 ? "govuk-form-group--error" : "";
 
     var radioGatewayApproved = string.Equals(Model.ApproveGateway, ApprovalStatus.Approve, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
     var radioGatewayOverturned = string.Equals(Model.ApproveGateway, ApprovalStatus.Overturn, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
@@ -436,7 +436,7 @@
                                     data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
                                     @radioCheckedSuccessfulAlreadyActive />
                                 <label class="govuk-label govuk-radios__label" for="OptionSuccessfulAlreadyActive">
-                                    @OversightReviewStatus.SuccessfulAlreadyActive
+                                    Successful - already active
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
@@ -448,7 +448,7 @@
                                     data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
                                     @radioCheckedSuccessfulFitnessForFunding />
                                 <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
-                                    @OversightReviewStatus.SuccessfulFitnessForFunding
+                                    Successful - fitness for funding
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
@@ -460,7 +460,7 @@
                                     data-aria-controls="conditional-OptionNo"
                                     @radioCheckedUnsuccessful />
                                 <label class="govuk-label govuk-radios__label" for="OptionNo">
-                                    Unsuccessful application
+                                    Unsuccessful
                                 </label>
                             </div>
                             <div class="govuk-radios__divider">or</div>

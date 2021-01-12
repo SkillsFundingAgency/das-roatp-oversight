@@ -50,7 +50,6 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             
             if (CheckForBackButtonAfterSubmission(viewModel.OversightStatus, out var outcome)) return outcome;
            
-            //MFCMFC I think there needs to be more clever logic here about setting approves???
             viewModel.OversightStatus = oversightStatus;
             viewModel.ApproveGateway = approveGateway;
             viewModel.ApproveModeration = approveModeration;
@@ -78,7 +77,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
             return View("~/Views/Oversight/OutcomeHoldingPage.cshtml", viewModelStatus);
 
-            //MFCMFC this all needs tidying upd
+            //MFCMFC this all needs tidying up but will do in follow up stories
             // if (oversightStatus == OversightReviewStatus.Successful)
             // {
             //     return View("~/Views/Oversight/OutcomeSuccessful.cshtml", viewModelSuccess);

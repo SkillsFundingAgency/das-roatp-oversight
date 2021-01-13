@@ -12,5 +12,8 @@ namespace SFA.DAS.RoatpOversight.Domain
         public DateTime ApplicationSubmittedDate { get; set; }
         public string OversightStatus { get; set; }
         public string ApplicationStatus { get; set; }
+        public string GatewayReviewStatus { get; set; }
+        public string ModerationStatus { get; set; }
+        public string FinancialReviewStatus { get; set; }
     }
 }

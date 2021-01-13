@@ -425,85 +425,130 @@
                             }
                         }
 
-                        <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input"
-                                       type="radio"
-                                       id="OptionSuccessful"
-                                       name="OversightStatus"
-                                       value=@OversightReviewStatus.Successful
-                                       data-aria-controls="conditional-OptionSuccessful"
-                                       @radioCheckedSuccessful />
-                                <label class="govuk-label govuk-radios__label" for="OptionSuccessful">
-                                    @OversightReviewStatus.Successful
-                                </label>
-                            </div>
-                            <div class="govuk-radios__conditional" id="conditional-OptionSuccessful">
-                                <div>
-                                    <div class="govuk-form-group">
-                                        <a name="OptionSuccessfulText"></a>
-                                        <label class="govuk-label" for="SuccessfulText">
-                                            Add your internal comments (optional)
-                                        </label>
-                                        <textarea class="govuk-textarea"
-                                          id="SuccessfulText"
-                                          name="SuccessfulText"
-                                          rows="5"
-                                          aria-describedby="OptionApprovedText-info">@Model.SuccessfulText</textarea>
-                                    </div>
+                    <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input"
+                                   type="radio"
+                                   id="OptionSuccessful"
+                                   name="OversightStatus"
+                                   value=@OversightReviewStatus.Successful
+                                   data-aria-controls="conditional-OptionSuccessful"
+                                   @radioCheckedSuccessful />
+                            <label class="govuk-label govuk-radios__label" for="OptionSuccessful">
+                                @OversightReviewStatus.Successful
+                            </label>
+                        </div>
+                        <div class="govuk-radios__conditional" id="conditional-OptionSuccessful">
+                            <div>
+                                <div class="govuk-form-group">
+                                    <a name="OptionSuccessfulText"></a>
+                                    <label class="govuk-label" for="SuccessfulText">
+                                        Add your internal comments (optional)
+                                    </label>
+                                    <textarea class="govuk-textarea"
+                                              id="SuccessfulText"
+                                              name="SuccessfulText"
+                                              rows="5"
+                                              aria-describedby="OptionSuccessfulText-info">@Model.SuccessfulText</textarea>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input"
-                                       type="radio"
-                                       id="OptionSuccessfulAlreadyActive"
-                                       name="OversightStatus"
-                                       value=@OversightReviewStatus.SuccessfulAlreadyActive
-                                       data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
-                                       @radioCheckedSuccessfulAlreadyActive />
-                                <label class="govuk-label govuk-radios__label" for="OptionSuccessfulAlreadyActive">
-                                    Successful - already active
-                                </label>
-                            </div>
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input"
-                                       type="radio"
-                                       id="OptionSuccessfulFitnessForFunding"
-                                       name="OversightStatus"
-                                       value=@OversightReviewStatus.SuccessfulFitnessForFunding
-                                       data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
-                                       @radioCheckedSuccessfulFitnessForFunding />
-                                <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
-                                    Successful - fitness for funding
-                                </label>
-                            </div>
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input"
-                                       type="radio"
-                                       id="OptionNo"
-                                       name="OversightStatus"
-                                       value=@OversightReviewStatus.Unsuccessful
-                                       data-aria-controls="conditional-OptionNo"
-                                       @radioCheckedUnsuccessful />
-                                <label class="govuk-label govuk-radios__label" for="OptionNo">
-                                    Unsuccessful
-                                </label>
-                            </div>
-                            <div class="govuk-radios__divider">or</div>
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input"
-                                       type="radio"
-                                       id="OptionInProgress"
-                                       name="OversightStatus"
-                                       value=@OversightReviewStatus.InProgress
-                                       data-aria-controls="conditional-OptionInProgress"
-                                       @radioCheckedInProgress />
-                                <label class="govuk-label govuk-radios__label" for="OptionInProgress">
-                                    Set to 'in progress'
-                                </label>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input"
+                                   type="radio"
+                                   id="OptionSuccessfulAlreadyActive"
+                                   name="OversightStatus"
+                                   value=@OversightReviewStatus.SuccessfulAlreadyActive
+                                   data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
+                                   @radioCheckedSuccessfulAlreadyActive />
+                            <label class="govuk-label govuk-radios__label" for="OptionSuccessfulAlreadyActive">
+                                Successful - already active
+                            </label>
+                        </div>
+                        <div class="govuk-radios__conditional" id="conditional-OptionSuccessfulAlreadyActive">
+                            <div>
+                                <div class="govuk-form-group">
+                                    <a name="OptionSuccessfulAlreadyActiveText"></a>
+                                    <label class="govuk-label" for="SuccessfulAlreadyActiveText">
+                                        Add your internal comments (optional)
+                                    </label>
+                                    <textarea class="govuk-textarea"
+                                              id="SuccessfulAlreadyActiveText"
+                                              name="SuccessfulAlreadyActiveText"
+                                              rows="5"
+                                              aria-describedby="OptionSuccessfulAlreadyActiveText-info">@Model.SuccessfulAlreadyActiveText</textarea>
+                                </div>
                             </div>
                         </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input"
+                                   type="radio"
+                                   id="OptionSuccessfulFitnessForFunding"
+                                   name="OversightStatus"
+                                   value=@OversightReviewStatus.SuccessfulFitnessForFunding
+                                   data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
+                                   @radioCheckedSuccessfulFitnessForFunding />
+                            <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
+                                Successful - fitness for funding
+                            </label>
+                        </div>
+                        <div class="govuk-radios__conditional" id="conditional-OptionSuccessfulFitnessForFunding">
+                            <div>
+                                <div class="govuk-form-group">
+                                    <a name="OptionSuccessfulFitnessForFundingText"></a>
+                                    <label class="govuk-label" for="SuccessfulFitnessForFundingText">
+                                        Add your internal comments (optional)
+                                    </label>
+                                    <textarea class="govuk-textarea"
+                                              id="SuccessfulFitnessForFundingText"
+                                              name="SuccessfulFitnessForFundingText"
+                                              rows="5"
+                                              aria-describedby="SuccessfulFitnessForFundingText-info">@Model.SuccessfulFitnessForFundingText</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input"
+                                   type="radio"
+                                   id="OptionNo"
+                                   name="OversightStatus"
+                                   value=@OversightReviewStatus.Unsuccessful
+                                   data-aria-controls="conditional-OptionNo"
+                                   @radioCheckedUnsuccessful />
+                            <label class="govuk-label govuk-radios__label" for="OptionNo">
+                                Unsuccessful
+                            </label>
+                        </div>
+                        <div class="govuk-radios__conditional" id="conditional-OptionUnsuccessful">
+                            <div>
+                                <div class="govuk-form-group">
+                                    <a name="OptionUnsuccessfulText"></a>
+                                    <label class="govuk-label" for="UnsuccessfulText">
+                                        Add your internal comments
+                                    </label>
+                                    <textarea class="govuk-textarea"
+                                              id="UnsuccessfulText"
+                                              name="UnsuccessfulText"
+                                              rows="5"
+                                              aria-describedby="UnsuccessfulText-info">@Model.UnsuccessfulText</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="govuk-radios__divider">or</div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input"
+                                   type="radio"
+                                   id="OptionInProgress"
+                                   name="OversightStatus"
+                                   value=@OversightReviewStatus.InProgress
+                                   data-aria-controls="conditional-OptionInProgress"
+                                   @radioCheckedInProgress />
+                            <label class="govuk-label govuk-radios__label" for="OptionInProgress">
+                                Set to 'in progress'
+                            </label>
+                        </div>
+                    </div>
                     </fieldset>
                 </div>
 

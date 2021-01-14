@@ -6,7 +6,6 @@ using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Validators;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.AdminService.Common.Extensions;
 using SFA.DAS.RoatpOversight.Web.Infrastructure;
@@ -61,7 +60,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             viewModel.InProgressInternalText = command.InProgressInternalText;
             viewModel.InProgressExternalText = command.InProgressExternalText;
 
-            var errorMessages = OversightValidator.ValidateOverallOutcome(command.OversightStatus, command.ApproveGateway, command.ApproveModeration);
+            var errorMessages = OversightValidator.ValidateOverallOutcome(command);
 
             if (errorMessages.Any())
             {

@@ -1,4 +1,6 @@
 ﻿@using SFA.DAS.AdminService.Common.Extensions;
+@using SFA.DAS.RoatpOversight.Domain
+@using SFA.DAS.RoatpOversight.Web.Controllers
 @model SFA.DAS.RoatpOversight.Web.ViewModels.OutcomeStatusViewModel
 @{
     ViewData["Title"] = "Outcome - Holding page";
@@ -61,6 +63,29 @@
                         <div>Gateway approval: @Model.ApproveGateway</div>
                         <div>Moderation approval: @Model.ApproveModeration</div>
                         <div>Oversight Status: @Model.OversightStatus</div>
+                        @if (Model.OversightStatus == OversightReviewStatus.Successful)
+                        {
+                            <div>Successful comments: @Model.SuccessfulText</div>
+                        }
+                        @if (Model.OversightStatus == OversightReviewStatus.SuccessfulAlreadyActive)
+                        {
+                            <div>Successful already active comments: @Model.SuccessfulAlreadyActiveText</div>
+                        }
+                        @if (Model.OversightStatus == OversightReviewStatus.SuccessfulFitnessForFunding)
+                        {
+                            <div>Successful fitness for funding comments: @Model.SuccessfulFitnessForFundingText</div>
+                        }
+                        @if (Model.OversightStatus == OversightReviewStatus.Unsuccessful)
+                        {
+                            <div>Unsuccessful comments: @Model.UnsuccessfulText</div>
+                        }
+                        @if (Model.OversightStatus == OversightReviewStatus.InProgress)
+                        {
+                            <div>In progress internal comments: @Model.InProgressInternalText</div>
+                            <div>In progress internal comments: @Model.InProgressExternalText</div>
+                        }
+                        
+                        
 
                     </fieldset>
                 </div>

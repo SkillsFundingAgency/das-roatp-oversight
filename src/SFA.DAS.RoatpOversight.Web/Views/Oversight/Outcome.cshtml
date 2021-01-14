@@ -49,22 +49,45 @@
                         <ul class="govuk-list govuk-error-summary__list">
                             @foreach (var error in Model.ErrorMessages)
                             {
-                                <li>
-                                    @if (error.Field == "Status")
+                            <li>
+                                @if (error.Field == "Status")
+                                {
+                                    @if (string.IsNullOrEmpty(Model.ApproveGateway) || string.IsNullOrEmpty(Model.ApproveModeration))
+                                    {
+                                        <a href="#OptionInProgress">@error.ErrorMessage</a>
+                                    }
+                                    else
                                     {
                                         <a href="#OptionSuccessful">@error.ErrorMessage</a>
                                     }
+                                }
 
-                                    @if (error.Field == "ApproveGateway")
-                                    {
-                                        <a href="#OptionApproveGatewayYes">@error.ErrorMessage</a>
-                                    }
+                                @if (error.Field == "ApproveGateway")
+                                {
+                                    <a href="#OptionApproveGatewayYes">@error.ErrorMessage</a>
+                                }
 
-                                    @if (error.Field == "ApproveModeration")
-                                    {
-                                        <a href="#OptionApproveModerationYes">@error.ErrorMessage</a>
-                                    }
-                                </li>
+                                @if (error.Field == "ApproveModeration")
+                                {
+                                    <a href="#OptionApproveModerationYes">@error.ErrorMessage</a>
+                                }
+
+
+                                @if (error.Field == "UnsuccessfulText")
+                                {
+                                    <a href="#UnsuccessfulText">@error.ErrorMessage</a>
+                                }
+
+                                @if (error.Field == "InProgressInternalText")
+                                {
+                                    <a href="#InProgressInternalText">@error.ErrorMessage</a>
+                                }
+
+                                @if (error.Field == "InProgressExternalText")
+                                {
+                                    <a href="#InProgressExternalText">@error.ErrorMessage</a>
+                                }
+                            </li>
                             }
                         </ul>
                     </div>
@@ -449,6 +472,7 @@
                                               id="SuccessfulText"
                                               name="SuccessfulText"
                                               rows="5"
+                                              maxlength="@OversightSettings.TextAreaMaxLength"
                                               aria-describedby="OptionSuccessfulText-info">@Model.SuccessfulText</textarea>
                                 </div>
                             </div>
@@ -477,6 +501,7 @@
                                               id="SuccessfulAlreadyActiveText"
                                               name="SuccessfulAlreadyActiveText"
                                               rows="5"
+                                              maxlength="@OversightSettings.TextAreaMaxLength"
                                               aria-describedby="OptionSuccessfulAlreadyActiveText-info">@Model.SuccessfulAlreadyActiveText</textarea>
                                 </div>
                             </div>
@@ -504,6 +529,7 @@
                                               id="SuccessfulFitnessForFundingText"
                                               name="SuccessfulFitnessForFundingText"
                                               rows="5"
+                                              maxlength="@OversightSettings.TextAreaMaxLength"
                                               aria-describedby="SuccessfulFitnessForFundingText-info">@Model.SuccessfulFitnessForFundingText</textarea>
                                 </div>
                             </div>
@@ -511,12 +537,12 @@
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input"
                                    type="radio"
-                                   id="OptionNo"
+                                   id="OptionUnsuccessful"
                                    name="OversightStatus"
                                    value=@OversightReviewStatus.Unsuccessful
-                                   data-aria-controls="conditional-OptionNo"
+                                   data-aria-controls="conditional-OptionUnsuccessful"
                                    @radioCheckedUnsuccessful />
-                            <label class="govuk-label govuk-radios__label" for="OptionNo">
+                            <label class="govuk-label govuk-radios__label" for="OptionUnsuccessful">
                                 Unsuccessful
                             </label>
                         </div>
@@ -531,6 +557,7 @@
                                               id="UnsuccessfulText"
                                               name="UnsuccessfulText"
                                               rows="5"
+                                              maxlength="@OversightSettings.TextAreaMaxLength"
                                               aria-describedby="UnsuccessfulText-info">@Model.UnsuccessfulText</textarea>
                                 </div>
                             </div>
@@ -547,6 +574,36 @@
                             <label class="govuk-label govuk-radios__label" for="OptionInProgress">
                                 Set to 'in progress'
                             </label>
+                        </div>
+                        <div class="govuk-radios__conditional" id="conditional-OptionInProgress">
+                            <div>
+                                <div class="govuk-form-group">
+                                    <a name="OptionInProgressInternalText"></a>
+                                    <label class="govuk-label" for="InProgressInternalText">
+                                        Add your internal comments
+                                    </label>
+                                    <textarea class="govuk-textarea"
+                                              id="InProgressInternalText"
+                                              name="InProgressInternalText"
+                                              rows="5"
+                                              maxlength="@OversightSettings.TextAreaMaxLength"
+                                              aria-describedby="InProgressInternalText-info">@Model.InProgressInternalText</textarea>
+                                </div>
+                            </div>
+                                <div>
+                                <div class="govuk-form-group">
+                                    <a name="OptionInProgressExternalText"></a>
+                                    <label class="govuk-label" for="InProgressExternalText">
+                                        Add your external comments
+                                    </label>
+                                    <textarea class="govuk-textarea"
+                                              id="InProgressExternalText"
+                                              name="InProgressExternalText"
+                                              rows="5"
+                                              maxlength="@OversightSettings.TextAreaMaxLength"
+                                              aria-describedby="InProgressExternalText-info">@Model.InProgressExternalText</textarea>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     </fieldset>

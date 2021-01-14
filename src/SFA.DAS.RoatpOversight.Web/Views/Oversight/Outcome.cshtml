@@ -9,7 +9,9 @@
 @{
     var gatewayOutcomeFormGroupError = Model.ErrorMessages != null && Model.ErrorMessages.Count(x=>x.Field=="ApproveGateway") > 0 ? "govuk-form-group--error" : "";
     var moderationOutcomeFormGroupError = Model.ErrorMessages != null && Model.ErrorMessages.Count(x=>x.Field=="ApproveModeration") > 0 ? "govuk-form-group--error" : "";
-    var overallOutcomeFormGroupError = Model.ErrorMessages != null &&  Model.ErrorMessages.Count(x=>x.Field=="Status") > 0 ? "govuk-form-group--error" : "";
+    var overallOutcomeFormGroupError = Model.ErrorMessages != null && (Model.ErrorMessages.Count(x=>x.Field=="Status") > 0 || Model.ErrorMessages.Count(x=>x.Field=="InProgressInternalText") > 0 || Model.ErrorMessages.Count(x=>x.Field=="InProgressExternalText") > 0 ) ? "govuk-form-group--error" : "";
+    var inProgressInternalTextHighlight = Model.ErrorMessages != null && Model.ErrorMessages.Count(x=>x.Field=="InProgressInternalText") > 0 ? "govuk-textarea--error" : "";
+    var inProgressExternalTextHighlight = Model.ErrorMessages != null && Model.ErrorMessages.Count(x=>x.Field=="InProgressExternalText") > 0 ? "govuk-textarea--error" : "";
 
     var radioGatewayApproved = string.Equals(Model.ApproveGateway, ApprovalStatus.Approve, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
     var radioGatewayOverturned = string.Equals(Model.ApproveGateway, ApprovalStatus.Overturn, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
@@ -456,7 +458,8 @@
                                    name="OversightStatus"
                                    value=@OversightReviewStatus.Successful
                                    data-aria-controls="conditional-OptionSuccessful"
-                                   @radioCheckedSuccessful />
+                                   @radioCheckedSuccessful
+                                    />
                             <label class="govuk-label govuk-radios__label" for="OptionSuccessful">
                                 @OversightReviewStatus.Successful
                             </label>
@@ -485,7 +488,8 @@
                                    name="OversightStatus"
                                    value=@OversightReviewStatus.SuccessfulAlreadyActive
                                    data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
-                                   @radioCheckedSuccessfulAlreadyActive />
+                                   @radioCheckedSuccessfulAlreadyActive
+                                    />
                             <label class="govuk-label govuk-radios__label" for="OptionSuccessfulAlreadyActive">
                                 Successful - already active
                             </label>
@@ -513,7 +517,8 @@
                                    name="OversightStatus"
                                    value=@OversightReviewStatus.SuccessfulFitnessForFunding
                                    data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
-                                   @radioCheckedSuccessfulFitnessForFunding />
+                                   @radioCheckedSuccessfulFitnessForFunding
+                                   />
                             <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
                                 Successful - fitness for funding
                             </label>
@@ -541,7 +546,8 @@
                                    name="OversightStatus"
                                    value=@OversightReviewStatus.Unsuccessful
                                    data-aria-controls="conditional-OptionUnsuccessful"
-                                   @radioCheckedUnsuccessful />
+                                   @radioCheckedUnsuccessful
+                                    />
                             <label class="govuk-label govuk-radios__label" for="OptionUnsuccessful">
                                 Unsuccessful
                             </label>
@@ -582,7 +588,16 @@
                                     <label class="govuk-label" for="InProgressInternalText">
                                         Add your internal comments
                                     </label>
-                                    <textarea class="govuk-textarea"
+                                     @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
+                                    {
+                                        @foreach (var error in Model.ErrorMessages.Where(x => x.Field == "InProgressInternalText"))
+                                        {
+                                            <span class="govuk-error-message">
+                                                <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
+                                            </span>
+                                        }
+                                    }
+                                    <textarea class="govuk-textarea @inProgressInternalTextHighlight"
                                               id="InProgressInternalText"
                                               name="InProgressInternalText"
                                               rows="5"
@@ -596,7 +611,16 @@
                                     <label class="govuk-label" for="InProgressExternalText">
                                         Add your external comments
                                     </label>
-                                    <textarea class="govuk-textarea"
+                                     @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
+                                    {
+                                        @foreach (var error in Model.ErrorMessages.Where(x => x.Field == "InProgressExternalText"))
+                                        {
+                                            <span class="govuk-error-message">
+                                                <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
+                                            </span>
+                                        }
+                                    }
+                                    <textarea class="govuk-textarea @inProgressExternalTextHighlight"
                                               id="InProgressExternalText"
                                               name="InProgressExternalText"
                                               rows="5"

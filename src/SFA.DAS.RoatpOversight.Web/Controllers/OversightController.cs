@@ -44,13 +44,17 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
 
         [HttpPost("Oversight/Outcome/{applicationId}")]
-        public async Task<IActionResult> EvaluateOutcome(Guid applicationId, string status)
+        public async Task<IActionResult> EvaluateOutcome(Guid applicationId, string oversightStatus, string approveGateway, string approveModeration)
         {
             var viewModel = await _oversightOrchestrator.GetOversightDetailsViewModel(applicationId);
-
+            
             if (CheckForBackButtonAfterSubmission(viewModel.OversightStatus, out var outcome)) return outcome;
+           
+            viewModel.OversightStatus = oversightStatus;
+            viewModel.ApproveGateway = approveGateway;
+            viewModel.ApproveModeration = approveModeration;
 
-            var errorMessages = OversightValidator.ValidateOverallOutcome(status);
+            var errorMessages = OversightValidator.ValidateOverallOutcome(oversightStatus, approveGateway, approveModeration);
 
             if (errorMessages.Any())
             {
@@ -58,22 +62,28 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 return View($"~/Views/Oversight/Outcome.cshtml", viewModel);
             }
 
-            var viewModelSuccess = new OutcomeSuccessStatusViewModel
+            var viewModelStatus = new OutcomeStatusViewModel
             {
                 ApplicationId = applicationId,
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = viewModel.ApplicationSubmittedDate,
                 OrganisationName = viewModel.OrganisationName,
                 ProviderRoute = viewModel.ProviderRoute,
-                Ukprn = viewModel.Ukprn
+                Ukprn = viewModel.Ukprn,
+                ApproveGateway = viewModel.ApproveGateway,
+                ApproveModeration = viewModel.ApproveModeration,
+                OversightStatus = viewModel.OversightStatus
             };
 
-            if (status == OversightReviewStatus.Successful)
-            {
-                return View("~/Views/Oversight/OutcomeSuccessful.cshtml", viewModelSuccess);
-            }
+            return View("~/Views/Oversight/OutcomeHoldingPage.cshtml", viewModelStatus);
 
-            return View("~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModelSuccess);
+            //MFCMFC this all needs tidying up but will do in follow up stories
+            // if (oversightStatus == OversightReviewStatus.Successful)
+            // {
+            //     return View("~/Views/Oversight/OutcomeSuccessful.cshtml", viewModelSuccess);
+            // }
+            //
+            // return View("~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModelSuccess);
         }
 
         [HttpPost("Oversight/Outcome/Successful/{applicationId}")]

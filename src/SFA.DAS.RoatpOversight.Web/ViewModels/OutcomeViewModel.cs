@@ -52,6 +52,7 @@ namespace SFA.DAS.RoatpOversight.Web.ViewModels
         public string UnsuccessfulText { get; set; }
         public string InProgressInternalText { get; set; }
         public string InProgressExternalText { get; set; }
+        public string ApplicantEmailAddress { get; set; }
 
         public string AssessmentOutcome
         {

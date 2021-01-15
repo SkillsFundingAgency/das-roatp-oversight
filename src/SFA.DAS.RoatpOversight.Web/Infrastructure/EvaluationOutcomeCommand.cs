@@ -14,5 +14,6 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure
         public string UnsuccessfulText { get; set; }
         public string InProgressInternalText { get; set; }
         public string InProgressExternalText { get; set; }
+        public string ApplicationEmailAddress { get; set; }
     }
 }

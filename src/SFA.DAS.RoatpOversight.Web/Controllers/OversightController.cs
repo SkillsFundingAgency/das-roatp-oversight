@@ -59,6 +59,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             viewModel.UnsuccessfulText = command.UnsuccessfulText;
             viewModel.InProgressInternalText = command.InProgressInternalText;
             viewModel.InProgressExternalText = command.InProgressExternalText;
+            viewModel.ApplicationEmailAddress = command.ApplicationEmailAddress;
 
             var errorMessages = OversightValidator.ValidateOverallOutcome(command);
 
@@ -84,7 +85,8 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 SuccessfulFitnessForFundingText = viewModel.SuccessfulFitnessForFundingText,
                 UnsuccessfulText =  viewModel.UnsuccessfulText,
                 InProgressInternalText = viewModel.InProgressInternalText,
-                InProgressExternalText = viewModel.InProgressExternalText
+                InProgressExternalText = viewModel.InProgressExternalText,
+                ApplicationEmailAddress = viewModel.ApplicationEmailAddress
             };
 
             return View("~/Views/Oversight/OutcomeHoldingPage.cshtml", viewModelStatus);

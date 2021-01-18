@@ -46,7 +46,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             return RedirectToAction("ConfirmOutcome", new {applicationId = request.ApplicationId, OutcomeKey = cacheKey});
         }
 
-        [HttpGet]
+        [HttpGet("Oversight/Outcome/{applicationId}/confirm/{outcomeKey}")]
         public async Task<IActionResult> ConfirmOutcome(ConfirmOutcomeRequest request)
         {
             try
@@ -60,7 +60,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("Oversight/Outcome/{applicationId}/confirm/{outcomeKey}")]
         public async Task<IActionResult> ConfirmOutcome(ConfirmOutcomePostRequest request)
         {
             return RedirectToAction("Outcome", new {request.ApplicationId, request.OutcomeKey});

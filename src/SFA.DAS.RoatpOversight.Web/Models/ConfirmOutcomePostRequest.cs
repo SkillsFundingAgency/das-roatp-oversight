@@ -6,6 +6,5 @@ namespace SFA.DAS.RoatpOversight.Web.Models
     {
         public Guid OutcomeKey { get; set; }
         public string Confirm { get; set; }
-
     }
 }

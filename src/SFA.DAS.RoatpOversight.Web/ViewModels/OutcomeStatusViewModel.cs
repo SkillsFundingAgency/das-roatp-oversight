@@ -27,30 +27,6 @@ namespace SFA.DAS.RoatpOversight.Web.ViewModels
         public string InProgressInternalText { get; set; }
         public string InProgressExternalText { get; set; }
         public string ApplicationEmailAddress { get; set; }
-        public string PageTitle
-        {
-            get
-            {
-                var statusLabel = "";
-                switch (OversightStatus)
-                {
-                    case OversightReviewStatus.Successful:
-                    case OversightReviewStatus.SuccessfulAlreadyActive:
-                    case OversightReviewStatus.SuccessfulFitnessForFunding:
-                        statusLabel = "successful";
-                        break;
-                    case OversightReviewStatus.InProgress:
-                        statusLabel = "'in progress'";
-                        break;
-                    case OversightReviewStatus.Unsuccessful:
-                        statusLabel = "unsuccessful";
-                        break;
-                    default:
-                        statusLabel = string.Empty;
-                        break;
-                }
-                return $"Are you sure you want to mark this application as {statusLabel}?";
-            }
-        }
+        
     }
 }

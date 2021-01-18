@@ -5,6 +5,7 @@ namespace SFA.DAS.RoatpOversight.Web.Models
     public class OutcomePostRequest
     {
         public Guid ApplicationId { get; set; }
+
         public string OversightStatus { get; set; }
         public string ApproveGateway { get; set; }
         public string ApproveModeration { get; set; }

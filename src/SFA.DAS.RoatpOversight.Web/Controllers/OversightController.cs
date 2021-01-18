@@ -8,7 +8,7 @@ using SFA.DAS.RoatpOversight.Web.Validators;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.AdminService.Common.Extensions;
-using SFA.DAS.RoatpOversight.Web.Infrastructure;
+using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
@@ -33,28 +33,40 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         }
 
         [HttpGet("Oversight/Outcome/{applicationId}")]
-        public async Task<IActionResult> Outcome(Guid applicationId)
+        public async Task<IActionResult> Outcome(OutcomeRequest request)
         {
-            var vm = await _oversightOrchestrator.GetOversightDetailsViewModel(applicationId);
-            var oversightStatus = vm.OversightStatus;
-
-            if (CheckForBackButtonAfterSubmission(oversightStatus, out var outcome)) return outcome;
-
+            var vm = await _oversightOrchestrator.GetOversightDetailsViewModel(request.ApplicationId, request.OutcomeKey);
             return View(vm);
         }
 
         [HttpPost("Oversight/Outcome/{applicationId}")]
         public async Task<IActionResult> Outcome(OutcomePostRequest request)
         {
-            return RedirectToAction("ConfirmOutcome");
+            var cacheKey = await _oversightOrchestrator.SaveOutcomePostRequestToCache(request);
+            return RedirectToAction("ConfirmOutcome", new {applicationId = request.ApplicationId, OutcomeKey = cacheKey});
         }
 
         [HttpGet]
         public async Task<IActionResult> ConfirmOutcome(ConfirmOutcomeRequest request)
         {
-            return View();
+            try
+            {
+                var viewModel = await _oversightOrchestrator.GetConfirmOutcomeViewModel(request.ApplicationId, request.OutcomeKey);
+                return View(viewModel);
+            }
+            catch (ConfirmOutcomeCacheKeyNotFound)
+            {
+                return RedirectToAction("Outcome", new { request.ApplicationId });
+            }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ConfirmOutcome(ConfirmOutcomePostRequest request)
+        {
+            return RedirectToAction("Outcome", new {request.ApplicationId, request.OutcomeKey});
+        }
+
+        
 
         //[HttpPost("Oversight/Outcome/{applicationId}")]
         //public async Task<IActionResult> EvaluateOutcome(EvaluationOutcomeCommand command) 
@@ -116,7 +128,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         [HttpPost("Oversight/Outcome/Successful/{applicationId}")]
         public async Task<IActionResult> Successful(Guid applicationId, string status)
         {
-            var oversightViewModel = await _oversightOrchestrator.GetOversightDetailsViewModel(applicationId);
+            var oversightViewModel = await _oversightOrchestrator.GetOversightDetailsViewModel(applicationId, null);
             if (CheckForBackButtonAfterSubmission(oversightViewModel.OversightStatus, out var outcome)) return outcome;
             var errorMessages = OversightValidator.ValidateOutcomeSuccessful(status);
 
@@ -154,7 +166,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         [HttpPost("Oversight/Outcome/Unsuccessful/{applicationId}")]
         public async Task<IActionResult> Unsuccessful(Guid applicationId, string status)
         {
-            var oversightViewModel = await _oversightOrchestrator.GetOversightDetailsViewModel(applicationId);
+            var oversightViewModel = await _oversightOrchestrator.GetOversightDetailsViewModel(applicationId, null);
             if (CheckForBackButtonAfterSubmission(oversightViewModel.OversightStatus, out var outcome)) return outcome;
             var errorMessages = OversightValidator.ValidateOutcomeUnsuccessful(status);
 

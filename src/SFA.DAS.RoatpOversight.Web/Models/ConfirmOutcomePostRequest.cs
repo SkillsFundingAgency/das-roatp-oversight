@@ -2,9 +2,10 @@
 
 namespace SFA.DAS.RoatpOversight.Web.Models
 {
-    public class ConfirmOutcomeRequest
+    public class ConfirmOutcomePostRequest : OutcomePostRequest
     {
-        public Guid ApplicationId { get; set; }
         public Guid OutcomeKey { get; set; }
+        public string Confirm { get; set; }
+
     }
 }

@@ -460,7 +460,7 @@
                                    value=@OversightReviewStatus.Successful
                                    data-aria-controls="conditional-OptionSuccessful"
                                    @radioCheckedSuccessful
-                                    />
+                                   data-disabled="disabled" />
                             <label class="govuk-label govuk-radios__label" for="OptionSuccessful">
                                 @OversightReviewStatus.Successful
                             </label>
@@ -490,7 +490,7 @@
                                    value=@OversightReviewStatus.SuccessfulAlreadyActive
                                    data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
                                    @radioCheckedSuccessfulAlreadyActive
-                                    />
+                                   data-disabled="disabled" />
                             <label class="govuk-label govuk-radios__label" for="OptionSuccessfulAlreadyActive">
                                 Successful - already active
                             </label>
@@ -519,7 +519,7 @@
                                    value=@OversightReviewStatus.SuccessfulFitnessForFunding
                                    data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
                                    @radioCheckedSuccessfulFitnessForFunding
-                                   />
+                                   data-disabled="disabled" />
                             <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
                                 Successful - fitness for funding
                             </label>
@@ -548,7 +548,7 @@
                                    value=@OversightReviewStatus.Unsuccessful
                                    data-aria-controls="conditional-OptionUnsuccessful"
                                    @radioCheckedUnsuccessful
-                                    />
+                                   data-disabled="disabled" />
                             <label class="govuk-label govuk-radios__label" for="OptionUnsuccessful">
                                 Unsuccessful
                             </label>
@@ -645,3 +645,11 @@
     </div>
 </main>
 
+@section Scripts {
+     <script src="/javascript/das-enable-form-controls.js" no-cdn></script>
+     <script>
+        window.dasJs.enableFormControlsOnChange.init(
+            ['ApproveGateway', 'ApproveModeration']
+        );
+     </script>
+}

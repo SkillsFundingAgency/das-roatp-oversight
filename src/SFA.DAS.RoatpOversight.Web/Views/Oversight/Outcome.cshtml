@@ -482,6 +482,7 @@
                                         <label class="govuk-label" for="UnsuccessfulText">
                                             Add your internal comments
                                         </label>
+                                        @Html.ValidationMessageFor(m => m.UnsuccessfulText, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.UnsuccessfulText) })
                                         <textarea class="govuk-textarea"
                                                   id="UnsuccessfulText"
                                                   name="UnsuccessfulText"

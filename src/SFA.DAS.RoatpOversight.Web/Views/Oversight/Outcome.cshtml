@@ -276,7 +276,7 @@
                     </fieldset>
                 </div>
 
-                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x=> x.ApproveGateway, "govuk-form-group--error")">
+                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x=> x.ApproveModeration, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-m">Moderation outcome</h2>
@@ -343,6 +343,7 @@
                                        id="ApproveModeration"
                                        name="ApproveModeration"
                                        value=@ApprovalStatus.Approve
+                                       asp-for="ApproveModeration"
                                        data-aria-controls="conditional-OptionYes"/>
                                 <label class="govuk-label govuk-radios__label" for="ApproveModeration">
                                     Approve this outcome
@@ -354,8 +355,8 @@
                                        id="OptionApproveModerationNo"
                                        name="ApproveModeration"
                                        value=@ApprovalStatus.Overturn
-                                       data-aria-controls="conditional-OptionNo"
-                                       @radioModerationOverturned />
+                                       asp-for="ApproveModeration"
+                                       data-aria-controls="conditional-OptionNo" />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveModerationNo">
                                     Overturn this outcome
                                 </label>
@@ -376,11 +377,10 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
                                        type="radio"
-                                       id="OptionSuccessful"
+                                       id="OversightStatus"
                                        name="OversightStatus"
                                        value=@OversightReviewStatus.Successful
                                        data-aria-controls="conditional-OptionSuccessful"
-                                       @radioCheckedSuccessful
                                        data-disabled="disabled" />
                                 <label class="govuk-label govuk-radios__label" for="OptionSuccessful">
                                     @OversightReviewStatus.Successful
@@ -410,7 +410,6 @@
                                        name="OversightStatus"
                                        value=@OversightReviewStatus.SuccessfulAlreadyActive
                                        data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
-                                       @radioCheckedSuccessfulAlreadyActive
                                        data-disabled="disabled" />
                                 <label class="govuk-label govuk-radios__label" for="OptionSuccessfulAlreadyActive">
                                     Successful - already active
@@ -439,7 +438,6 @@
                                        name="OversightStatus"
                                        value=@OversightReviewStatus.SuccessfulFitnessForFunding
                                        data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
-                                       @radioCheckedSuccessfulFitnessForFunding
                                        data-disabled="disabled" />
                                 <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
                                     Successful - fitness for funding
@@ -468,7 +466,6 @@
                                        name="OversightStatus"
                                        value=@OversightReviewStatus.Unsuccessful
                                        data-aria-controls="conditional-OptionUnsuccessful"
-                                       @radioCheckedUnsuccessful
                                        data-disabled="disabled" />
                                 <label class="govuk-label govuk-radios__label" for="OptionUnsuccessful">
                                     Unsuccessful
@@ -498,7 +495,7 @@
                                        name="OversightStatus"
                                        value=@OversightReviewStatus.InProgress
                                        data-aria-controls="conditional-OptionInProgress"
-                                       @radioCheckedInProgress />
+                                       />
                                 <label class="govuk-label govuk-radios__label" for="OptionInProgress">
                                     Set to 'in progress'
                                 </label>

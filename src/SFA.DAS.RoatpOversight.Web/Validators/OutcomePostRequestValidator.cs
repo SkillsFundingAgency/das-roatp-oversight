@@ -1,5 +1,6 @@
 ﻿using System;
 using FluentValidation;
+using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Validators
@@ -29,6 +30,13 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
 
             RuleFor(x => x.OversightStatus).NotEmpty()
                 .WithMessage("Select the overall outcome of this application");
+
+            RuleFor(x => x.InProgressInternalText).NotEmpty().WithMessage(EnterInternalComments)
+                .When(x => x.OversightStatus == OversightReviewStatus.InProgress);
+
+            RuleFor(x => x.InProgressExternalText).NotEmpty().WithMessage(EnterExternalComments)
+                .When(x => x.OversightStatus == OversightReviewStatus.InProgress);
+
         }
     }
 }

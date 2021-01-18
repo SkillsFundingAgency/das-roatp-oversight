@@ -6,7 +6,6 @@ using SFA.DAS.RoatpOversight.Web.ViewModels;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
 {
-    [Authorize]
     public class HomeController : Controller
     {
 

@@ -106,8 +106,6 @@ namespace SFA.DAS.RoatpOversight.Web
 
             AddAntiforgery(services);
 
-            services.AddHealthChecks();
-
             services.AddApplicationInsightsTelemetry();
             services.AddDasHealthChecks(ApplicationConfiguration, _env.IsDevelopment());
 
@@ -207,7 +205,6 @@ namespace SFA.DAS.RoatpOversight.Web
             app.UseRequestLocalization();
             app.UseStatusCodePagesWithReExecute("/ErrorPage/{0}");
             app.UseSecurityHeaders();
-            app.UseHealthChecks("/health");
             app.UseDasHealthChecks();
             app.UseMvc(routes =>
             {

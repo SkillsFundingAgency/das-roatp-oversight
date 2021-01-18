@@ -7,6 +7,7 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
 {
     public interface IApplyApiClient
     {
+        Task Ping();
         Task<IEnumerable<ApplicationDetails>> GetOversightsPending();
         Task<IEnumerable<OverallOutcomeDetails>> GetOversightsCompleted();
         Task<ApplicationDetails> GetOversightDetails(Guid applicationId);

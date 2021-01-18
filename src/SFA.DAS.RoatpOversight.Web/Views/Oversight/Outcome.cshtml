@@ -1,17 +1,15 @@
 ﻿@using SFA.DAS.RoatpOversight.Domain
 @using SFA.DAS.AdminService.Common.Extensions;
 @using SFA.DAS.RoatpOversight.Web.Domain
+@using SFA.DAS.RoatpOversight.Web.Extensions
 @model SFA.DAS.RoatpOversight.Web.ViewModels.OutcomeViewModel
 @{
     ViewData["Title"] = "RoATP application outcomes - Application summary";
 }
 
 @{
-    var gatewayOutcomeFormGroupError = Model.ErrorMessages != null && Model.ErrorMessages.Count(x=>x.Field=="ApproveGateway") > 0 ? "govuk-form-group--error" : "";
-    var moderationOutcomeFormGroupError = Model.ErrorMessages != null && Model.ErrorMessages.Count(x=>x.Field=="ApproveModeration") > 0 ? "govuk-form-group--error" : "";
-    var overallOutcomeFormGroupError = Model.ErrorMessages != null && (Model.ErrorMessages.Count(x=>x.Field=="Status") > 0 || Model.ErrorMessages.Count(x=>x.Field=="InProgressInternalText") > 0 || Model.ErrorMessages.Count(x=>x.Field=="InProgressExternalText") > 0 ) ? "govuk-form-group--error" : "";
-    var inProgressInternalTextHighlight = Model.ErrorMessages != null && Model.ErrorMessages.Count(x=>x.Field=="InProgressInternalText") > 0 ? "govuk-textarea--error" : "";
-    var inProgressExternalTextHighlight = Model.ErrorMessages != null && Model.ErrorMessages.Count(x=>x.Field=="InProgressExternalText") > 0 ? "govuk-textarea--error" : "";
+    var inProgressInternalTextHighlight = Model.ErrorMessages != null && Model.ErrorMessages.Count(x => x.Field == "InProgressInternalText") > 0 ? "govuk-textarea--error" : "";
+    var inProgressExternalTextHighlight = Model.ErrorMessages != null && Model.ErrorMessages.Count(x => x.Field == "InProgressExternalText") > 0 ? "govuk-textarea--error" : "";
 
     var radioGatewayApproved = string.Equals(Model.ApproveGateway, ApprovalStatus.Approve, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
     var radioGatewayOverturned = string.Equals(Model.ApproveGateway, ApprovalStatus.Overturn, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
@@ -41,7 +39,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
 
-            <partial name="_ValidationSummaryPartial"/>
+            <partial name="_ValidationSummaryPartial" />
 
             <span class="govuk-caption-xl">
                 RoATP application outcomes
@@ -109,7 +107,7 @@
                         <strong class="das-tag @assessmentOutcomeTagClass">
                             @Model.AssessmentOutcome
                         </strong>
-                    </dd> 
+                    </dd>
                 </div>
             </dl>
         </div>
@@ -119,12 +117,12 @@
         <div class="govuk-grid-column-two-thirds">
 
             <form asp-action="Outcome" asp-controller="Oversight">
-            <input type="hidden" asp-for="ApplicationId" />
-            <input type="hidden" asp-for="ApplicationEmailAddress"/>
+                <input type="hidden" asp-for="ApplicationId" />
+                <input type="hidden" asp-for="ApplicationEmailAddress" />
 
                 <h2 class="govuk-heading-l">Outcome details</h2>
 
-                <div class="govuk-form-group @gatewayOutcomeFormGroupError">
+                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x=> x.ApproveGateway, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-m">Gateway outcome</h2>
@@ -183,29 +181,18 @@
                             </div>
                         </dl>
 
-
                         @Html.ValidationMessageFor(m => m.ApproveGateway, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveGateway) })
-                        @*@if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
-                        {
-                            @foreach (var error in Model.ErrorMessages.Where(x => x.Field == "ApproveGateway"))
-                            {
-                                <span class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
-                                </span>
-                            }
-                        }*@
 
                         <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
                                        type="radio"
-                                       id="OptionApproveGatewayYes"
+                                       id="ApproveGateway"
                                        name="ApproveGateway"
                                        value=@ApprovalStatus.Approve
                                        data-aria-controls="conditional-OptionYes"
-                                       asp-for="ApproveGateway"
-                                       />
-                                <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayYes">
+                                       asp-for="ApproveGateway" />
+                                <label class="govuk-label govuk-radios__label" for="ApproveGateway">
                                     Approve this outcome
                                 </label>
                             </div>
@@ -216,8 +203,7 @@
                                        name="ApproveGateway"
                                        value=@ApprovalStatus.Overturn
                                        data-aria-controls="conditional-OptionNo"
-                                       asp-for="ApproveGateway"
-                                       />
+                                       asp-for="ApproveGateway" />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayNo">
                                     Overturn this outcome
                                 </label>
@@ -290,7 +276,7 @@
                     </fieldset>
                 </div>
 
-                <div class="govuk-form-group @moderationOutcomeFormGroupError">
+                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x=> x.ApproveGateway, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-m">Moderation outcome</h2>
@@ -348,25 +334,17 @@
                                 </dd>
                             </div>
                         </dl>
-                        @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
-                        {
-                            @foreach (var error in Model.ErrorMessages.Where(x => x.Field == "ApproveModeration"))
-                            {
-                                <span class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
-                                </span>
-                            }
-                        }
+
+                        @Html.ValidationMessageFor(m => m.ApproveModeration, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveModeration) })
                         <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
                                        type="radio"
-                                       id="OptionApproveModerationYes"
+                                       id="ApproveModeration"
                                        name="ApproveModeration"
                                        value=@ApprovalStatus.Approve
-                                       data-aria-controls="conditional-OptionYes"
-                                       @radioModerationApproved />
-                                <label class="govuk-label govuk-radios__label" for="OptionApproveModerationYes">
+                                       data-aria-controls="conditional-OptionYes"/>
+                                <label class="govuk-label govuk-radios__label" for="ApproveModeration">
                                     Approve this outcome
                                 </label>
                             </div>
@@ -386,202 +364,194 @@
                     </fieldset>
                 </div>
 
-                <div class="govuk-form-group @overallOutcomeFormGroupError">
+                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x=> x.ApproveGateway, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-l">What is the overall outcome of this application?</h2>
                         </legend>
 
-                        @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
-                        {
-                            @foreach (var error in Model.ErrorMessages.Where(x => x.Field == "Status"))
-                            {
-                                <span class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
-                                </span>
-                            }
-                        }
+                        @Html.ValidationMessageFor(m => m.OversightStatus, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.OversightStatus) })
 
-                    <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input"
-                                   type="radio"
-                                   id="OptionSuccessful"
-                                   name="OversightStatus"
-                                   value=@OversightReviewStatus.Successful
-                                   data-aria-controls="conditional-OptionSuccessful"
-                                   @radioCheckedSuccessful
-                                   data-disabled="disabled" />
-                            <label class="govuk-label govuk-radios__label" for="OptionSuccessful">
-                                @OversightReviewStatus.Successful
-                            </label>
-                        </div>
-                        <div class="govuk-radios__conditional" id="conditional-OptionSuccessful">
-                            <div>
-                                <div class="govuk-form-group">
-                                    <a name="OptionSuccessfulText"></a>
-                                    <label class="govuk-label" for="SuccessfulText">
-                                        Add your internal comments (optional)
-                                    </label>
-                                    <textarea class="govuk-textarea"
-                                              id="SuccessfulText"
-                                              name="SuccessfulText"
-                                              rows="5"
-                                              maxlength="@OversightSettings.TextAreaMaxLength"
-                                              aria-describedby="OptionSuccessfulText-info">@Model.SuccessfulText</textarea>
-                                </div>
+                        <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       type="radio"
+                                       id="OptionSuccessful"
+                                       name="OversightStatus"
+                                       value=@OversightReviewStatus.Successful
+                                       data-aria-controls="conditional-OptionSuccessful"
+                                       @radioCheckedSuccessful
+                                       data-disabled="disabled" />
+                                <label class="govuk-label govuk-radios__label" for="OptionSuccessful">
+                                    @OversightReviewStatus.Successful
+                                </label>
                             </div>
-                        </div>
-
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input"
-                                   type="radio"
-                                   id="OptionSuccessfulAlreadyActive"
-                                   name="OversightStatus"
-                                   value=@OversightReviewStatus.SuccessfulAlreadyActive
-                                   data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
-                                   @radioCheckedSuccessfulAlreadyActive
-                                   data-disabled="disabled" />
-                            <label class="govuk-label govuk-radios__label" for="OptionSuccessfulAlreadyActive">
-                                Successful - already active
-                            </label>
-                        </div>
-                        <div class="govuk-radios__conditional" id="conditional-OptionSuccessfulAlreadyActive">
-                            <div>
-                                <div class="govuk-form-group">
-                                    <a name="OptionSuccessfulAlreadyActiveText"></a>
-                                    <label class="govuk-label" for="SuccessfulAlreadyActiveText">
-                                        Add your internal comments (optional)
-                                    </label>
-                                    <textarea class="govuk-textarea"
-                                              id="SuccessfulAlreadyActiveText"
-                                              name="SuccessfulAlreadyActiveText"
-                                              rows="5"
-                                              maxlength="@OversightSettings.TextAreaMaxLength"
-                                              aria-describedby="OptionSuccessfulAlreadyActiveText-info">@Model.SuccessfulAlreadyActiveText</textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input"
-                                   type="radio"
-                                   id="OptionSuccessfulFitnessForFunding"
-                                   name="OversightStatus"
-                                   value=@OversightReviewStatus.SuccessfulFitnessForFunding
-                                   data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
-                                   @radioCheckedSuccessfulFitnessForFunding
-                                   data-disabled="disabled" />
-                            <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
-                                Successful - fitness for funding
-                            </label>
-                        </div>
-                        <div class="govuk-radios__conditional" id="conditional-OptionSuccessfulFitnessForFunding">
-                            <div>
-                                <div class="govuk-form-group">
-                                    <a name="OptionSuccessfulFitnessForFundingText"></a>
-                                    <label class="govuk-label" for="SuccessfulFitnessForFundingText">
-                                        Add your internal comments (optional)
-                                    </label>
-                                    <textarea class="govuk-textarea"
-                                              id="SuccessfulFitnessForFundingText"
-                                              name="SuccessfulFitnessForFundingText"
-                                              rows="5"
-                                              maxlength="@OversightSettings.TextAreaMaxLength"
-                                              aria-describedby="SuccessfulFitnessForFundingText-info">@Model.SuccessfulFitnessForFundingText</textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input"
-                                   type="radio"
-                                   id="OptionUnsuccessful"
-                                   name="OversightStatus"
-                                   value=@OversightReviewStatus.Unsuccessful
-                                   data-aria-controls="conditional-OptionUnsuccessful"
-                                   @radioCheckedUnsuccessful
-                                   data-disabled="disabled" />
-                            <label class="govuk-label govuk-radios__label" for="OptionUnsuccessful">
-                                Unsuccessful
-                            </label>
-                        </div>
-                        <div class="govuk-radios__conditional" id="conditional-OptionUnsuccessful">
-                            <div>
-                                <div class="govuk-form-group">
-                                    <a name="OptionUnsuccessfulText"></a>
-                                    <label class="govuk-label" for="UnsuccessfulText">
-                                        Add your internal comments
-                                    </label>
-                                    <textarea class="govuk-textarea"
-                                              id="UnsuccessfulText"
-                                              name="UnsuccessfulText"
-                                              rows="5"
-                                              maxlength="@OversightSettings.TextAreaMaxLength"
-                                              aria-describedby="UnsuccessfulText-info">@Model.UnsuccessfulText</textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="govuk-radios__divider">or</div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input"
-                                   type="radio"
-                                   id="OptionInProgress"
-                                   name="OversightStatus"
-                                   value=@OversightReviewStatus.InProgress
-                                   data-aria-controls="conditional-OptionInProgress"
-                                   @radioCheckedInProgress />
-                            <label class="govuk-label govuk-radios__label" for="OptionInProgress">
-                                Set to 'in progress'
-                            </label>
-                        </div>
-                        <div class="govuk-radios__conditional" id="conditional-OptionInProgress">
-                            <div>
-                                <div class="govuk-form-group">
-                                    <a name="OptionInProgressInternalText"></a>
-                                    <label class="govuk-label" for="InProgressInternalText">
-                                        Add your internal comments
-                                    </label>
-                                     @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
-                                    {
-                                        @foreach (var error in Model.ErrorMessages.Where(x => x.Field == "InProgressInternalText"))
-                                        {
-                                            <span class="govuk-error-message">
-                                                <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
-                                            </span>
-                                        }
-                                    }
-                                    <textarea class="govuk-textarea @inProgressInternalTextHighlight"
-                                              id="InProgressInternalText"
-                                              name="InProgressInternalText"
-                                              rows="5"
-                                              maxlength="@OversightSettings.TextAreaMaxLength"
-                                              aria-describedby="InProgressInternalText-info">@Model.InProgressInternalText</textarea>
-                                </div>
-                            </div>
+                            <div class="govuk-radios__conditional" id="conditional-OptionSuccessful">
                                 <div>
-                                <div class="govuk-form-group">
-                                    <a name="OptionInProgressExternalText"></a>
-                                    <label class="govuk-label" for="InProgressExternalText">
-                                        Add your external comments
-                                    </label>
-                                     @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
-                                    {
-                                        @foreach (var error in Model.ErrorMessages.Where(x => x.Field == "InProgressExternalText"))
+                                    <div class="govuk-form-group">
+                                        <a name="OptionSuccessfulText"></a>
+                                        <label class="govuk-label" for="SuccessfulText">
+                                            Add your internal comments (optional)
+                                        </label>
+                                        <textarea class="govuk-textarea"
+                                                  id="SuccessfulText"
+                                                  name="SuccessfulText"
+                                                  rows="5"
+                                                  maxlength="@OversightSettings.TextAreaMaxLength"
+                                                  aria-describedby="OptionSuccessfulText-info">@Model.SuccessfulText</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       type="radio"
+                                       id="OptionSuccessfulAlreadyActive"
+                                       name="OversightStatus"
+                                       value=@OversightReviewStatus.SuccessfulAlreadyActive
+                                       data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
+                                       @radioCheckedSuccessfulAlreadyActive
+                                       data-disabled="disabled" />
+                                <label class="govuk-label govuk-radios__label" for="OptionSuccessfulAlreadyActive">
+                                    Successful - already active
+                                </label>
+                            </div>
+                            <div class="govuk-radios__conditional" id="conditional-OptionSuccessfulAlreadyActive">
+                                <div>
+                                    <div class="govuk-form-group">
+                                        <a name="OptionSuccessfulAlreadyActiveText"></a>
+                                        <label class="govuk-label" for="SuccessfulAlreadyActiveText">
+                                            Add your internal comments (optional)
+                                        </label>
+                                        <textarea class="govuk-textarea"
+                                                  id="SuccessfulAlreadyActiveText"
+                                                  name="SuccessfulAlreadyActiveText"
+                                                  rows="5"
+                                                  maxlength="@OversightSettings.TextAreaMaxLength"
+                                                  aria-describedby="OptionSuccessfulAlreadyActiveText-info">@Model.SuccessfulAlreadyActiveText</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       type="radio"
+                                       id="OptionSuccessfulFitnessForFunding"
+                                       name="OversightStatus"
+                                       value=@OversightReviewStatus.SuccessfulFitnessForFunding
+                                       data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
+                                       @radioCheckedSuccessfulFitnessForFunding
+                                       data-disabled="disabled" />
+                                <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
+                                    Successful - fitness for funding
+                                </label>
+                            </div>
+                            <div class="govuk-radios__conditional" id="conditional-OptionSuccessfulFitnessForFunding">
+                                <div>
+                                    <div class="govuk-form-group">
+                                        <a name="OptionSuccessfulFitnessForFundingText"></a>
+                                        <label class="govuk-label" for="SuccessfulFitnessForFundingText">
+                                            Add your internal comments (optional)
+                                        </label>
+                                        <textarea class="govuk-textarea"
+                                                  id="SuccessfulFitnessForFundingText"
+                                                  name="SuccessfulFitnessForFundingText"
+                                                  rows="5"
+                                                  maxlength="@OversightSettings.TextAreaMaxLength"
+                                                  aria-describedby="SuccessfulFitnessForFundingText-info">@Model.SuccessfulFitnessForFundingText</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       type="radio"
+                                       id="OptionUnsuccessful"
+                                       name="OversightStatus"
+                                       value=@OversightReviewStatus.Unsuccessful
+                                       data-aria-controls="conditional-OptionUnsuccessful"
+                                       @radioCheckedUnsuccessful
+                                       data-disabled="disabled" />
+                                <label class="govuk-label govuk-radios__label" for="OptionUnsuccessful">
+                                    Unsuccessful
+                                </label>
+                            </div>
+                            <div class="govuk-radios__conditional" id="conditional-OptionUnsuccessful">
+                                <div>
+                                    <div class="govuk-form-group">
+                                        <a name="OptionUnsuccessfulText"></a>
+                                        <label class="govuk-label" for="UnsuccessfulText">
+                                            Add your internal comments
+                                        </label>
+                                        <textarea class="govuk-textarea"
+                                                  id="UnsuccessfulText"
+                                                  name="UnsuccessfulText"
+                                                  rows="5"
+                                                  maxlength="@OversightSettings.TextAreaMaxLength"
+                                                  aria-describedby="UnsuccessfulText-info">@Model.UnsuccessfulText</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="govuk-radios__divider">or</div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       type="radio"
+                                       id="OptionInProgress"
+                                       name="OversightStatus"
+                                       value=@OversightReviewStatus.InProgress
+                                       data-aria-controls="conditional-OptionInProgress"
+                                       @radioCheckedInProgress />
+                                <label class="govuk-label govuk-radios__label" for="OptionInProgress">
+                                    Set to 'in progress'
+                                </label>
+                            </div>
+                            <div class="govuk-radios__conditional" id="conditional-OptionInProgress">
+                                <div>
+                                    <div class="govuk-form-group">
+                                        <a name="OptionInProgressInternalText"></a>
+                                        <label class="govuk-label" for="InProgressInternalText">
+                                            Add your internal comments
+                                        </label>
+                                        @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
                                         {
-                                            <span class="govuk-error-message">
-                                                <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
-                                            </span>
+                                            @foreach (var error in Model.ErrorMessages.Where(x => x.Field == "InProgressInternalText"))
+                                            {
+                                                <span class="govuk-error-message">
+                                                    <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
+                                                </span>
+                                            }
                                         }
-                                    }
-                                    <textarea class="govuk-textarea @inProgressExternalTextHighlight"
-                                              id="InProgressExternalText"
-                                              name="InProgressExternalText"
-                                              rows="5"
-                                              maxlength="@OversightSettings.TextAreaMaxLength"
-                                              aria-describedby="InProgressExternalText-info">@Model.InProgressExternalText</textarea>
+                                        <textarea class="govuk-textarea @inProgressInternalTextHighlight"
+                                                  id="InProgressInternalText"
+                                                  name="InProgressInternalText"
+                                                  rows="5"
+                                                  maxlength="@OversightSettings.TextAreaMaxLength"
+                                                  aria-describedby="InProgressInternalText-info">@Model.InProgressInternalText</textarea>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="govuk-form-group">
+                                        <a name="OptionInProgressExternalText"></a>
+                                        <label class="govuk-label" for="InProgressExternalText">
+                                            Add your external comments
+                                        </label>
+                                        @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
+                                        {
+                                            @foreach (var error in Model.ErrorMessages.Where(x => x.Field == "InProgressExternalText"))
+                                            {
+                                                <span class="govuk-error-message">
+                                                    <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
+                                                </span>
+                                            }
+                                        }
+                                        <textarea class="govuk-textarea @inProgressExternalTextHighlight"
+                                                  id="InProgressExternalText"
+                                                  name="InProgressExternalText"
+                                                  rows="5"
+                                                  maxlength="@OversightSettings.TextAreaMaxLength"
+                                                  aria-describedby="InProgressExternalText-info">@Model.InProgressExternalText</textarea>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     </fieldset>
                 </div>
 
@@ -597,10 +567,10 @@
 </main>
 
 @section Scripts {
-     <script src="/javascript/das-enable-form-controls.js" no-cdn></script>
-     <script>
+    <script src="/javascript/das-enable-form-controls.js" no-cdn></script>
+    <script>
         window.dasJs.enableFormControlsOnChange.init(
             ['ApproveGateway', 'ApproveModeration']
         );
-     </script>
+    </script>
 }

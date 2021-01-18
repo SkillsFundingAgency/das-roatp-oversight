@@ -19,6 +19,7 @@ using Polly.Extensions.Http;
 using SFA.DAS.AdminService.Common;
 using SFA.DAS.AdminService.Common.Extensions;
 using SFA.DAS.RoatpOversight.Web.Domain;
+using SFA.DAS.RoatpOversight.Web.HealthChecks;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService;
 using SFA.DAS.RoatpOversight.Web.Services;
@@ -108,6 +109,7 @@ namespace SFA.DAS.RoatpOversight.Web
             services.AddHealthChecks();
 
             services.AddApplicationInsightsTelemetry();
+            services.AddDasHealthChecks(ApplicationConfiguration, _env.IsDevelopment());
 
             ConfigureHttpClients(services);
             ConfigureDependencyInjection(services);
@@ -206,6 +208,7 @@ namespace SFA.DAS.RoatpOversight.Web
             app.UseStatusCodePagesWithReExecute("/ErrorPage/{0}");
             app.UseSecurityHeaders();
             app.UseHealthChecks("/health");
+            app.UseDasHealthChecks();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

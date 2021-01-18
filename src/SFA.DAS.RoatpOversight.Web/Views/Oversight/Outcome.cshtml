@@ -493,6 +493,7 @@
                                        type="radio"
                                        id="OptionInProgress"
                                        name="OversightStatus"
+                                       asp-for="OversightStatus"
                                        value=@OversightReviewStatus.InProgress
                                        data-aria-controls="conditional-OptionInProgress"
                                        />
@@ -507,15 +508,8 @@
                                         <label class="govuk-label" for="InProgressInternalText">
                                             Add your internal comments
                                         </label>
-                                        @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
-                                        {
-                                            @foreach (var error in Model.ErrorMessages.Where(x => x.Field == "InProgressInternalText"))
-                                            {
-                                                <span class="govuk-error-message">
-                                                    <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
-                                                </span>
-                                            }
-                                        }
+
+                                        @Html.ValidationMessageFor(m => m.InProgressInternalText, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.InProgressInternalText) })
                                         <textarea class="govuk-textarea @inProgressInternalTextHighlight"
                                                   id="InProgressInternalText"
                                                   name="InProgressInternalText"
@@ -530,15 +524,7 @@
                                         <label class="govuk-label" for="InProgressExternalText">
                                             Add your external comments
                                         </label>
-                                        @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
-                                        {
-                                            @foreach (var error in Model.ErrorMessages.Where(x => x.Field == "InProgressExternalText"))
-                                            {
-                                                <span class="govuk-error-message">
-                                                    <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
-                                                </span>
-                                            }
-                                        }
+                                        @Html.ValidationMessageFor(m => m.InProgressExternalText, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.InProgressExternalText) })
                                         <textarea class="govuk-textarea @inProgressExternalTextHighlight"
                                                   id="InProgressExternalText"
                                                   name="InProgressExternalText"

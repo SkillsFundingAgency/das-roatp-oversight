@@ -41,60 +41,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
 
-            @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
-            {
-                <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-                    <h2 class="govuk-error-summary__title" id="error-summary-title">
-                        There is a problem
-                    </h2>
-                    <div class="govuk-error-summary__body">
-                        <ul class="govuk-list govuk-error-summary__list">
-                            @foreach (var error in Model.ErrorMessages)
-                            {
-                            <li>
-                                @if (error.Field == "Status")
-                                {
-                                    @if (string.IsNullOrEmpty(Model.ApproveGateway) || string.IsNullOrEmpty(Model.ApproveModeration))
-                                    {
-                                        <a href="#OptionInProgress">@error.ErrorMessage</a>
-                                    }
-                                    else
-                                    {
-                                        <a href="#OptionSuccessful">@error.ErrorMessage</a>
-                                    }
-                                }
-
-                                @if (error.Field == "ApproveGateway")
-                                {
-                                    <a href="#OptionApproveGatewayYes">@error.ErrorMessage</a>
-                                }
-
-                                @if (error.Field == "ApproveModeration")
-                                {
-                                    <a href="#OptionApproveModerationYes">@error.ErrorMessage</a>
-                                }
-
-
-                                @if (error.Field == "UnsuccessfulText")
-                                {
-                                    <a href="#UnsuccessfulText">@error.ErrorMessage</a>
-                                }
-
-                                @if (error.Field == "InProgressInternalText")
-                                {
-                                    <a href="#InProgressInternalText">@error.ErrorMessage</a>
-                                }
-
-                                @if (error.Field == "InProgressExternalText")
-                                {
-                                    <a href="#InProgressExternalText">@error.ErrorMessage</a>
-                                }
-                            </li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            }
+            <partial name="_ValidationSummaryPartial"/>
 
             <span class="govuk-caption-xl">
                 RoATP application outcomes
@@ -236,7 +183,9 @@
                             </div>
                         </dl>
 
-                        @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
+
+                        @Html.ValidationMessageFor(m => m.ApproveGateway, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveGateway) })
+                        @*@if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
                         {
                             @foreach (var error in Model.ErrorMessages.Where(x => x.Field == "ApproveGateway"))
                             {
@@ -244,7 +193,7 @@
                                     <span class="govuk-visually-hidden">Error:</span> @error.ErrorMessage
                                 </span>
                             }
-                        }
+                        }*@
 
                         <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
                             <div class="govuk-radios__item">
@@ -254,7 +203,8 @@
                                        name="ApproveGateway"
                                        value=@ApprovalStatus.Approve
                                        data-aria-controls="conditional-OptionYes"
-                                       @radioGatewayApproved />
+                                       asp-for="ApproveGateway"
+                                       />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayYes">
                                     Approve this outcome
                                 </label>
@@ -266,7 +216,8 @@
                                        name="ApproveGateway"
                                        value=@ApprovalStatus.Overturn
                                        data-aria-controls="conditional-OptionNo"
-                                       @radioGatewayOverturned />
+                                       asp-for="ApproveGateway"
+                                       />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayNo">
                                     Overturn this outcome
                                 </label>

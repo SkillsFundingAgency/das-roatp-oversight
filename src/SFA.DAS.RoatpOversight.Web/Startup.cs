@@ -87,7 +87,7 @@ namespace SFA.DAS.RoatpOversight.Web
             {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             })
-            .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<DummyValidator>());
+            .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<OutcomePostRequestValidator>());
 
             services.AddSession(opt => { opt.IdleTimeout = TimeSpan.FromHours(1); });
 

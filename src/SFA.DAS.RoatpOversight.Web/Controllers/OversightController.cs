@@ -9,6 +9,7 @@ using SFA.DAS.RoatpOversight.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.AdminService.Common.Extensions;
 using SFA.DAS.RoatpOversight.Web.Infrastructure;
+using SFA.DAS.RoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
 {
@@ -42,63 +43,75 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             return View(vm);
         }
 
-
         [HttpPost("Oversight/Outcome/{applicationId}")]
-        public async Task<IActionResult> EvaluateOutcome(EvaluationOutcomeCommand command) 
+        public async Task<IActionResult> Outcome(OutcomePostRequest request)
         {
-            var viewModel = await _oversightOrchestrator.GetOversightDetailsViewModel(command.ApplicationId);
-            
-            if (CheckForBackButtonAfterSubmission(viewModel.OversightStatus, out var outcome)) return outcome;
-           
-            viewModel.OversightStatus = command.OversightStatus;
-            viewModel.ApproveGateway = command.ApproveGateway;
-            viewModel.ApproveModeration = command.ApproveModeration;
-            viewModel.SuccessfulText = command.SuccessfulText;
-            viewModel.SuccessfulAlreadyActiveText = command.SuccessfulAlreadyActiveText;
-            viewModel.SuccessfulFitnessForFundingText = command.SuccessfulFitnessForFundingText;
-            viewModel.UnsuccessfulText = command.UnsuccessfulText;
-            viewModel.InProgressInternalText = command.InProgressInternalText;
-            viewModel.InProgressExternalText = command.InProgressExternalText;
-            viewModel.ApplicationEmailAddress = command.ApplicationEmailAddress;
-
-            var errorMessages = OversightValidator.ValidateOverallOutcome(command);
-
-            if (errorMessages.Any())
-            {
-                viewModel.ErrorMessages = errorMessages;
-                return View($"~/Views/Oversight/Outcome.cshtml", viewModel);
-            }
-
-            var viewModelStatus = new OutcomeStatusViewModel
-            {
-                ApplicationId = command.ApplicationId,
-                ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
-                ApplicationSubmittedDate = viewModel.ApplicationSubmittedDate,
-                OrganisationName = viewModel.OrganisationName,
-                ProviderRoute = viewModel.ProviderRoute,
-                Ukprn = viewModel.Ukprn,
-                ApproveGateway = viewModel.ApproveGateway,
-                ApproveModeration = viewModel.ApproveModeration,
-                OversightStatus = viewModel.OversightStatus,
-                SuccessfulText = viewModel.SuccessfulText,
-                SuccessfulAlreadyActiveText = viewModel.SuccessfulAlreadyActiveText,
-                SuccessfulFitnessForFundingText = viewModel.SuccessfulFitnessForFundingText,
-                UnsuccessfulText =  viewModel.UnsuccessfulText,
-                InProgressInternalText = viewModel.InProgressInternalText,
-                InProgressExternalText = viewModel.InProgressExternalText,
-                ApplicationEmailAddress = viewModel.ApplicationEmailAddress
-            };
-
-            return View("~/Views/Oversight/OutcomeHoldingPage.cshtml", viewModelStatus);
-
-            //MFCMFC this all needs tidying up but will do in follow up stories
-            // if (oversightStatus == OversightReviewStatus.Successful)
-            // {
-            //     return View("~/Views/Oversight/OutcomeSuccessful.cshtml", viewModelSuccess);
-            // }
-            //
-            // return View("~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModelSuccess);
+            return RedirectToAction("ConfirmOutcome");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmOutcome(ConfirmOutcomeRequest request)
+        {
+            return View();
+        }
+
+
+        //[HttpPost("Oversight/Outcome/{applicationId}")]
+        //public async Task<IActionResult> EvaluateOutcome(EvaluationOutcomeCommand command) 
+        //{
+        //    var viewModel = await _oversightOrchestrator.GetOversightDetailsViewModel(command.ApplicationId);
+            
+        //    if (CheckForBackButtonAfterSubmission(viewModel.OversightStatus, out var outcome)) return outcome;
+           
+        //    viewModel.OversightStatus = command.OversightStatus;
+        //    viewModel.ApproveGateway = command.ApproveGateway;
+        //    viewModel.ApproveModeration = command.ApproveModeration;
+        //    viewModel.SuccessfulText = command.SuccessfulText;
+        //    viewModel.SuccessfulAlreadyActiveText = command.SuccessfulAlreadyActiveText;
+        //    viewModel.SuccessfulFitnessForFundingText = command.SuccessfulFitnessForFundingText;
+        //    viewModel.UnsuccessfulText = command.UnsuccessfulText;
+        //    viewModel.InProgressInternalText = command.InProgressInternalText;
+        //    viewModel.InProgressExternalText = command.InProgressExternalText;
+        //    viewModel.ApplicationEmailAddress = command.ApplicationEmailAddress;
+
+        //    var errorMessages = OversightValidator.ValidateOverallOutcome(command);
+
+        //    if (errorMessages.Any())
+        //    {
+        //        viewModel.ErrorMessages = errorMessages;
+        //        return View($"~/Views/Oversight/Outcome.cshtml", viewModel);
+        //    }
+
+        //    var viewModelStatus = new OutcomeStatusViewModel
+        //    {
+        //        ApplicationId = command.ApplicationId,
+        //        ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
+        //        ApplicationSubmittedDate = viewModel.ApplicationSubmittedDate,
+        //        OrganisationName = viewModel.OrganisationName,
+        //        ProviderRoute = viewModel.ProviderRoute,
+        //        Ukprn = viewModel.Ukprn,
+        //        ApproveGateway = viewModel.ApproveGateway,
+        //        ApproveModeration = viewModel.ApproveModeration,
+        //        OversightStatus = viewModel.OversightStatus,
+        //        SuccessfulText = viewModel.SuccessfulText,
+        //        SuccessfulAlreadyActiveText = viewModel.SuccessfulAlreadyActiveText,
+        //        SuccessfulFitnessForFundingText = viewModel.SuccessfulFitnessForFundingText,
+        //        UnsuccessfulText =  viewModel.UnsuccessfulText,
+        //        InProgressInternalText = viewModel.InProgressInternalText,
+        //        InProgressExternalText = viewModel.InProgressExternalText,
+        //        ApplicationEmailAddress = viewModel.ApplicationEmailAddress
+        //    };
+
+        //    return View("~/Views/Oversight/OutcomeHoldingPage.cshtml", viewModelStatus);
+
+        //    //MFCMFC this all needs tidying up but will do in follow up stories
+        //    // if (oversightStatus == OversightReviewStatus.Successful)
+        //    // {
+        //    //     return View("~/Views/Oversight/OutcomeSuccessful.cshtml", viewModelSuccess);
+        //    // }
+        //    //
+        //    // return View("~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModelSuccess);
+        //}
 
         [HttpPost("Oversight/Outcome/Successful/{applicationId}")]
         public async Task<IActionResult> Successful(Guid applicationId, string status)

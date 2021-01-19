@@ -160,92 +160,92 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         //    // return View("~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModelSuccess);
         //}
 
-        [HttpPost("Oversight/Outcome/Successful/{applicationId}")]
-        public async Task<IActionResult> Successful(Guid applicationId, string status)
-        {
-            var oversightViewModel = await _oversightOrchestrator.GetOversightDetailsViewModel(applicationId, null);
-            if (CheckForBackButtonAfterSubmission(oversightViewModel.OversightStatus, out var outcome)) return outcome;
-            var errorMessages = OversightValidator.ValidateOutcomeSuccessful(status);
+        //[HttpPost("Oversight/Outcome/Successful/{applicationId}")]
+        //public async Task<IActionResult> Successful(Guid applicationId, string status)
+        //{
+        //    var oversightViewModel = await _oversightOrchestrator.GetOversightDetailsViewModel(applicationId, null);
+        //    if (CheckForBackButtonAfterSubmission(oversightViewModel.OversightStatus, out var outcome)) return outcome;
+        //    var errorMessages = OversightValidator.ValidateOutcomeSuccessful(status);
 
-            var viewModel = new OutcomeSuccessStatusViewModel
-            {
-                ApplicationId = applicationId,
-                ApplicationReferenceNumber = oversightViewModel.ApplicationReferenceNumber,
-                ApplicationSubmittedDate = oversightViewModel.ApplicationSubmittedDate,
-                OrganisationName = oversightViewModel.OrganisationName,
-                ProviderRoute = oversightViewModel.ProviderRoute,
-                Ukprn = oversightViewModel.Ukprn
-            };
+        //    var viewModel = new OutcomeSuccessStatusViewModel
+        //    {
+        //        ApplicationId = applicationId,
+        //        ApplicationReferenceNumber = oversightViewModel.ApplicationReferenceNumber,
+        //        ApplicationSubmittedDate = oversightViewModel.ApplicationSubmittedDate,
+        //        OrganisationName = oversightViewModel.OrganisationName,
+        //        ProviderRoute = oversightViewModel.ProviderRoute,
+        //        Ukprn = oversightViewModel.Ukprn
+        //    };
 
-            if (errorMessages.Any())
-            {
-                viewModel.ErrorMessages = errorMessages;
-                return View($"~/Views/Oversight/OutcomeSuccessful.cshtml", viewModel);
-            }
-            else if ("No".Equals(status, StringComparison.InvariantCultureIgnoreCase))
-            {
-                oversightViewModel.OversightStatus = OversightReviewStatus.Successful;
-                return View($"~/Views/Oversight/Outcome.cshtml", oversightViewModel);
-            }
+        //    if (errorMessages.Any())
+        //    {
+        //        viewModel.ErrorMessages = errorMessages;
+        //        return View($"~/Views/Oversight/OutcomeSuccessful.cshtml", viewModel);
+        //    }
+        //    else if ("No".Equals(status, StringComparison.InvariantCultureIgnoreCase))
+        //    {
+        //        oversightViewModel.OversightStatus = OversightReviewStatus.Successful;
+        //        return View($"~/Views/Oversight/Outcome.cshtml", oversightViewModel);
+        //    }
 
-            var userId = HttpContext.User.UserId();
-            var userName = HttpContext.User.UserDisplayName();
-            await _outcomeOrchestrator.RecordOutcome(applicationId, OversightReviewStatus.Successful, userId, userName);
+        //    var userId = HttpContext.User.UserId();
+        //    var userName = HttpContext.User.UserDisplayName();
+        //    await _outcomeOrchestrator.RecordOutcome(applicationId, OversightReviewStatus.Successful, userId, userName);
 
-            // record in database it's a success
-            var viewModelDone = new OutcomeDoneViewModel { Ukprn = oversightViewModel.Ukprn, Status = OversightReviewStatus.Successful };
+        //    // record in database it's a success
+        //    var viewModelDone = new OutcomeDoneViewModel { Ukprn = oversightViewModel.Ukprn, Status = OversightReviewStatus.Successful };
 
-            return View("~/Views/Oversight/OutcomeDone.cshtml", viewModelDone);
-        }
+        //    return View("~/Views/Oversight/OutcomeDone.cshtml", viewModelDone);
+        //}
 
-        [HttpPost("Oversight/Outcome/Unsuccessful/{applicationId}")]
-        public async Task<IActionResult> Unsuccessful(Guid applicationId, string status)
-        {
-            var oversightViewModel = await _oversightOrchestrator.GetOversightDetailsViewModel(applicationId, null);
-            if (CheckForBackButtonAfterSubmission(oversightViewModel.OversightStatus, out var outcome)) return outcome;
-            var errorMessages = OversightValidator.ValidateOutcomeUnsuccessful(status);
+        //[HttpPost("Oversight/Outcome/Unsuccessful/{applicationId}")]
+        //public async Task<IActionResult> Unsuccessful(Guid applicationId, string status)
+        //{
+        //    var oversightViewModel = await _oversightOrchestrator.GetOversightDetailsViewModel(applicationId, null);
+        //    if (CheckForBackButtonAfterSubmission(oversightViewModel.OversightStatus, out var outcome)) return outcome;
+        //    var errorMessages = OversightValidator.ValidateOutcomeUnsuccessful(status);
 
-            var viewModel = new OutcomeSuccessStatusViewModel
-            {
-                ApplicationId = applicationId,
-                ApplicationReferenceNumber = oversightViewModel.ApplicationReferenceNumber,
-                ApplicationSubmittedDate = oversightViewModel.ApplicationSubmittedDate,
-                OrganisationName = oversightViewModel.OrganisationName,
-                ProviderRoute = oversightViewModel.ProviderRoute,
-                Ukprn = oversightViewModel.Ukprn
-            };
+        //    var viewModel = new OutcomeSuccessStatusViewModel
+        //    {
+        //        ApplicationId = applicationId,
+        //        ApplicationReferenceNumber = oversightViewModel.ApplicationReferenceNumber,
+        //        ApplicationSubmittedDate = oversightViewModel.ApplicationSubmittedDate,
+        //        OrganisationName = oversightViewModel.OrganisationName,
+        //        ProviderRoute = oversightViewModel.ProviderRoute,
+        //        Ukprn = oversightViewModel.Ukprn
+        //    };
 
-            if (errorMessages.Any())
-            {
-                viewModel.ErrorMessages = errorMessages;
-                return View($"~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModel);
-            }
-            else if ("No".Equals(status, StringComparison.InvariantCultureIgnoreCase))
-            {
-                oversightViewModel.OversightStatus = OversightReviewStatus.Unsuccessful;
-                return View($"~/Views/Oversight/Outcome.cshtml", oversightViewModel);
-            }
+        //    if (errorMessages.Any())
+        //    {
+        //        viewModel.ErrorMessages = errorMessages;
+        //        return View($"~/Views/Oversight/OutcomeUnsuccessful.cshtml", viewModel);
+        //    }
+        //    else if ("No".Equals(status, StringComparison.InvariantCultureIgnoreCase))
+        //    {
+        //        oversightViewModel.OversightStatus = OversightReviewStatus.Unsuccessful;
+        //        return View($"~/Views/Oversight/Outcome.cshtml", oversightViewModel);
+        //    }
 
-            var userId = HttpContext.User.UserId();
-            var userName = HttpContext.User.UserDisplayName();
-            await _outcomeOrchestrator.RecordOutcome(applicationId, OversightReviewStatus.Unsuccessful, userId, userName);
+        //    var userId = HttpContext.User.UserId();
+        //    var userName = HttpContext.User.UserDisplayName();
+        //    await _outcomeOrchestrator.RecordOutcome(applicationId, OversightReviewStatus.Unsuccessful, userId, userName);
 
-            var viewModelDone = new OutcomeDoneViewModel { Ukprn = oversightViewModel.Ukprn, Status = OversightReviewStatus.Unsuccessful };
+        //    var viewModelDone = new OutcomeDoneViewModel { Ukprn = oversightViewModel.Ukprn, Status = OversightReviewStatus.Unsuccessful };
 
-            return View("~/Views/Oversight/OutcomeDone.cshtml", viewModelDone);
-        }
+        //    return View("~/Views/Oversight/OutcomeDone.cshtml", viewModelDone);
+        //}
 
 
-        private bool CheckForBackButtonAfterSubmission(string oversightStatus, out IActionResult outcome)
-        {
-            outcome = null;
-            if (oversightStatus == OversightReviewStatus.Successful || oversightStatus == OversightReviewStatus.Unsuccessful)
-            {
-                outcome = new RedirectToActionResult("Applications", "Oversight", null);
-                return true;
-            }
+        //private bool CheckForBackButtonAfterSubmission(string oversightStatus, out IActionResult outcome)
+        //{
+        //    outcome = null;
+        //    if (oversightStatus == OversightReviewStatus.Successful || oversightStatus == OversightReviewStatus.Unsuccessful)
+        //    {
+        //        outcome = new RedirectToActionResult("Applications", "Oversight", null);
+        //        return true;
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
     }
 }

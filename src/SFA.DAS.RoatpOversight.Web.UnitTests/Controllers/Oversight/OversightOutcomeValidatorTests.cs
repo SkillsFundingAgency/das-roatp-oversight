@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Domain;
-using SFA.DAS.RoatpOversight.Web.Infrastructure;
+using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Validators;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
@@ -11,6 +10,14 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
     [TestFixture]
     public class OversightOutcomeValidatorTests
     {
+        private OutcomePostRequestValidator _validator;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _validator = new OutcomePostRequestValidator();
+        }
+
         [TestCase("", GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, true)]
         [TestCase(null, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, true)]
         [TestCase(OversightReviewStatus.Successful, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, false)]
@@ -21,15 +28,16 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [TestCase(OversightReviewStatus.Unsuccessful, GatewayReviewStatus.Pass, null, true)]
         public void OversightOutcomeValidator_returns_error_when_status_is_empty(string oversightStatus, string approveGateway, string approveModeration, bool errorsExpected)
         {
-            var command = new EvaluationOutcomeCommand
+            var request = new OutcomePostRequest
             {
                 OversightStatus = oversightStatus,
                 ApproveGateway = approveGateway,
                 ApproveModeration = approveModeration,
                 UnsuccessfulText = oversightStatus == OversightReviewStatus.Unsuccessful ? "comments" : null
             };
-            var validationDetails = OversightValidator.ValidateOverallOutcome(command);
-            Assert.AreEqual(errorsExpected,validationDetails.Count>0);
+
+            var result = _validator.Validate(request);
+            Assert.AreEqual(errorsExpected,!result.IsValid);
         }
 
         [TestCase(null,null,2)]
@@ -40,29 +48,32 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [TestCase("a", "b", 0)]
         public void OversightOutcomeValidator_in_progress_and_comments_set_returns_expected_result(string internalComments, string externalComments, int numberOfErrorsExpected)
         {
-            var command = new EvaluationOutcomeCommand
+            var request = new OutcomePostRequest
             {
+                ApproveGateway = GatewayReviewStatus.Pass,
+                ApproveModeration = ModerationReviewStatus.Pass,
                 OversightStatus = OversightReviewStatus.InProgress,
                 InProgressInternalText = internalComments,
                 InProgressExternalText = externalComments
             };
 
-            var validationDetails = OversightValidator.ValidateOverallOutcome(command);
-            Assert.AreEqual(numberOfErrorsExpected, validationDetails.Count);
+            var result = _validator.Validate(request);
+            Assert.AreEqual(numberOfErrorsExpected, result.Errors.Count);
         }
 
         [TestCase("")]
         [TestCase(null)]
         public void OversightOutcomeValidator_returns_expected_error_message_when_status_is_empty(string oversightStatus)
         {
-            var command = new EvaluationOutcomeCommand
+            var request = new OutcomePostRequest
             {
                 OversightStatus = oversightStatus,
                 ApproveGateway = GatewayReviewStatus.Pass,
                 ApproveModeration = ModerationReviewStatus.Pass
             };
-            var validationDetails = OversightValidator.ValidateOverallOutcome(command);
-            Assert.AreEqual(OversightValidator.MissingOverallOutcomeErrorMessage, validationDetails.First().ErrorMessage);
+            var result = _validator.Validate(request);
+
+            Assert.IsTrue(result.Errors.Any(x => x.PropertyName == "OversightStatus" && x.ErrorMessage == "Select the overall outcome of this application"));
         }
     }
 }

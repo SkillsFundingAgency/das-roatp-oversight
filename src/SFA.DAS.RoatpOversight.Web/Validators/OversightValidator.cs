@@ -20,94 +20,94 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
         public const string EnterExternalComments = "Enter external comments";
 
 
-        public static List<ValidationErrorDetail> ValidateOverallOutcome(EvaluationOutcomeCommand command)
-        {
-            var errorMessages = new List<ValidationErrorDetail>();
+        //public static List<ValidationErrorDetail> ValidateOverallOutcome(EvaluationOutcomeCommand command)
+        //{
+        //    var errorMessages = new List<ValidationErrorDetail>();
 
-            if (command.OversightStatus == OversightReviewStatus.InProgress && (string.IsNullOrEmpty(command.ApproveGateway) || string.IsNullOrEmpty(command.ApproveModeration)))
-            {
-                if (string.IsNullOrEmpty(command.InProgressInternalText))
-                    {
-                        errorMessages.Add(new ValidationErrorDetail
-                        {
-                            ErrorMessage = EnterInternalComments,
-                            Field = "InProgressInternalText"
-                        });
-                    }
+        //    if (command.OversightStatus == OversightReviewStatus.InProgress && (string.IsNullOrEmpty(command.ApproveGateway) || string.IsNullOrEmpty(command.ApproveModeration)))
+        //    {
+        //        if (string.IsNullOrEmpty(command.InProgressInternalText))
+        //            {
+        //                errorMessages.Add(new ValidationErrorDetail
+        //                {
+        //                    ErrorMessage = EnterInternalComments,
+        //                    Field = "InProgressInternalText"
+        //                });
+        //            }
 
-                    if (string.IsNullOrEmpty(command.InProgressExternalText))
-                    {
-                        errorMessages.Add(new ValidationErrorDetail
-                        {
-                            ErrorMessage = EnterExternalComments,
-                            Field = "InProgressExternalText"
-                        });
-                    }
+        //            if (string.IsNullOrEmpty(command.InProgressExternalText))
+        //            {
+        //                errorMessages.Add(new ValidationErrorDetail
+        //                {
+        //                    ErrorMessage = EnterExternalComments,
+        //                    Field = "InProgressExternalText"
+        //                });
+        //            }
 
-                    return errorMessages;
-            }
+        //            return errorMessages;
+        //    }
 
-            if (string.IsNullOrEmpty(command.ApproveGateway))
-            {
-                errorMessages.Add(new ValidationErrorDetail
-                {
-                    ErrorMessage = MissingGatewayOutcomeErrorMessage,
-                    Field = "ApproveGateway"
-                });
-            }
+        //    if (string.IsNullOrEmpty(command.ApproveGateway))
+        //    {
+        //        errorMessages.Add(new ValidationErrorDetail
+        //        {
+        //            ErrorMessage = MissingGatewayOutcomeErrorMessage,
+        //            Field = "ApproveGateway"
+        //        });
+        //    }
 
-            if (string.IsNullOrEmpty(command.ApproveModeration))
-            {
-                errorMessages.Add(new ValidationErrorDetail
-                {
-                    ErrorMessage = MissingModerationOutcomeErrorMessage,
-                    Field = "ApproveModeration"
-                });
-            }
+        //    if (string.IsNullOrEmpty(command.ApproveModeration))
+        //    {
+        //        errorMessages.Add(new ValidationErrorDetail
+        //        {
+        //            ErrorMessage = MissingModerationOutcomeErrorMessage,
+        //            Field = "ApproveModeration"
+        //        });
+        //    }
 
-            if (string.IsNullOrEmpty(command.OversightStatus))
-            {
-                errorMessages.Add(new ValidationErrorDetail
-                {
-                    ErrorMessage = MissingOverallOutcomeErrorMessage, Field = "Status"
-                });
-            }
+        //    if (string.IsNullOrEmpty(command.OversightStatus))
+        //    {
+        //        errorMessages.Add(new ValidationErrorDetail
+        //        {
+        //            ErrorMessage = MissingOverallOutcomeErrorMessage, Field = "Status"
+        //        });
+        //    }
 
-            if (command.OversightStatus == OversightReviewStatus.Unsuccessful  && string.IsNullOrEmpty(command.UnsuccessfulText))
-            {
-                if (string.IsNullOrEmpty(command.UnsuccessfulText))
-                {
-                    errorMessages.Add(new ValidationErrorDetail
-                    {
-                        ErrorMessage = EnterInternalComments,
-                        Field = "UnsuccessfulText"
-                    });
-                }
-            }
+        //    if (command.OversightStatus == OversightReviewStatus.Unsuccessful  && string.IsNullOrEmpty(command.UnsuccessfulText))
+        //    {
+        //        if (string.IsNullOrEmpty(command.UnsuccessfulText))
+        //        {
+        //            errorMessages.Add(new ValidationErrorDetail
+        //            {
+        //                ErrorMessage = EnterInternalComments,
+        //                Field = "UnsuccessfulText"
+        //            });
+        //        }
+        //    }
 
-            if (command.OversightStatus == OversightReviewStatus.InProgress)
-            {
-                if (string.IsNullOrEmpty(command.InProgressInternalText))
-                {
-                    errorMessages.Add(new ValidationErrorDetail
-                    {
-                        ErrorMessage = EnterInternalComments,
-                        Field = "InProgressInternalText"
-                    });
-                }
+        //    if (command.OversightStatus == OversightReviewStatus.InProgress)
+        //    {
+        //        if (string.IsNullOrEmpty(command.InProgressInternalText))
+        //        {
+        //            errorMessages.Add(new ValidationErrorDetail
+        //            {
+        //                ErrorMessage = EnterInternalComments,
+        //                Field = "InProgressInternalText"
+        //            });
+        //        }
 
-                if (string.IsNullOrEmpty(command.InProgressExternalText))
-                {
-                    errorMessages.Add(new ValidationErrorDetail
-                    {
-                        ErrorMessage = EnterExternalComments,
-                        Field = "InProgressExternalText"
-                    });
-                }
-            }
+        //        if (string.IsNullOrEmpty(command.InProgressExternalText))
+        //        {
+        //            errorMessages.Add(new ValidationErrorDetail
+        //            {
+        //                ErrorMessage = EnterExternalComments,
+        //                Field = "InProgressExternalText"
+        //            });
+        //        }
+        //    }
 
-            return errorMessages;
-        }
+        //    return errorMessages;
+        //}
 
 
         public static List<ValidationErrorDetail> ValidateOutcomeSuccessful(string outcomeStatus)

@@ -46,6 +46,15 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
             var cachedItem = await _cacheStorageService.RetrieveFromCache<OutcomePostRequest>(outcomeKey.ToString());
 
+            if(applicationDetails.OversightStatus == OversightReviewStatus.Successful
+               || applicationDetails.OversightStatus == OversightReviewStatus.SuccessfulAlreadyActive
+               || applicationDetails.OversightStatus == OversightReviewStatus.SuccessfulFitnessForFunding
+               || applicationDetails.OversightStatus == OversightReviewStatus.Unsuccessful
+               )
+            {
+                throw new InvalidStateException();
+            }
+
             var viewModel = new OutcomeViewModel
             {
                 ApplicationId = applicationId,
@@ -95,7 +104,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             if (cachedItem == null || cachedItem.ApplicationId != applicationId)
             {
-                throw new ConfirmOutcomeCacheKeyNotFound();
+                throw new ConfirmOutcomeCacheKeyNotFoundException();
             }
 
             var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);

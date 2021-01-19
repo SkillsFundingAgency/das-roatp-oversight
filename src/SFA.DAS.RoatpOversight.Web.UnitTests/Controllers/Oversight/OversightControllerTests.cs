@@ -9,6 +9,7 @@ using SFA.DAS.AdminService.Common.Testing.MockedObjects;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Controllers;
 using SFA.DAS.RoatpOversight.Web.Domain;
+using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
@@ -83,10 +84,11 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 
         [TestCase(OversightReviewStatus.Successful)]
         [TestCase(OversightReviewStatus.Unsuccessful)]
+        [TestCase(OversightReviewStatus.SuccessfulAlreadyActive)]
+        [TestCase(OversightReviewStatus.SuccessfulFitnessForFunding)]
         public async Task GetOutcome_returns_applications_view_when_oversight_status_is_successful_or_unsuccessful(string status)
         {
-            var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId, OversightStatus = status};
-            _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
+            _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).Throws<InvalidStateException>();
 
             var request = new OutcomeRequest { ApplicationId = _applicationDetailsApplicationId };
             var result = await _controller.Outcome(request) as RedirectToActionResult;

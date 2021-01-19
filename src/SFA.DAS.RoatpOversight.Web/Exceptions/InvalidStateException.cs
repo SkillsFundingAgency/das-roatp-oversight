@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.RoatpOversight.Web.Exceptions
 {
-    public class ConfirmOutcomeCacheKeyNotFound : InvalidOperationException
+    public class InvalidStateException : InvalidOperationException
     {
     }
 }

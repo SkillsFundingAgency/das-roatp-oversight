@@ -36,8 +36,15 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         [HttpGet("Oversight/Outcome/{applicationId}")]
         public async Task<IActionResult> Outcome(OutcomeRequest request)
         {
-            var vm = await _oversightOrchestrator.GetOversightDetailsViewModel(request.ApplicationId, request.OutcomeKey);
-            return View(vm);
+            try
+            {
+                var vm = await _oversightOrchestrator.GetOversightDetailsViewModel(request.ApplicationId, request.OutcomeKey);
+                return View(vm);
+            }
+            catch(InvalidStateException)
+            {
+                return RedirectToAction("Applications");
+            }
         }
 
         [HttpPost("Oversight/Outcome/{applicationId}")]
@@ -55,7 +62,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 var viewModel = await _oversightOrchestrator.GetConfirmOutcomeViewModel(request.ApplicationId, request.OutcomeKey);
                 return View(viewModel);
             }
-            catch (ConfirmOutcomeCacheKeyNotFound)
+            catch (ConfirmOutcomeCacheKeyNotFoundException)
             {
                 return RedirectToAction("Outcome", new { request.ApplicationId });
             }
@@ -77,7 +84,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             if (request.OversightStatus == OversightReviewStatus.Successful ||
                 request.OversightStatus == OversightReviewStatus.Unsuccessful)
             {
-                await _outcomeOrchestrator.RecordOutcome(request.ApplicationId, OversightReviewStatus.Unsuccessful, userId, userName);
+                await _outcomeOrchestrator.RecordOutcome(request.ApplicationId, request.OversightStatus, userId, userName);
             }
             else if (request.OversightStatus == OversightReviewStatus.SuccessfulAlreadyActive)
             {

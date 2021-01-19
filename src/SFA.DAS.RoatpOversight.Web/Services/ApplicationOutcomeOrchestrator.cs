@@ -34,15 +34,34 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             var updateOutcomeSuccess = await _applicationApiClient.RecordOutcome(updateOutcomeCommand);
 
-            if (updateOutcomeSuccess && outcome == OversightReviewStatus.Successful)
-            {
-                var registrationDetails = await _applicationApiClient.GetRegistrationDetails(applicationId);
+            if (!updateOutcomeSuccess) return false;
 
+            var registrationDetails = await _applicationApiClient.GetRegistrationDetails(applicationId);
+
+            if (outcome == OversightReviewStatus.Successful)
+            {
                 var request = BuildCreateOrganisationRequest(updateOutcomeCommand, registrationDetails);
 
                 var updateRegisterResult = await _registerApiClient.CreateOrganisation(request);
 
                 return updateRegisterResult;
+            }
+
+            if (outcome == OversightReviewStatus.SuccessfulAlreadyActive ||
+                outcome == OversightReviewStatus.SuccessfulFitnessForFunding)
+            {
+                var registerStatusRequest = new GetOrganisationRegisterStatusRequest {UKPRN = registrationDetails.UKPRN};
+                var registerStatus = await _registerApiClient.GetOrganisationRegisterStatus(registerStatusRequest);
+
+                var updateDeterminedDateRequest = new UpdateOrganisationApplicationDeterminedDateRequest
+                {
+                    ApplicationDeterminedDate = DateTime.UtcNow,
+                    LegalName = registrationDetails.LegalName,
+                    OrganisationId = registerStatus.OrganisationId.Value,
+                    UpdatedBy = userId
+                };
+
+                await _registerApiClient.UpdateApplicationDeterminedDate(updateDeterminedDateRequest);
             }
 
             return updateOutcomeSuccess;

@@ -76,24 +76,10 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 return RedirectToAction("Outcome", new { request.ApplicationId, request.OutcomeKey });
             }
 
-            //todo: required state changes here
-
             var userId = HttpContext.User.UserId();
             var userName = HttpContext.User.UserDisplayName();
 
-            if (request.OversightStatus == OversightReviewStatus.Successful ||
-                request.OversightStatus == OversightReviewStatus.Unsuccessful)
-            {
-                await _outcomeOrchestrator.RecordOutcome(request.ApplicationId, request.OversightStatus, userId, userName);
-            }
-            else if (request.OversightStatus == OversightReviewStatus.SuccessfulAlreadyActive)
-            {
-                //todo
-            }
-            else if (request.OversightStatus == OversightReviewStatus.SuccessfulFitnessForFunding)
-            {
-                //todo
-            }
+            await _outcomeOrchestrator.RecordOutcome(request.ApplicationId, request.OversightStatus, userId, userName);
 
             return RedirectToAction("Confirmed", new {request.ApplicationId});
         }

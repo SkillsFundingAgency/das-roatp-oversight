@@ -8,7 +8,7 @@ using SFA.DAS.RoatpOversight.Web.Validators;
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 {
     [TestFixture]
-    public class OversightOutcomeValidatorTests
+    public class OutcomePostRequestValidatorTests
     {
         private OutcomePostRequestValidator _validator;
 

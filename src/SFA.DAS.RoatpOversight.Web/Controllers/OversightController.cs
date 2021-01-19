@@ -7,6 +7,7 @@ using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Validators;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SFA.DAS.AdminService.Common.Extensions;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Models;
@@ -63,18 +64,52 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         [HttpPost("Oversight/Outcome/{applicationId}/confirm/{outcomeKey}")]
         public async Task<IActionResult> ConfirmOutcome(ConfirmOutcomePostRequest request)
         {
-            return RedirectToAction("Outcome", new {request.ApplicationId, request.OutcomeKey});
+            if (request.Confirm == OversightConfirmationStatus.No)
+            {
+                return RedirectToAction("Outcome", new { request.ApplicationId, request.OutcomeKey });
+            }
+
+            //todo: required state changes here
+
+            var userId = HttpContext.User.UserId();
+            var userName = HttpContext.User.UserDisplayName();
+
+            if (request.OversightStatus == OversightReviewStatus.Successful ||
+                request.OversightStatus == OversightReviewStatus.Unsuccessful)
+            {
+                await _outcomeOrchestrator.RecordOutcome(request.ApplicationId, OversightReviewStatus.Unsuccessful, userId, userName);
+            }
+            else if (request.OversightStatus == OversightReviewStatus.SuccessfulAlreadyActive)
+            {
+                //todo
+            }
+            else if (request.OversightStatus == OversightReviewStatus.SuccessfulFitnessForFunding)
+            {
+                //todo
+            }
+
+            return RedirectToAction("Confirmed", new {request.ApplicationId});
         }
 
-        
+        [HttpGet("Oversight/Outcome/{applicationId}/confirmed")]
+        public async Task<IActionResult> Confirmed(ConfirmedRequest request)
+        {
+            //todo: get all the stuff we need for vm
+            //todo: rename this vm
+            var viewModelDone = new OutcomeDoneViewModel { Ukprn = "TODO", Status = OversightReviewStatus.Unsuccessful };
+
+            //todo: rename this view
+            return View("~/Views/Oversight/OutcomeDone.cshtml", viewModelDone);
+        }
+
 
         //[HttpPost("Oversight/Outcome/{applicationId}")]
         //public async Task<IActionResult> EvaluateOutcome(EvaluationOutcomeCommand command) 
         //{
         //    var viewModel = await _oversightOrchestrator.GetOversightDetailsViewModel(command.ApplicationId);
-            
+
         //    if (CheckForBackButtonAfterSubmission(viewModel.OversightStatus, out var outcome)) return outcome;
-           
+
         //    viewModel.OversightStatus = command.OversightStatus;
         //    viewModel.ApproveGateway = command.ApproveGateway;
         //    viewModel.ApproveModeration = command.ApproveModeration;

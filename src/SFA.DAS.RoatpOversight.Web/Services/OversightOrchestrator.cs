@@ -118,7 +118,6 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 OrganisationName = applicationDetails.OrganisationName,
                 Ukprn = applicationDetails.Ukprn,
                 ProviderRoute = applicationDetails.ProviderRoute,
-
                 ApplicationStatus = applicationDetails.ApplicationStatus,
                 ApplicationEmailAddress = applicationDetails.ApplicationEmailAddress,
                 AssessorReviewStatus = applicationDetails.AssessorReviewStatus,
@@ -135,7 +134,6 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ModerationOutcomeMadeOn = applicationDetails.ModerationOutcomeMadeOn,
                 ModeratedBy = applicationDetails.ModeratedBy,
                 ModerationComments = applicationDetails.ModerationComments,
-
 
                 OversightStatus = cachedItem.OversightStatus,
                 ApproveGateway = cachedItem.ApproveGateway,

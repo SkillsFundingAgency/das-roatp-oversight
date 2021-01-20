@@ -20,7 +20,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             _logger = logger;
         }
 
-        public async Task<bool> RecordOutcome(Guid applicationId, string outcome, string userId, string userName)
+        public async Task<bool> RecordOutcome(Guid applicationId, string outcome, string userId, string userName, string internalComments, string externalComments)
         {
             _logger.LogInformation($"Recording an oversight outcome of {outcome} for application {applicationId}");
 
@@ -29,13 +29,14 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             ValidateStatusAgainstExistingStatus(outcome, registerStatus, registrationDetails.UKPRN);
 
-            //todo: add internal and external comments
             var updateOutcomeCommand = new RecordOversightOutcomeCommand
             {
                 ApplicationId = applicationId,
                 OversightStatus = outcome,
                 UserId = userId,
-                UserName = userName
+                UserName = userName,
+                InternalComments = internalComments,
+                ExternalComments = externalComments
             };
 
             var updateOutcomeSuccess = await _applicationApiClient.RecordOutcome(updateOutcomeCommand);

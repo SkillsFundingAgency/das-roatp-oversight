@@ -107,13 +107,53 @@
                             </div>
                         </dl>
 
+                        
+
+                            <h2 class="govuk-heading-l">Internal comments</h2>
+                            
+                            <div class="govuk-inset-text">
+                                <pre class="govuk-body das-preformatted-body">
+                                    @* Successful comments *@
+                                    @if (Model.OversightStatus == OversightReviewStatus.Successful)
+                                    {
+                                        @Model.SuccessfulText
+                                    }
+                                </pre>
+                            </div>
+
+
+
+                        @if (
+                            Model.OversightStatus == OversightReviewStatus.Successful ||
+                            Model.OversightStatus == OversightReviewStatus.SuccessfulAlreadyActive ||
+                            Model.OversightStatus == OversightReviewStatus.SuccessfulFitnessForFunding
+                        )
+                        {
+                            <p class="govuk-body">
+                                We'll send the applicant:
+                            </p>
+
+                            <ul class="govuk-list govuk-list--bullet">
+                                <li>
+                                    an overall outcome
+                                </li>
+                                <li>
+                                    a financial health grade
+                                </li>
+                                <li>
+                                    their next steps
+                                </li>
+                            </ul>
+                        }
+
+
+                        @* HIDE THIS INFORMATION
+                        
                         <div>Gateway approval: @Model.ApproveGateway</div>
                         <div>Moderation approval: @Model.ApproveModeration</div>
                         <div>Oversight Status: @Model.OversightStatus</div>
-                        @if (Model.OversightStatus == OversightReviewStatus.Successful)
-                        {
-                            <div>Successful comments: @Model.SuccessfulText</div>
-                        }
+                        *@
+
                         @if (Model.OversightStatus == OversightReviewStatus.SuccessfulAlreadyActive)
                         {
                             <div>Successful already active comments: @Model.SuccessfulAlreadyActiveText</div>
@@ -138,7 +178,7 @@
 
                         @Html.ValidationMessageFor(m => m.Confirm, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.Confirm) })
 
-                        <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
+                        <div class="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
                                        type="radio"

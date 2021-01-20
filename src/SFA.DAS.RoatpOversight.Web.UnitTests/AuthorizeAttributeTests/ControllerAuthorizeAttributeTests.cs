@@ -22,7 +22,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.AuthorizeAttributeTests
         [Test]
         public void ControllersShouldHaveAuthorizeAttribute()
         {
-            var webAssembly = typeof(PingController).GetTypeInfo().Assembly;
+            var webAssembly = typeof(OversightController).GetTypeInfo().Assembly;
 
             var controllers = webAssembly.DefinedTypes.Where(c => c.BaseType == typeof(Controller)).ToList();
 

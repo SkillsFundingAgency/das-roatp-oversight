@@ -8,5 +8,7 @@ namespace SFA.DAS.RoatpOversight.Domain
         public string OversightStatus { get; set; }
         public string UserId { get; set; }
         public string UserName { get; set; }
+        public string InternalComments { get; set; }
+        public string ExternalComments { get; set; }
     }
 }

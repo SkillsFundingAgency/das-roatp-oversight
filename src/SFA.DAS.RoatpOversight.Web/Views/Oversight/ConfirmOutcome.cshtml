@@ -31,13 +31,8 @@
                 <input type="hidden" asp-for="ApproveGateway" />
                 <input type="hidden" asp-for="ApproveModeration" />
                 <input type="hidden" asp-for="OversightStatus" />
-                <input type="hidden" asp-for="SuccessfulText" />
-                <input type="hidden" asp-for="SuccessfulAlreadyActiveText" />
-                <input type="hidden" asp-for="SuccessfulFitnessForFundingText" />
-                <input type="hidden" asp-for="UnsuccessfulText" />
-                <input type="hidden" asp-for="InProgressInternalText" />
-                <input type="hidden" asp-for="InProgressExternalText" />
-
+                <input type="hidden" asp-for="InternalComments" />
+                <input type="hidden" asp-for="ExternalComments" />
 
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
@@ -110,30 +105,8 @@
                         <div>Gateway approval: @Model.ApproveGateway</div>
                         <div>Moderation approval: @Model.ApproveModeration</div>
                         <div>Oversight Status: @Model.OversightStatus</div>
-                        @if (Model.OversightStatus == OversightReviewStatus.Successful)
-                        {
-                            <div>Successful comments: @Model.SuccessfulText</div>
-                        }
-                        @if (Model.OversightStatus == OversightReviewStatus.SuccessfulAlreadyActive)
-                        {
-                            <div>Successful already active comments: @Model.SuccessfulAlreadyActiveText</div>
-                        }
-                        @if (Model.OversightStatus == OversightReviewStatus.SuccessfulFitnessForFunding)
-                        {
-                            <div>Successful fitness for funding comments: @Model.SuccessfulFitnessForFundingText</div>
-                        }
-                        @if (Model.OversightStatus == OversightReviewStatus.Unsuccessful)
-                        {
-                            <div>Unsuccessful comments: @Model.UnsuccessfulText</div>
-                        }
-                        @if (Model.OversightStatus == OversightReviewStatus.InProgress)
-                        {
-                            <div>In progress internal comments: @Model.InProgressInternalText</div>
-                            <div>In progress internal comments: @Model.InProgressExternalText</div>
-                        }
-
-
-
+                        <div>Internal comments: @Model.InternalComments</div>
+                        <div>External comments: @Model.ExternalComments</div>
 
 
                         @Html.ValidationMessageFor(m => m.Confirm, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.Confirm) })

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
@@ -134,16 +135,30 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ModeratedBy = applicationDetails.ModeratedBy,
                 ModerationComments = applicationDetails.ModerationComments,
 
-                OversightStatus = cachedItem.OversightStatus,
                 ApproveGateway = cachedItem.ApproveGateway,
                 ApproveModeration = cachedItem.ApproveModeration,
-                SuccessfulText = cachedItem.SuccessfulText,
-                SuccessfulAlreadyActiveText = cachedItem.SuccessfulAlreadyActiveText,
-                SuccessfulFitnessForFundingText = cachedItem.SuccessfulFitnessForFundingText,
-                UnsuccessfulText = cachedItem.UnsuccessfulText,
-                InProgressInternalText = cachedItem.InProgressInternalText,
-                InProgressExternalText = cachedItem.InProgressExternalText
+                OversightStatus = cachedItem.OversightStatus
             };
+
+            switch (cachedItem.OversightStatus)
+            {
+                case OversightReviewStatus.Successful:
+                    viewModel.InternalComments = cachedItem.SuccessfulText;
+                    break;
+                case OversightReviewStatus.SuccessfulAlreadyActive:
+                    viewModel.InternalComments = cachedItem.SuccessfulAlreadyActiveText;
+                    break;
+                case OversightReviewStatus.SuccessfulFitnessForFunding:
+                    viewModel.InternalComments = cachedItem.SuccessfulFitnessForFundingText;
+                    break;
+                case OversightReviewStatus.InProgress:
+                    viewModel.InternalComments = cachedItem.InProgressInternalText;
+                    viewModel.ExternalComments = cachedItem.InProgressExternalText;
+                    break;
+                case OversightReviewStatus.Unsuccessful:
+                    viewModel.InternalComments = cachedItem.UnsuccessfulText;
+                    break;
+            }
 
             return viewModel;
         }

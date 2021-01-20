@@ -29,6 +29,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             ValidateStatusAgainstExistingStatus(outcome, registerStatus, registrationDetails.UKPRN);
 
+            //todo: add internal and external comments
             var updateOutcomeCommand = new RecordOversightOutcomeCommand
             {
                 ApplicationId = applicationId,

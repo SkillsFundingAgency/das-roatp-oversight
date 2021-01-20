@@ -29,17 +29,12 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public string ModeratedBy { get; set; }
         public string ModerationComments { get; set; }
 
-
-        public string OversightStatus { get; set; }
         public string ApproveGateway { get; set; }
         public string ApproveModeration { get; set; }
-        public string SuccessfulText { get; set; }
-        public string SuccessfulAlreadyActiveText { get; set; }
-        public string SuccessfulFitnessForFundingText { get; set; }
-        public string UnsuccessfulText { get; set; }
-        public string InProgressInternalText { get; set; }
-        public string InProgressExternalText { get; set; }
-
+        public string OversightStatus { get; set; }
+        public string InternalComments { get; set; }
+        public string ExternalComments { get; set; }
+        
         public string Confirm { get; set; }
 
         public string PageTitle

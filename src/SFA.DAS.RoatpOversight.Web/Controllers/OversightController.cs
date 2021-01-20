@@ -74,7 +74,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             var userId = HttpContext.User.UserId();
             var userName = HttpContext.User.UserDisplayName();
 
-            await _outcomeOrchestrator.RecordOutcome(request.ApplicationId, request.OversightStatus, userId, userName);
+            await _outcomeOrchestrator.RecordOutcome(request.ApplicationId, request.OversightStatus, userId, userName, request.InternalComments, request.ExternalComments);
 
             return RedirectToAction("Confirmed", new {request.ApplicationId});
         }

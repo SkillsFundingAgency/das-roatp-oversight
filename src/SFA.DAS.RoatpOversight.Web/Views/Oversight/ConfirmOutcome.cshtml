@@ -31,13 +31,8 @@
                 <input type="hidden" asp-for="ApproveGateway" />
                 <input type="hidden" asp-for="ApproveModeration" />
                 <input type="hidden" asp-for="OversightStatus" />
-                <input type="hidden" asp-for="SuccessfulText" />
-                <input type="hidden" asp-for="SuccessfulAlreadyActiveText" />
-                <input type="hidden" asp-for="SuccessfulFitnessForFundingText" />
-                <input type="hidden" asp-for="UnsuccessfulText" />
-                <input type="hidden" asp-for="InProgressInternalText" />
-                <input type="hidden" asp-for="InProgressExternalText" />
-
+                <input type="hidden" asp-for="InternalComments" />
+                <input type="hidden" asp-for="ExternalComments" />
 
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
@@ -152,6 +147,7 @@
                         <div>Gateway approval: @Model.ApproveGateway</div>
                         <div>Moderation approval: @Model.ApproveModeration</div>
                         <div>Oversight Status: @Model.OversightStatus</div>
+<<<<<<< HEAD
                         *@
 
                         @if (Model.OversightStatus == OversightReviewStatus.SuccessfulAlreadyActive)
@@ -174,6 +170,10 @@
 
 
 
+=======
+                        <div>Internal comments: @Model.InternalComments</div>
+                        <div>External comments: @Model.ExternalComments</div>
+>>>>>>> 1b3a3d2a1898a2f9b26536d1da7843547855ac39
 
 
                         @Html.ValidationMessageFor(m => m.Confirm, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.Confirm) })

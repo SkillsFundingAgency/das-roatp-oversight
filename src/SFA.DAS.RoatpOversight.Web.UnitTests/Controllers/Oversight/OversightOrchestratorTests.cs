@@ -13,7 +13,6 @@ using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Settings;
-using SFA.DAS.RoatpOversight.Web.ViewModels;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 {
@@ -46,7 +45,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _configuration.Setup(x => x.EsfaAdminServicesBaseUrl).Returns(_dashboardAddress);
             var actualViewModel = await _orchestrator.GetOversightOverviewViewModel();
 
-            var expectedViewModel = new OverallOutcomeViewModel
+            var expectedViewModel = new ApplicationsViewModel
             {
                 ApplicationDetails = GetApplicationsPending(), OverallOutcomeDetails = GetApplicationsDone()
             };

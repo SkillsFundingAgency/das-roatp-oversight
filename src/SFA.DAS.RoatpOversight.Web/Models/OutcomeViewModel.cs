@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Domain;
 
-namespace SFA.DAS.RoatpOversight.Web.ViewModels
+namespace SFA.DAS.RoatpOversight.Web.Models
 {
     public class OutcomeViewModel
     {
@@ -16,8 +15,6 @@ namespace SFA.DAS.RoatpOversight.Web.ViewModels
         public DateTime ApplicationSubmittedDate { get; set; }
         public string ApplicationStatus { get; set; }
      
-        public List<ValidationErrorDetail> ErrorMessages { get; set; }
-
         public string ApplicationEmailAddress { get; set; }
         public string AssessorReviewStatus { get; set; }
 

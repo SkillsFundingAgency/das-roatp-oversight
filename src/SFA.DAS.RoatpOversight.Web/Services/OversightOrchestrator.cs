@@ -7,7 +7,6 @@ using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Models;
-using SFA.DAS.RoatpOversight.Web.ViewModels;
 
 namespace SFA.DAS.RoatpOversight.Web.Services
 {
@@ -24,9 +23,9 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             _cacheStorageService = cacheStorageService;
         }
 
-        public async Task<OverallOutcomeViewModel> GetOversightOverviewViewModel()
+        public async Task<ApplicationsViewModel> GetOversightOverviewViewModel()
         {
-           var viewModel = new OverallOutcomeViewModel();
+           var viewModel = new ApplicationsViewModel();
            var pendingApplications = await _applyApiClient.GetOversightsPending();
            var completedApplications = await _applyApiClient.GetOversightsCompleted();
 
@@ -154,6 +153,17 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             var key = Guid.NewGuid();
             await _cacheStorageService.SaveToCache(key.ToString(), request, 1);
             return key;
+        }
+
+        public async Task<ConfirmedViewModel> GetConfirmedViewModel(Guid applicationId)
+        {
+            var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
+
+            return new ConfirmedViewModel
+            {
+                ApplicationId = applicationId,
+                OversightStatus = applicationDetails.OversightStatus
+            };
         }
     }
 }

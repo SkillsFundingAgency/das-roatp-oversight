@@ -33,4 +33,8 @@
     <ProjectReference Include="..\SFA.DAS.RoatpOversight.Domain\SFA.DAS.RoatpOversight.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
+
 </Project>

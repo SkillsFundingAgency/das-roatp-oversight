@@ -53,9 +53,14 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 var registerStatusRequest = new GetOrganisationRegisterStatusRequest {UKPRN = registrationDetails.UKPRN};
                 var registerStatus = await _registerApiClient.GetOrganisationRegisterStatus(registerStatusRequest);
 
+                if(!registerStatus.OrganisationId.HasValue)
+                {
+                    throw new InvalidOperationException($"Unable to obtain register status for provider {registrationDetails.UKPRN} in order to update determined date");
+                }
+
                 var updateDeterminedDateRequest = new UpdateOrganisationApplicationDeterminedDateRequest
                 {
-                    ApplicationDeterminedDate = DateTime.UtcNow,
+                    ApplicationDeterminedDate = DateTime.UtcNow.Date,
                     LegalName = registrationDetails.LegalName,
                     OrganisationId = registerStatus.OrganisationId.Value,
                     UpdatedBy = userId
@@ -71,7 +76,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         {
             return new CreateRoatpOrganisationRequest
             {
-                ApplicationDeterminedDate = DateTime.Now,
+                ApplicationDeterminedDate = DateTime.UtcNow.Date,
                 CharityNumber = registrationDetails.CharityNumber,
                 CompanyNumber = registrationDetails.CompanyNumber,
                 FinancialTrackRecord = true,

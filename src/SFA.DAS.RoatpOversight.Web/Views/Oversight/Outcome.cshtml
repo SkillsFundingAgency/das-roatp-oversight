@@ -2,25 +2,9 @@
 @using SFA.DAS.AdminService.Common.Extensions;
 @using SFA.DAS.RoatpOversight.Web.Domain
 @using SFA.DAS.RoatpOversight.Web.Extensions
-@model SFA.DAS.RoatpOversight.Web.ViewModels.OutcomeViewModel
+@model SFA.DAS.RoatpOversight.Web.Models.OutcomeViewModel
 @{
     ViewData["Title"] = "RoATP application outcomes - Application summary";
-}
-
-@{
-    var inProgressInternalTextHighlight = Model.ErrorMessages != null && Model.ErrorMessages.Count(x => x.Field == "InProgressInternalText") > 0 ? "govuk-textarea--error" : "";
-    var inProgressExternalTextHighlight = Model.ErrorMessages != null && Model.ErrorMessages.Count(x => x.Field == "InProgressExternalText") > 0 ? "govuk-textarea--error" : "";
-
-    var radioGatewayApproved = string.Equals(Model.ApproveGateway, ApprovalStatus.Approve, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-    var radioGatewayOverturned = string.Equals(Model.ApproveGateway, ApprovalStatus.Overturn, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-    var radioModerationApproved = string.Equals(Model.ApproveModeration, ApprovalStatus.Approve, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-    var radioModerationOverturned = string.Equals(Model.ApproveModeration, ApprovalStatus.Overturn, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-
-    var radioCheckedSuccessful = string.Equals(Model.OversightStatus, OversightReviewStatus.Successful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-    var radioCheckedSuccessfulAlreadyActive = string.Equals(Model.OversightStatus, OversightReviewStatus.SuccessfulAlreadyActive, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-    var radioCheckedSuccessfulFitnessForFunding = string.Equals(Model.OversightStatus, OversightReviewStatus.SuccessfulFitnessForFunding, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-    var radioCheckedUnsuccessful = string.Equals(Model.OversightStatus, OversightReviewStatus.Unsuccessful, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
-    var radioCheckedInProgress = string.Equals(Model.OversightStatus, OversightReviewStatus.InProgress, StringComparison.InvariantCultureIgnoreCase) ? "checked" : "";
 }
 
 <div class="govuk-breadcrumbs">
@@ -515,7 +499,7 @@
                                         </label>
 
                                         @Html.ValidationMessageFor(m => m.InProgressInternalText, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.InProgressInternalText) })
-                                        <textarea class="govuk-textarea @inProgressInternalTextHighlight"
+                                        <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressInternalText, "govuk-textarea--error")"
                                                   id="InProgressInternalText"
                                                   name="InProgressInternalText"
                                                   rows="5"
@@ -530,7 +514,7 @@
                                             Add your external comments
                                         </label>
                                         @Html.ValidationMessageFor(m => m.InProgressExternalText, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.InProgressExternalText) })
-                                        <textarea class="govuk-textarea @inProgressExternalTextHighlight"
+                                        <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressExternalText, "govuk-textarea--error")"
                                                   id="InProgressExternalText"
                                                   name="InProgressExternalText"
                                                   rows="5"

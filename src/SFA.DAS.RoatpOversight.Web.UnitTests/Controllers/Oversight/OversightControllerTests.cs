@@ -12,7 +12,6 @@ using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Services;
-using SFA.DAS.RoatpOversight.Web.ViewModels;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 {
@@ -52,12 +51,12 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 new OverallOutcomeDetails {Ukprn = _ukprnOfCompletedOversightApplication}
             };
 
-            var viewModel = new OverallOutcomeViewModel {ApplicationDetails = applicationsPending,ApplicationCount = 1, OverallOutcomeDetails = applicationsDone, OverallOutcomeCount = 1};
+            var viewModel = new ApplicationsViewModel {ApplicationDetails = applicationsPending,ApplicationCount = 1, OverallOutcomeDetails = applicationsDone, OverallOutcomeCount = 1};
 
             _oversightOrchestrator.Setup(x => x.GetOversightOverviewViewModel()).ReturnsAsync(viewModel);
 
             var result = await _controller.Applications() as ViewResult;
-            var actualViewModel = result?.Model as OverallOutcomeViewModel;
+            var actualViewModel = result?.Model as ApplicationsViewModel;
 
             Assert.That(result, Is.Not.Null);
             Assert.That(actualViewModel, Is.Not.Null);

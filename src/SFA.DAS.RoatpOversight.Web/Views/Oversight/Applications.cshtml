@@ -59,7 +59,7 @@
                                 </tr>
                             </thead>
                             <tbody class="govuk-table__body">
-                                @foreach (var application in Model.ApplicationDetails)
+                                @foreach (var application in Model.ApplicationDetails.Reviews)
                                 {
                                     <tr class="govuk-table__row">
                                         <td data-label="Organisation name" class="govuk-table__cell">
@@ -99,7 +99,7 @@
                                 </tr>
                             </thead>
                             <tbody class="govuk-table__body">
-                                @foreach (var outcome in Model.OverallOutcomeDetails)
+                                @foreach (var outcome in Model.OverallOutcomeDetails.Reviews)
                                 {
 
                                     <tr class="govuk-table__row">

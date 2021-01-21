@@ -29,13 +29,13 @@ namespace SFA.DAS.RoatpOversight.Web.Services
            var pendingApplications = await _applyApiClient.GetOversightsPending();
            var completedApplications = await _applyApiClient.GetOversightsCompleted();
 
-           viewModel.ApplicationDetails = pendingApplications==null ? new List<ApplicationDetails>() : pendingApplications.ToList();
+           viewModel.ApplicationDetails = pendingApplications;
 
-           viewModel.ApplicationCount = viewModel.ApplicationDetails.Count;
+           viewModel.ApplicationCount = pendingApplications.Reviews.Count;
 
-           viewModel.OverallOutcomeDetails = completedApplications == null ? new List<OverallOutcomeDetails>() : completedApplications.ToList();
+           viewModel.OverallOutcomeDetails = completedApplications;
 
-           viewModel.OverallOutcomeCount = viewModel.OverallOutcomeDetails.Count;
+           viewModel.OverallOutcomeCount = completedApplications.Reviews.Count;
 
            return viewModel;
         }

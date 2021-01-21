@@ -4,7 +4,7 @@
 @using SFA.DAS.RoatpOversight.Web.Extensions
 @model SFA.DAS.RoatpOversight.Web.Models.ConfirmOutcomeViewModel
 @{
-    ViewData["Title"] = "Outcome - Holding page";
+    ViewData["Title"] = @Model.PageTitle;
 }
 
 <div class="govuk-breadcrumbs">
@@ -41,8 +41,6 @@
                             <span class="govuk-caption-xl">Overall outcome</span>
                             <h1 class="govuk-heading-xl">@Model.PageTitle</h1>
                         </legend>
-
-
 
                         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                             <div class="govuk-summary-list__row">
@@ -101,6 +99,17 @@
                                     @DateTime.UtcNow.Date.ToString("dd MMMM yyyy")
                                 </dd>
                             </div>
+                            @if(Model.OversightStatus == OversightReviewStatus.SuccessfulAlreadyActive || Model.OversightStatus == OversightReviewStatus.SuccessfulFitnessForFunding)
+                            {
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        Application outcome
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @Model.OversightStatus
+                                    </dd>
+                                </div>
+                            }
                         </dl>
 
                         @if (!String.IsNullOrEmpty(@Model.InternalComments))

@@ -49,21 +49,21 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             {
                 ApplicationDetails = GetApplicationsPending(), OverallOutcomeDetails = GetApplicationsDone()
             };
-            expectedViewModel.ApplicationCount = expectedViewModel.ApplicationDetails.Count;
-            expectedViewModel.OverallOutcomeCount = expectedViewModel.OverallOutcomeDetails.Count;
+            expectedViewModel.ApplicationCount = expectedViewModel.ApplicationDetails.Reviews.Count;
+            expectedViewModel.OverallOutcomeCount = expectedViewModel.OverallOutcomeDetails.Reviews.Count;
 
             Assert.AreEqual(actualViewModel.ApplicationCount, expectedViewModel.ApplicationCount);
             Assert.AreEqual(actualViewModel.OverallOutcomeCount, expectedViewModel.OverallOutcomeCount);
-            Assert.AreEqual(actualViewModel.ApplicationDetails.Count, expectedViewModel.ApplicationCount);
-            Assert.AreEqual(actualViewModel.OverallOutcomeDetails.Count, expectedViewModel.OverallOutcomeCount);
-            Assert.AreEqual(actualViewModel.ApplicationDetails.First().ApplicationId, expectedViewModel.ApplicationDetails.First().ApplicationId);
-            Assert.AreEqual(actualViewModel.OverallOutcomeDetails.First().Ukprn, expectedViewModel.OverallOutcomeDetails.First().Ukprn);
+            Assert.AreEqual(actualViewModel.ApplicationDetails.Reviews.Count, expectedViewModel.ApplicationCount);
+            Assert.AreEqual(actualViewModel.OverallOutcomeDetails.Reviews.Count, expectedViewModel.OverallOutcomeCount);
+            Assert.AreEqual(actualViewModel.ApplicationDetails.Reviews.First().ApplicationId, expectedViewModel.ApplicationDetails.Reviews.First().ApplicationId);
+            Assert.AreEqual(actualViewModel.OverallOutcomeDetails.Reviews.First().Ukprn, expectedViewModel.OverallOutcomeDetails.Reviews.First().Ukprn);
         }
 
         [Test]
         public async Task Orchestrator_builds_details_viewmodel_from_api()
         {
-            var expectedApplicationDetails = GetApplicationsPending().First();
+            var expectedApplicationDetails = GetApplication();
             _apiClient.Setup(x => x.GetOversightDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
               var actualViewModel = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
 
@@ -111,8 +111,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var cachedItem = autoFixture.Create<OutcomePostRequest>();
             cachedItem.ApplicationId = _applicationId;
 
-            var expectedApplicationDetails = GetApplicationsPending().First();
-            _apiClient.Setup(x => x.GetOversightDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
+            _apiClient.Setup(x => x.GetOversightDetails(_applicationId)).ReturnsAsync(GetApplication);
 
             _cacheStorageService.Setup(x =>
                     x.RetrieveFromCache<OutcomePostRequest>(It.Is<string>(key => key == cacheKey.ToString())))
@@ -131,11 +130,39 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(cachedItem.InProgressExternalText, actualViewModel.InProgressExternalText);
         }
 
-        private  List<ApplicationDetails> GetApplicationsPending()
+        private ApplicationDetails GetApplication()
         {
-            return new List<ApplicationDetails>
+            return new ApplicationDetails
             {
-                new ApplicationDetails
+                ApplicationId = _applicationId,
+                OrganisationName = "ZZZ Limited",
+                Ukprn = "123456768",
+                ProviderRoute = "Main",
+                ApplicationReferenceNumber = "APR000175",
+                ApplicationSubmittedDate = new DateTime(2019, 10, 21),
+                ApplicationEmailAddress = "test@test.com",
+                AssessorReviewStatus = "Pass",
+                GatewayReviewStatus = GatewayReviewStatus.Pass,
+                GatewayOutcomeMadeDate = DateTime.Today,
+                GatewayOutcomeMadeBy = "joe",
+                GatewayComments = "gateway commments",
+                FinancialReviewStatus = FinancialReviewStatus.Pass,
+                FinancialGradeAwarded = "Outstanding",
+                FinancialHealthAssessedOn = DateTime.Today,
+                FinancialHealthAssessedBy = "josephine",
+                ModerationReviewStatus = ModerationReviewStatus.Pass,
+                ModerationOutcomeMadeOn = DateTime.Today,
+                ModeratedBy = "Lesley",
+                ModerationComments = "moderation comments"
+            };
+        }
+
+        private  PendingOversightReviews GetApplicationsPending()
+        {
+            return new PendingOversightReviews
+            {
+                Reviews = new List<PendingOversightReview> {
+                new PendingOversightReview
                 {
                     ApplicationId = _applicationId,
                     OrganisationName = "ZZZ Limited",
@@ -143,22 +170,8 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                     ProviderRoute = "Main",
                     ApplicationReferenceNumber = "APR000175",
                     ApplicationSubmittedDate = new DateTime(2019, 10, 21),
-                    ApplicationEmailAddress = "test@test.com",
-                    AssessorReviewStatus = "Pass",
-                    GatewayReviewStatus = GatewayReviewStatus.Pass,
-                    GatewayOutcomeMadeDate  = DateTime.Today,
-                    GatewayOutcomeMadeBy = "joe",
-                    GatewayComments = "gateway commments",
-                    FinancialReviewStatus = FinancialReviewStatus.Pass,
-                    FinancialGradeAwarded = "Outstanding",
-                    FinancialHealthAssessedOn = DateTime.Today,
-                    FinancialHealthAssessedBy  = "josephine",
-                    ModerationReviewStatus= ModerationReviewStatus.Pass,
-                    ModerationOutcomeMadeOn = DateTime.Today,
-                    ModeratedBy = "Lesley",
-                    ModerationComments = "moderation comments"
                 },
-                new ApplicationDetails
+                new PendingOversightReview
                 {
                     ApplicationId = new Guid("a0fb2cdc-edf1-457c-96d7-2dc69cd5d8e8"),
                     OrganisationName = "AAA Limited",
@@ -167,7 +180,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                     ApplicationReferenceNumber = "APR000179",
                     ApplicationSubmittedDate = new DateTime(2019, 10, 20)
                 },
-                new ApplicationDetails
+                new PendingOversightReview
                 {
                     ApplicationId = new Guid("cb84760b-931b-4724-a7fc-81e68659da10"),
                     OrganisationName = "BBB BBB Limited",
@@ -176,15 +189,15 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                     ApplicationReferenceNumber = "APR000173",
                     ApplicationSubmittedDate = new DateTime(2019, 10, 21)
                 }
-            };
+            }};
         }
 
-
-        private static List<OverallOutcomeDetails> GetApplicationsDone()
+        private static CompletedOversightReviews GetApplicationsDone()
         {
-            return new List<OverallOutcomeDetails>
+            return new CompletedOversightReviews
             {
-                new OverallOutcomeDetails
+                Reviews = new List<CompletedOversightReview> {
+                new CompletedOversightReview
                 {
                     OrganisationName = "FFF Limited",
                     Ukprn = "443456768",
@@ -195,7 +208,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                     OversightStatus = OversightReviewStatus.Successful,
                     ApplicationStatus = ApplicationStatus.Approved
                 },
-                new OverallOutcomeDetails
+                new CompletedOversightReview
                 {
                     OrganisationName = "DDD Limited",
                     Ukprn = "43234565",
@@ -205,7 +218,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                     ApplicationDeterminedDate = new DateTime(2019, 10, 29),
                     OversightStatus = OversightReviewStatus.Unsuccessful,
                     ApplicationStatus = ApplicationStatus.Rejected
-                }
+                }}
             };
         }
     }

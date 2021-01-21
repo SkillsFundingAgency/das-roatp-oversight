@@ -41,14 +41,14 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [Test]
         public async Task GetApplications_returns_view_with_expected_viewmodel()
         {
-            var applicationsPending = new List<ApplicationDetails>
+            var applicationsPending = new PendingOversightReviews
             {
-                new ApplicationDetails {ApplicationId = _applicationDetailsApplicationId}
+                Reviews = new List<PendingOversightReview> { new PendingOversightReview {  ApplicationId = _applicationDetailsApplicationId} }
             };
 
-            var applicationsDone = new List<OverallOutcomeDetails>
+            var applicationsDone = new CompletedOversightReviews
             {
-                new OverallOutcomeDetails {Ukprn = _ukprnOfCompletedOversightApplication}
+                Reviews = new List<CompletedOversightReview> { new CompletedOversightReview { Ukprn = _ukprnOfCompletedOversightApplication} }
             };
 
             var viewModel = new ApplicationsViewModel {ApplicationDetails = applicationsPending,ApplicationCount = 1, OverallOutcomeDetails = applicationsDone, OverallOutcomeCount = 1};
@@ -61,8 +61,8 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.That(result, Is.Not.Null);
             Assert.That(actualViewModel, Is.Not.Null);
             Assert.That(actualViewModel, Is.SameAs(viewModel));
-            Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationDetails.FirstOrDefault().ApplicationId);
-            Assert.AreEqual(_ukprnOfCompletedOversightApplication, actualViewModel.OverallOutcomeDetails.FirstOrDefault().Ukprn);
+            Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationDetails.Reviews.FirstOrDefault().ApplicationId);
+            Assert.AreEqual(_ukprnOfCompletedOversightApplication, actualViewModel.OverallOutcomeDetails.Reviews.FirstOrDefault().Ukprn);
         }
 
         [Test]

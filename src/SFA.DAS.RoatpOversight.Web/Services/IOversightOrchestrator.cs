@@ -6,7 +6,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 {
     public interface IOversightOrchestrator
     {
-        Task<ApplicationsViewModel> GetOversightOverviewViewModel();
+        Task<ApplicationsViewModel> GetApplicationsViewModel();
         Task<OutcomeViewModel> GetOversightDetailsViewModel(Guid applicationId, Guid? outcomeKey);
 
         Task<ConfirmOutcomeViewModel> GetConfirmOutcomeViewModel(Guid applicationId, Guid confirmCacheKey);

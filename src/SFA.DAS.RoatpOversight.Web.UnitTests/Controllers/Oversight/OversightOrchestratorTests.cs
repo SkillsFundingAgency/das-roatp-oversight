@@ -43,7 +43,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _apiClient.Setup(x => x.GetOversightsPending()).ReturnsAsync(expectedApplicationsPending);
             _apiClient.Setup(x => x.GetOversightsCompleted()).ReturnsAsync(GetApplicationsDone());
             _configuration.Setup(x => x.EsfaAdminServicesBaseUrl).Returns(_dashboardAddress);
-            var actualViewModel = await _orchestrator.GetOversightOverviewViewModel();
+            var actualViewModel = await _orchestrator.GetApplicationsViewModel();
 
             var expectedViewModel = new ApplicationsViewModel
             {

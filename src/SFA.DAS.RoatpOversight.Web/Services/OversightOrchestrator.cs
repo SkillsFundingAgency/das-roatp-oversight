@@ -24,7 +24,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             _cacheStorageService = cacheStorageService;
         }
 
-        public async Task<ApplicationsViewModel> GetOversightOverviewViewModel()
+        public async Task<ApplicationsViewModel> GetApplicationsViewModel()
         {
            var viewModel = new ApplicationsViewModel();
            var pendingApplications = await _applyApiClient.GetOversightsPending();

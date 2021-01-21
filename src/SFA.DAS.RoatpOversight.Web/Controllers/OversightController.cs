@@ -24,7 +24,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
         public async Task<IActionResult> Applications()
         {
-            var viewModel = await _oversightOrchestrator.GetOversightOverviewViewModel();
+            var viewModel = await _oversightOrchestrator.GetApplicationsViewModel();
             return View(viewModel);
         }
 

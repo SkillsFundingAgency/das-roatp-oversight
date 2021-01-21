@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService;
-using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -18,8 +17,7 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         }
         public async Task<bool> CreateOrganisation(CreateRoatpOrganisationRequest organisationRequest)
         {
-            HttpStatusCode result = await Post<CreateRoatpOrganisationRequest>($"/api/v1/organisation/create", organisationRequest);
-
+            var result = await Post($"/api/v1/organisation/create", organisationRequest);
             return await Task.FromResult(result == HttpStatusCode.OK);
         }
 

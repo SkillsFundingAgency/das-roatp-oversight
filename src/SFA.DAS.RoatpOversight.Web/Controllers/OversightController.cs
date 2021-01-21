@@ -4,12 +4,13 @@ using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.AdminService.Common.Extensions;
+using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = Roles.RoatpApplicationOversightTeam)]
     public class OversightController : Controller
     {
         private readonly IApplicationOutcomeOrchestrator _outcomeOrchestrator;

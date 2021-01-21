@@ -4,12 +4,13 @@ using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.AdminService.Common.Extensions;
+using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = Roles.RoatpApplicationOversightTeam)]
     public class OversightController : Controller
     {
         private readonly IApplicationOutcomeOrchestrator _outcomeOrchestrator;
@@ -24,7 +25,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
         public async Task<IActionResult> Applications()
         {
-            var viewModel = await _oversightOrchestrator.GetOversightOverviewViewModel();
+            var viewModel = await _oversightOrchestrator.GetApplicationsViewModel();
             return View(viewModel);
         }
 
@@ -60,6 +61,10 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             catch (ConfirmOutcomeCacheKeyNotFoundException)
             {
                 return RedirectToAction("Outcome", new { request.ApplicationId });
+            }
+            catch (InvalidStateException)
+            {
+                return RedirectToAction("Applications");
             }
         }
 

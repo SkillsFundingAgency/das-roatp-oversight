@@ -53,7 +53,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 
             var viewModel = new ApplicationsViewModel {ApplicationDetails = applicationsPending,ApplicationCount = 1, OverallOutcomeDetails = applicationsDone, OverallOutcomeCount = 1};
 
-            _oversightOrchestrator.Setup(x => x.GetOversightOverviewViewModel()).ReturnsAsync(viewModel);
+            _oversightOrchestrator.Setup(x => x.GetApplicationsViewModel()).ReturnsAsync(viewModel);
 
             var result = await _controller.Applications() as ViewResult;
             var actualViewModel = result?.Model as ApplicationsViewModel;

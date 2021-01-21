@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
@@ -24,7 +23,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             _cacheStorageService = cacheStorageService;
         }
 
-        public async Task<ApplicationsViewModel> GetOversightOverviewViewModel()
+        public async Task<ApplicationsViewModel> GetApplicationsViewModel()
         {
            var viewModel = new ApplicationsViewModel();
            var pendingApplications = await _applyApiClient.GetOversightsPending();
@@ -46,14 +45,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
             var cachedItem = await _cacheStorageService.RetrieveFromCache<OutcomePostRequest>(outcomeKey.ToString());
 
-            if(applicationDetails.OversightStatus == OversightReviewStatus.Successful
-               || applicationDetails.OversightStatus == OversightReviewStatus.SuccessfulAlreadyActive
-               || applicationDetails.OversightStatus == OversightReviewStatus.SuccessfulFitnessForFunding
-               || applicationDetails.OversightStatus == OversightReviewStatus.Unsuccessful
-               )
-            {
-                throw new InvalidStateException();
-            }
+            VerifyApplicationHasNoOutcome(applicationDetails.OversightStatus);
 
             var viewModel = new OutcomeViewModel
             {
@@ -108,6 +100,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             }
 
             var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
+
+            VerifyApplicationHasNoOutcome(applicationDetails.OversightStatus);
 
             var viewModel = new ConfirmOutcomeViewModel
             {
@@ -179,6 +173,18 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ApplicationId = applicationId,
                 OversightStatus = applicationDetails.OversightStatus
             };
+        }
+
+        private void VerifyApplicationHasNoOutcome(string oversightStatus)
+        {
+            if (oversightStatus == OversightReviewStatus.Successful
+                || oversightStatus == OversightReviewStatus.SuccessfulAlreadyActive
+                || oversightStatus == OversightReviewStatus.SuccessfulFitnessForFunding
+                || oversightStatus == OversightReviewStatus.Unsuccessful
+            )
+            {
+                throw new InvalidStateException();
+            }
         }
     }
 }

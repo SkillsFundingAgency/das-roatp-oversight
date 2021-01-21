@@ -61,6 +61,10 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             {
                 return RedirectToAction("Outcome", new { request.ApplicationId });
             }
+            catch (InvalidStateException)
+            {
+                return RedirectToAction("Applications");
+            }
         }
 
         [HttpPost("Oversight/Outcome/{applicationId}/confirm/{outcomeKey}")]

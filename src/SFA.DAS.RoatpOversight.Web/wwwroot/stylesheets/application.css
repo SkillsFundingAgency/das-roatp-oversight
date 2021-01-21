@@ -294,19 +294,13 @@
 
 /* Tags */
 
-.govuk-tag--solid-green {
-  background-color: #00703c;
-}
-
-.govuk-tag--solid-red {
-  background-color: #d4351c;
-}
-
+.govuk-tag--solid-green,
 .das-tag--solid-green {
   color: #fff;
   background-color: #00703c;
 }
 
+.govuk-tag--solid-red,
 .das-tag--solid-red {
   color: #fff;
   background-color: #d4351c;
@@ -336,4 +330,8 @@
 
 .das-preformatted-body {
   white-space: pre-wrap;
+}
+
+.das-\!-color-dark-grey {
+  color: #505a5f !important;
 }

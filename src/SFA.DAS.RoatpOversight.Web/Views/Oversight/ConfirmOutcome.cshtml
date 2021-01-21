@@ -1,6 +1,7 @@
 ﻿@using SFA.DAS.AdminService.Common.Extensions;
 @using SFA.DAS.RoatpOversight.Domain
 @using SFA.DAS.RoatpOversight.Web.Domain
+@using SFA.DAS.RoatpOversight.Web.Extensions
 @model SFA.DAS.RoatpOversight.Web.Models.ConfirmOutcomeViewModel
 @{
     ViewData["Title"] = "Outcome - Holding page";
@@ -34,7 +35,7 @@
                 <input type="hidden" asp-for="InternalComments" />
                 <input type="hidden" asp-for="ExternalComments" />
 
-                <div class="govuk-form-group">
+                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x=> x.Confirm, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <span class="govuk-caption-xl">Overall outcome</span>
@@ -102,21 +103,66 @@
                             </div>
                         </dl>
 
+                        @if (!String.IsNullOrEmpty(@Model.InternalComments))
+                        {
+                            <h2 class="govuk-heading-l">Internal comments</h2>
+                            
+                            <div class="govuk-inset-text">
+                                <pre class="govuk-body das-preformatted-body">@Model.InternalComments</pre>
+                            </div>
+                        }     
+
+                        @if (!String.IsNullOrEmpty(@Model.ExternalComments))
+                        {
+                            <h2 class="govuk-heading-l">External comments</h2>
+
+                            <p class="govuk-body das-!-color-dark-grey">
+                                These comments will be seen by the applicant.
+                            </p>
+                            
+                            <div class="govuk-inset-text">
+                                <pre class="govuk-body das-preformatted-body">@Model.ExternalComments</pre>
+                            </div>
+                        }                        
+
+                        @if (
+                            Model.OversightStatus == OversightReviewStatus.Successful ||
+                            Model.OversightStatus == OversightReviewStatus.SuccessfulAlreadyActive ||
+                            Model.OversightStatus == OversightReviewStatus.SuccessfulFitnessForFunding
+                        )
+                        {
+                            <p class="govuk-body">
+                                We'll send the applicant:
+                            </p>
+
+                            <ul class="govuk-list govuk-list--bullet">
+                                <li>
+                                    an overall outcome
+                                </li>
+                                <li>
+                                    a financial health grade
+                                </li>
+                                <li>
+                                    their next steps
+                                </li>
+                            </ul>
+                        }
+
+                        @*
                         <div>Gateway approval: @Model.ApproveGateway</div>
                         <div>Moderation approval: @Model.ApproveModeration</div>
                         <div>Oversight Status: @Model.OversightStatus</div>
                         <div>Internal comments: @Model.InternalComments</div>
                         <div>External comments: @Model.ExternalComments</div>
-
+                        *@
 
                         @Html.ValidationMessageFor(m => m.Confirm, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.Confirm) })
 
-                        <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
+                        <div class="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
                                        type="radio"
                                        id="Confirm"
-                                       name="Confirm"
                                        value=@OversightConfirmationStatus.Yes
                                        asp-for="Confirm" />
                                 <label class="govuk-label govuk-radios__label" for="Confirm">
@@ -127,7 +173,6 @@
                                 <input class="govuk-radios__input"
                                        type="radio"
                                        id="ConfirmNo"
-                                       name="Confirm"
                                        value=@OversightConfirmationStatus.No
                                        asp-for="Confirm" />
                                 <label class="govuk-label govuk-radios__label" for="ConfirmNo">

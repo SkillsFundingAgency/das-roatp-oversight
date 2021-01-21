@@ -172,9 +172,7 @@
                                 <input class="govuk-radios__input"
                                        type="radio"
                                        id="ApproveGateway"
-                                       name="ApproveGateway"
-                                       value=@ApprovalStatus.Approve
-                                       data-aria-controls="conditional-OptionYes"
+                                       value="@ApprovalStatus.Approve"
                                        asp-for="ApproveGateway" />
                                 <label class="govuk-label govuk-radios__label" for="ApproveGateway">
                                     Approve this outcome
@@ -184,9 +182,7 @@
                                 <input class="govuk-radios__input"
                                        type="radio"
                                        id="OptionApproveGatewayNo"
-                                       name="ApproveGateway"
-                                       value=@ApprovalStatus.Overturn
-                                       data-aria-controls="conditional-OptionNo"
+                                       value="@ApprovalStatus.Overturn"
                                        asp-for="ApproveGateway" />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayNo">
                                     Overturn this outcome
@@ -325,10 +321,8 @@
                                 <input class="govuk-radios__input"
                                        type="radio"
                                        id="ApproveModeration"
-                                       name="ApproveModeration"
-                                       value=@ApprovalStatus.Approve
-                                       asp-for="ApproveModeration"
-                                       data-aria-controls="conditional-OptionYes"/>
+                                       value="@ApprovalStatus.Approve"
+                                       asp-for="ApproveModeration" />
                                 <label class="govuk-label govuk-radios__label" for="ApproveModeration">
                                     Approve this outcome
                                 </label>
@@ -337,10 +331,8 @@
                                 <input class="govuk-radios__input"
                                        type="radio"
                                        id="OptionApproveModerationNo"
-                                       name="ApproveModeration"
-                                       value=@ApprovalStatus.Overturn
-                                       asp-for="ApproveModeration"
-                                       data-aria-controls="conditional-OptionNo" />
+                                       value="@ApprovalStatus.Overturn"
+                                       asp-for="ApproveModeration" />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveModerationNo">
                                     Overturn this outcome
                                 </label>
@@ -362,12 +354,11 @@
                                 <input class="govuk-radios__input"
                                        type="radio"
                                        id="OversightStatus"
-                                       name="OversightStatus"
                                        asp-for="OversightStatus"
                                        value=@OversightReviewStatus.Successful
                                        data-aria-controls="conditional-OptionSuccessful"
                                        data-disabled="disabled" />
-                                <label class="govuk-label govuk-radios__label" for="OptionSuccessful">
+                                <label class="govuk-label govuk-radios__label" for="OversightStatus">
                                     @OversightReviewStatus.Successful
                                 </label>
                             </div>
@@ -381,7 +372,7 @@
                                         <textarea class="govuk-textarea"
                                                   id="SuccessfulText"
                                                   name="SuccessfulText"
-                                                  rows="5"
+                                                  rows="10"
                                                   maxlength="@OversightSettings.TextAreaMaxLength"
                                                   aria-describedby="OptionSuccessfulText-info">@Model.SuccessfulText</textarea>
                                     </div>
@@ -392,7 +383,6 @@
                                 <input class="govuk-radios__input"
                                        type="radio"
                                        id="OptionSuccessfulAlreadyActive"
-                                       name="OversightStatus"
                                        asp-for="OversightStatus"
                                        value=@OversightReviewStatus.SuccessfulAlreadyActive
                                        data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
@@ -411,7 +401,7 @@
                                         <textarea class="govuk-textarea"
                                                   id="SuccessfulAlreadyActiveText"
                                                   name="SuccessfulAlreadyActiveText"
-                                                  rows="5"
+                                                  rows="10"
                                                   maxlength="@OversightSettings.TextAreaMaxLength"
                                                   aria-describedby="OptionSuccessfulAlreadyActiveText-info">@Model.SuccessfulAlreadyActiveText</textarea>
                                     </div>
@@ -421,7 +411,6 @@
                                 <input class="govuk-radios__input"
                                        type="radio"
                                        id="OptionSuccessfulFitnessForFunding"
-                                       name="OversightStatus"
                                        asp-for="OversightStatus"
                                        value=@OversightReviewStatus.SuccessfulFitnessForFunding
                                        data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
@@ -440,7 +429,7 @@
                                         <textarea class="govuk-textarea"
                                                   id="SuccessfulFitnessForFundingText"
                                                   name="SuccessfulFitnessForFundingText"
-                                                  rows="5"
+                                                  rows="10"
                                                   maxlength="@OversightSettings.TextAreaMaxLength"
                                                   aria-describedby="SuccessfulFitnessForFundingText-info">@Model.SuccessfulFitnessForFundingText</textarea>
                                     </div>
@@ -450,7 +439,6 @@
                                 <input class="govuk-radios__input"
                                        type="radio"
                                        id="OptionUnsuccessful"
-                                       name="OversightStatus"
                                        asp-for="OversightStatus"
                                        value=@OversightReviewStatus.Unsuccessful
                                        data-aria-controls="conditional-OptionUnsuccessful"
@@ -470,7 +458,7 @@
                                         <textarea class="govuk-textarea"
                                                   id="UnsuccessfulText"
                                                   name="UnsuccessfulText"
-                                                  rows="5"
+                                                  rows="10"
                                                   maxlength="@OversightSettings.TextAreaMaxLength"
                                                   aria-describedby="UnsuccessfulText-info">@Model.UnsuccessfulText</textarea>
                                     </div>
@@ -481,7 +469,6 @@
                                 <input class="govuk-radios__input"
                                        type="radio"
                                        id="OptionInProgress"
-                                       name="OversightStatus"
                                        asp-for="OversightStatus"
                                        value=@OversightReviewStatus.InProgress
                                        data-aria-controls="conditional-OptionInProgress"
@@ -502,7 +489,7 @@
                                         <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressInternalText, "govuk-textarea--error")"
                                                   id="InProgressInternalText"
                                                   name="InProgressInternalText"
-                                                  rows="5"
+                                                  rows="10"
                                                   maxlength="@OversightSettings.TextAreaMaxLength"
                                                   aria-describedby="InProgressInternalText-info">@Model.InProgressInternalText</textarea>
                                     </div>
@@ -517,7 +504,7 @@
                                         <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressExternalText, "govuk-textarea--error")"
                                                   id="InProgressExternalText"
                                                   name="InProgressExternalText"
-                                                  rows="5"
+                                                  rows="10"
                                                   maxlength="@OversightSettings.TextAreaMaxLength"
                                                   aria-describedby="InProgressExternalText-info">@Model.InProgressExternalText</textarea>
                                     </div>
@@ -541,8 +528,10 @@
 @section Scripts {
     <script src="/javascript/das-enable-form-controls.js" no-cdn></script>
     <script>
-        window.dasJs.enableFormControlsOnChange.init(
-            ['ApproveGateway', 'ApproveModeration']
-        );
+        $(function() {
+            window.dasJs.enableFormControlsOnChange.init(
+                ['ApproveGateway', 'ApproveModeration']
+            );
+        });
     </script>
 }

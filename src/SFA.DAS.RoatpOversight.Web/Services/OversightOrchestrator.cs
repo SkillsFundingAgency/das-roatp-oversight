@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
-using SFA.DAS.RoatpOversight.Web.Settings;
 using SFA.DAS.RoatpOversight.Web.ViewModels;
 
 namespace SFA.DAS.RoatpOversight.Web.Services
@@ -51,7 +50,22 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 Ukprn = applicationDetails.Ukprn,
                 ProviderRoute = applicationDetails.ProviderRoute,
                 OversightStatus = applicationDetails.OversightStatus,
-                ApplicationStatus = applicationDetails.ApplicationStatus
+                ApplicationStatus = applicationDetails.ApplicationStatus,
+                ApplicationEmailAddress = applicationDetails.ApplicationEmailAddress,
+                AssessorReviewStatus = applicationDetails.AssessorReviewStatus,
+                GatewayReviewStatus = applicationDetails.GatewayReviewStatus,
+                GatewayOutcomeMadeDate = applicationDetails.GatewayOutcomeMadeDate,
+                GatewayOutcomeMadeBy = applicationDetails.GatewayOutcomeMadeBy,
+                GatewayComments = applicationDetails.GatewayComments,
+                FinancialReviewStatus = applicationDetails.FinancialReviewStatus,
+                FinancialGradeAwarded = applicationDetails.FinancialGradeAwarded,
+                FinancialHealthAssessedOn =  applicationDetails.FinancialHealthAssessedOn,
+                FinancialHealthAssessedBy = applicationDetails.FinancialHealthAssessedBy,
+                FinancialHealthComments = applicationDetails.FinancialHealthComments,
+                ModerationReviewStatus = applicationDetails.ModerationReviewStatus,
+                ModerationOutcomeMadeOn = applicationDetails.ModerationOutcomeMadeOn,
+                ModeratedBy = applicationDetails.ModeratedBy,
+                ModerationComments = applicationDetails.ModerationComments
             };
 
             return viewModel;

@@ -7,6 +7,7 @@ using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Models;
+using SFA.DAS.RoatpOversight.Web.Models.Partials;
 
 namespace SFA.DAS.RoatpOversight.Web.Services
 {
@@ -59,19 +60,28 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ApplicationStatus = applicationDetails.ApplicationStatus,
                 ApplicationEmailAddress = applicationDetails.ApplicationEmailAddress,
                 AssessorReviewStatus = applicationDetails.AssessorReviewStatus,
-                GatewayReviewStatus = applicationDetails.GatewayReviewStatus,
-                GatewayOutcomeMadeDate = applicationDetails.GatewayOutcomeMadeDate,
-                GatewayOutcomeMadeBy = applicationDetails.GatewayOutcomeMadeBy,
-                GatewayComments = applicationDetails.GatewayComments,
-                FinancialReviewStatus = applicationDetails.FinancialReviewStatus,
-                FinancialGradeAwarded = applicationDetails.FinancialGradeAwarded,
-                FinancialHealthAssessedOn =  applicationDetails.FinancialHealthAssessedOn,
-                FinancialHealthAssessedBy = applicationDetails.FinancialHealthAssessedBy,
-                FinancialHealthComments = applicationDetails.FinancialHealthComments,
-                ModerationReviewStatus = applicationDetails.ModerationReviewStatus,
-                ModerationOutcomeMadeOn = applicationDetails.ModerationOutcomeMadeOn,
-                ModeratedBy = applicationDetails.ModeratedBy,
-                ModerationComments = applicationDetails.ModerationComments
+                GatewayOutcome = new GatewayOutcomeViewModel
+                {
+                    GatewayReviewStatus = applicationDetails.GatewayReviewStatus,
+                    GatewayOutcomeMadeDate = applicationDetails.GatewayOutcomeMadeDate,
+                    GatewayOutcomeMadeBy = applicationDetails.GatewayOutcomeMadeBy,
+                    GatewayComments = applicationDetails.GatewayComments
+                },
+                FinancialHealthOutcome = new FinancialHealthOutcomeViewModel
+                {
+                    FinancialReviewStatus = applicationDetails.FinancialReviewStatus,
+                    FinancialGradeAwarded = applicationDetails.FinancialGradeAwarded,
+                    FinancialHealthAssessedOn = applicationDetails.FinancialHealthAssessedOn,
+                    FinancialHealthAssessedBy = applicationDetails.FinancialHealthAssessedBy,
+                    FinancialHealthComments = applicationDetails.FinancialHealthComments,
+                },
+                ModerationOutcome = new ModerationOutcomeViewModel
+                {
+                    ModerationReviewStatus = applicationDetails.ModerationReviewStatus,
+                    ModerationOutcomeMadeOn = applicationDetails.ModerationOutcomeMadeOn,
+                    ModeratedBy = applicationDetails.ModeratedBy,
+                    ModerationComments = applicationDetails.ModerationComments
+                }
             };
 
             if (cachedItem != null)

@@ -111,59 +111,8 @@
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-m">Gateway outcome</h2>
                         </legend>
-
-                        <dl class="govuk-summary-list">
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Outcome
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @if (Model.GatewayReviewStatus == GatewayReviewStatus.Pass)
-                                    {
-                                        <strong class="das-tag das-tag--solid-green">
-                                            Passed
-                                        </strong>
-                                    }
-                                    else
-                                    {
-                                        <strong class="das-tag das-tag--solid-red">
-                                            Failed
-                                        </strong>
-                                    }
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Outcome made date
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @Model.GatewayOutcomeMadeDate.ToSfaShortDateString()
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Outcome made by
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @Model.GatewayOutcomeMadeBy
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Comments
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @if (string.IsNullOrEmpty(Model.GatewayComments))
-                                    {
-                                        <text>N/A</text>
-                                    }
-                                    else
-                                    {
-                                        @Model.GatewayComments
-                                    }
-                                </dd>
-                            </div>
-                        </dl>
+                        
+                        <partial name="_GatewayOutcome" for="@Model.GatewayOutcome"/>
 
                         @Html.ValidationMessageFor(m => m.ApproveGateway, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveGateway) })
 
@@ -197,62 +146,7 @@
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-m">Financial health outcome</h2>
                         </legend>
-                        <dl class="govuk-summary-list">
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Outcome
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @if (Model.FinancialReviewStatus == FinancialReviewStatus.Pass)
-                                    {
-                                        <strong class="das-tag das-tag--solid-green">
-                                            Passed
-                                        </strong>
-                                    }
-                                    else
-                                    {
-                                        <strong class="das-tag das-tag--solid-red">
-                                            Failed
-                                        </strong>
-                                    }
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Grade awarded
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @Model.FinancialGradeAwarded
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Financial health assessed on
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @Model.FinancialHealthAssessedOn.ToSfaShortDateString()
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Financial health assessed by
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @Model.FinancialHealthAssessedBy
-                                </dd>
-                            </div>
-                            @if (!string.IsNullOrEmpty(Model.FinancialHealthComments))
-                            {
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">
-                                        Comments
-                                    </dt>
-                                    <dd class="govuk-summary-list__value">
-                                        @Model.FinancialHealthComments
-                                    </dd>
-                                </div>
-                            }
-                        </dl>
+                        <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome"/>
                     </fieldset>
                 </div>
 
@@ -262,58 +156,7 @@
                             <h2 class="govuk-heading-m">Moderation outcome</h2>
                         </legend>
 
-                        <dl class="govuk-summary-list">
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Outcome
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @if (Model.ModerationReviewStatus == ModerationReviewStatus.Pass)
-                                    {
-                                        <strong class="das-tag das-tag--solid-green">
-                                            Passed
-                                        </strong>
-                                    }
-                                    else
-                                    {
-                                        <strong class="das-tag das-tag--solid-red">
-                                            Failed
-                                        </strong>
-                                    }
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Outcome made date
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @Model.ModerationOutcomeMadeOn.ToSfaShortDateString()
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Moderated by
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @Model.ModeratedBy
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Comments
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @if (string.IsNullOrEmpty(Model.ModerationComments))
-                                    {
-                                        <text>N/A</text>
-                                    }
-                                    else
-                                    {
-                                        @Model.ModerationComments
-                                    }
-                                </dd>
-                            </div>
-                        </dl>
+                        <partial name="_ModerationOutcome" for="@Model.ModerationOutcome"/>
 
                         @Html.ValidationMessageFor(m => m.ApproveModeration, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveModeration) })
                         <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">

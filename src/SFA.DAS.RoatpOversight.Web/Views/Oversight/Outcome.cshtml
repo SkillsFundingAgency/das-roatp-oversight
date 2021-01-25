@@ -490,6 +490,7 @@
                                         <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressInternalText, "govuk-textarea--error")"
                                                   id="InProgressInternalText"
                                                   name="InProgressInternalText"
+                                                  asp-for="InProgressInternalText"
                                                   rows="10"
                                                   maxlength="@OversightSettings.TextAreaMaxLength"
                                                   aria-describedby="InProgressInternalText-info">@Model.InProgressInternalText</textarea>
@@ -501,10 +502,14 @@
                                         <label class="govuk-label" for="InProgressExternalText">
                                             Add your external comments
                                         </label>
+                                        <div id="InProgressExternalText-info" class="govuk-hint">
+                                            These comments will be seen by the applicant.
+                                        </div>
                                         @Html.ValidationMessageFor(m => m.InProgressExternalText, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.InProgressExternalText) })
                                         <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressExternalText, "govuk-textarea--error")"
                                                   id="InProgressExternalText"
                                                   name="InProgressExternalText"
+                                                  asp-for="InProgressExternalText"
                                                   rows="10"
                                                   maxlength="@OversightSettings.TextAreaMaxLength"
                                                   aria-describedby="InProgressExternalText-info">@Model.InProgressExternalText</textarea>

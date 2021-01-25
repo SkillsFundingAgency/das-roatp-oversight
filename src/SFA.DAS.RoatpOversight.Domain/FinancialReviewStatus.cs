@@ -6,9 +6,8 @@ namespace SFA.DAS.RoatpOversight.Domain
 {
     public static class FinancialReviewStatus
     {
-        public const string Outstanding = "Outstanding";
-        public const string Good = "Good";
-        public const string Satisfactory = "Satisfactory";
+        public const string Pass = "Pass";
+        public const string Fail = "Fail";
         public const string Exempt = "Exempt";
     }
 }

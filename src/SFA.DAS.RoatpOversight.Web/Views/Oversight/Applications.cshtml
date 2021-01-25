@@ -62,35 +62,29 @@
                             <tbody class="govuk-table__body">
                                 @foreach (var application in Model.ApplicationDetails)
                                 {
-                                <tr class="govuk-table__row">
-                                    <td data-label="Organisation name" class="govuk-table__cell">
-                                        <a class="govuk-link govuk-!-margin-bottom-0" asp-action="Outcome" asp-route-id="@application.ApplicationId">
-                                            @application.OrganisationName
-                                        </a>
-                                    </td>
-                                    <td data-label="UKPRN" class="govuk-table__cell">@application.Ukprn</td>
-                                    <td data-label="Provider route" class="govuk-table__cell">@application.ProviderRoute</td>
-                                    <td data-label="Application reference number" class="govuk-table__cell">@application.ApplicationReferenceNumber</td>
-                                    <td data-label="Application submitted date" class="govuk-table__cell">@application.ApplicationSubmittedDate.ToSfaShortDateString()</td>
-                                    <td data-label="Outcome" class="govuk-table__cell">
-                                        @{
-                                            bool OutcomePass = application.GatewayReviewStatus == GatewayReviewStatus.Pass 
-                                                && application.ModerationStatus == ModerationStatus.Pass 
-                                                && (application.FinancialReviewStatus == FinancialReviewStatus.Exempt 
-                                                || application.FinancialReviewStatus == FinancialReviewStatus.Good 
-                                                || application.FinancialReviewStatus == FinancialReviewStatus.Outstanding
-                                                || application.FinancialReviewStatus == FinancialReviewStatus.Satisfactory);
-                                            @if (OutcomePass)
-                                            {
-                                                <span class="govuk-tag govuk-tag--solid-green">Pass</span>
+                                    <tr class="govuk-table__row">
+                                        <td data-label="Organisation name" class="govuk-table__cell">
+                                            <a class="govuk-link govuk-!-margin-bottom-0" asp-action="Outcome" asp-route-id="@application.ApplicationId">
+                                                @application.OrganisationName
+                                            </a>
+                                        </td>
+                                        <td data-label="UKPRN" class="govuk-table__cell">@application.Ukprn</td>
+                                        <td data-label="Provider route" class="govuk-table__cell">@application.ProviderRoute</td>
+                                        <td data-label="Application reference number" class="govuk-table__cell">@application.ApplicationReferenceNumber</td>
+                                        <td data-label="Application submitted date" class="govuk-table__cell">@application.ApplicationSubmittedDate.ToSfaShortDateString()</td>
+                                        <td data-label="Outcome" class="govuk-table__cell">
+                                            @{
+                                                @if (application.OutcomePass)
+                                                {
+                                                    <span class="govuk-tag govuk-tag--solid-green">Pass</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="govuk-tag govuk-tag--solid-red">Fail</span>
+                                                }
                                             }
-                                            else
-                                            {
-                                                <span class="govuk-tag govuk-tag--solid-red">Fail</span>
-                                            }
-                                        }
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
                                 }
                             </tbody>
                         </table>

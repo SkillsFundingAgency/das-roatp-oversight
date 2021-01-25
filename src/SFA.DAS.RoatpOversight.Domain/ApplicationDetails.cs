@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.RoatpOversight.Domain;
 
 namespace SFA.DAS.RoatpOversight.Domain
 {
@@ -33,5 +34,9 @@ namespace SFA.DAS.RoatpOversight.Domain
         public DateTime? ModerationOutcomeMadeOn { get; set; }
         public string ModeratedBy { get; set; }
         public string ModerationComments { get; set; }
+        public bool OutcomePass => GatewayReviewStatus == Domain.GatewayReviewStatus.Pass
+                                                    && ModerationReviewStatus == Domain.ModerationReviewStatus.Pass
+                                                    && (FinancialReviewStatus == Domain.FinancialReviewStatus.Pass
+                                                    || FinancialReviewStatus == Domain.FinancialReviewStatus.Exempt);
     }
 }

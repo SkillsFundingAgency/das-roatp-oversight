@@ -8,10 +8,13 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
     {
         public OutcomePostRequestValidator()
         {
-            RuleFor(x => x.ApproveGateway).NotEmpty().WithMessage("Select the gateway outcome for this application");
+            RuleFor(x => x.ApproveGateway).NotEmpty()
+                .WithMessage("Select the gateway outcome for this application")
+                .When(x => x.OversightStatus != OversightReviewStatus.InProgress); 
             
             RuleFor(x => x.ApproveModeration).NotEmpty()
-                .WithMessage("Select the moderation outcome for this application");
+                .WithMessage("Select the moderation outcome for this application")
+                .When(x => x.OversightStatus != OversightReviewStatus.InProgress);
 
             RuleFor(x => x.OversightStatus).NotEmpty()
                 .WithMessage("Select the overall outcome of this application");

@@ -20,7 +20,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             _logger = logger;
         }
 
-        public async Task<bool> RecordOutcome(Guid applicationId, string outcome, string userId, string userName, string internalComments, string externalComments)
+        public async Task<bool> RecordOutcome(Guid applicationId, bool? approveGateway, bool? approveModeration, string outcome, string userId, string userName, string internalComments, string externalComments)
         {
             _logger.LogInformation($"Recording an oversight outcome of {outcome} for application {applicationId}");
 
@@ -32,6 +32,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             var updateOutcomeCommand = new RecordOversightOutcomeCommand
             {
                 ApplicationId = applicationId,
+                ApproveGateway = approveGateway,
+                ApproveModeration = approveModeration,
                 OversightStatus = outcome,
                 UserId = userId,
                 UserName = userName,

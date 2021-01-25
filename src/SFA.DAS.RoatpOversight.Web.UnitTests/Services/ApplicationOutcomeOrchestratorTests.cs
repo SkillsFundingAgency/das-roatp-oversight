@@ -69,7 +69,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         {
             _registerStatus.UkprnOnRegister = false;
 
-            var result = await _orchestrator.RecordOutcome(_applicationId, OversightReviewStatus.Successful, UserId, UserName, InternalComments, ExternalComments);
+            var result = await _orchestrator.RecordOutcome(_applicationId, false, false, OversightReviewStatus.Successful, UserId, UserName, InternalComments, ExternalComments);
 
             result.Should().BeTrue();
 
@@ -81,7 +81,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         [Test]
         public async Task Application_status_updated_only_for_an_unsuccessful_oversight_review()
         {
-            var result = await _orchestrator.RecordOutcome(_applicationId, OversightReviewStatus.Unsuccessful, UserId, UserName, InternalComments, ExternalComments);
+            var result = await _orchestrator.RecordOutcome(_applicationId, false, false, OversightReviewStatus.Unsuccessful, UserId, UserName, InternalComments, ExternalComments);
 
             result.Should().BeTrue();
 
@@ -93,7 +93,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         [TestCase(OversightReviewStatus.SuccessfulFitnessForFunding)]
         public async Task Application_status_and_register_updated_for_a_successful_already_active_or_fitness_for_funding_oversight_review(string status)
         {
-            await _orchestrator.RecordOutcome(_applicationId, status, UserId, UserName, InternalComments, ExternalComments);
+            await _orchestrator.RecordOutcome(_applicationId, false, false, status, UserId, UserName, InternalComments, ExternalComments);
 
             _applicationApiClient.Verify(x => x.RecordOutcome(It.Is<RecordOversightOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
             _roatpRegisterApiClient.Verify(x => x.UpdateApplicationDeterminedDate(It.Is<UpdateOrganisationApplicationDeterminedDateRequest>(y => y.OrganisationId == _registerStatus.OrganisationId)), Times.Once);
@@ -104,7 +104,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         {
             _registerStatus.UkprnOnRegister = true;
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
-                await _orchestrator.RecordOutcome(_applicationId, OversightReviewStatus.Successful, UserId, UserName, InternalComments, ExternalComments));
+                await _orchestrator.RecordOutcome(_applicationId, false, false, OversightReviewStatus.Successful, UserId, UserName, InternalComments, ExternalComments));
         }
 
         [TestCase(OversightReviewStatus.SuccessfulAlreadyActive)]
@@ -113,7 +113,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         {
             _registerStatus.UkprnOnRegister = false;
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
-                await _orchestrator.RecordOutcome(_applicationId, status, UserId, UserName, InternalComments, ExternalComments));
+                await _orchestrator.RecordOutcome(_applicationId, false, false, status, UserId, UserName, InternalComments, ExternalComments));
         }
     }
 }

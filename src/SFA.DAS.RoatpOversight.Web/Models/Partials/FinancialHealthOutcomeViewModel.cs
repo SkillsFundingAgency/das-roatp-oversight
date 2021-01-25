@@ -10,5 +10,6 @@ namespace SFA.DAS.RoatpOversight.Web.Models.Partials
         public DateTime? FinancialHealthAssessedOn { get; set; }
         public string FinancialHealthAssessedBy { get; set; }
         public string FinancialHealthComments { get; set; }
+        public string FinancialHealthExternalComments { get; set; }
     }
 }

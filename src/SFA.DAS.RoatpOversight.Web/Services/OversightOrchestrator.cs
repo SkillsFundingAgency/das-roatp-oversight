@@ -183,7 +183,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 FinancialGradeAwarded = applicationDetails.FinancialGradeAwarded,
                 FinancialHealthAssessedOn = applicationDetails.FinancialHealthAssessedOn,
                 FinancialHealthAssessedBy = applicationDetails.FinancialHealthAssessedBy,
-                FinancialHealthComments = applicationDetails.FinancialHealthComments
+                FinancialHealthComments = applicationDetails.FinancialHealthComments,
+                FinancialHealthExternalComments = applicationDetails.FinancialHealthExternalComments
             };
         }
 

@@ -9,7 +9,7 @@
             </dt>
             <dd class="govuk-summary-list__value">
                 @if (Model.FinancialReviewStatus == FinancialReviewStatus.Pass
-                     || Model.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Exempt)
+                    || Model.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Exempt)
                 {
                     <strong class="das-tag das-tag--solid-green">
                         Passed
@@ -47,14 +47,22 @@
                 @Model.FinancialHealthAssessedBy
             </dd>
         </div>
-        @if (!string.IsNullOrEmpty(Model.FinancialHealthComments))
+        @if(Model.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Inadequate)
         {
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    Comments
+                    Internal comments
                 </dt>
                 <dd class="govuk-summary-list__value">
                     @Model.FinancialHealthComments
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    External comments
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.FinancialHealthExternalComments
                 </dd>
             </div>
         }

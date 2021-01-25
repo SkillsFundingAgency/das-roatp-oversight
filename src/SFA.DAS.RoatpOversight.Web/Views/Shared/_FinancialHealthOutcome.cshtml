@@ -8,7 +8,8 @@
                 Outcome
             </dt>
             <dd class="govuk-summary-list__value">
-                @if (Model.FinancialReviewStatus == FinancialReviewStatus.Pass)
+                @if (Model.FinancialReviewStatus == FinancialReviewStatus.Pass
+                     || Model.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Exempt)
                 {
                     <strong class="das-tag das-tag--solid-green">
                         Passed

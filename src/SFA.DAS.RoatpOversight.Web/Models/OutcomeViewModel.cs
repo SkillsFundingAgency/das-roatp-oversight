@@ -47,6 +47,7 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public string SuccessfulAlreadyActiveText { get; set; }
         public string SuccessfulFitnessForFundingText { get; set; }
         public string UnsuccessfulText { get; set; }
+        public string UnsuccessfulExternalText { get; set; }
         public string InProgressInternalText { get; set; }
         public string InProgressExternalText { get; set; }
         public string ApplicantEmailAddress { get; set; }

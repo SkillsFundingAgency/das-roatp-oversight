@@ -151,6 +151,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                     break;
                 case OversightReviewStatus.Unsuccessful:
                     viewModel.InternalComments = cachedItem.UnsuccessfulText;
+                    viewModel.ExternalComments = cachedItem.UnsuccessfulExternalText;
                     break;
             }
 

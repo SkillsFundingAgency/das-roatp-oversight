@@ -27,6 +27,9 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
 
             RuleFor(x => x.UnsuccessfulText).NotEmpty().WithMessage("Enter internal comments")
                 .When(x => x.OversightStatus == OversightReviewStatus.Unsuccessful);
+
+            RuleFor(x => x.UnsuccessfulExternalText).NotEmpty().WithMessage("Enter external comments")
+                .When(x => x.OversightStatus == OversightReviewStatus.Unsuccessful);
         }
     }
 }

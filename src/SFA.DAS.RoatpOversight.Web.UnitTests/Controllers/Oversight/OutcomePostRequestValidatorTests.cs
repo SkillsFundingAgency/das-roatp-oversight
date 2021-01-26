@@ -18,7 +18,6 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _validator = new OutcomePostRequestValidator();
         }
 
-        [TestCase("", GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, true)]
         [TestCase(null, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, true)]
         [TestCase(OversightReviewStatus.Successful, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, false)]
         [TestCase(OversightReviewStatus.Unsuccessful, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, false)]
@@ -26,7 +25,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [TestCase(OversightReviewStatus.Unsuccessful, null, ModerationReviewStatus.Pass, true)]
         [TestCase(OversightReviewStatus.Successful, GatewayReviewStatus.Pass, "", true)]
         [TestCase(OversightReviewStatus.Unsuccessful, GatewayReviewStatus.Pass, null, true)]
-        public void OversightOutcomeValidator_returns_error_when_status_is_empty(string oversightStatus, string approveGateway, string approveModeration, bool errorsExpected)
+        public void OversightOutcomeValidator_returns_error_when_status_is_empty(OversightReviewStatus oversightStatus, string approveGateway, string approveModeration, bool errorsExpected)
         {
             var request = new OutcomePostRequest
             {
@@ -61,9 +60,8 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(numberOfErrorsExpected, result.Errors.Count);
         }
 
-        [TestCase("")]
-        [TestCase(null)]
-        public void OversightOutcomeValidator_returns_expected_error_message_when_status_is_empty(string oversightStatus)
+        [TestCase(OversightReviewStatus.None)]
+        public void OversightOutcomeValidator_returns_expected_error_message_when_status_is_empty(OversightReviewStatus oversightStatus)
         {
             var request = new OutcomePostRequest
             {

@@ -91,7 +91,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 
         [TestCase(OversightReviewStatus.SuccessfulAlreadyActive)]
         [TestCase(OversightReviewStatus.SuccessfulFitnessForFunding)]
-        public async Task Application_status_and_register_updated_for_a_successful_already_active_or_fitness_for_funding_oversight_review(string status)
+        public async Task Application_status_and_register_updated_for_a_successful_already_active_or_fitness_for_funding_oversight_review(OversightReviewStatus status)
         {
             await _orchestrator.RecordOutcome(_applicationId, false, false, status, UserId, UserName, InternalComments, ExternalComments);
 
@@ -109,7 +109,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 
         [TestCase(OversightReviewStatus.SuccessfulAlreadyActive)]
         [TestCase(OversightReviewStatus.SuccessfulFitnessForFunding)]
-        public void Successful_already_active_or_fitness_for_funding_oversight_review_for_provider_not_already_on_register_throws_exception(string status)
+        public void Successful_already_active_or_fitness_for_funding_oversight_review_for_provider_not_already_on_register_throws_exception(OversightReviewStatus status)
         {
             _registerStatus.UkprnOnRegister = false;
             Assert.ThrowsAsync<InvalidOperationException>(async () =>

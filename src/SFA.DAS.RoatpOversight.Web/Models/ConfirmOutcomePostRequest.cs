@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.RoatpOversight.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.Models
 {
@@ -7,7 +8,7 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public Guid ApplicationId { get; set; }
         public string ApproveGateway { get; set; }
         public string ApproveModeration { get; set; }
-        public string OversightStatus { get; set; }
+        public OversightReviewStatus OversightStatus { get; set; }
         public string InternalComments { get; set; }
         public string ExternalComments { get; set; }
         public Guid OutcomeKey { get; set; }

@@ -152,7 +152,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
         }
 
-        private void VerifyApplicationHasNoOutcome(string oversightStatus)
+        private void VerifyApplicationHasNoOutcome(OversightReviewStatus oversightStatus)
         {
             if (oversightStatus == OversightReviewStatus.Successful
                 || oversightStatus == OversightReviewStatus.SuccessfulAlreadyActive

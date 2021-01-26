@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Models.Partials;
 
@@ -24,7 +25,7 @@ namespace SFA.DAS.RoatpOversight.Web.Models
 
         public string ApproveGateway { get; set; }
         public string ApproveModeration { get; set; }
-        public string OversightStatus { get; set; }
+        public OversightReviewStatus OversightStatus { get; set; }
 
         public string SuccessfulText { get; set; }  
 

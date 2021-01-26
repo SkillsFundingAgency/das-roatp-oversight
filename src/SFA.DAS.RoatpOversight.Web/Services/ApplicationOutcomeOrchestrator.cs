@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using Microsoft.Extensions.Logging;
@@ -20,7 +21,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             _logger = logger;
         }
 
-        public async Task<bool> RecordOutcome(Guid applicationId, bool? approveGateway, bool? approveModeration, string outcome, string userId, string userName, string internalComments, string externalComments)
+        public async Task<bool> RecordOutcome(Guid applicationId, bool? approveGateway, bool? approveModeration, OversightReviewStatus outcome, string userId, string userName, string internalComments, string externalComments)
         {
             _logger.LogInformation($"Recording an oversight outcome of {outcome} for application {applicationId}");
 
@@ -92,7 +93,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
         }
 
-        private void ValidateStatusAgainstExistingStatus(string outcome, OrganisationRegisterStatus registerStatus, string ukprn)
+        private void ValidateStatusAgainstExistingStatus(OversightReviewStatus outcome, OrganisationRegisterStatus registerStatus, string ukprn)
         {
             if (outcome == OversightReviewStatus.Successful)
             {

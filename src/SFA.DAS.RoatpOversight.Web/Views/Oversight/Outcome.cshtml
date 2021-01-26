@@ -215,8 +215,7 @@
                                             id="SuccessfulText"
                                             name="SuccessfulText"
                                             rows="10"
-                                            maxlength="@OversightSettings.TextAreaMaxLength"
-                                            aria-describedby="OptionSuccessfulText-info">@Model.SuccessfulText</textarea>
+                                            maxlength="@OversightSettings.TextAreaMaxLength">@Model.SuccessfulText</textarea>
                             </div>
                         </div>
 
@@ -242,8 +241,7 @@
                                             id="SuccessfulAlreadyActiveText"
                                             name="SuccessfulAlreadyActiveText"
                                             rows="10"
-                                            maxlength="@OversightSettings.TextAreaMaxLength"
-                                            aria-describedby="OptionSuccessfulAlreadyActiveText-info">@Model.SuccessfulAlreadyActiveText</textarea>
+                                            maxlength="@OversightSettings.TextAreaMaxLength">@Model.SuccessfulAlreadyActiveText</textarea>
                             </div>
                         </div>
                         <div class="govuk-radios__item">
@@ -268,8 +266,7 @@
                                             id="SuccessfulFitnessForFundingText"
                                             name="SuccessfulFitnessForFundingText"
                                             rows="10"
-                                            maxlength="@OversightSettings.TextAreaMaxLength"
-                                            aria-describedby="SuccessfulFitnessForFundingText-info">@Model.SuccessfulFitnessForFundingText</textarea>
+                                            maxlength="@OversightSettings.TextAreaMaxLength">@Model.SuccessfulFitnessForFundingText</textarea>
                             </div>
                         </div>
                         <div class="govuk-radios__item">
@@ -295,11 +292,9 @@
                                             id="UnsuccessfulText"
                                             name="UnsuccessfulText"
                                             rows="10"
-                                            maxlength="@OversightSettings.TextAreaMaxLength"
-                                            aria-describedby="UnsuccessfulText-info">@Model.UnsuccessfulText</textarea>
+                                            maxlength="@OversightSettings.TextAreaMaxLength">@Model.UnsuccessfulText</textarea>
                             </div>
 
-                            @* textbox here for UnsuccessfulExternalText *@
                             <div class="govuk-form-group" data-module="das-hidden">
                                 <a name="OptionUnsuccessfulExternalText"></a>
                                 <label class="govuk-label" for="UnsuccessfulExternalText">
@@ -314,7 +309,7 @@
                                             name="UnsuccessfulExternalText"
                                             rows="10"
                                             maxlength="@OversightSettings.TextAreaMaxLength"
-                                            aria-describedby="UnsuccessfulExternalText-hint UnsuccessfulExternalText-info">@Model.UnsuccessfulExternalText</textarea>
+                                            aria-describedby="UnsuccessfulExternalText-hint">@Model.UnsuccessfulExternalText</textarea>
                             </div>
                         </div>
                         <div class="govuk-radios__divider">or</div>
@@ -341,21 +336,25 @@
                                             id="InProgressInternalText"
                                             name="InProgressInternalText"
                                             rows="10"
-                                            maxlength="@OversightSettings.TextAreaMaxLength"
-                                            aria-describedby="InProgressInternalText-info">@Model.InProgressInternalText</textarea>
+                                            maxlength="@OversightSettings.TextAreaMaxLength">@Model.InProgressInternalText</textarea>
                             </div>
-                            <div class="govuk-form-group">
-                                <a name="OptionInProgressExternalText"></a>
-                                <label class="govuk-label" for="InProgressExternalText">
-                                    Add your external comments
-                                </label>
-                                @Html.ValidationMessageFor(m => m.InProgressExternalText, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.InProgressExternalText) })
-                                <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressExternalText, "govuk-textarea--error")"
-                                            id="InProgressExternalText"
-                                            name="InProgressExternalText"
-                                            rows="10"
-                                            maxlength="@OversightSettings.TextAreaMaxLength"
-                                            aria-describedby="InProgressExternalText-info">@Model.InProgressExternalText</textarea>
+                            <div>
+                                <div class="govuk-form-group">
+                                    <a name="OptionInProgressExternalText"></a>
+                                    <label class="govuk-label" for="InProgressExternalText">
+                                        Add your external comments
+                                    </label>
+                                    <div id="InProgressExternalText-hint" class="govuk-hint">
+                                        These comments will be seen by the applicant.
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.InProgressExternalText, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.InProgressExternalText) })
+                                    <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressExternalText, "govuk-textarea--error")"
+                                              id="InProgressExternalText"
+                                              name="InProgressExternalText"
+                                              rows="10"
+                                              maxlength="@OversightSettings.TextAreaMaxLength"
+                                              aria-describedby="InProgressExternalText-hint">@Model.InProgressExternalText</textarea>
+                                </div>
                             </div>
                         </div>
                     </div>

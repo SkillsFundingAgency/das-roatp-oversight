@@ -54,16 +54,33 @@
                     Internal comments
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.FinancialHealthComments
+                    @if (!string.IsNullOrEmpty(@Model.FinancialHealthComments))
+                    {
+                        <pre class="govuk-body das-preformatted-body">@Model.FinancialHealthComments</pre>
+                    } else {
+                        <text>N/A</text>
+                    }
                 </dd>
             </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    External comments
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.FinancialHealthExternalComments
-                </dd>
-            </div>
+            @if (Model.FinancialReviewStatus == FinancialReviewStatus.Fail && !string.IsNullOrEmpty(@Model.FinancialHealthExternalComments))
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        External comments
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <details class="govuk-details" data-module="govuk-details">
+                            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">
+                                    View external comments
+                                </span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <pre class="govuk-body das-preformatted-body">@Model.FinancialHealthExternalComments</pre>
+                            </div>
+                        </details>
+                    </dd>
+                </div>
+            }
         }
     </dl>

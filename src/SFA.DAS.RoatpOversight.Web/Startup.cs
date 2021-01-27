@@ -89,8 +89,6 @@ namespace SFA.DAS.RoatpOversight.Web
             })
             .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<OutcomePostRequestValidator>());
 
-            services.AddTransient<IValidatorInterceptor, OutcomeValidatorInterceptor>();
-
             services.AddSession(opt => { opt.IdleTimeout = TimeSpan.FromHours(1); });
 
             if (_env.IsDevelopment())

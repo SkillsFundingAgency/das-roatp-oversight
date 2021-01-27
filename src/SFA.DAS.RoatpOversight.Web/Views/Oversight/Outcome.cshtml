@@ -250,6 +250,7 @@
                                     <textarea class="govuk-textarea"
                                                 id="UnsuccessfulText"
                                                 name="UnsuccessfulText"
+                                                asp-for="UnsuccessfulText"
                                                 rows="10"
                                                 maxlength="@OversightSettings.TextAreaMaxLength">@Model.UnsuccessfulText</textarea>
                                 </div>
@@ -266,6 +267,7 @@
                                     <textarea class="govuk-textarea"
                                                 id="UnsuccessfulExternalText"
                                                 name="UnsuccessfulExternalText"
+                                                asp-for="UnsuccessfulExternalText"
                                                 rows="10"
                                                 maxlength="@OversightSettings.TextAreaMaxLength"
                                                 aria-describedby="UnsuccessfulExternalText-hint">@Model.UnsuccessfulExternalText</textarea>

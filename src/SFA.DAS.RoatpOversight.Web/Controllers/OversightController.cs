@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Services;
@@ -8,6 +9,7 @@ using SFA.DAS.AdminService.Common.Extensions;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Models;
+using SFA.DAS.RoatpOversight.Web.Validators;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
 {
@@ -45,7 +47,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         }
 
         [HttpPost("Oversight/Outcome/{applicationId}")]
-        public async Task<IActionResult> Outcome(OutcomePostRequest request)
+        public async Task<IActionResult> Outcome([CustomizeValidator(Interceptor = typeof(OutcomeValidatorInterceptor))]OutcomePostRequest request)
         {
             var cacheKey = await _oversightOrchestrator.SaveOutcomePostRequestToCache(request);
             return RedirectToAction("ConfirmOutcome", new {applicationId = request.ApplicationId, OutcomeKey = cacheKey});

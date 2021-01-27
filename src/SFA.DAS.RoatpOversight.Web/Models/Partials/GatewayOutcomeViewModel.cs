@@ -10,7 +10,5 @@ namespace SFA.DAS.RoatpOversight.Web.Models.Partials
         public string GatewayOutcomeMadeBy { get; set; }
         public string GatewayComments { get; set; }
         public string GatewayExternalComments { get; set; }
-
-        public bool IsGatewayFail => GatewayReviewStatus == Domain.GatewayReviewStatus.Fail;
     }
 }

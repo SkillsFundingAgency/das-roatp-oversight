@@ -4,6 +4,7 @@ using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Validators;
+using FluentValidation;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 {
@@ -35,7 +36,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 UnsuccessfulText = oversightStatus == OversightReviewStatus.Unsuccessful ? "comments" : null
             };
 
-            var result = _validator.Validate(request);
+            var result = _validator.Validate(request, options => options.IncludeRuleSets("DefaultRuleset"));
             Assert.AreEqual(errorsExpected,!result.IsValid);
         }
 
@@ -56,7 +57,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 InProgressExternalText = externalComments
             };
 
-            var result = _validator.Validate(request);
+            var result = _validator.Validate(request, options => options.IncludeRuleSets("DefaultRuleset"));
             Assert.AreEqual(numberOfErrorsExpected, result.Errors.Count);
         }
 
@@ -69,7 +70,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 ApproveGateway = ApprovalStatus.Approve,
                 ApproveModeration = ApprovalStatus.Approve
             };
-            var result = _validator.Validate(request);
+            var result = _validator.Validate(request, options => options.IncludeRuleSets("DefaultRuleset"));
 
             Assert.IsTrue(result.Errors.Any(x => x.PropertyName == "OversightStatus" && x.ErrorMessage == "Select the overall outcome of this application"));
         }
@@ -88,7 +89,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 UnsuccessfulExternalText = string.Empty
             };
 
-            var result = _validator.Validate(request);
+            var result = _validator.Validate(request, options => options.IncludeRuleSets("DefaultRuleset"));
 
             Assert.AreEqual(expectError, result.Errors.Any(x => x.PropertyName == nameof(OutcomePostRequest.UnsuccessfulExternalText) && x.ErrorMessage == "Enter external comments"));
         }

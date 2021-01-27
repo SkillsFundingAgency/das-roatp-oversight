@@ -9,7 +9,7 @@ function nodeListForEach(nodes, callback) {
   }
 }
 
-dasJs.showHideFormControlsOnChange = {
+dasJs.conditionalReveal = {
   init: function () {
     if (
       !document.querySelectorAll('[data-module="das-reveal"]').length ||

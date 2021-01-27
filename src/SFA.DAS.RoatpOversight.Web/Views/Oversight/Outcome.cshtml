@@ -387,15 +387,13 @@
 
 @section Scripts {
     <script src="/javascript/das-enable-form-controls.js" no-cdn></script>
-    <script src="/javascript/das-show-form-controls.js" no-cdn></script>
+    <script src="/javascript/das-reveal.js" no-cdn></script>
     <script>
         $(function() {
             window.dasJs.enableFormControlsOnChange.init(
                 ['ApproveGateway', 'ApproveModeration']
             );
-            window.dasJs.showHideFormControlsOnChange.init(
-                ['OptionApproveGatewayNo', 'OptionApproveModerationNo']
-            );
+            window.dasJs.conditionalReveal.init();
         });
     </script>
 }

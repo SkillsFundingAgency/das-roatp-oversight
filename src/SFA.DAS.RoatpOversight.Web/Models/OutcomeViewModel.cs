@@ -1,22 +1,11 @@
-﻿using System;
-using SFA.DAS.RoatpOversight.Domain;
-using SFA.DAS.RoatpOversight.Web.Domain;
+﻿using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Models.Partials;
 
 namespace SFA.DAS.RoatpOversight.Web.Models
 {
     public class OutcomeViewModel
     {
-        public Guid ApplicationId { get; set; }
-        public string OrganisationName { get; set; }
-        public string Ukprn { get; set; }
-        public string ProviderRoute { get; set; }
-        public string ApplicationReferenceNumber { get; set; }
-        public DateTime ApplicationSubmittedDate { get; set; }
-        public string ApplicationStatus { get; set; }
-     
-        public string ApplicationEmailAddress { get; set; }
-        public string AssessorReviewStatus { get; set; }
+        public ApplicationSummaryViewModel ApplicationSummary { get; set; }
 
         public GatewayOutcomeViewModel GatewayOutcome { get; set; }
 
@@ -36,30 +25,5 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public string InProgressInternalText { get; set; }
         public string InProgressExternalText { get; set; }
         public string ApplicantEmailAddress { get; set; }
-
-        public string AssessmentOutcome
-        {
-            get
-            {
-                var financialDetailsPass = false;
-                if (FinancialHealthOutcome.FinancialReviewStatus == Domain.FinancialReviewStatus.Exempt)
-                    financialDetailsPass = true;
-                else
-                {
-                    if (FinancialHealthOutcome.FinancialReviewStatus ==  Domain.FinancialReviewStatus.Pass && 
-                            (FinancialHealthOutcome.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Exempt ||
-                             FinancialHealthOutcome.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Outstanding ||
-                             FinancialHealthOutcome.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Good ||
-                             FinancialHealthOutcome.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Satisfactory))
-                        financialDetailsPass = true;
-                }
-
-                if (GatewayOutcome.GatewayReviewStatus == Domain.GatewayReviewStatus.Pass && ModerationOutcome.ModerationReviewStatus == Domain.ModerationReviewStatus.Pass &&
-                    financialDetailsPass)
-                    return AssessmentOutcomeStatus.Passed;
-
-                return AssessmentOutcomeStatus.Failed;
-            }
-        }
     }
 }

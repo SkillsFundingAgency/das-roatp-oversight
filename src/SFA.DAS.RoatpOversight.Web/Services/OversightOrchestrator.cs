@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
+using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Models;
@@ -50,19 +51,11 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             var viewModel = new OutcomeViewModel
             {
-                ApplicationId = applicationId,
-                ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
-                ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
-                OrganisationName = applicationDetails.OrganisationName,
-                Ukprn = applicationDetails.Ukprn,
-                ProviderRoute = applicationDetails.ProviderRoute,
-                OversightStatus = applicationDetails.OversightStatus,
-                ApplicationStatus = applicationDetails.ApplicationStatus,
-                ApplicationEmailAddress = applicationDetails.ApplicationEmailAddress,
-                AssessorReviewStatus = applicationDetails.AssessorReviewStatus,
+                ApplicationSummary = CreateApplicationSummaryViewModel(applicationDetails),
                 GatewayOutcome = CreateGatewayOutcomeViewModel(applicationDetails),
                 FinancialHealthOutcome = CreateFinancialHealthOutcomeViewModel(applicationDetails),
-                ModerationOutcome = CreateModerationOutcomeViewModel(applicationDetails)
+                ModerationOutcome = CreateModerationOutcomeViewModel(applicationDetails),
+                OversightStatus = applicationDetails.OversightStatus
             };
 
             if (cachedItem != null)
@@ -162,6 +155,48 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             {
                 throw new InvalidStateException();
             }
+        }
+
+        private ApplicationSummaryViewModel CreateApplicationSummaryViewModel(ApplicationDetails applicationDetails)
+        {
+            var result = new ApplicationSummaryViewModel
+            { 
+                ApplicationId = applicationDetails.ApplicationId,
+                ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
+                ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
+                OrganisationName = applicationDetails.OrganisationName,
+                Ukprn = applicationDetails.Ukprn,
+                ProviderRoute = applicationDetails.ProviderRoute,
+                ApplicationStatus = applicationDetails.ApplicationStatus,
+                ApplicationEmailAddress = applicationDetails.ApplicationEmailAddress,
+                AssessorReviewStatus = applicationDetails.AssessorReviewStatus,
+            };
+
+            var financialDetailsPass = false;
+            if (applicationDetails.FinancialReviewStatus == Domain.FinancialReviewStatus.Exempt)
+                financialDetailsPass = true;
+            else
+            {
+                if (applicationDetails.FinancialReviewStatus == Domain.FinancialReviewStatus.Pass &&
+                    (applicationDetails.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Exempt ||
+                     applicationDetails.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Outstanding ||
+                     applicationDetails.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Good ||
+                     applicationDetails.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Satisfactory))
+                    financialDetailsPass = true;
+            }
+
+            if (applicationDetails.GatewayReviewStatus == Domain.GatewayReviewStatus.Pass &&
+                applicationDetails.ModerationReviewStatus == Domain.ModerationReviewStatus.Pass &&
+                financialDetailsPass)
+            {
+                result.AssessmentOutcome = AssessmentOutcomeStatus.Passed;
+            }
+            else
+            {
+                result.AssessmentOutcome = AssessmentOutcomeStatus.Failed;
+            }
+
+            return result;
         }
 
         private GatewayOutcomeViewModel CreateGatewayOutcomeViewModel(ApplicationDetails applicationDetails)

@@ -11,6 +11,7 @@ using SFA.DAS.RoatpOversight.Web.Controllers;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Models;
+using SFA.DAS.RoatpOversight.Web.Models.Partials;
 using SFA.DAS.RoatpOversight.Web.Services;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
@@ -68,7 +69,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [Test]
         public async Task GetOutcome_returns_view_with_expected_viewModel()
         {
-            var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId };
+            var viewModel = new OutcomeViewModel { ApplicationSummary = new ApplicationSummaryViewModel{ ApplicationId = _applicationDetailsApplicationId} };
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
 
             var request = new OutcomeRequest {ApplicationId = _applicationDetailsApplicationId};
@@ -78,7 +79,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.That(result, Is.Not.Null);
             Assert.That(actualViewModel, Is.Not.Null);
             Assert.That(actualViewModel, Is.SameAs(viewModel));
-            Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationId);
+            Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationSummary.ApplicationId);
         }
 
         [TestCase(OversightReviewStatus.Successful)]
@@ -98,7 +99,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [Test]
         public async Task Post_Outcome_redirects_to_confirmation()
         {
-            var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId };
+            var viewModel = new OutcomeViewModel { ApplicationSummary = new ApplicationSummaryViewModel{ ApplicationId = _applicationDetailsApplicationId }};
 
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
 

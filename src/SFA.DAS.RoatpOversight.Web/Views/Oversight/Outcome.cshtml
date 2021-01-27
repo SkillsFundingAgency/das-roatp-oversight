@@ -29,71 +29,9 @@
                 RoATP application outcomes
             </span>
             <h1 class="govuk-heading-xl">Application summary</h1>
+            
+            <partial name="_ApplicationSummary" for="@Model.ApplicationSummary" />
 
-            <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        UKPRN
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.Ukprn
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Legal Name
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.OrganisationName
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Provider route
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.ProviderRoute
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Application reference
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.ApplicationReferenceNumber
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Applicant's email address
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.ApplicationEmailAddress
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Application submitted date
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.ApplicationSubmittedDate.ToSfaShortDateString()
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Assessment outcome
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @{
-                            var assessmentOutcomeTagClass = @Model.AssessmentOutcome == "Passed" ? "das-tag--solid-green" : "das-tag--solid-red";
-                        }
-
-                        <strong class="das-tag @assessmentOutcomeTagClass">
-                            @Model.AssessmentOutcome
-                        </strong>
-                    </dd>
-                </div>
-            </dl>
         </div>
     </div>
 
@@ -106,17 +44,16 @@
     <form asp-action="Outcome" asp-controller="Oversight">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
-                <input type="hidden" asp-for="ApplicationId" />
-                <input type="hidden" asp-for="ApplicationEmailAddress" />
 
+                <input type="hidden" name="ApplicationId" value="@Model.ApplicationSummary.ApplicationId" />
 
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x=> x.ApproveGateway, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-m">Gateway outcome</h2>
                         </legend>
-                        
-                        <partial name="_GatewayOutcome" for="@Model.GatewayOutcome"/>
+
+                        <partial name="_GatewayOutcome" for="@Model.GatewayOutcome" />
 
                         @Html.ValidationMessageFor(m => m.ApproveGateway, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveGateway) })
 
@@ -150,7 +87,7 @@
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-m">Financial health outcome</h2>
                         </legend>
-                        <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome"/>
+                        <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome" />
                     </fieldset>
                 </div>
 
@@ -160,7 +97,7 @@
                             <h2 class="govuk-heading-m">Moderation outcome</h2>
                         </legend>
 
-                        <partial name="_ModerationOutcome" for="@Model.ModerationOutcome"/>
+                        <partial name="_ModerationOutcome" for="@Model.ModerationOutcome" />
 
                         @Html.ValidationMessageFor(m => m.ApproveModeration, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveModeration) })
                         <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">

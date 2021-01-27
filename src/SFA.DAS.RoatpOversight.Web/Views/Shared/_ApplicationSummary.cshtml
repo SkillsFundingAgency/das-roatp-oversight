@@ -1,0 +1,68 @@
+﻿@using SFA.DAS.AdminService.Common.Extensions
+@using SFA.DAS.RoatpOversight.Web.Domain
+@model SFA.DAS.RoatpOversight.Web.Models.Partials.ApplicationSummaryViewModel 
+
+<dl class="govuk-summary-list govuk-!-margin-bottom-9">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            UKPRN
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.Ukprn
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Legal Name
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.OrganisationName
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Provider route
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.ProviderRoute
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Application reference
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.ApplicationReferenceNumber
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Applicant's email address
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.ApplicationEmailAddress
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Application submitted date
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.ApplicationSubmittedDate.ToSfaShortDateString()
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Assessment outcome
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @{
+                var assessmentOutcomeTagClass = @Model.AssessmentOutcome == AssessmentOutcomeStatus.Passed ? "das-tag--solid-green" : "das-tag--solid-red";
+            }
+
+            <strong class="das-tag @assessmentOutcomeTagClass">
+                @Model.AssessmentOutcome
+            </strong>
+        </dd>
+    </div>
+</dl>

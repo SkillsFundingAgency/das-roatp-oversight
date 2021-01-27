@@ -136,7 +136,9 @@
                                        type="radio"
                                        id="OptionApproveGatewayNo"
                                        value="@ApprovalStatus.Overturn"
-                                       asp-for="ApproveGateway" />
+                                       asp-for="ApproveGateway"
+                                       data-module="das-show-hide-controls"
+                                       data-aria-controls="conditional-UnsuccessfulExternalText" />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayNo">
                                     Overturn this outcome
                                 </label>
@@ -179,7 +181,9 @@
                                        type="radio"
                                        id="OptionApproveModerationNo"
                                        value="@ApprovalStatus.Overturn"
-                                       asp-for="ApproveModeration" />
+                                       asp-for="ApproveModeration"
+                                       data-module="das-show-hide-controls"
+                                       data-aria-controls="conditional-UnsuccessfulExternalText" />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveModerationNo">
                                     Overturn this outcome
                                 </label>
@@ -303,7 +307,7 @@
                                                 maxlength="@OversightSettings.TextAreaMaxLength">@Model.UnsuccessfulText</textarea>
                                 </div>
 
-                                <div class="govuk-form-group" data-module="das-hidden">
+                                <div class="govuk-form-group das-reveal__conditional--hidden" data-module="das-reveal" id="conditional-UnsuccessfulExternalText">
                                     <a name="OptionUnsuccessfulExternalText"></a>
                                     <label class="govuk-label" for="UnsuccessfulExternalText">
                                         Add your external comments

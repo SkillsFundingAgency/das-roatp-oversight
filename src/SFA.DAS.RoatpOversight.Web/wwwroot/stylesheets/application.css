@@ -398,3 +398,9 @@
     flex-basis: 320px;
   }
 }
+
+/* Hide show controls */
+
+.js-enabled .das-reveal__conditional--hidden {
+  display: none;
+}

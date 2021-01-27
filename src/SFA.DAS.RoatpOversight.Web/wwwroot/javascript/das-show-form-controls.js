@@ -1,37 +1,65 @@
 var dasJs = dasJs || {};
 
-dasJs.showHideFormControlsOnChange = {
-  init: function (radiosRequiredToEnable) {
-    if (!document.querySelectorAll('[data-module="das-hidden"]').length || !radiosRequiredToEnable.length) return false;
+function nodeListForEach(nodes, callback) {
+  if (window.NodeList.prototype.forEach) {
+    return nodes.forEach(callback);
+  }
+  for (var i = 0; i < nodes.length; i++) {
+    callback.call(window, nodes[i], i, nodes);
+  }
+}
 
-    var hiddenElements = document.querySelectorAll('[data-module="das-hidden"]');
-    this.handleHiddenInputs(radiosRequiredToEnable, hiddenElements)
+dasJs.showHideFormControlsOnChange = {
+  init: function () {
+    if (
+      !document.querySelectorAll('[data-module="das-reveal"]').length ||
+      !document.querySelectorAll('[data-module="das-show-hide-controls"]')
+        .length
+    )
+      return false;
+
+    var controls = document.querySelectorAll(
+      '[data-module="das-show-hide-controls"]'
+    );
+    var hiddenElements = document.querySelectorAll(
+      '[data-module="das-reveal"]'
+    );
+
+    nodeListForEach(controls, function (control) {
+      var target = control.getAttribute("data-aria-controls");
+      control.setAttribute("aria-controls", target);
+      control.removeAttribute("data-aria-controls");
+    });
+
+    this.handleHiddenInputs(controls, hiddenElements);
   },
 
-  handleHiddenInputs: function (radiosRequiredToEnable, hiddenElements) {
+  handleHiddenInputs: function (controls, hiddenElements) {
     function isOneChecked() {
-      var oneOfRadiosIsChecked = false;
-
-      for (var i = 0; i < radiosRequiredToEnable.length; i++) {
-        var element = document.querySelector('input#' + radiosRequiredToEnable[i]);
-        if (element.checked) {
-          oneOfRadiosIsChecked = true;
-          break;
-        } else {
-          oneOfRadiosIsChecked = false;
+      var oneChecked = false;
+      nodeListForEach(controls, function (control) {
+        if (control.checked) {
+          oneChecked = true;
         }
-      }
-
-      for (var i = 0; i < hiddenElements.length; i++) {
-        hiddenElements[i].style.display = oneOfRadiosIsChecked ? "block" : "none"
-      }
+      });
+      return oneChecked;
     }
 
-    isOneChecked();
+    nodeListForEach(hiddenElements, function (element) {
+      element.classList.toggle(
+        "das-reveal__conditional--hidden",
+        !isOneChecked()
+      );
+    });
 
     document.addEventListener("click", function (event) {
       if (event.target.name === undefined) return false;
-      isOneChecked();
+      nodeListForEach(hiddenElements, function (element) {
+        element.classList.toggle(
+          "das-reveal__conditional--hidden",
+          !isOneChecked()
+        );
+      });
     });
-  }
+  },
 };

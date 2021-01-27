@@ -171,7 +171,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 GatewayReviewStatus = applicationDetails.GatewayReviewStatus,
                 GatewayOutcomeMadeDate = applicationDetails.GatewayOutcomeMadeDate,
                 GatewayOutcomeMadeBy = applicationDetails.GatewayOutcomeMadeBy,
-                GatewayComments = applicationDetails.GatewayComments
+                GatewayComments = applicationDetails.GatewayComments,
+                GatewayExternalComments = applicationDetails.GatewayExternalComments
             };
         }
 

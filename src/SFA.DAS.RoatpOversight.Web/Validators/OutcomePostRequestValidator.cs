@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using SFA.DAS.RoatpOversight.Domain;
+using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Validators
@@ -29,7 +30,8 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
                 .When(x => x.OversightStatus == OversightReviewStatus.Unsuccessful);
 
             RuleFor(x => x.UnsuccessfulExternalText).NotEmpty().WithMessage("Enter external comments")
-                .When(x => x.OversightStatus == OversightReviewStatus.Unsuccessful);
+                .When(x => x.OversightStatus == OversightReviewStatus.Unsuccessful)
+                .When(x => x.ApproveGateway == ApprovalStatus.Overturn || x.ApproveModeration == ApprovalStatus.Overturn);
         }
     }
 }

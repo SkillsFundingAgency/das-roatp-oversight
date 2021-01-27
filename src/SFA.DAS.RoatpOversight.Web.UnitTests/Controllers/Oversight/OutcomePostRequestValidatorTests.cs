@@ -66,12 +66,31 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var request = new OutcomePostRequest
             {
                 OversightStatus = oversightStatus,
-                ApproveGateway = GatewayReviewStatus.Pass,
-                ApproveModeration = ModerationReviewStatus.Pass
+                ApproveGateway = ApprovalStatus.Approve,
+                ApproveModeration = ApprovalStatus.Approve
             };
             var result = _validator.Validate(request);
 
             Assert.IsTrue(result.Errors.Any(x => x.PropertyName == "OversightStatus" && x.ErrorMessage == "Select the overall outcome of this application"));
+        }
+
+        [TestCase(true, true, true)]
+        [TestCase(false, true, true)]
+        [TestCase(true, false, true)]
+        [TestCase(false, false, false)]
+        public void OversightOutcomeValidator_unsuccessful_and_an_overturned_outcome_mandates_external_comments(bool overturnGateway, bool overturnModeration, bool expectError)
+        {
+            var request = new OutcomePostRequest
+            {
+                OversightStatus = OversightReviewStatus.Unsuccessful,
+                ApproveGateway = overturnGateway ? ApprovalStatus.Overturn : ApprovalStatus.Approve,
+                ApproveModeration = overturnModeration ? ApprovalStatus.Overturn : ApprovalStatus.Approve,
+                UnsuccessfulExternalText = string.Empty
+            };
+
+            var result = _validator.Validate(request);
+
+            Assert.AreEqual(expectError, result.Errors.Any(x => x.PropertyName == nameof(OutcomePostRequest.UnsuccessfulExternalText) && x.ErrorMessage == "Enter external comments"));
         }
     }
 }

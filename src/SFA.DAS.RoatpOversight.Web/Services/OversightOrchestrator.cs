@@ -74,6 +74,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 viewModel.SuccessfulAlreadyActiveText = cachedItem.SuccessfulAlreadyActiveText;
                 viewModel.SuccessfulFitnessForFundingText = cachedItem.SuccessfulFitnessForFundingText;
                 viewModel.UnsuccessfulText = cachedItem.UnsuccessfulText;
+                viewModel.UnsuccessfulExternalText = cachedItem.UnsuccessfulExternalText;
                 viewModel.InProgressInternalText = cachedItem.InProgressInternalText;
                 viewModel.InProgressExternalText = cachedItem.InProgressExternalText;
             }

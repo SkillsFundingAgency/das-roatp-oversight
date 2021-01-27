@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using FluentValidation.Internal;
 using FluentValidation.Results;
@@ -13,15 +14,21 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
         {
             var target = commonContext.InstanceToValidate as OutcomePostRequest;
 
+            if(target == null)
+            {
+                throw new InvalidOperationException(
+                    $"OutcomeValidatorInterceptor cannot be used with type {commonContext.InstanceToValidate.GetType().Name}");
+            }
+
             if(!target.IsGatewayFail)
             {
                 return new ValidationContext<OutcomePostRequest>(target,
                     null,
-                    new RulesetValidatorSelector("DefaultRuleset"));
+                    new RulesetValidatorSelector(OutcomePostRequestValidator.RuleSets.Default));
             }
 
             return new ValidationContext<OutcomePostRequest>(target, null,
-                new RulesetValidatorSelector("GatewayFailRuleset"));
+                new RulesetValidatorSelector(OutcomePostRequestValidator.RuleSets.GatewayFail));
         }
 
         public ValidationResult AfterMvcValidation(ControllerContext controllerContext, IValidationContext commonContext,

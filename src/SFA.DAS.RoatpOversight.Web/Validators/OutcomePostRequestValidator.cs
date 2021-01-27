@@ -9,7 +9,7 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
     {
         public OutcomePostRequestValidator()
         {
-            RuleSet("DefaultRuleset", () =>
+            RuleSet(RuleSets.Default, () =>
             {
                 RuleFor(x => x.ApproveGateway).NotEmpty()
                     .WithMessage("Select the gateway outcome for this application")
@@ -37,11 +37,17 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
 
             });
 
-            RuleSet("GatewayFailRuleset", () =>
+            RuleSet(RuleSets.GatewayFail, () =>
             {
                 //no rules
             });
+        }
 
+        public static class RuleSets
+        {
+            public const string Default = "Default";
+            public const string GatewayFail = "GatewayFail";
         }
     }
+
 }

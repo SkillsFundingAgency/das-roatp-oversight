@@ -20,29 +20,50 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             _logger = logger;
         }
 
-        public async Task<bool> RecordOutcome(Guid applicationId, string outcome, string userId, string userName)
+        public async Task<bool> RecordOutcome(Guid applicationId, string outcome, string userId, string userName, string internalComments, string externalComments)
         {
             _logger.LogInformation($"Recording an oversight outcome of {outcome} for application {applicationId}");
+
+            var registrationDetails = await _applicationApiClient.GetRegistrationDetails(applicationId);
+            var registerStatus = await _registerApiClient.GetOrganisationRegisterStatus(new GetOrganisationRegisterStatusRequest { UKPRN = registrationDetails.UKPRN });
+
+            ValidateStatusAgainstExistingStatus(outcome, registerStatus, registrationDetails.UKPRN);
 
             var updateOutcomeCommand = new RecordOversightOutcomeCommand
             {
                 ApplicationId = applicationId,
                 OversightStatus = outcome,
                 UserId = userId,
-                UserName = userName
+                UserName = userName,
+                InternalComments = internalComments,
+                ExternalComments = externalComments
             };
 
             var updateOutcomeSuccess = await _applicationApiClient.RecordOutcome(updateOutcomeCommand);
 
-            if (updateOutcomeSuccess && outcome == OversightReviewStatus.Successful)
-            {
-                var registrationDetails = await _applicationApiClient.GetRegistrationDetails(applicationId);
+            if (!updateOutcomeSuccess) return false;
 
+            if (outcome == OversightReviewStatus.Successful)
+            {
                 var request = BuildCreateOrganisationRequest(updateOutcomeCommand, registrationDetails);
 
                 var updateRegisterResult = await _registerApiClient.CreateOrganisation(request);
 
                 return updateRegisterResult;
+            }
+
+            if (outcome == OversightReviewStatus.SuccessfulAlreadyActive ||
+                outcome == OversightReviewStatus.SuccessfulFitnessForFunding)
+            {
+                var updateDeterminedDateRequest = new UpdateOrganisationApplicationDeterminedDateRequest
+                {
+                    ApplicationDeterminedDate = DateTime.UtcNow.Date,
+                    LegalName = registrationDetails.LegalName,
+                    OrganisationId = registerStatus.OrganisationId.Value,
+                    UpdatedBy = userId
+                };
+
+                await _registerApiClient.UpdateApplicationDeterminedDate(updateDeterminedDateRequest);
             }
 
             return updateOutcomeSuccess;
@@ -52,7 +73,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         {
             return new CreateRoatpOrganisationRequest
             {
-                ApplicationDeterminedDate = DateTime.Now,
+                ApplicationDeterminedDate = DateTime.UtcNow.Date,
                 CharityNumber = registrationDetails.CharityNumber,
                 CompanyNumber = registrationDetails.CompanyNumber,
                 FinancialTrackRecord = true,
@@ -67,6 +88,26 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 Ukprn = registrationDetails.UKPRN,
                 Username = updateOutcomeCommand.UserName
             };
+        }
+
+        private void ValidateStatusAgainstExistingStatus(string outcome, OrganisationRegisterStatus registerStatus, string ukprn)
+        {
+            if (outcome == OversightReviewStatus.Successful)
+            {
+                if (registerStatus.UkprnOnRegister)
+                {
+                    throw new InvalidOperationException($"Unable to register successful provider {ukprn} - already on register");
+                }
+            }
+
+            if (outcome == OversightReviewStatus.SuccessfulAlreadyActive || outcome == OversightReviewStatus.SuccessfulFitnessForFunding)
+            {
+                if (!registerStatus.UkprnOnRegister)
+                {
+                    throw new InvalidOperationException(
+                        $"Unable to update determined date for provider {ukprn} - provider not on register");
+                }
+            }
         }
     }
 }

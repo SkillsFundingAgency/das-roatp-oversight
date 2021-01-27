@@ -4,8 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
+using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
-using SFA.DAS.RoatpOversight.Web.ViewModels;
+using SFA.DAS.RoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Services
 {
@@ -13,33 +14,38 @@ namespace SFA.DAS.RoatpOversight.Web.Services
     {
         private readonly ILogger<OversightOrchestrator> _logger;
         private readonly IApplyApiClient _applyApiClient;
+        private readonly ICacheStorageService _cacheStorageService;
 
-        public OversightOrchestrator(IApplyApiClient applyApiClient, ILogger<OversightOrchestrator> logger)
+        public OversightOrchestrator(IApplyApiClient applyApiClient, ILogger<OversightOrchestrator> logger, ICacheStorageService cacheStorageService)
         {
             _applyApiClient = applyApiClient;
             _logger = logger;
+            _cacheStorageService = cacheStorageService;
         }
 
-        public async Task<OverallOutcomeViewModel> GetOversightOverviewViewModel()
+        public async Task<ApplicationsViewModel> GetApplicationsViewModel()
         {
-           var viewModel = new OverallOutcomeViewModel();
+           var viewModel = new ApplicationsViewModel();
            var pendingApplications = await _applyApiClient.GetOversightsPending();
            var completedApplications = await _applyApiClient.GetOversightsCompleted();
 
-           viewModel.ApplicationDetails = pendingApplications==null ? new List<ApplicationDetails>() : pendingApplications.ToList();
+           viewModel.ApplicationDetails = pendingApplications;
 
-           viewModel.ApplicationCount = viewModel.ApplicationDetails.Count;
+           viewModel.ApplicationCount = pendingApplications.Reviews.Count;
 
-           viewModel.OverallOutcomeDetails = completedApplications == null ? new List<OverallOutcomeDetails>() : completedApplications.ToList();
+           viewModel.OverallOutcomeDetails = completedApplications;
 
-           viewModel.OverallOutcomeCount = viewModel.OverallOutcomeDetails.Count;
+           viewModel.OverallOutcomeCount = completedApplications.Reviews.Count;
 
            return viewModel;
         }
 
-        public async Task<OutcomeViewModel> GetOversightDetailsViewModel(Guid applicationId)
+        public async Task<OutcomeViewModel> GetOversightDetailsViewModel(Guid applicationId, Guid? outcomeKey)
         {
             var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
+            var cachedItem = await _cacheStorageService.RetrieveFromCache<OutcomePostRequest>(outcomeKey.ToString());
+
+            VerifyApplicationHasNoOutcome(applicationDetails.OversightStatus);
 
             var viewModel = new OutcomeViewModel
             {
@@ -68,7 +74,117 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ModerationComments = applicationDetails.ModerationComments
             };
 
+            if (cachedItem != null)
+            {
+                viewModel.OversightStatus = cachedItem.OversightStatus;
+                viewModel.ApproveGateway = cachedItem.ApproveGateway;
+                viewModel.ApproveModeration = cachedItem.ApproveModeration;
+                viewModel.SuccessfulText = cachedItem.SuccessfulText;
+                viewModel.SuccessfulAlreadyActiveText = cachedItem.SuccessfulAlreadyActiveText;
+                viewModel.SuccessfulFitnessForFundingText = cachedItem.SuccessfulFitnessForFundingText;
+                viewModel.UnsuccessfulText = cachedItem.UnsuccessfulText;
+                viewModel.InProgressInternalText = cachedItem.InProgressInternalText;
+                viewModel.InProgressExternalText = cachedItem.InProgressExternalText;
+            }
+
             return viewModel;
+        }
+
+        public async Task<ConfirmOutcomeViewModel> GetConfirmOutcomeViewModel(Guid applicationId, Guid confirmCacheKey)
+        {
+            var cachedItem = await _cacheStorageService.RetrieveFromCache<OutcomePostRequest>(confirmCacheKey.ToString());
+
+            if (cachedItem == null || cachedItem.ApplicationId != applicationId)
+            {
+                throw new ConfirmOutcomeCacheKeyNotFoundException();
+            }
+
+            var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
+
+            VerifyApplicationHasNoOutcome(applicationDetails.OversightStatus);
+
+            var viewModel = new ConfirmOutcomeViewModel
+            {
+                ApplicationId = applicationId,
+                OutcomeKey = confirmCacheKey,
+                ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
+                ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
+                OrganisationName = applicationDetails.OrganisationName,
+                Ukprn = applicationDetails.Ukprn,
+                ProviderRoute = applicationDetails.ProviderRoute,
+                ApplicationStatus = applicationDetails.ApplicationStatus,
+                ApplicationEmailAddress = applicationDetails.ApplicationEmailAddress,
+                AssessorReviewStatus = applicationDetails.AssessorReviewStatus,
+                GatewayReviewStatus = applicationDetails.GatewayReviewStatus,
+                GatewayOutcomeMadeDate = applicationDetails.GatewayOutcomeMadeDate,
+                GatewayOutcomeMadeBy = applicationDetails.GatewayOutcomeMadeBy,
+                GatewayComments = applicationDetails.GatewayComments,
+                FinancialReviewStatus = applicationDetails.FinancialReviewStatus,
+                FinancialGradeAwarded = applicationDetails.FinancialGradeAwarded,
+                FinancialHealthAssessedOn = applicationDetails.FinancialHealthAssessedOn,
+                FinancialHealthAssessedBy = applicationDetails.FinancialHealthAssessedBy,
+                FinancialHealthComments = applicationDetails.FinancialHealthComments,
+                ModerationReviewStatus = applicationDetails.ModerationReviewStatus,
+                ModerationOutcomeMadeOn = applicationDetails.ModerationOutcomeMadeOn,
+                ModeratedBy = applicationDetails.ModeratedBy,
+                ModerationComments = applicationDetails.ModerationComments,
+
+                ApproveGateway = cachedItem.ApproveGateway,
+                ApproveModeration = cachedItem.ApproveModeration,
+                OversightStatus = cachedItem.OversightStatus
+            };
+
+            switch (cachedItem.OversightStatus)
+            {
+                case OversightReviewStatus.Successful:
+                    viewModel.InternalComments = cachedItem.SuccessfulText;
+                    break;
+                case OversightReviewStatus.SuccessfulAlreadyActive:
+                    viewModel.InternalComments = cachedItem.SuccessfulAlreadyActiveText;
+                    break;
+                case OversightReviewStatus.SuccessfulFitnessForFunding:
+                    viewModel.InternalComments = cachedItem.SuccessfulFitnessForFundingText;
+                    break;
+                case OversightReviewStatus.InProgress:
+                    viewModel.InternalComments = cachedItem.InProgressInternalText;
+                    viewModel.ExternalComments = cachedItem.InProgressExternalText;
+                    break;
+                case OversightReviewStatus.Unsuccessful:
+                    viewModel.InternalComments = cachedItem.UnsuccessfulText;
+                    break;
+            }
+
+            return viewModel;
+        }
+
+        public async Task<Guid> SaveOutcomePostRequestToCache(OutcomePostRequest request)
+        { 
+            var key = Guid.NewGuid();
+            await _cacheStorageService.SaveToCache(key.ToString(), request, 1);
+            return key;
+        }
+
+        public async Task<ConfirmedViewModel> GetConfirmedViewModel(Guid applicationId)
+        {
+            var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
+
+            return new ConfirmedViewModel
+            {
+                ApplicationId = applicationId,
+                OversightStatus = applicationDetails.OversightStatus
+            };
+        }
+
+        private void VerifyApplicationHasNoOutcome(string oversightStatus)
+        {
+            if (oversightStatus == OversightReviewStatus.Successful
+                || oversightStatus == OversightReviewStatus.SuccessfulAlreadyActive
+                || oversightStatus == OversightReviewStatus.SuccessfulFitnessForFunding
+                || oversightStatus == OversightReviewStatus.Unsuccessful
+            )
+            {
+                throw new InvalidStateException();
+            }
         }
     }
 }

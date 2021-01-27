@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
-using SFA.DAS.RoatpOversight.Web.ViewModels;
+using SFA.DAS.RoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Services
 {
     public interface IOversightOrchestrator
     {
-        Task<OverallOutcomeViewModel> GetOversightOverviewViewModel();
-        Task<OutcomeViewModel> GetOversightDetailsViewModel(Guid applicationId);
+        Task<ApplicationsViewModel> GetApplicationsViewModel();
+        Task<OutcomeViewModel> GetOversightDetailsViewModel(Guid applicationId, Guid? outcomeKey);
+
+        Task<ConfirmOutcomeViewModel> GetConfirmOutcomeViewModel(Guid applicationId, Guid confirmCacheKey);
+        Task<Guid> SaveOutcomePostRequestToCache(OutcomePostRequest request);
+        Task<ConfirmedViewModel> GetConfirmedViewModel(Guid applicationId);
     }
 }
 

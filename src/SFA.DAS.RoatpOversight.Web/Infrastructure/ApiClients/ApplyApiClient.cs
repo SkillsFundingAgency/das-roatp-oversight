@@ -18,14 +18,19 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenService.GetToken(_httpClient.BaseAddress));
         }
 
-        public async Task<IEnumerable<ApplicationDetails>> GetOversightsPending()
+        public async Task Ping()
         {
-            return await Get<List<ApplicationDetails>>($"/Oversights/Pending");
+            await Get($"/ping");
         }
 
-        public async Task<IEnumerable<OverallOutcomeDetails>> GetOversightsCompleted()
+        public async Task<PendingOversightReviews> GetOversightsPending()
         {
-            return await Get<List<OverallOutcomeDetails>>($"/Oversights/Completed");
+            return await Get<PendingOversightReviews>($"/Oversights/Pending");
+        }
+
+        public async Task<CompletedOversightReviews> GetOversightsCompleted()
+        {
+            return await Get<CompletedOversightReviews>($"/Oversights/Completed");
         }
 
         public async Task<ApplicationDetails> GetOversightDetails(Guid applicationId)

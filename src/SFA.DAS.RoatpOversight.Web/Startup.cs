@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net;
 using System.Net.Http;
-using System.Security.Claims;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Builder;
@@ -14,16 +14,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Logging;
 using Polly;
 using Polly.Extensions.Http;
 using SFA.DAS.AdminService.Common;
 using SFA.DAS.AdminService.Common.Extensions;
 using SFA.DAS.RoatpOversight.Web.Domain;
+using SFA.DAS.RoatpOversight.Web.HealthChecks;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService;
 using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Settings;
+using SFA.DAS.RoatpOversight.Web.Validators;
+using SFA.DAS.Validation.Mvc.Filters;
 
 namespace SFA.DAS.RoatpOversight.Web
 {
@@ -59,6 +61,13 @@ namespace SFA.DAS.RoatpOversight.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.Configure<CookieTempDataProviderOptions>(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
+
             AddAuthentication(services);
 
             services.Configure<RequestLocalizationOptions>(options =>
@@ -69,31 +78,36 @@ namespace SFA.DAS.RoatpOversight.Web
             });
 
             services.AddMvc(options =>
-                {
-                    //options.Filters.Add<CheckSessionFilter>();
-                    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                })
-                // NOTE: Can we move this to 2.2 to match the version of .NET Core we're coding against?
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(options =>
-                {
-                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                });
+            {
+                options.Filters.Add<ValidateModelStateFilter>(int.MaxValue);
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            })
+            // NOTE: Can we move this to 2.2 to match the version of .NET Core we're coding against?
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            })
+            .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<OutcomePostRequestValidator>());
 
             services.AddSession(opt => { opt.IdleTimeout = TimeSpan.FromHours(1); });
 
-            if (!_env.IsDevelopment())
+            if (_env.IsDevelopment())
             {
+                services.AddDistributedMemoryCache();
+            }
+            else
+            { 
                 services.AddDistributedRedisCache(options =>
                 {
                     options.Configuration = ApplicationConfiguration.SessionRedisConnectionString;
                 });
             }
+            services.AddTransient<ICacheStorageService, CacheStorageService>();
 
             AddAntiforgery(services);
 
-            services.AddHealthChecks();
-
             services.AddApplicationInsightsTelemetry();
+            services.AddDasHealthChecks(ApplicationConfiguration, _env.IsDevelopment());
 
             ConfigureHttpClients(services);
             ConfigureDependencyInjection(services);
@@ -191,7 +205,7 @@ namespace SFA.DAS.RoatpOversight.Web
             app.UseRequestLocalization();
             app.UseStatusCodePagesWithReExecute("/ErrorPage/{0}");
             app.UseSecurityHeaders();
-            app.UseHealthChecks("/health");
+            app.UseDasHealthChecks();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

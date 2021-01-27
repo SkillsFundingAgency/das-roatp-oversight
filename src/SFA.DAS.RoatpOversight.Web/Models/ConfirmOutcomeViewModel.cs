@@ -48,5 +48,28 @@ namespace SFA.DAS.RoatpOversight.Web.Models
                 return $"Are you sure you want to mark this application as {statusLabel}?";
             }
         }
+
+        public string OversightStatusLabel
+        {
+            get
+            {
+                switch(OversightStatus)
+                {
+                    case OversightReviewStatus.Successful:
+                        return "Successful";
+                    case OversightReviewStatus.SuccessfulAlreadyActive:
+                        return "Successful - already active";
+                    case OversightReviewStatus.SuccessfulFitnessForFunding:
+                        return "Successful - fitness for funding";
+                    case OversightReviewStatus.InProgress:
+                        return "'in progress'";
+                    case OversightReviewStatus.Unsuccessful:
+                        return "unsuccessful";
+                        break;
+                    default:
+                        return string.Empty;
+                }
+            }
+        }
     }
 }

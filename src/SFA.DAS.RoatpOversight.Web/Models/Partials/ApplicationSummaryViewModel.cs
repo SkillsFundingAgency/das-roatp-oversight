@@ -15,5 +15,6 @@ namespace SFA.DAS.RoatpOversight.Web.Models.Partials
         public string ApplicationEmailAddress { get; set; }
         public string AssessorReviewStatus { get; set; }
         public string AssessmentOutcome { get; set; }
+        public bool ShowAssessmentOutcome { get; set; }
     }
 }

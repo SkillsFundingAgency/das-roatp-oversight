@@ -12,9 +12,7 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
     {
         public IValidationContext BeforeMvcValidation(ControllerContext controllerContext, IValidationContext commonContext)
         {
-            var target = commonContext.InstanceToValidate as OutcomePostRequest;
-
-            if(target == null)
+            if(!(commonContext.InstanceToValidate is OutcomePostRequest target))
             {
                 throw new InvalidOperationException(
                     $"OutcomeValidatorInterceptor cannot be used with type {commonContext.InstanceToValidate.GetType().Name}");

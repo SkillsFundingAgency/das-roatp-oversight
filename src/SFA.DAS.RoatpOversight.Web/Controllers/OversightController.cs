@@ -49,6 +49,11 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         [HttpPost("Oversight/Outcome/{applicationId}")]
         public async Task<IActionResult> Outcome([CustomizeValidator(Interceptor = typeof(OutcomeValidatorInterceptor))]OutcomePostRequest request)
         {
+            if (request.IsGatewayFail)
+            {
+                return RedirectToAction("Confirmed", new {request.ApplicationId});
+            }
+
             var cacheKey = await _oversightOrchestrator.SaveOutcomePostRequestToCache(request);
             return RedirectToAction("ConfirmOutcome", new {applicationId = request.ApplicationId, OutcomeKey = cacheKey});
         }

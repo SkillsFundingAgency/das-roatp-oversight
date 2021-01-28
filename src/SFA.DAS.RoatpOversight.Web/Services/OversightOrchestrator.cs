@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
@@ -12,13 +10,14 @@ using SFA.DAS.RoatpOversight.Web.Models.Partials;
 
 namespace SFA.DAS.RoatpOversight.Web.Services
 {
-    public class OversightOrchestrator:IOversightOrchestrator
+    public class OversightOrchestrator : IOversightOrchestrator
     {
         private readonly ILogger<OversightOrchestrator> _logger;
         private readonly IApplyApiClient _applyApiClient;
         private readonly ICacheStorageService _cacheStorageService;
 
-        public OversightOrchestrator(IApplyApiClient applyApiClient, ILogger<OversightOrchestrator> logger, ICacheStorageService cacheStorageService)
+        public OversightOrchestrator(IApplyApiClient applyApiClient, ILogger<OversightOrchestrator> logger,
+            ICacheStorageService cacheStorageService)
         {
             _applyApiClient = applyApiClient;
             _logger = logger;
@@ -27,19 +26,19 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
         public async Task<ApplicationsViewModel> GetApplicationsViewModel()
         {
-           var viewModel = new ApplicationsViewModel();
-           var pendingApplications = await _applyApiClient.GetOversightsPending();
-           var completedApplications = await _applyApiClient.GetOversightsCompleted();
+            var viewModel = new ApplicationsViewModel();
+            var pendingApplications = await _applyApiClient.GetOversightsPending();
+            var completedApplications = await _applyApiClient.GetOversightsCompleted();
 
-           viewModel.ApplicationDetails = pendingApplications;
+            viewModel.ApplicationDetails = pendingApplications;
 
-           viewModel.ApplicationCount = pendingApplications.Reviews.Count;
+            viewModel.ApplicationCount = pendingApplications.Reviews.Count;
 
-           viewModel.OverallOutcomeDetails = completedApplications;
+            viewModel.OverallOutcomeDetails = completedApplications;
 
-           viewModel.OverallOutcomeCount = completedApplications.Reviews.Count;
+            viewModel.OverallOutcomeCount = completedApplications.Reviews.Count;
 
-           return viewModel;
+            return viewModel;
         }
 
         public async Task<OutcomeViewModel> GetOversightDetailsViewModel(Guid applicationId, Guid? outcomeKey)
@@ -53,7 +52,9 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 GatewayOutcome = CreateGatewayOutcomeViewModel(applicationDetails),
                 FinancialHealthOutcome = CreateFinancialHealthOutcomeViewModel(applicationDetails),
                 ModerationOutcome = CreateModerationOutcomeViewModel(applicationDetails),
-                OversightStatus = applicationDetails.OversightStatus
+                OverallOutcome = CreateOverallOutcomeViewModel(applicationDetails),
+                IsReadOnly = applicationDetails.OversightStatus != OversightReviewStatus.None &&
+                             applicationDetails.OversightStatus != OversightReviewStatus.InProgress
             };
 
             if (cachedItem != null)
@@ -75,7 +76,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
         public async Task<ConfirmOutcomeViewModel> GetConfirmOutcomeViewModel(Guid applicationId, Guid confirmCacheKey)
         {
-            var cachedItem = await _cacheStorageService.RetrieveFromCache<OutcomePostRequest>(confirmCacheKey.ToString());
+            var cachedItem =
+                await _cacheStorageService.RetrieveFromCache<OutcomePostRequest>(confirmCacheKey.ToString());
 
             if (cachedItem == null || cachedItem.ApplicationId != applicationId)
             {
@@ -127,7 +129,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         }
 
         public async Task<Guid> SaveOutcomePostRequestToCache(OutcomePostRequest request)
-        { 
+        {
             var key = Guid.NewGuid();
             await _cacheStorageService.SaveToCache(key.ToString(), request, 1);
             return key;
@@ -146,7 +148,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
         private void VerifyApplicationHasNoFinalOutcome(OversightReviewStatus oversightStatus)
         {
-            if(oversightStatus != OversightReviewStatus.None && oversightStatus != OversightReviewStatus.InProgress)
+            if (oversightStatus != OversightReviewStatus.None && oversightStatus != OversightReviewStatus.InProgress)
             {
                 throw new InvalidStateException();
             }
@@ -155,7 +157,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         private ApplicationSummaryViewModel CreateApplicationSummaryViewModel(ApplicationDetails applicationDetails)
         {
             var result = new ApplicationSummaryViewModel
-            { 
+            {
                 ApplicationId = applicationDetails.ApplicationId,
                 ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
                 ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
@@ -208,7 +210,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
         }
 
-        private FinancialHealthOutcomeViewModel CreateFinancialHealthOutcomeViewModel(ApplicationDetails applicationDetails)
+        private FinancialHealthOutcomeViewModel CreateFinancialHealthOutcomeViewModel(
+            ApplicationDetails applicationDetails)
         {
             return new FinancialHealthOutcomeViewModel
             {
@@ -229,6 +232,16 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ModerationOutcomeMadeOn = applicationDetails.ModerationOutcomeMadeOn,
                 ModeratedBy = applicationDetails.ModeratedBy,
                 ModerationComments = applicationDetails.ModerationComments
+            };
+        }
+
+        private OverallOutcomeViewModel CreateOverallOutcomeViewModel(ApplicationDetails applicationDetails)
+        {
+            return new OverallOutcomeViewModel
+            {
+                OversightStatus = applicationDetails.OversightStatus,
+                ApplicationDeterminedDate = applicationDetails.ApplicationDeterminedDate,
+                OversightUserName = applicationDetails.OversightUserName
             };
         }
     }

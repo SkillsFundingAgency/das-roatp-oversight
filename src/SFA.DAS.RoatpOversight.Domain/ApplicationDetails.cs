@@ -10,8 +10,10 @@ namespace SFA.DAS.RoatpOversight.Domain
         public string ProviderRoute { get; set; }
         public string ApplicationReferenceNumber { get; set; }
         public DateTime ApplicationSubmittedDate { get; set; }
-        public OversightReviewStatus OversightStatus { get; set; }
         public string ApplicationStatus { get; set; }
+        public OversightReviewStatus OversightStatus { get; set; }
+        public DateTime? ApplicationDeterminedDate { get; set; }
+        public string OversightUserName { get; set; }
 
         public string ApplicationEmailAddress { get; set; }
         public string AssessorReviewStatus { get; set; }

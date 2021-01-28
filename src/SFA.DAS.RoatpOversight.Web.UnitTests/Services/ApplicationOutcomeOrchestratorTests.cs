@@ -57,6 +57,11 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 
             _applicationApiClient.Setup(x => x.RecordOutcome(It.Is<RecordOversightOutcomeCommand>(y => y.ApplicationId == _applicationId))).ReturnsAsync(true);
 
+            _applicationApiClient
+                .Setup(x => x.RecordGatewayFailOutcome(
+                    It.Is<RecordOversightGatewayFailOutcomeCommand>(y => y.ApplicationId == _applicationId)))
+                .Returns(Task.CompletedTask);
+
             _roatpRegisterApiClient.Setup(x => x.CreateOrganisation(It.Is<CreateRoatpOrganisationRequest>(y => y.Ukprn == _registrationDetails.UKPRN))).ReturnsAsync(() => true);
 
             _roatpRegisterApiClient.Setup(x =>
@@ -117,6 +122,14 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
             _registerStatus.UkprnOnRegister = false;
             Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _orchestrator.RecordOutcome(_applicationId, false, false, status, UserId, UserName, InternalComments, ExternalComments));
+        }
+
+        [Test]
+        public async Task RecordGatewayFail_Records_Gateway_Fail_Outcome()
+        {
+            await _orchestrator.RecordGatewayFailOutcome(_applicationId, UserId, UserName);
+
+            _applicationApiClient.Verify(x => x.RecordGatewayFailOutcome(It.Is<RecordOversightGatewayFailOutcomeCommand>(c=> c.ApplicationId == _applicationId && c.UserId == UserId && c.UserName == UserName)));
         }
     }
 }

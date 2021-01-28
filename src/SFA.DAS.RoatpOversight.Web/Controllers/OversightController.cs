@@ -51,6 +51,10 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         {
             if (request.IsGatewayFail)
             {
+                var userId = HttpContext.User.UserId();
+                var userName = HttpContext.User.UserDisplayName();
+
+                await _outcomeOrchestrator.RecordGatewayFailOutcome(request.ApplicationId, userId, userName);
                 return RedirectToAction("Confirmed", new {request.ApplicationId});
             }
 

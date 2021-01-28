@@ -72,6 +72,20 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             return updateOutcomeSuccess;
         }
 
+        public async Task RecordGatewayFailOutcome(Guid applicationId, string userId, string userName)
+        {
+            _logger.LogInformation($"Recording an oversight gateway fail outcome for application {applicationId}");
+
+            var command = new RecordOversightGatewayFailOutcomeCommand
+            {
+                ApplicationId = applicationId,
+                UserId =  userId,
+                UserName = userName
+            };
+
+            await _applicationApiClient.RecordGatewayFailOutcome(command);
+        }
+
         private static CreateRoatpOrganisationRequest BuildCreateOrganisationRequest(RecordOversightOutcomeCommand updateOutcomeCommand, RoatpRegistrationDetails registrationDetails)
         {
             return new CreateRoatpOrganisationRequest

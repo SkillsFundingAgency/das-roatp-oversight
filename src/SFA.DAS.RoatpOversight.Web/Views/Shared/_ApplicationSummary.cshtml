@@ -51,18 +51,21 @@
             @Model.ApplicationSubmittedDate.ToSfaShortDateString()
         </dd>
     </div>
-    <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-            Assessment outcome
-        </dt>
-        <dd class="govuk-summary-list__value">
-            @{
-                var assessmentOutcomeTagClass = @Model.AssessmentOutcome == AssessmentOutcomeStatus.Passed ? "das-tag--solid-green" : "das-tag--solid-red";
-            }
+    @if (Model.ShowAssessmentOutcome)
+    {
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Assessment outcome
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @{
+                    var assessmentOutcomeTagClass = @Model.AssessmentOutcome == AssessmentOutcomeStatus.Passed ? "das-tag--solid-green" : "das-tag--solid-red";
+                }
 
-            <strong class="das-tag @assessmentOutcomeTagClass">
-                @Model.AssessmentOutcome
-            </strong>
-        </dd>
-    </div>
+                <strong class="das-tag @assessmentOutcomeTagClass">
+                    @Model.AssessmentOutcome
+                </strong>
+            </dd>
+        </div>
+    }
 </dl>

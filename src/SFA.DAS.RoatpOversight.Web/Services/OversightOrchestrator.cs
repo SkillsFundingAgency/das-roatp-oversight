@@ -191,6 +191,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 result.AssessmentOutcome = AssessmentOutcomeStatus.Failed;
             }
 
+            result.ShowAssessmentOutcome = applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Pass;
+
             return result;
         }
 

@@ -1,6 +1,6 @@
 ﻿@using SFA.DAS.RoatpOversight.Domain
 @using SFA.DAS.AdminService.Common.Extensions;
-@model SFA.DAS.RoatpOversight.Web.ViewModels.OverallOutcomeViewModel
+@model SFA.DAS.RoatpOversight.Web.Models.ApplicationsViewModel
 
 @{
     ViewData["Title"] = "RoATP application outcomes";
@@ -60,7 +60,7 @@
                                 </tr>
                             </thead>
                             <tbody class="govuk-table__body">
-                                @foreach (var application in Model.ApplicationDetails)
+                                @foreach (var application in Model.ApplicationDetails.Reviews)
                                 {
                                     <tr class="govuk-table__row">
                                         <td data-label="Organisation name" class="govuk-table__cell">
@@ -112,7 +112,7 @@
                                 </tr>
                             </thead>
                             <tbody class="govuk-table__body">
-                                @foreach (var outcome in Model.OverallOutcomeDetails)
+                                @foreach (var outcome in Model.OverallOutcomeDetails.Reviews)
                                 {
 
                                     <tr class="govuk-table__row">
@@ -124,18 +124,18 @@
                                         <td data-label="Application determined date" class="govuk-table__cell">@outcome.ApplicationDeterminedDate.ToSfaShortDateString()</td>
                                         @{
                                             var tagCssClass = "";
-                                            if (String.Equals(@outcome.OversightStatus, OversightReviewStatus.Successful, StringComparison.InvariantCultureIgnoreCase))
+                                            if (String.Equals(@outcome.Status, OversightReviewStatus.Successful, StringComparison.InvariantCultureIgnoreCase))
                                             {
-                                                tagCssClass = "govuk-tag--solid-green";
+                                                tagCssClass = "das-tag--solid-green";
                                             }
 
-                                            if (String.Equals(@outcome.OversightStatus, OversightReviewStatus.Unsuccessful, StringComparison.InvariantCultureIgnoreCase))
+                                            if (String.Equals(@outcome.Status, OversightReviewStatus.Unsuccessful, StringComparison.InvariantCultureIgnoreCase))
                                             {
-                                                tagCssClass = "govuk-tag--solid-red";
+                                                tagCssClass = "das-tag--solid-red";
                                             }
                                         }
                                         <td data-label="Overall outcome" class="govuk-table__cell">
-                                            <span class="govuk-tag @tagCssClass">@outcome.OversightStatus</span>
+                                            <span class="govuk-tag @tagCssClass">@outcome.Status</span>
                                         </td>
                                     </tr>
                                 }

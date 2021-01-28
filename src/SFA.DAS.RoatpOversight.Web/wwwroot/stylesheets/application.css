@@ -292,14 +292,49 @@
   font-size: 15px;
 }
 
-.govuk-tag--solid-green {
+/* Tags */
+
+.das-tag--solid-green {
+  color: #fff;
   background-color: #00703c;
 }
 
-.govuk-tag--solid-red {
+.das-tag--solid-red {
+  color: #fff;
   background-color: #d4351c;
 }
 
+.das-tag--solid-purple {
+  color: #fff;
+  background-color: #4c2c92;
+}
+
+.das-tag--solid-brown {
+  color: #fff;
+  background-color: #967035;
+}
+
+.das-tag--solid-yellow {
+  color: #0b0c0c;
+  background-color: #fd0;
+}
+
+.das-tag--solid-orange {
+  color: #0b0c0c;
+  background-color: #f47738;
+}
+
+/* Preformatted text */
+
+.das-preformatted-body {
+  white-space: pre-wrap;
+}
+
+.das-\!-color-dark-grey {
+  color: #505a5f !important;
+}
+
+/* User panel */
 
 .das-user-panel {
   margin-top: -10px;

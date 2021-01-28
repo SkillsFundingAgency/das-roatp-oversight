@@ -1,16 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.RoatpOversight.Domain
 {
-    public class OverallOutcomeDetails
+    public class PendingOversightReviews
     {
+        public List<PendingOversightReview> Reviews { get; set; }
+    }
+
+    public class PendingOversightReview
+    {
+        public Guid ApplicationId { get; set; }
         public string OrganisationName { get; set; }
+
         public string Ukprn { get; set; }
         public string ProviderRoute { get; set; }
         public string ApplicationReferenceNumber { get; set; }
         public DateTime ApplicationSubmittedDate { get; set; }
-        public DateTime? ApplicationDeterminedDate { get; set; }
-        public string OversightStatus { get; set; }
-        public string ApplicationStatus { get; set; }
     }
 }

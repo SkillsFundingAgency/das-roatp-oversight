@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.RoatpOversight.Web.ViewModels
+﻿namespace SFA.DAS.RoatpOversight.Web.Models
 {
     public class ErrorViewModel
     {

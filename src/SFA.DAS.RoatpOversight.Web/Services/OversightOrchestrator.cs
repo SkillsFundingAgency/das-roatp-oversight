@@ -47,8 +47,6 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
             var cachedItem = await _cacheStorageService.RetrieveFromCache<OutcomePostRequest>(outcomeKey.ToString());
 
-            VerifyApplicationHasNoOutcome(applicationDetails.OversightStatus);
-
             var viewModel = new OutcomeViewModel
             {
                 ApplicationSummary = CreateApplicationSummaryViewModel(applicationDetails),
@@ -86,7 +84,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
 
-            VerifyApplicationHasNoOutcome(applicationDetails.OversightStatus);
+            VerifyApplicationHasNoFinalOutcome(applicationDetails.OversightStatus);
 
             var viewModel = new ConfirmOutcomeViewModel
             {
@@ -146,13 +144,9 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
         }
 
-        private void VerifyApplicationHasNoOutcome(OversightReviewStatus oversightStatus)
+        private void VerifyApplicationHasNoFinalOutcome(OversightReviewStatus oversightStatus)
         {
-            if (oversightStatus == OversightReviewStatus.Successful
-                || oversightStatus == OversightReviewStatus.SuccessfulAlreadyActive
-                || oversightStatus == OversightReviewStatus.SuccessfulFitnessForFunding
-                || oversightStatus == OversightReviewStatus.Unsuccessful
-            )
+            if(oversightStatus != OversightReviewStatus.None && oversightStatus != OversightReviewStatus.InProgress)
             {
                 throw new InvalidStateException();
             }

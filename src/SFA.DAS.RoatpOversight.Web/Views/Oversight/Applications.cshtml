@@ -103,7 +103,11 @@
                                 {
 
                                     <tr class="govuk-table__row">
-                                        <td data-label="Organisation name" class="govuk-table__cell">@outcome.OrganisationName</td>
+                                        <td data-label="Organisation name" class="govuk-table__cell">
+                                            <a class="govuk-link govuk-!-margin-bottom-0" asp-action="Outcome" asp-route-id="@outcome.ApplicationId">
+                                                @outcome.OrganisationName
+                                            </a>
+                                        </td>
                                         <td data-label="UKPRN" class="govuk-table__cell">@outcome.Ukprn</td>
                                         <td data-label="Provider route" class="govuk-table__cell">@outcome.ProviderRoute</td>
                                         <td data-label="Application reference number" class="govuk-table__cell">@outcome.ApplicationReferenceNumber</td>

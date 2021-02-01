@@ -1,5 +1,5 @@
-﻿@using SFA.DAS.RoatpOversight.Domain
-@using SFA.DAS.AdminService.Common.Extensions;
+﻿@using SFA.DAS.AdminService.Common.Extensions;
+@using SFA.DAS.RoatpOversight.Web.Exceptions
 @model SFA.DAS.RoatpOversight.Web.Models.ApplicationsViewModel
 
 @{
@@ -113,20 +113,8 @@
                                         <td data-label="Application reference number" class="govuk-table__cell">@outcome.ApplicationReferenceNumber</td>
                                         <td data-label="Application submitted date" class="govuk-table__cell">@outcome.ApplicationSubmittedDate.ToSfaShortDateString()</td>
                                         <td data-label="Application determined date" class="govuk-table__cell">@outcome.ApplicationDeterminedDate.ToSfaShortDateString()</td>
-                                        @{
-                                            var tagCssClass = "";
-                                            if (@outcome.Status == OversightReviewStatus.Successful)
-                                            {
-                                                tagCssClass = "das-tag--solid-green";
-                                            }
-
-                                            if (@outcome.Status == OversightReviewStatus.Unsuccessful)
-                                            {
-                                                tagCssClass = "das-tag--solid-red";
-                                            }
-                                        }
                                         <td data-label="Overall outcome" class="govuk-table__cell">
-                                            <span class="govuk-tag @tagCssClass">@outcome.Status</span>
+                                            <span class="govuk-tag @outcome.OversightStatus.GetCssClass()">@outcome.OversightStatus.GetLabel()</span>
                                         </td>
                                     </tr>
                                 }

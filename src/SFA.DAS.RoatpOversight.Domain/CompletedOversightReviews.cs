@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SFA.DAS.RoatpOversight.Domain
 {
@@ -21,10 +20,5 @@ namespace SFA.DAS.RoatpOversight.Domain
         public OversightReviewStatus OversightStatus { get; set; }
         public string ApplicationStatus { get; set; }
         public DateTime? ApplicationDeterminedDate { get; set; }
-
-        public OversightReviewStatus Status =>
-            OversightReviewStatuses.SuccessfulStatuses.Contains(OversightStatus)
-                ? OversightReviewStatus.Successful
-                : OversightStatus;
     }
 }

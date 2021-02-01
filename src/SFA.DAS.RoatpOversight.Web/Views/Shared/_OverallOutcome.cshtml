@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.AdminService.Common.Extensions
+@using SFA.DAS.RoatpOversight.Web.Exceptions
 @model SFA.DAS.RoatpOversight.Web.Models.Partials.OverallOutcomeViewModel
 
 <div class="govuk-form-group">
@@ -13,9 +14,7 @@
                     Outcome
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <strong class="das-tag das-tag--solid-red">
-                        @Model.OversightStatus
-                    </strong>
+                    <span class="govuk-tag @Model.OversightStatus.GetCssClass()">@Model.OversightStatus.GetLabel()</span>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">

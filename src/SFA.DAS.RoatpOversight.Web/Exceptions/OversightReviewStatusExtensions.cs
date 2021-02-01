@@ -38,7 +38,7 @@ namespace SFA.DAS.RoatpOversight.Web.Exceptions
                 case OversightReviewStatus.InProgress:
                     return "das-tag--solid-blue";
                 case OversightReviewStatus.Rejected:
-                    return "das-tag--solid-red";
+                    return "das-tag--solid-brown";
                 case OversightReviewStatus.Removed:
                     return "das-tag--solid-grey";
                 case OversightReviewStatus.Unsuccessful:

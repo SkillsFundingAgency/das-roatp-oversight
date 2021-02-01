@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.RoatpOversight.Domain;
 
-namespace SFA.DAS.RoatpOversight.Web.Exceptions
+namespace SFA.DAS.RoatpOversight.Web.Extensions
 {
     public static class OversightReviewStatusExtensions
     {

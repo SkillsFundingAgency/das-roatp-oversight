@@ -34,15 +34,15 @@ namespace SFA.DAS.RoatpOversight.Web.Exceptions
                 case OversightReviewStatus.Successful:
                 case OversightReviewStatus.SuccessfulAlreadyActive:
                 case OversightReviewStatus.SuccessfulFitnessForFunding:
-                    return "das-tag--solid-green";
+                    return "govuk-tag das-tag--solid-green";
                 case OversightReviewStatus.InProgress:
-                    return "das-tag--solid-blue";
+                    return "govuk-tag das-tag";
                 case OversightReviewStatus.Rejected:
-                    return "das-tag--solid-brown";
+                    return "govuk-tag das-tag--solid-brown";
                 case OversightReviewStatus.Removed:
                     return "govuk-tag govuk-tag--grey";
                 case OversightReviewStatus.Unsuccessful:
-                    return "das-tag--solid-red";
+                    return "govuk-tag das-tag--solid-red";
                 case OversightReviewStatus.Withdrawn:
                     return "govuk-tag govuk-tag--grey";
                 default:

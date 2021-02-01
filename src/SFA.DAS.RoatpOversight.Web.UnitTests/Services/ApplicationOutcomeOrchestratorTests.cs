@@ -7,9 +7,6 @@ using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Services;
 using System;
 using System.Threading.Tasks;
-using SFA.DAS.RoatpOversight.Web.Domain;
-using SFA.DAS.RoatpOversight.Web.Models;
-using SFA.DAS.RoatpOversight.Web.Models.Partials;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 {

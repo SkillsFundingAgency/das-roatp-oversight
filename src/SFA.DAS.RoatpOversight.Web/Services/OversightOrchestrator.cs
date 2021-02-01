@@ -104,6 +104,9 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 OversightStatus = cachedItem.OversightStatus
             };
 
+            var hasAnyOverturnedOutcomes = cachedItem.ApproveGateway == ApprovalStatus.Overturn ||
+                                           cachedItem.ApproveModeration == ApprovalStatus.Overturn;
+
             switch (cachedItem.OversightStatus)
             {
                 case OversightReviewStatus.Successful:
@@ -121,7 +124,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                     break;
                 case OversightReviewStatus.Unsuccessful:
                     viewModel.InternalComments = cachedItem.UnsuccessfulText;
-                    viewModel.ExternalComments = cachedItem.UnsuccessfulExternalText;
+                    viewModel.ExternalComments = hasAnyOverturnedOutcomes ? cachedItem.UnsuccessfulExternalText : string.Empty;
                     break;
             }
 

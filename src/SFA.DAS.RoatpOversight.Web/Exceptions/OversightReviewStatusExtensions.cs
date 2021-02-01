@@ -40,11 +40,11 @@ namespace SFA.DAS.RoatpOversight.Web.Exceptions
                 case OversightReviewStatus.Rejected:
                     return "das-tag--solid-brown";
                 case OversightReviewStatus.Removed:
-                    return "das-tag--solid-grey";
+                    return "govuk-tag govuk-tag--grey";
                 case OversightReviewStatus.Unsuccessful:
                     return "das-tag--solid-red";
                 case OversightReviewStatus.Withdrawn:
-                    return "das-tag--solid-grey";
+                    return "govuk-tag govuk-tag--grey";
                 default:
                     return "";
             }

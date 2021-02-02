@@ -2,10 +2,9 @@ var dasJs = dasJs || {};
 
 dasJs.enableFormControlsOnChange = {
   init: function (radioGroupsRequiredToEnable) {
+    if (!document.querySelectorAll('input[data-module="das-disabled"]').length || !radioGroupsRequiredToEnable.length) return false;
 
-    if (!document.querySelectorAll('input[data-disabled]').length) return false;
-
-    var disabledInputs = document.querySelectorAll('input[data-disabled]');
+    var disabledInputs = document.querySelectorAll('input[data-module="das-disabled"]');
     this.handleDisabledInputs(radioGroupsRequiredToEnable, disabledInputs)
   },
 

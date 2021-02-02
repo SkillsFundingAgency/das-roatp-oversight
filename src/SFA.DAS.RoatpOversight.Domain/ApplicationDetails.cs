@@ -10,7 +10,7 @@ namespace SFA.DAS.RoatpOversight.Domain
         public string ProviderRoute { get; set; }
         public string ApplicationReferenceNumber { get; set; }
         public DateTime ApplicationSubmittedDate { get; set; }
-        public string OversightStatus { get; set; }
+        public OversightReviewStatus OversightStatus { get; set; }
         public string ApplicationStatus { get; set; }
 
         public string ApplicationEmailAddress { get; set; }
@@ -27,7 +27,7 @@ namespace SFA.DAS.RoatpOversight.Domain
         public DateTime? FinancialHealthAssessedOn { get; set; }
         public string FinancialHealthAssessedBy { get; set; }
         public string FinancialHealthComments { get; set; }
-
+        public string FinancialHealthExternalComments { get; set; }
         public string ModerationReviewStatus { get; set; }
 
         public DateTime? ModerationOutcomeMadeOn { get; set; }

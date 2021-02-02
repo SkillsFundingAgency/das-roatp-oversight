@@ -106,7 +106,7 @@
                                         Application outcome
                                     </dt>
                                     <dd class="govuk-summary-list__value">
-                                        @Model.OversightStatus
+                                        @Model.OversightStatusLabel
                                     </dd>
                                 </div>
                             }
@@ -134,7 +134,7 @@
                             </div>
                         }                        
 
-                        @if (OversightReviewStatus.SuccessfulStatuses.Contains(Model.OversightStatus))
+                        @if (OversightReviewStatuses.SuccessfulStatuses.Contains(Model.OversightStatus))
                         {
                             <p class="govuk-body">
                                 We'll send the applicant:

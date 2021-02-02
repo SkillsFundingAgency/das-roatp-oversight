@@ -2,19 +2,27 @@
 
 namespace SFA.DAS.RoatpOversight.Domain
 {
-    public static class OversightReviewStatus
+    public static class OversightReviewStatuses
     {
-        public const string InProgress = "In progress";
-        public const string Successful = "Successful";
-        public const string Unsuccessful = "Unsuccessful";
-        public const string SuccessfulAlreadyActive = "Successful - already active";
-        public const string SuccessfulFitnessForFunding = "Successful - fitness for funding";
-
-        public static IReadOnlyList<string> SuccessfulStatuses { get; } = new List<string>
+        public static IReadOnlyList<OversightReviewStatus> SuccessfulStatuses { get; } = new List<OversightReviewStatus>
         {
             OversightReviewStatus.SuccessfulAlreadyActive,
             OversightReviewStatus.Successful,
             OversightReviewStatus.SuccessfulFitnessForFunding
         };
+    }
+
+    //todo: remove and obtain from shared package when available
+    public enum OversightReviewStatus
+    {
+        None = 0,
+        Successful = 1,
+        SuccessfulAlreadyActive = 2,
+        SuccessfulFitnessForFunding = 3,
+        Unsuccessful = 4,
+        InProgress = 5,
+        Rejected = 6,
+        Withdrawn = 7,
+        Removed = 8
     }
 }

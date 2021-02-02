@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Services;
@@ -79,7 +80,10 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             var userId = HttpContext.User.UserId();
             var userName = HttpContext.User.UserDisplayName();
 
-            await _outcomeOrchestrator.RecordOutcome(request.ApplicationId, request.OversightStatus, userId, userName, request.InternalComments, request.ExternalComments);
+            var approveGateway = string.IsNullOrEmpty(request.ApproveGateway) ? default(bool?) : request.ApproveGateway == ApprovalStatus.Approve;
+            var approveModeration = string.IsNullOrEmpty(request.ApproveModeration) ? default(bool?) : request.ApproveModeration == ApprovalStatus.Approve;
+
+            await _outcomeOrchestrator.RecordOutcome(request.ApplicationId,  approveGateway, approveModeration, request.OversightStatus, userId, userName, request.InternalComments, request.ExternalComments);
 
             return RedirectToAction("Confirmed", new {request.ApplicationId});
         }

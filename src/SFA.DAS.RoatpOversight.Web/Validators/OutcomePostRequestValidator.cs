@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using SFA.DAS.RoatpOversight.Domain;
+using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Validators
@@ -10,7 +11,7 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
         {
             RuleFor(x => x.ApproveGateway).NotEmpty()
                 .WithMessage("Select the gateway outcome for this application")
-                .When(x => x.OversightStatus != OversightReviewStatus.InProgress); 
+                .When(x => x.OversightStatus != OversightReviewStatus.InProgress);
             
             RuleFor(x => x.ApproveModeration).NotEmpty()
                 .WithMessage("Select the moderation outcome for this application")
@@ -27,6 +28,10 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
 
             RuleFor(x => x.UnsuccessfulText).NotEmpty().WithMessage("Enter internal comments")
                 .When(x => x.OversightStatus == OversightReviewStatus.Unsuccessful);
+
+            RuleFor(x => x.UnsuccessfulExternalText).NotEmpty().WithMessage("Enter external comments")
+                .When(x => x.OversightStatus == OversightReviewStatus.Unsuccessful)
+                .When(x => x.ApproveGateway == ApprovalStatus.Overturn || x.ApproveModeration == ApprovalStatus.Overturn);
         }
     }
 }

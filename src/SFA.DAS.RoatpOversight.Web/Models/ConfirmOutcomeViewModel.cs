@@ -14,24 +14,10 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public DateTime ApplicationSubmittedDate { get; set; }
         public string ApplicationStatus { get; set; }
         public string ApplicationEmailAddress { get; set; }
-        public string AssessorReviewStatus { get; set; }
-        public string GatewayReviewStatus { get; set; }
-        public DateTime? GatewayOutcomeMadeDate { get; set; }
-        public string GatewayOutcomeMadeBy { get; set; }
-        public string GatewayComments { get; set; }
-        public string FinancialReviewStatus { get; set; }
-        public string FinancialGradeAwarded { get; set; }
-        public DateTime? FinancialHealthAssessedOn { get; set; }
-        public string FinancialHealthAssessedBy { get; set; }
-        public string FinancialHealthComments { get; set; }
-        public string ModerationReviewStatus { get; set; }
-        public DateTime? ModerationOutcomeMadeOn { get; set; }
-        public string ModeratedBy { get; set; }
-        public string ModerationComments { get; set; }
 
         public string ApproveGateway { get; set; }
         public string ApproveModeration { get; set; }
-        public string OversightStatus { get; set; }
+        public OversightReviewStatus OversightStatus { get; set; }
         public string InternalComments { get; set; }
         public string ExternalComments { get; set; }
         
@@ -60,6 +46,29 @@ namespace SFA.DAS.RoatpOversight.Web.Models
                         break;
                 }
                 return $"Are you sure you want to mark this application as {statusLabel}?";
+            }
+        }
+
+        public string OversightStatusLabel
+        {
+            get
+            {
+                switch(OversightStatus)
+                {
+                    case OversightReviewStatus.Successful:
+                        return "Successful";
+                    case OversightReviewStatus.SuccessfulAlreadyActive:
+                        return "Successful - already active";
+                    case OversightReviewStatus.SuccessfulFitnessForFunding:
+                        return "Successful - fitness for funding";
+                    case OversightReviewStatus.InProgress:
+                        return "'in progress'";
+                    case OversightReviewStatus.Unsuccessful:
+                        return "unsuccessful";
+                        break;
+                    default:
+                        return string.Empty;
+                }
             }
         }
     }

@@ -1,0 +1,56 @@
+﻿@using SFA.DAS.AdminService.Common.Extensions
+@using SFA.DAS.RoatpOversight.Web.Domain
+@model SFA.DAS.RoatpOversight.Web.Models.Partials.ModerationOutcomeViewModel
+
+    <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Outcome
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @if (Model.ModerationReviewStatus == ModerationReviewStatus.Pass)
+                {
+                    <strong class="das-tag das-tag--solid-green">
+                        Passed
+                    </strong>
+                }
+                else
+                {
+                    <strong class="das-tag das-tag--solid-red">
+                        Failed
+                    </strong>
+                }
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Outcome made date
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @Model.ModerationOutcomeMadeOn.ToSfaShortDateString()
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Moderated by
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @Model.ModeratedBy
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Comments
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @if (string.IsNullOrEmpty(Model.ModerationComments))
+                {
+                    <text>N/A</text>
+                }
+                else
+                {
+                    @Model.ModerationComments
+                }
+            </dd>
+        </div>
+    </dl>

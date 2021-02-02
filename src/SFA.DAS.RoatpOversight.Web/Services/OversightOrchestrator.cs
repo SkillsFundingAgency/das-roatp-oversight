@@ -44,7 +44,6 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         public async Task<OutcomeViewModel> GetOversightDetailsViewModel(Guid applicationId, Guid? outcomeKey)
         {
             var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
-            var cachedItem = await _cacheStorageService.RetrieveFromCache<OutcomePostRequest>(outcomeKey.ToString());
 
             var viewModel = new OutcomeViewModel
             {
@@ -52,13 +51,21 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 GatewayOutcome = CreateGatewayOutcomeViewModel(applicationDetails),
                 FinancialHealthOutcome = CreateFinancialHealthOutcomeViewModel(applicationDetails),
                 ModerationOutcome = CreateModerationOutcomeViewModel(applicationDetails),
+                InProgressDetails = CreateInProgressDetailsViewModel(applicationDetails),
                 OverallOutcome = CreateOverallOutcomeViewModel(applicationDetails),
+                ShowInProgressDetails = applicationDetails.InProgressDate.HasValue,
+                OversightStatus = applicationDetails.OversightStatus,
+                ApproveGateway = GetStringValueForApprovalStatusBoolean(applicationDetails.GatewayApproved),
+                ApproveModeration = GetStringValueForApprovalStatusBoolean(applicationDetails.ModerationApproved),
                 IsReadOnly = applicationDetails.OversightStatus != OversightReviewStatus.None &&
                              applicationDetails.OversightStatus != OversightReviewStatus.InProgress
             };
 
-            if (cachedItem != null)
+            if (applicationDetails.OversightStatus == OversightReviewStatus.None)
             {
+                var cachedItem = await _cacheStorageService.RetrieveFromCache<OutcomePostRequest>(outcomeKey.ToString());
+                if (cachedItem == null) return viewModel;
+
                 viewModel.OversightStatus = cachedItem.OversightStatus;
                 viewModel.ApproveGateway = cachedItem.ApproveGateway;
                 viewModel.ApproveModeration = cachedItem.ApproveModeration;
@@ -72,6 +79,12 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             }
 
             return viewModel;
+        }
+
+        private string GetStringValueForApprovalStatusBoolean(bool? approvalStatusBoolean)
+        {
+            if (!approvalStatusBoolean.HasValue) return string.Empty;
+            return approvalStatusBoolean.Value ? ApprovalStatus.Approve : ApprovalStatus.Overturn;
         }
 
         public async Task<ConfirmOutcomeViewModel> GetConfirmOutcomeViewModel(Guid applicationId, Guid confirmCacheKey)
@@ -235,6 +248,19 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ModerationOutcomeMadeOn = applicationDetails.ModerationOutcomeMadeOn,
                 ModeratedBy = applicationDetails.ModeratedBy,
                 ModerationComments = applicationDetails.ModerationComments
+            };
+        }
+
+        private InProgressDetailsViewModel CreateInProgressDetailsViewModel(ApplicationDetails applicationDetails)
+        {
+            if (!applicationDetails.InProgressDate.HasValue) return null;
+
+            return new InProgressDetailsViewModel
+            {
+                ApplicationDeterminedDate = applicationDetails.InProgressDate.Value,
+                InternalComments = applicationDetails.InProgressInternalComments,
+                ExternalComments = applicationDetails.InProgressExternalComments,
+                UserName = applicationDetails.InProgressUserName
             };
         }
 

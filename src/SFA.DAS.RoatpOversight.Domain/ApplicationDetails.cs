@@ -36,5 +36,10 @@ namespace SFA.DAS.RoatpOversight.Domain
         public DateTime? ModerationOutcomeMadeOn { get; set; }
         public string ModeratedBy { get; set; }
         public string ModerationComments { get; set; }
+        public DateTime? InProgressDate { get; set; }
+        public string InProgressUserId { get; set; }
+        public string InProgressUserName { get; set; }
+        public string InProgressInternalComments { get; set; }
+        public string InProgressExternalComments { get; set; }
     }
 }

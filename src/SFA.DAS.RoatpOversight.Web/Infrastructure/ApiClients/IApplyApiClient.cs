@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.RoatpOversight.Domain;
 
@@ -13,5 +12,6 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         Task<ApplicationDetails> GetOversightDetails(Guid applicationId);
         Task<RoatpRegistrationDetails> GetRegistrationDetails(Guid applicationId);
         Task<bool> RecordOutcome(RecordOversightOutcomeCommand command);
+        Task RecordGatewayFailOutcome(RecordOversightGatewayFailOutcomeCommand command);
     }
 }

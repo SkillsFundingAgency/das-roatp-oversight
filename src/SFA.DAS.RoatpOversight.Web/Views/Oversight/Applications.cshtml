@@ -1,5 +1,5 @@
-﻿@using SFA.DAS.RoatpOversight.Domain
-@using SFA.DAS.AdminService.Common.Extensions;
+﻿@using SFA.DAS.AdminService.Common.Extensions;
+@using SFA.DAS.RoatpOversight.Web.Extensions
 @model SFA.DAS.RoatpOversight.Web.Models.ApplicationsViewModel
 
 @{
@@ -103,26 +103,18 @@
                                 {
 
                                     <tr class="govuk-table__row">
-                                        <td data-label="Organisation name" class="govuk-table__cell">@outcome.OrganisationName</td>
+                                        <td data-label="Organisation name" class="govuk-table__cell">
+                                            <a class="govuk-link govuk-!-margin-bottom-0" asp-action="Outcome" asp-route-id="@outcome.ApplicationId">
+                                                @outcome.OrganisationName
+                                            </a>
+                                        </td>
                                         <td data-label="UKPRN" class="govuk-table__cell">@outcome.Ukprn</td>
                                         <td data-label="Provider route" class="govuk-table__cell">@outcome.ProviderRoute</td>
                                         <td data-label="Application reference number" class="govuk-table__cell">@outcome.ApplicationReferenceNumber</td>
                                         <td data-label="Application submitted date" class="govuk-table__cell">@outcome.ApplicationSubmittedDate.ToSfaShortDateString()</td>
                                         <td data-label="Application determined date" class="govuk-table__cell">@outcome.ApplicationDeterminedDate.ToSfaShortDateString()</td>
-                                        @{
-                                            var tagCssClass = "";
-                                            if (@outcome.Status == OversightReviewStatus.Successful)
-                                            {
-                                                tagCssClass = "das-tag--solid-green";
-                                            }
-
-                                            if (@outcome.Status == OversightReviewStatus.Unsuccessful)
-                                            {
-                                                tagCssClass = "das-tag--solid-red";
-                                            }
-                                        }
                                         <td data-label="Overall outcome" class="govuk-table__cell">
-                                            <span class="govuk-tag @tagCssClass">@outcome.Status</span>
+                                            <span class="@outcome.OversightStatus.GetCssClass()">@outcome.OversightStatus.GetLabel()</span>
                                         </td>
                                     </tr>
                                 }

@@ -1,4 +1,5 @@
-﻿using SFA.DAS.RoatpOversight.Domain;
+﻿using System;
+using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Models.Partials;
 
@@ -12,11 +13,12 @@ namespace SFA.DAS.RoatpOversight.Web.Models
 
         public FinancialHealthOutcomeViewModel FinancialHealthOutcome { get; set; }
         public ModerationOutcomeViewModel ModerationOutcome { get; set; }
+        public OverallOutcomeViewModel OverallOutcome { get; set; }
         public bool IsGatewayFail => GatewayOutcome.GatewayReviewStatus == GatewayReviewStatus.Fail;
+        public bool IsReadOnly { get; set; }
 
         public string ApproveGateway { get; set; }
         public string ApproveModeration { get; set; }
-        public OversightReviewStatus OversightStatus { get; set; }
 
         public string SuccessfulText { get; set; }  
 
@@ -27,5 +29,6 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public string InProgressInternalText { get; set; }
         public string InProgressExternalText { get; set; }
         public string ApplicantEmailAddress { get; set; }
+        public OversightReviewStatus OversightStatus { get; set; }
     }
 }

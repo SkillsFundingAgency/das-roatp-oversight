@@ -1,5 +1,4 @@
 ﻿@using SFA.DAS.RoatpOversight.Domain
-@using SFA.DAS.AdminService.Common.Extensions;
 @using SFA.DAS.RoatpOversight.Web.Domain
 @using SFA.DAS.RoatpOversight.Web.Extensions
 @model SFA.DAS.RoatpOversight.Web.Models.OutcomeViewModel
@@ -56,7 +55,7 @@
 
                         <partial name="_GatewayOutcome" for="@Model.GatewayOutcome" />
                         
-                        @if (!Model.IsGatewayFail)
+                        @if (!Model.IsReadOnly && !Model.IsGatewayFail)
                         {
                             @Html.ValidationMessageFor(m => m.ApproveGateway, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveGateway)})
 
@@ -107,39 +106,42 @@
                             </legend>
 
                             <partial name="_ModerationOutcome" for="@Model.ModerationOutcome"/>
-
-                            @Html.ValidationMessageFor(m => m.ApproveModeration, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveModeration)})
-                            <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input"
-                                           type="radio"
-                                           id="ApproveModeration"
-                                           value="@ApprovalStatus.Approve"
-                                           asp-for="ApproveModeration"/>
-                                    <label class="govuk-label govuk-radios__label" for="ApproveModeration">
-                                        Approve this outcome
-                                    </label>
+                            
+                            @if (!Model.IsReadOnly)
+                            {
+                                @Html.ValidationMessageFor(m => m.ApproveModeration, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveModeration)})
+                                <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input"
+                                               type="radio"
+                                               id="ApproveModeration"
+                                               value="@ApprovalStatus.Approve"
+                                               asp-for="ApproveModeration"/>
+                                        <label class="govuk-label govuk-radios__label" for="ApproveModeration">
+                                            Approve this outcome
+                                        </label>
+                                    </div>
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input"
+                                               type="radio"
+                                               id="OptionApproveModerationNo"
+                                               value="@ApprovalStatus.Overturn"
+                                               asp-for="ApproveModeration"
+                                               data-module="das-show-hide-controls"
+                                               data-aria-controls="conditional-UnsuccessfulExternalText"/>
+                                        <label class="govuk-label govuk-radios__label" for="OptionApproveModerationNo">
+                                            Overturn this outcome
+                                        </label>
+                                    </div>
                                 </div>
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input"
-                                           type="radio"
-                                           id="OptionApproveModerationNo"
-                                           value="@ApprovalStatus.Overturn"
-                                           asp-for="ApproveModeration"
-                                       data-module="das-show-hide-controls"
-                                       data-aria-controls="conditional-UnsuccessfulExternalText" />
-                                    <label class="govuk-label govuk-radios__label" for="OptionApproveModerationNo">
-                                        Overturn this outcome
-                                    </label>
-                                </div>
-                            </div>
+                            }
                         </fieldset>
                     </div>
                 }
             </div>
         </div>
         
-    @if (!Model.IsGatewayFail)
+    @if (!Model.IsReadOnly && !Model.IsGatewayFail)
     {
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
@@ -325,22 +327,29 @@
                 <button class="govuk-button" type="submit" data-module="govuk-button">
                     Save and continue
                 </button>
-                <p class="govuk-body">
-                    <a class="govuk-link" asp-controller="Oversight" asp-action="Applications">Back to RoATP application outcomes</a>
-                </p>
             </div>
         </div>
     }
     else
     {
-        <h2 class="govuk-heading-m">Send the gateway outcome to the applicant</h2>
-        <p class="govuk-body">Let the applicant know their application to join the RoATP is unsuccessful.</p>
-        <button class="govuk-button" data-module="govuk-button">Send outcome</button>
-        <p class="govuk-body">
-            <a class="govuk-link" asp-controller="Oversight" asp-action="Applications">Back to RoATP application outcomes</a>
-        </p>
+        @if (!Model.IsReadOnly)
+         {
+             <h2 class="govuk-heading-m">Send the gateway outcome to the applicant</h2>
+             <p class="govuk-body">Let the applicant know their application to join the RoATP is unsuccessful.</p>
+             <button class="govuk-button" data-module="govuk-button">Send outcome</button>
+         }
     }
     </form>
+    
+
+@if (Model.IsReadOnly)
+{
+    <partial name="_OverallOutcome" for="@Model.OverallOutcome"/>
+}
+
+<p class="govuk-body">
+    <a class="govuk-link" asp-controller="Oversight" asp-action="Applications">Back to RoATP application outcomes</a>
+</p>
 
 </main>
 

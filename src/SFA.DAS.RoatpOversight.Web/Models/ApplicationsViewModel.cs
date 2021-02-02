@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using SFA.DAS.RoatpOversight.Domain;
+﻿using SFA.DAS.RoatpOversight.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.Models
 {

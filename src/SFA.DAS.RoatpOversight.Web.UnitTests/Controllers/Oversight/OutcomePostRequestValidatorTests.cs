@@ -18,7 +18,6 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _validator = new OutcomePostRequestValidator();
         }
 
-        [TestCase("", GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, true)]
         [TestCase(null, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, true)]
         [TestCase(OversightReviewStatus.Successful, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, false)]
         [TestCase(OversightReviewStatus.Unsuccessful, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, false)]
@@ -26,7 +25,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [TestCase(OversightReviewStatus.Unsuccessful, null, ModerationReviewStatus.Pass, true)]
         [TestCase(OversightReviewStatus.Successful, GatewayReviewStatus.Pass, "", true)]
         [TestCase(OversightReviewStatus.Unsuccessful, GatewayReviewStatus.Pass, null, true)]
-        public void OversightOutcomeValidator_returns_error_when_status_is_empty(string oversightStatus, string approveGateway, string approveModeration, bool errorsExpected)
+        public void OversightOutcomeValidator_returns_error_when_status_is_empty(OversightReviewStatus oversightStatus, string approveGateway, string approveModeration, bool errorsExpected)
         {
             var request = new OutcomePostRequest
             {
@@ -61,19 +60,37 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(numberOfErrorsExpected, result.Errors.Count);
         }
 
-        [TestCase("")]
-        [TestCase(null)]
-        public void OversightOutcomeValidator_returns_expected_error_message_when_status_is_empty(string oversightStatus)
+        [TestCase(OversightReviewStatus.None)]
+        public void OversightOutcomeValidator_returns_expected_error_message_when_status_is_empty(OversightReviewStatus oversightStatus)
         {
             var request = new OutcomePostRequest
             {
                 OversightStatus = oversightStatus,
-                ApproveGateway = GatewayReviewStatus.Pass,
-                ApproveModeration = ModerationReviewStatus.Pass
+                ApproveGateway = ApprovalStatus.Approve,
+                ApproveModeration = ApprovalStatus.Approve
             };
             var result = _validator.Validate(request);
 
             Assert.IsTrue(result.Errors.Any(x => x.PropertyName == "OversightStatus" && x.ErrorMessage == "Select the overall outcome of this application"));
+        }
+
+        [TestCase(true, true, true)]
+        [TestCase(false, true, true)]
+        [TestCase(true, false, true)]
+        [TestCase(false, false, false)]
+        public void OversightOutcomeValidator_unsuccessful_and_an_overturned_outcome_mandates_external_comments(bool overturnGateway, bool overturnModeration, bool expectError)
+        {
+            var request = new OutcomePostRequest
+            {
+                OversightStatus = OversightReviewStatus.Unsuccessful,
+                ApproveGateway = overturnGateway ? ApprovalStatus.Overturn : ApprovalStatus.Approve,
+                ApproveModeration = overturnModeration ? ApprovalStatus.Overturn : ApprovalStatus.Approve,
+                UnsuccessfulExternalText = string.Empty
+            };
+
+            var result = _validator.Validate(request);
+
+            Assert.AreEqual(expectError, result.Errors.Any(x => x.PropertyName == nameof(OutcomePostRequest.UnsuccessfulExternalText) && x.ErrorMessage == "Enter external comments"));
         }
     }
 }

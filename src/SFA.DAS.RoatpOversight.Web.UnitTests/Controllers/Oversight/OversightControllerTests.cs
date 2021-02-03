@@ -85,7 +85,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [TestCase(OversightReviewStatus.Unsuccessful)]
         [TestCase(OversightReviewStatus.SuccessfulAlreadyActive)]
         [TestCase(OversightReviewStatus.SuccessfulFitnessForFunding)]
-        public async Task GetOutcome_returns_applications_view_when_oversight_status_is_successful_or_unsuccessful(string status)
+        public async Task GetOutcome_returns_applications_view_when_oversight_status_is_successful_or_unsuccessful(OversightReviewStatus status)
         {
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).Throws<InvalidStateException>();
 

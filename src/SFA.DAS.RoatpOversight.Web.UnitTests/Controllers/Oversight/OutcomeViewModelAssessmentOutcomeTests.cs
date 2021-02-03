@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Models;
+using SFA.DAS.RoatpOversight.Web.Models.Partials;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 {
     [TestFixture]
     public class OutcomeViewModelAssessmentOutcomeTests
     {
-        private readonly OutcomeViewModel _viewModel = new OutcomeViewModel(); 
-
         [TestCase(FinancialReviewStatus.Exempt, FinancialApplicationSelectedGrade.Exempt, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Passed)]
         [TestCase(FinancialReviewStatus.Exempt, null, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Passed)]
         [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Exempt, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Passed)]
@@ -67,11 +63,24 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 
         public void OutcomeViewModel_assessment_outcome_tests(string financialReviewStatus, string financialGradeAwarded, string gatewayReviewStatus, string moderationReviewStatus, string assessmentOutcome)
         {
-            _viewModel.FinancialReviewStatus = financialReviewStatus;
-            _viewModel.FinancialGradeAwarded = financialGradeAwarded;
-            _viewModel.GatewayReviewStatus = gatewayReviewStatus;
-            _viewModel.ModerationReviewStatus = moderationReviewStatus;
-            Assert.AreEqual(assessmentOutcome,_viewModel.AssessmentOutcome);
+            var viewModel = new OutcomeViewModel
+            {
+                FinancialHealthOutcome = new FinancialHealthOutcomeViewModel
+                {
+                    FinancialReviewStatus = financialReviewStatus,
+                    FinancialGradeAwarded = financialGradeAwarded
+                },
+                GatewayOutcome = new GatewayOutcomeViewModel
+                {
+                    GatewayReviewStatus = gatewayReviewStatus
+                },
+                ModerationOutcome = new ModerationOutcomeViewModel
+                {
+                    ModerationReviewStatus = moderationReviewStatus
+                }
+            };
+            
+            Assert.AreEqual(assessmentOutcome,viewModel.AssessmentOutcome);
         }
     }
 }

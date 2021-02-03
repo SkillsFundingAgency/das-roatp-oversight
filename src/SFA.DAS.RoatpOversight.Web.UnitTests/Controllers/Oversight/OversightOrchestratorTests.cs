@@ -76,21 +76,20 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(expectedApplicationDetails.Ukprn, actualViewModel.Ukprn);
             Assert.AreEqual(expectedApplicationDetails.OversightStatus, actualViewModel.OversightStatus);
             Assert.AreEqual(expectedApplicationDetails.ApplicationStatus, actualViewModel.ApplicationStatus);
-            //Assert.AreEqual("Failed", actualViewModel.AssessmentOutcome );
             Assert.AreEqual(expectedApplicationDetails.ApplicationEmailAddress, actualViewModel.ApplicationEmailAddress);
             Assert.AreEqual(expectedApplicationDetails.AssessorReviewStatus, actualViewModel.AssessorReviewStatus); 
-            Assert.AreEqual(expectedApplicationDetails.GatewayReviewStatus, actualViewModel.GatewayReviewStatus); 
-            Assert.AreEqual(expectedApplicationDetails.GatewayOutcomeMadeDate, actualViewModel.GatewayOutcomeMadeDate); 
-            Assert.AreEqual(expectedApplicationDetails.GatewayOutcomeMadeBy, actualViewModel.GatewayOutcomeMadeBy); 
-            Assert.AreEqual(expectedApplicationDetails.GatewayComments, actualViewModel.GatewayComments); 
-            Assert.AreEqual(expectedApplicationDetails.FinancialReviewStatus, actualViewModel.FinancialReviewStatus); 
-            Assert.AreEqual(expectedApplicationDetails.FinancialGradeAwarded, actualViewModel.FinancialGradeAwarded); 
-            Assert.AreEqual(expectedApplicationDetails.FinancialHealthAssessedOn, actualViewModel.FinancialHealthAssessedOn);
-            Assert.AreEqual(expectedApplicationDetails.FinancialHealthAssessedBy, actualViewModel.FinancialHealthAssessedBy); 
-            Assert.AreEqual(expectedApplicationDetails.ModerationReviewStatus, actualViewModel.ModerationReviewStatus); 
-            Assert.AreEqual(expectedApplicationDetails.ModerationOutcomeMadeOn, actualViewModel.ModerationOutcomeMadeOn); 
-            Assert.AreEqual(expectedApplicationDetails.ModeratedBy, actualViewModel.ModeratedBy);
-            Assert.AreEqual(expectedApplicationDetails.ModerationComments, actualViewModel.ModerationComments);
+            Assert.AreEqual(expectedApplicationDetails.GatewayReviewStatus, actualViewModel.GatewayOutcome.GatewayReviewStatus); 
+            Assert.AreEqual(expectedApplicationDetails.GatewayOutcomeMadeDate, actualViewModel.GatewayOutcome.GatewayOutcomeMadeDate); 
+            Assert.AreEqual(expectedApplicationDetails.GatewayOutcomeMadeBy, actualViewModel.GatewayOutcome.GatewayOutcomeMadeBy); 
+            Assert.AreEqual(expectedApplicationDetails.GatewayComments, actualViewModel.GatewayOutcome.GatewayComments); 
+            Assert.AreEqual(expectedApplicationDetails.FinancialReviewStatus, actualViewModel.FinancialHealthOutcome.FinancialReviewStatus); 
+            Assert.AreEqual(expectedApplicationDetails.FinancialGradeAwarded, actualViewModel.FinancialHealthOutcome.FinancialGradeAwarded); 
+            Assert.AreEqual(expectedApplicationDetails.FinancialHealthAssessedOn, actualViewModel.FinancialHealthOutcome.FinancialHealthAssessedOn);
+            Assert.AreEqual(expectedApplicationDetails.FinancialHealthAssessedBy, actualViewModel.FinancialHealthOutcome.FinancialHealthAssessedBy); 
+            Assert.AreEqual(expectedApplicationDetails.ModerationReviewStatus, actualViewModel.ModerationOutcome.ModerationReviewStatus); 
+            Assert.AreEqual(expectedApplicationDetails.ModerationOutcomeMadeOn, actualViewModel.ModerationOutcome.ModerationOutcomeMadeOn); 
+            Assert.AreEqual(expectedApplicationDetails.ModeratedBy, actualViewModel.ModerationOutcome.ModeratedBy);
+            Assert.AreEqual(expectedApplicationDetails.ModerationComments, actualViewModel.ModerationOutcome.ModerationComments);
         }
 
         [Test]

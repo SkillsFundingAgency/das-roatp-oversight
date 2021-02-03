@@ -1,0 +1,13 @@
+﻿using System;
+
+namespace SFA.DAS.RoatpOversight.Web.Models.Partials
+{
+    public class GatewayOutcomeViewModel
+    {
+        public string GatewayReviewStatus { get; set; }
+        public DateTime? GatewayOutcomeMadeDate { get; set; }
+
+        public string GatewayOutcomeMadeBy { get; set; }
+        public string GatewayComments { get; set; }
+    }
+}

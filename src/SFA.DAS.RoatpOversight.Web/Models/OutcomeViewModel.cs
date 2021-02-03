@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Domain;
+using SFA.DAS.RoatpOversight.Web.Models.Partials;
 
 namespace SFA.DAS.RoatpOversight.Web.Models
 {
@@ -18,35 +18,21 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public string ApplicationEmailAddress { get; set; }
         public string AssessorReviewStatus { get; set; }
 
-        public string GatewayReviewStatus { get; set; }
-        public DateTime? GatewayOutcomeMadeDate { get; set; }
+        public GatewayOutcomeViewModel GatewayOutcome { get; set; }
 
-        public string GatewayOutcomeMadeBy { get; set; }
-        public string GatewayComments { get; set; }
-
-        public string FinancialReviewStatus { get; set; }
-        public string FinancialGradeAwarded { get; set; }
-
-        public DateTime? FinancialHealthAssessedOn { get; set; }
-        public string FinancialHealthAssessedBy { get; set; }
-        public string FinancialHealthComments { get; set; }
-
-        public string ModerationReviewStatus { get; set; }
-
-        public DateTime? ModerationOutcomeMadeOn { get; set; }
-        public string ModeratedBy { get; set; }
-        public string ModerationComments { get; set; }
-
+        public FinancialHealthOutcomeViewModel FinancialHealthOutcome { get; set; }
+        public ModerationOutcomeViewModel ModerationOutcome { get; set; }
 
         public string ApproveGateway { get; set; }
         public string ApproveModeration { get; set; }
-        public string OversightStatus { get; set; }
+        public OversightReviewStatus OversightStatus { get; set; }
 
         public string SuccessfulText { get; set; }  
 
         public string SuccessfulAlreadyActiveText { get; set; }
         public string SuccessfulFitnessForFundingText { get; set; }
         public string UnsuccessfulText { get; set; }
+        public string UnsuccessfulExternalText { get; set; }
         public string InProgressInternalText { get; set; }
         public string InProgressExternalText { get; set; }
         public string ApplicantEmailAddress { get; set; }
@@ -55,22 +41,20 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         {
             get
             {
-           
                 var financialDetailsPass = false;
-                if (FinancialReviewStatus == RoatpOversight.Domain.FinancialReviewStatus.Exempt)
+                if (FinancialHealthOutcome.FinancialReviewStatus == Domain.FinancialReviewStatus.Exempt)
                     financialDetailsPass = true;
                 else
                 {
-                    if (FinancialReviewStatus == RoatpOversight.Domain.FinancialReviewStatus.Pass && 
-                            (FinancialGradeAwarded == FinancialApplicationSelectedGrade.Exempt ||
-                            FinancialGradeAwarded == FinancialApplicationSelectedGrade.Outstanding ||
-                            FinancialGradeAwarded == FinancialApplicationSelectedGrade.Good ||
-                            FinancialGradeAwarded == FinancialApplicationSelectedGrade.Satisfactory))
+                    if (FinancialHealthOutcome.FinancialReviewStatus ==  Domain.FinancialReviewStatus.Pass && 
+                            (FinancialHealthOutcome.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Exempt ||
+                             FinancialHealthOutcome.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Outstanding ||
+                             FinancialHealthOutcome.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Good ||
+                             FinancialHealthOutcome.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Satisfactory))
                         financialDetailsPass = true;
                 }
 
-
-                if (GatewayReviewStatus == RoatpOversight.Domain.GatewayReviewStatus.Pass && ModerationReviewStatus == RoatpOversight.Domain.ModerationReviewStatus.Pass &&
+                if (GatewayOutcome.GatewayReviewStatus == Domain.GatewayReviewStatus.Pass && ModerationOutcome.ModerationReviewStatus == Domain.ModerationReviewStatus.Pass &&
                     financialDetailsPass)
                     return AssessmentOutcomeStatus.Passed;
 

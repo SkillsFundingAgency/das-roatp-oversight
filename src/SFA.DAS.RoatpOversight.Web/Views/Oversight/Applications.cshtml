@@ -124,12 +124,12 @@
                                         <td data-label="Application determined date" class="govuk-table__cell">@outcome.ApplicationDeterminedDate.ToSfaShortDateString()</td>
                                         @{
                                             var tagCssClass = "";
-                                            if (String.Equals(@outcome.Status, OversightReviewStatus.Successful, StringComparison.InvariantCultureIgnoreCase))
+                                            if (@outcome.Status == OversightReviewStatus.Successful)
                                             {
                                                 tagCssClass = "das-tag--solid-green";
                                             }
 
-                                            if (String.Equals(@outcome.Status, OversightReviewStatus.Unsuccessful, StringComparison.InvariantCultureIgnoreCase))
+                                            if (@outcome.Status == OversightReviewStatus.Unsuccessful)
                                             {
                                                 tagCssClass = "das-tag--solid-red";
                                             }

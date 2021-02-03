@@ -7,10 +7,10 @@ namespace SFA.DAS.RoatpOversight.Web.Models
     public class ConfirmedViewModel
     {
         public Guid ApplicationId { get; set; }
-        public string OversightStatus { get; set; }
+        public OversightReviewStatus OversightStatus { get; set; }
 
-        public string Status =>
-            OversightReviewStatus.SuccessfulStatuses.Contains(OversightStatus)
+        public OversightReviewStatus Status =>
+            OversightReviewStatuses.SuccessfulStatuses.Contains(OversightStatus)
                 ? OversightReviewStatus.Successful
                 : OversightStatus;
     }

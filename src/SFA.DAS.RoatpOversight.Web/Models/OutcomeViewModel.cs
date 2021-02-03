@@ -42,11 +42,11 @@ namespace SFA.DAS.RoatpOversight.Web.Models
             get
             {
                 var financialDetailsPass = false;
-                if (FinancialHealthOutcome.FinancialReviewStatus == Domain.FinancialReviewStatus.Exempt)
+                if (FinancialHealthOutcome.FinancialReviewStatus == FinancialReviewStatus.Exempt)
                     financialDetailsPass = true;
                 else
                 {
-                    if (FinancialHealthOutcome.FinancialReviewStatus ==  Domain.FinancialReviewStatus.Pass && 
+                    if (FinancialHealthOutcome.FinancialReviewStatus ==  FinancialReviewStatus.Pass && 
                             (FinancialHealthOutcome.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Exempt ||
                              FinancialHealthOutcome.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Outstanding ||
                              FinancialHealthOutcome.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Good ||
@@ -54,7 +54,7 @@ namespace SFA.DAS.RoatpOversight.Web.Models
                         financialDetailsPass = true;
                 }
 
-                if (GatewayOutcome.GatewayReviewStatus == Domain.GatewayReviewStatus.Pass && ModerationOutcome.ModerationReviewStatus == Domain.ModerationReviewStatus.Pass &&
+                if (GatewayOutcome.GatewayReviewStatus == GatewayReviewStatus.Pass && ModerationOutcome.ModerationReviewStatus == ModerationReviewStatus.Pass &&
                     financialDetailsPass)
                     return AssessmentOutcomeStatus.Passed;
 

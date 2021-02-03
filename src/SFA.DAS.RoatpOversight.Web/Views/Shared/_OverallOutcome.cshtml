@@ -4,35 +4,71 @@
 
 <div class="govuk-form-group">
     <fieldset class="govuk-fieldset">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-            <h2 class="govuk-heading-m">Overall outcome</h2>
-        </legend>
 
-        <dl class="govuk-summary-list">
+        @if (Model.ShowHeading)
+        {
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h2 class="govuk-heading-l govuk-!-margin-bottom-3">Overall outcome</h2>
+            </legend>
+        }
+
+    <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Outcome
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <span class="@Model.OversightStatus.GetCssClass()">@Model.OversightStatus.GetLabel()</span>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @Model.DateLabel
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @Model.ApplicationDeterminedDate.ToSfaShortDateString()
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Outcome made by
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @Model.OversightUserName
+            </dd>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.InternalComments))
+        {
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    Outcome
+                    Internal comments
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <span class="@Model.OversightStatus.GetCssClass()">@Model.OversightStatus.GetLabel()</span>
+                    @Model.InternalComments
+
                 </dd>
             </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.ExternalComments))
+        {
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    Application determined date
+                    External comments
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.ApplicationDeterminedDate.ToSfaShortDateString()
+                    <details class="govuk-details" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                View external comments
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <pre class="govuk-body das-preformatted-body">@Model.ExternalComments</pre>
+                        </div>
+                    </details>
                 </dd>
             </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Outcome made by
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.OversightUserName 
-                </dd>
-            </div>
-        </dl>
+        }
+    </dl>
     </fieldset>
 </div>

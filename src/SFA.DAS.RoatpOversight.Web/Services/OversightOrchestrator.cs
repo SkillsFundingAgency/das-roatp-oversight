@@ -270,7 +270,11 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             {
                 OversightStatus = applicationDetails.OversightStatus,
                 ApplicationDeterminedDate = applicationDetails.ApplicationDeterminedDate,
-                OversightUserName = applicationDetails.OversightUserName
+                OversightUserName = applicationDetails.OversightUserName,
+                InternalComments = applicationDetails.InternalComments,
+                ExternalComments = applicationDetails.ExternalComments,
+                IsGatewayOutcome = applicationDetails.OversightStatus == OversightReviewStatus.Rejected ||
+                                   applicationDetails.OversightStatus == OversightReviewStatus.Withdrawn
             };
         }
     }

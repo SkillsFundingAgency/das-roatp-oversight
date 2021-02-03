@@ -21,6 +21,17 @@
                 <span class="@Model.OversightStatus.GetCssClass()">@Model.OversightStatus.GetLabel()</span>
             </dd>
         </div>
+        @if (Model.ShowSpecificStatus)
+        {
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Status
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.OversightStatus.GetSpecificLabel()
+                </dd>
+            </div>
+        }
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
                 @Model.DateLabel

@@ -13,5 +13,8 @@ namespace SFA.DAS.RoatpOversight.Web.Models.Partials
         public bool IsGatewayOutcome { get; set; }
         public bool ShowHeading => !IsGatewayOutcome;
         public string DateLabel => IsGatewayOutcome ? "Outcome made date" : "Application determined date";
+
+        public bool ShowSpecificStatus => OversightStatus == OversightReviewStatus.SuccessfulAlreadyActive ||
+                                          OversightStatus == OversightReviewStatus.SuccessfulFitnessForFunding;
     }
 }

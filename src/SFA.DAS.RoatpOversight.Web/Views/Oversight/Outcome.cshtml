@@ -61,7 +61,7 @@
                         
                         <partial name="_GatewayOutcome" for="@Model.GatewayOutcome"/>
 
-                        @if (!Model.IsReadOnly && !Model.IsGatewayFail)
+                        @if (!Model.HasFinalOutcome && !Model.IsGatewayFail)
                         {
                             @Html.ValidationMessageFor(m => m.ApproveGateway, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveGateway)})
 
@@ -113,7 +113,7 @@
 
                             <partial name="_ModerationOutcome" for="@Model.ModerationOutcome"/>
 
-                            @if (!Model.IsReadOnly)
+                            @if (!Model.HasFinalOutcome)
                             {
                                 @Html.ValidationMessageFor(m => m.ApproveModeration, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveModeration)})
                                 <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
@@ -153,7 +153,7 @@
         <partial name="_InProgressDetails" for="@Model.InProgressDetails"/>
     }
 
-    @if (!Model.IsReadOnly && !Model.IsGatewayFail)
+    @if (!Model.HasFinalOutcome && !Model.IsGatewayFail)
     {
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
@@ -347,7 +347,7 @@
     }
     else
     {
-        @if (!Model.IsReadOnly)
+        @if (!Model.HasFinalOutcome)
          {
              <h2 class="govuk-heading-m">Send the gateway outcome to the applicant</h2>
              <p class="govuk-body">Let the applicant know their application to join the RoATP is unsuccessful.</p>
@@ -357,7 +357,7 @@
     </form>
     
 
-@if (Model.IsReadOnly)
+@if (Model.HasFinalOutcome)
 {
     <partial name="_OverallOutcome" for="@Model.OverallOutcome"/>
 }

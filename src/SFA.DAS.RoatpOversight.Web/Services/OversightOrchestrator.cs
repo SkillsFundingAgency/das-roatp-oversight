@@ -57,7 +57,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 OversightStatus = applicationDetails.OversightStatus,
                 ApproveGateway = GetStringValueForApprovalStatusBoolean(applicationDetails.GatewayApproved),
                 ApproveModeration = GetStringValueForApprovalStatusBoolean(applicationDetails.ModerationApproved),
-                IsReadOnly = applicationDetails.OversightStatus != OversightReviewStatus.None &&
+                HasFinalOutcome = applicationDetails.OversightStatus != OversightReviewStatus.None &&
                              applicationDetails.OversightStatus != OversightReviewStatus.InProgress
             };
 

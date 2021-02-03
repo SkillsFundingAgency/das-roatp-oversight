@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -47,6 +46,11 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
             var statusCode = await Post("Oversight/Outcome", command);
 
             return await Task.FromResult(statusCode == HttpStatusCode.OK);
+        }
+
+        public async Task RecordGatewayFailOutcome(RecordOversightGatewayFailOutcomeCommand command)
+        {
+            await Post("Oversight/GatewayFailOutcome", command);
         }
     }
 }

@@ -68,16 +68,16 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
               var actualViewModel = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
 
             Assert.AreEqual(expectedApplicationDetails.ApplicationId, _applicationId);
-            Assert.AreEqual(expectedApplicationDetails.ApplicationId, actualViewModel.ApplicationId);
-            Assert.AreEqual(expectedApplicationDetails.ApplicationReferenceNumber, actualViewModel.ApplicationReferenceNumber);
-            Assert.AreEqual(expectedApplicationDetails.ApplicationSubmittedDate, actualViewModel.ApplicationSubmittedDate);
-            Assert.AreEqual(expectedApplicationDetails.OrganisationName, actualViewModel.OrganisationName);
-            Assert.AreEqual(expectedApplicationDetails.ProviderRoute, actualViewModel.ProviderRoute);
-            Assert.AreEqual(expectedApplicationDetails.Ukprn, actualViewModel.Ukprn);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationId, actualViewModel.ApplicationSummary.ApplicationId);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationReferenceNumber, actualViewModel.ApplicationSummary.ApplicationReferenceNumber);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationSubmittedDate, actualViewModel.ApplicationSummary.ApplicationSubmittedDate);
+            Assert.AreEqual(expectedApplicationDetails.OrganisationName, actualViewModel.ApplicationSummary.OrganisationName);
+            Assert.AreEqual(expectedApplicationDetails.ProviderRoute, actualViewModel.ApplicationSummary.ProviderRoute);
+            Assert.AreEqual(expectedApplicationDetails.Ukprn, actualViewModel.ApplicationSummary.Ukprn);
             Assert.AreEqual(expectedApplicationDetails.OversightStatus, actualViewModel.OversightStatus);
-            Assert.AreEqual(expectedApplicationDetails.ApplicationStatus, actualViewModel.ApplicationStatus);
-            Assert.AreEqual(expectedApplicationDetails.ApplicationEmailAddress, actualViewModel.ApplicationEmailAddress);
-            Assert.AreEqual(expectedApplicationDetails.AssessorReviewStatus, actualViewModel.AssessorReviewStatus); 
+            Assert.AreEqual(expectedApplicationDetails.ApplicationStatus, actualViewModel.ApplicationSummary.ApplicationStatus);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationEmailAddress, actualViewModel.ApplicationSummary.ApplicationEmailAddress);
+            Assert.AreEqual(expectedApplicationDetails.AssessorReviewStatus, actualViewModel.ApplicationSummary.AssessorReviewStatus); 
             Assert.AreEqual(expectedApplicationDetails.GatewayReviewStatus, actualViewModel.GatewayOutcome.GatewayReviewStatus); 
             Assert.AreEqual(expectedApplicationDetails.GatewayOutcomeMadeDate, actualViewModel.GatewayOutcome.GatewayOutcomeMadeDate); 
             Assert.AreEqual(expectedApplicationDetails.GatewayOutcomeMadeBy, actualViewModel.GatewayOutcome.GatewayOutcomeMadeBy); 
@@ -127,6 +127,75 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(cachedItem.UnsuccessfulText, actualViewModel.UnsuccessfulText);
             Assert.AreEqual(cachedItem.InProgressInternalText, actualViewModel.InProgressInternalText);
             Assert.AreEqual(cachedItem.InProgressExternalText, actualViewModel.InProgressExternalText);
+        }
+
+
+        [TestCase(FinancialReviewStatus.Exempt, FinancialApplicationSelectedGrade.Exempt, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Passed)]
+        [TestCase(FinancialReviewStatus.Exempt, null, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Passed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Exempt, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Passed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Outstanding, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Passed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Good, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Passed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Satisfactory, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Passed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Inadequate, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Exempt, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Outstanding, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Good, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Satisfactory, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Inadequate, GatewayReviewStatus.Pass, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+
+        [TestCase(FinancialReviewStatus.Exempt, FinancialApplicationSelectedGrade.Exempt, GatewayReviewStatus.Fail, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Exempt, null, GatewayReviewStatus.Fail, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Exempt, GatewayReviewStatus.Fail, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Outstanding, GatewayReviewStatus.Fail, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Good, GatewayReviewStatus.Fail, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Satisfactory, GatewayReviewStatus.Fail, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Inadequate, GatewayReviewStatus.Fail, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Exempt, GatewayReviewStatus.Fail, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Outstanding, GatewayReviewStatus.Fail, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Good, GatewayReviewStatus.Fail, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Satisfactory, GatewayReviewStatus.Fail, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Inadequate, GatewayReviewStatus.Fail, ModerationReviewStatus.Pass, AssessmentOutcomeStatus.Failed)]
+
+        [TestCase(FinancialReviewStatus.Exempt, FinancialApplicationSelectedGrade.Exempt, GatewayReviewStatus.Pass, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Exempt, null, GatewayReviewStatus.Pass, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Exempt, GatewayReviewStatus.Pass, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Outstanding, GatewayReviewStatus.Pass, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Good, GatewayReviewStatus.Pass, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Satisfactory, GatewayReviewStatus.Pass, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Inadequate, GatewayReviewStatus.Pass, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Exempt, GatewayReviewStatus.Pass, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Outstanding, GatewayReviewStatus.Pass, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Good, GatewayReviewStatus.Pass, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Satisfactory, GatewayReviewStatus.Pass, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Inadequate, GatewayReviewStatus.Pass, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+
+        [TestCase(FinancialReviewStatus.Exempt, FinancialApplicationSelectedGrade.Exempt, GatewayReviewStatus.Fail, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Exempt, null, GatewayReviewStatus.Fail, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Exempt, GatewayReviewStatus.Fail, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Outstanding, GatewayReviewStatus.Fail, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Good, GatewayReviewStatus.Fail, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Satisfactory, GatewayReviewStatus.Fail, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Pass, FinancialApplicationSelectedGrade.Inadequate, GatewayReviewStatus.Fail, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Exempt, GatewayReviewStatus.Fail, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Outstanding, GatewayReviewStatus.Fail, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Good, GatewayReviewStatus.Fail, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Satisfactory, GatewayReviewStatus.Fail, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+        [TestCase(FinancialReviewStatus.Fail, FinancialApplicationSelectedGrade.Inadequate, GatewayReviewStatus.Fail, ModerationReviewStatus.Fail, AssessmentOutcomeStatus.Failed)]
+
+        public async Task OutcomeViewModel_assessment_outcome_tests(string financialReviewStatus, string financialGradeAwarded, string gatewayReviewStatus, string moderationReviewStatus, string assessmentOutcome)
+        {
+            _apiClient.Setup(x => x.GetOversightDetails(_applicationId))
+                .ReturnsAsync(() => new ApplicationDetails
+                {
+                    FinancialReviewStatus = financialReviewStatus,
+                    FinancialGradeAwarded = financialGradeAwarded,
+                    GatewayReviewStatus = gatewayReviewStatus,
+                    ModerationReviewStatus = moderationReviewStatus
+                });
+
+            var result = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
+
+            Assert.AreEqual(assessmentOutcome, result.ApplicationSummary.AssessmentOutcome);
         }
 
         private ApplicationDetails GetApplication()

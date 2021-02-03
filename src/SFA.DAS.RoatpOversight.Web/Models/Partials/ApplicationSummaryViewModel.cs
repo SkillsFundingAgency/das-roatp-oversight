@@ -1,24 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace SFA.DAS.RoatpOversight.Domain
+namespace SFA.DAS.RoatpOversight.Web.Models.Partials
 {
-    public class CompletedOversightReviews
-    {
-        public List<CompletedOversightReview> Reviews { get; set; }
-    }
-
-    public class CompletedOversightReview
+    public class ApplicationSummaryViewModel
     {
         public Guid ApplicationId { get; set; }
         public string OrganisationName { get; set; }
-
         public string Ukprn { get; set; }
         public string ProviderRoute { get; set; }
         public string ApplicationReferenceNumber { get; set; }
         public DateTime ApplicationSubmittedDate { get; set; }
-        public OversightReviewStatus OversightStatus { get; set; }
         public string ApplicationStatus { get; set; }
-        public DateTime? ApplicationDeterminedDate { get; set; }
+
+        public string ApplicationEmailAddress { get; set; }
+        public string AssessorReviewStatus { get; set; }
+        public string AssessmentOutcome { get; set; }
+        public bool ShowAssessmentOutcome { get; set; }
     }
 }

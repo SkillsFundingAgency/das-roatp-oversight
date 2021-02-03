@@ -11,6 +11,7 @@ using SFA.DAS.RoatpOversight.Web.Controllers;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Models;
+using SFA.DAS.RoatpOversight.Web.Models.Partials;
 using SFA.DAS.RoatpOversight.Web.Services;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
@@ -68,7 +69,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [Test]
         public async Task GetOutcome_returns_view_with_expected_viewModel()
         {
-            var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId };
+            var viewModel = new OutcomeViewModel { ApplicationSummary = new ApplicationSummaryViewModel{ ApplicationId = _applicationDetailsApplicationId} };
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
 
             var request = new OutcomeRequest {ApplicationId = _applicationDetailsApplicationId};
@@ -78,7 +79,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.That(result, Is.Not.Null);
             Assert.That(actualViewModel, Is.Not.Null);
             Assert.That(actualViewModel, Is.SameAs(viewModel));
-            Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationId);
+            Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationSummary.ApplicationId);
         }
 
         [TestCase(OversightReviewStatus.Successful)]
@@ -98,7 +99,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [Test]
         public async Task Post_Outcome_redirects_to_confirmation()
         {
-            var viewModel = new OutcomeViewModel { ApplicationId = _applicationDetailsApplicationId };
+            var viewModel = new OutcomeViewModel { ApplicationSummary = new ApplicationSummaryViewModel{ ApplicationId = _applicationDetailsApplicationId }};
 
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
 
@@ -108,11 +109,57 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 OversightStatus = OversightReviewStatus.Unsuccessful,
                 ApproveGateway = GatewayReviewStatus.Fail,
                 ApproveModeration = ModerationReviewStatus.Fail,
-                UnsuccessfulText =  "test"
+                UnsuccessfulText =  "test",
+                IsGatewayFail = false
             };
 
             var result = await _controller.Outcome(command) as RedirectToActionResult;
             Assert.AreEqual("ConfirmOutcome", result.ActionName);
+        }
+
+
+        [Test]
+        public async Task Post_Outcome_Gateway_Fail_Records_Gateway_Fail_Outcome()
+        {
+            var viewModel = new OutcomeViewModel { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };
+
+            _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
+
+            var command = new OutcomePostRequest
+            {
+                ApplicationId = _applicationDetailsApplicationId,
+                OversightStatus = OversightReviewStatus.Unsuccessful,
+                ApproveGateway = GatewayReviewStatus.Fail,
+                ApproveModeration = ModerationReviewStatus.Fail,
+                UnsuccessfulText = "test",
+                IsGatewayFail = true
+            };
+
+            await _controller.Outcome(command);
+
+            _outcomeOrchestrator.Verify(x => x.RecordGatewayFailOutcome(It.Is<Guid>(id => id == command.ApplicationId), It.IsAny<string>(), It.IsAny<string>()));
+        }
+
+
+        [Test]
+        public async Task Post_Outcome_Gateway_Fail_Redirects_To_Confirmed_Page()
+        {
+            var viewModel = new OutcomeViewModel { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };
+
+            _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
+
+            var command = new OutcomePostRequest
+            {
+                ApplicationId = _applicationDetailsApplicationId,
+                OversightStatus = OversightReviewStatus.Unsuccessful,
+                ApproveGateway = GatewayReviewStatus.Fail,
+                ApproveModeration = ModerationReviewStatus.Fail,
+                UnsuccessfulText = "test",
+                IsGatewayFail = true
+            };
+
+            var result = await _controller.Outcome(command) as RedirectToActionResult;
+            Assert.AreEqual("Confirmed", result.ActionName);
         }
     }
 }

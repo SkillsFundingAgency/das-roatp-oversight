@@ -1,0 +1,38 @@
+﻿@using SFA.DAS.AdminService.Common.Extensions
+@using SFA.DAS.RoatpOversight.Web.Extensions
+@model SFA.DAS.RoatpOversight.Web.Models.Partials.OverallOutcomeViewModel
+
+<div class="govuk-form-group">
+    <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h2 class="govuk-heading-m">Overall outcome</h2>
+        </legend>
+
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Outcome
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <span class="@Model.OversightStatus.GetCssClass()">@Model.OversightStatus.GetLabel()</span>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Application determined date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.ApplicationDeterminedDate.ToSfaShortDateString()
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Outcome made by
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.OversightUserName 
+                </dd>
+            </div>
+        </dl>
+    </fieldset>
+</div>

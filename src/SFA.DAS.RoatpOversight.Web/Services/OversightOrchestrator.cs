@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
+using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Models;
@@ -11,13 +10,14 @@ using SFA.DAS.RoatpOversight.Web.Models.Partials;
 
 namespace SFA.DAS.RoatpOversight.Web.Services
 {
-    public class OversightOrchestrator:IOversightOrchestrator
+    public class OversightOrchestrator : IOversightOrchestrator
     {
         private readonly ILogger<OversightOrchestrator> _logger;
         private readonly IApplyApiClient _applyApiClient;
         private readonly ICacheStorageService _cacheStorageService;
 
-        public OversightOrchestrator(IApplyApiClient applyApiClient, ILogger<OversightOrchestrator> logger, ICacheStorageService cacheStorageService)
+        public OversightOrchestrator(IApplyApiClient applyApiClient, ILogger<OversightOrchestrator> logger,
+            ICacheStorageService cacheStorageService)
         {
             _applyApiClient = applyApiClient;
             _logger = logger;
@@ -26,19 +26,19 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
         public async Task<ApplicationsViewModel> GetApplicationsViewModel()
         {
-           var viewModel = new ApplicationsViewModel();
-           var pendingApplications = await _applyApiClient.GetOversightsPending();
-           var completedApplications = await _applyApiClient.GetOversightsCompleted();
+            var viewModel = new ApplicationsViewModel();
+            var pendingApplications = await _applyApiClient.GetOversightsPending();
+            var completedApplications = await _applyApiClient.GetOversightsCompleted();
 
-           viewModel.ApplicationDetails = pendingApplications;
+            viewModel.ApplicationDetails = pendingApplications;
 
-           viewModel.ApplicationCount = pendingApplications.Reviews.Count;
+            viewModel.ApplicationCount = pendingApplications.Reviews.Count;
 
-           viewModel.OverallOutcomeDetails = completedApplications;
+            viewModel.OverallOutcomeDetails = completedApplications;
 
-           viewModel.OverallOutcomeCount = completedApplications.Reviews.Count;
+            viewModel.OverallOutcomeCount = completedApplications.Reviews.Count;
 
-           return viewModel;
+            return viewModel;
         }
 
         public async Task<OutcomeViewModel> GetOversightDetailsViewModel(Guid applicationId, Guid? outcomeKey)
@@ -46,23 +46,15 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
             var cachedItem = await _cacheStorageService.RetrieveFromCache<OutcomePostRequest>(outcomeKey.ToString());
 
-            VerifyApplicationHasNoOutcome(applicationDetails.OversightStatus);
-
             var viewModel = new OutcomeViewModel
             {
-                ApplicationId = applicationId,
-                ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
-                ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
-                OrganisationName = applicationDetails.OrganisationName,
-                Ukprn = applicationDetails.Ukprn,
-                ProviderRoute = applicationDetails.ProviderRoute,
-                OversightStatus = applicationDetails.OversightStatus,
-                ApplicationStatus = applicationDetails.ApplicationStatus,
-                ApplicationEmailAddress = applicationDetails.ApplicationEmailAddress,
-                AssessorReviewStatus = applicationDetails.AssessorReviewStatus,
+                ApplicationSummary = CreateApplicationSummaryViewModel(applicationDetails),
                 GatewayOutcome = CreateGatewayOutcomeViewModel(applicationDetails),
                 FinancialHealthOutcome = CreateFinancialHealthOutcomeViewModel(applicationDetails),
-                ModerationOutcome = CreateModerationOutcomeViewModel(applicationDetails)
+                ModerationOutcome = CreateModerationOutcomeViewModel(applicationDetails),
+                OverallOutcome = CreateOverallOutcomeViewModel(applicationDetails),
+                IsReadOnly = applicationDetails.OversightStatus != OversightReviewStatus.None &&
+                             applicationDetails.OversightStatus != OversightReviewStatus.InProgress
             };
 
             if (cachedItem != null)
@@ -84,7 +76,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
         public async Task<ConfirmOutcomeViewModel> GetConfirmOutcomeViewModel(Guid applicationId, Guid confirmCacheKey)
         {
-            var cachedItem = await _cacheStorageService.RetrieveFromCache<OutcomePostRequest>(confirmCacheKey.ToString());
+            var cachedItem =
+                await _cacheStorageService.RetrieveFromCache<OutcomePostRequest>(confirmCacheKey.ToString());
 
             if (cachedItem == null || cachedItem.ApplicationId != applicationId)
             {
@@ -93,7 +86,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
 
-            VerifyApplicationHasNoOutcome(applicationDetails.OversightStatus);
+            VerifyApplicationHasNoFinalOutcome(applicationDetails.OversightStatus);
 
             var viewModel = new ConfirmOutcomeViewModel
             {
@@ -136,7 +129,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         }
 
         public async Task<Guid> SaveOutcomePostRequestToCache(OutcomePostRequest request)
-        { 
+        {
             var key = Guid.NewGuid();
             await _cacheStorageService.SaveToCache(key.ToString(), request, 1);
             return key;
@@ -153,16 +146,56 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
         }
 
-        private void VerifyApplicationHasNoOutcome(OversightReviewStatus oversightStatus)
+        private void VerifyApplicationHasNoFinalOutcome(OversightReviewStatus oversightStatus)
         {
-            if (oversightStatus == OversightReviewStatus.Successful
-                || oversightStatus == OversightReviewStatus.SuccessfulAlreadyActive
-                || oversightStatus == OversightReviewStatus.SuccessfulFitnessForFunding
-                || oversightStatus == OversightReviewStatus.Unsuccessful
-            )
+            if (oversightStatus != OversightReviewStatus.None && oversightStatus != OversightReviewStatus.InProgress)
             {
                 throw new InvalidStateException();
             }
+        }
+
+        private ApplicationSummaryViewModel CreateApplicationSummaryViewModel(ApplicationDetails applicationDetails)
+        {
+            var result = new ApplicationSummaryViewModel
+            {
+                ApplicationId = applicationDetails.ApplicationId,
+                ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
+                ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
+                OrganisationName = applicationDetails.OrganisationName,
+                Ukprn = applicationDetails.Ukprn,
+                ProviderRoute = applicationDetails.ProviderRoute,
+                ApplicationStatus = applicationDetails.ApplicationStatus,
+                ApplicationEmailAddress = applicationDetails.ApplicationEmailAddress,
+                AssessorReviewStatus = applicationDetails.AssessorReviewStatus,
+            };
+
+            var financialDetailsPass = false;
+            if (applicationDetails.FinancialReviewStatus == Domain.FinancialReviewStatus.Exempt)
+                financialDetailsPass = true;
+            else
+            {
+                if (applicationDetails.FinancialReviewStatus == Domain.FinancialReviewStatus.Pass &&
+                    (applicationDetails.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Exempt ||
+                     applicationDetails.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Outstanding ||
+                     applicationDetails.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Good ||
+                     applicationDetails.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Satisfactory))
+                    financialDetailsPass = true;
+            }
+
+            if (applicationDetails.GatewayReviewStatus == Domain.GatewayReviewStatus.Pass &&
+                applicationDetails.ModerationReviewStatus == Domain.ModerationReviewStatus.Pass &&
+                financialDetailsPass)
+            {
+                result.AssessmentOutcome = AssessmentOutcomeStatus.Passed;
+            }
+            else
+            {
+                result.AssessmentOutcome = AssessmentOutcomeStatus.Failed;
+            }
+
+            result.ShowAssessmentOutcome = applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Pass;
+
+            return result;
         }
 
         private GatewayOutcomeViewModel CreateGatewayOutcomeViewModel(ApplicationDetails applicationDetails)
@@ -172,11 +205,13 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 GatewayReviewStatus = applicationDetails.GatewayReviewStatus,
                 GatewayOutcomeMadeDate = applicationDetails.GatewayOutcomeMadeDate,
                 GatewayOutcomeMadeBy = applicationDetails.GatewayOutcomeMadeBy,
-                GatewayComments = applicationDetails.GatewayComments
+                GatewayComments = applicationDetails.GatewayComments,
+                GatewayExternalComments = applicationDetails.GatewayExternalComments
             };
         }
 
-        private FinancialHealthOutcomeViewModel CreateFinancialHealthOutcomeViewModel(ApplicationDetails applicationDetails)
+        private FinancialHealthOutcomeViewModel CreateFinancialHealthOutcomeViewModel(
+            ApplicationDetails applicationDetails)
         {
             return new FinancialHealthOutcomeViewModel
             {
@@ -197,6 +232,16 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ModerationOutcomeMadeOn = applicationDetails.ModerationOutcomeMadeOn,
                 ModeratedBy = applicationDetails.ModeratedBy,
                 ModerationComments = applicationDetails.ModerationComments
+            };
+        }
+
+        private OverallOutcomeViewModel CreateOverallOutcomeViewModel(ApplicationDetails applicationDetails)
+        {
+            return new OverallOutcomeViewModel
+            {
+                OversightStatus = applicationDetails.OversightStatus,
+                ApplicationDeterminedDate = applicationDetails.ApplicationDeterminedDate,
+                OversightUserName = applicationDetails.OversightUserName
             };
         }
     }

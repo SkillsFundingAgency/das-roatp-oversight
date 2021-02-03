@@ -1,5 +1,4 @@
 ﻿@using SFA.DAS.RoatpOversight.Domain
-@using SFA.DAS.AdminService.Common.Extensions;
 @using SFA.DAS.RoatpOversight.Web.Domain
 @using SFA.DAS.RoatpOversight.Web.Extensions
 @model SFA.DAS.RoatpOversight.Web.Models.OutcomeViewModel
@@ -29,71 +28,9 @@
                 RoATP application outcomes
             </span>
             <h1 class="govuk-heading-xl">Application summary</h1>
+            
+            <partial name="_ApplicationSummary" for="@Model.ApplicationSummary" />
 
-            <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        UKPRN
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.Ukprn
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Legal Name
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.OrganisationName
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Provider route
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.ProviderRoute
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Application reference
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.ApplicationReferenceNumber
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Applicant's email address
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.ApplicationEmailAddress
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Application submitted date
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.ApplicationSubmittedDate.ToSfaShortDateString()
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Assessment outcome
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @{
-                            var assessmentOutcomeTagClass = @Model.AssessmentOutcome == "Passed" ? "das-tag--solid-green" : "das-tag--solid-red";
-                        }
-
-                        <strong class="das-tag @assessmentOutcomeTagClass">
-                            @Model.AssessmentOutcome
-                        </strong>
-                    </dd>
-                </div>
-            </dl>
         </div>
     </div>
 
@@ -103,116 +40,128 @@
         </div>
     </div>
 
-    <form asp-action="Outcome" asp-controller="Oversight">
+    <form method="post">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
-                <input type="hidden" asp-for="ApplicationId" />
-                <input type="hidden" asp-for="ApplicationEmailAddress" />
 
+                <input type="hidden" name="ApplicationId" value="@Model.ApplicationSummary.ApplicationId" />
+                <input type="hidden" asp-for="IsGatewayFail" />
 
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x=> x.ApproveGateway, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-m">Gateway outcome</h2>
                         </legend>
+
+                        <partial name="_GatewayOutcome" for="@Model.GatewayOutcome" />
                         
-                        <partial name="_GatewayOutcome" for="@Model.GatewayOutcome"/>
+                        @if (!Model.IsReadOnly && !Model.IsGatewayFail)
+                        {
+                            @Html.ValidationMessageFor(m => m.ApproveGateway, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveGateway)})
 
-                        @Html.ValidationMessageFor(m => m.ApproveGateway, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveGateway) })
-
-                        <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input"
-                                       type="radio"
-                                       id="ApproveGateway"
-                                       value="@ApprovalStatus.Approve"
-                                       asp-for="ApproveGateway" />
-                                <label class="govuk-label govuk-radios__label" for="ApproveGateway">
-                                    Approve this outcome
-                                </label>
-                            </div>
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input"
-                                       type="radio"
-                                       id="OptionApproveGatewayNo"
-                                       value="@ApprovalStatus.Overturn"
-                                       asp-for="ApproveGateway"
+                            <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           type="radio"
+                                           id="ApproveGateway"
+                                           value="@ApprovalStatus.Approve"
+                                           asp-for="ApproveGateway"/>
+                                    <label class="govuk-label govuk-radios__label" for="ApproveGateway">
+                                        Approve this outcome
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           type="radio"
+                                           id="OptionApproveGatewayNo"
+                                           value="@ApprovalStatus.Overturn"
+                                           asp-for="ApproveGateway"
                                        data-module="das-show-hide-controls"
                                        data-aria-controls="conditional-UnsuccessfulExternalText" />
-                                <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayNo">
-                                    Overturn this outcome
-                                </label>
+                                    <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayNo">
+                                        Overturn this outcome
+                                    </label>
+                                </div>
                             </div>
-                        </div>
+                        }
                     </fieldset>
                 </div>
+                
+                @if (!Model.IsGatewayFail)
+                {
 
-                <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h2 class="govuk-heading-m">Financial health outcome</h2>
-                        </legend>
-                        <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome"/>
-                    </fieldset>
-                </div>
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                <h2 class="govuk-heading-m">Financial health outcome</h2>
+                            </legend>
+                            <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome"/>
+                        </fieldset>
+                    </div>
 
-                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x=> x.ApproveModeration, "govuk-form-group--error")">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h2 class="govuk-heading-m">Moderation outcome</h2>
-                        </legend>
+                    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ApproveModeration, "govuk-form-group--error")">
+                        <fieldset class="govuk-fieldset">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                <h2 class="govuk-heading-m">Moderation outcome</h2>
+                            </legend>
 
-                        <partial name="_ModerationOutcome" for="@Model.ModerationOutcome"/>
-
-                        @Html.ValidationMessageFor(m => m.ApproveModeration, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveModeration) })
-                        <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input"
-                                       type="radio"
-                                       id="ApproveModeration"
-                                       value="@ApprovalStatus.Approve"
-                                       asp-for="ApproveModeration" />
-                                <label class="govuk-label govuk-radios__label" for="ApproveModeration">
-                                    Approve this outcome
-                                </label>
-                            </div>
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input"
-                                       type="radio"
-                                       id="OptionApproveModerationNo"
-                                       value="@ApprovalStatus.Overturn"
-                                       asp-for="ApproveModeration"
-                                       data-module="das-show-hide-controls"
-                                       data-aria-controls="conditional-UnsuccessfulExternalText" />
-                                <label class="govuk-label govuk-radios__label" for="OptionApproveModerationNo">
-                                    Overturn this outcome
-                                </label>
-                            </div>
-                        </div>
-                    </fieldset>
-                </div>
+                            <partial name="_ModerationOutcome" for="@Model.ModerationOutcome"/>
+                            
+                            @if (!Model.IsReadOnly)
+                            {
+                                @Html.ValidationMessageFor(m => m.ApproveModeration, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveModeration)})
+                                <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input"
+                                               type="radio"
+                                               id="ApproveModeration"
+                                               value="@ApprovalStatus.Approve"
+                                               asp-for="ApproveModeration"/>
+                                        <label class="govuk-label govuk-radios__label" for="ApproveModeration">
+                                            Approve this outcome
+                                        </label>
+                                    </div>
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input"
+                                               type="radio"
+                                               id="OptionApproveModerationNo"
+                                               value="@ApprovalStatus.Overturn"
+                                               asp-for="ApproveModeration"
+                                               data-module="das-show-hide-controls"
+                                               data-aria-controls="conditional-UnsuccessfulExternalText"/>
+                                        <label class="govuk-label govuk-radios__label" for="OptionApproveModerationNo">
+                                            Overturn this outcome
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </fieldset>
+                    </div>
+                }
             </div>
         </div>
-
+        
+    @if (!Model.IsReadOnly && !Model.IsGatewayFail)
+    {
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x=> x.ApproveGateway, "govuk-form-group--error")">
+                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ApproveGateway, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-l">What is the overall outcome of this application?</h2>
                         </legend>
 
-                        @Html.ValidationMessageFor(m => m.OversightStatus, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.OversightStatus) })
+                        @Html.ValidationMessageFor(m => m.OversightStatus, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.OversightStatus)})
 
                         <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                    type="radio"
-                                    id="OversightStatus"
-                                    asp-for="OversightStatus"
-                                    value=@OversightReviewStatus.Successful
-                                    data-aria-controls="conditional-OptionSuccessful"
-                                    data-module="das-disabled" />
+                                       type="radio"
+                                       id="OversightStatus"
+                                       asp-for="OversightStatus"
+                                       value=@OversightReviewStatus.Successful
+                                       data-aria-controls="conditional-OptionSuccessful"
+                                       data-module="das-disabled"/>
                                 <label class="govuk-label govuk-radios__label" for="OversightStatus">
                                     @OversightReviewStatus.Successful
                                 </label>
@@ -233,12 +182,12 @@
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionSuccessfulAlreadyActive"
-                                    asp-for="OversightStatus"
-                                    value=@OversightReviewStatus.SuccessfulAlreadyActive
-                                    data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
-                                    data-module="das-disabled" />
+                                       type="radio"
+                                       id="OptionSuccessfulAlreadyActive"
+                                       asp-for="OversightStatus"
+                                       value=@OversightReviewStatus.SuccessfulAlreadyActive
+                                       data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
+                                       data-module="das-disabled"/>
                                 <label class="govuk-label govuk-radios__label" for="OptionSuccessfulAlreadyActive">
                                     Successful - already active
                                 </label>
@@ -258,12 +207,12 @@
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionSuccessfulFitnessForFunding"
-                                    asp-for="OversightStatus"
-                                    value=@OversightReviewStatus.SuccessfulFitnessForFunding
-                                    data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
-                                    data-module="das-disabled" />
+                                       type="radio"
+                                       id="OptionSuccessfulFitnessForFunding"
+                                       asp-for="OversightStatus"
+                                       value=@OversightReviewStatus.SuccessfulFitnessForFunding
+                                       data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
+                                       data-module="das-disabled"/>
                                 <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
                                     Successful - fitness for funding
                                 </label>
@@ -283,12 +232,12 @@
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionUnsuccessful"
-                                    asp-for="OversightStatus"
-                                    value=@OversightReviewStatus.Unsuccessful
-                                    data-aria-controls="conditional-OptionUnsuccessful"
-                                    data-module="das-disabled" />
+                                       type="radio"
+                                       id="OptionUnsuccessful"
+                                       asp-for="OversightStatus"
+                                       value=@OversightReviewStatus.Unsuccessful
+                                       data-aria-controls="conditional-OptionUnsuccessful"
+                                       data-module="das-disabled"/>
                                 <label class="govuk-label govuk-radios__label" for="OptionUnsuccessful">
                                     Unsuccessful
                                 </label>
@@ -299,7 +248,7 @@
                                     <label class="govuk-label" for="UnsuccessfulText">
                                         Add your internal comments
                                     </label>
-                                    @Html.ValidationMessageFor(m => m.UnsuccessfulText, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.UnsuccessfulText) })
+                                    @Html.ValidationMessageFor(m => m.UnsuccessfulText, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.UnsuccessfulText)})
                                     <textarea class="govuk-textarea"
                                                 id="UnsuccessfulText"
                                                 name="UnsuccessfulText"
@@ -316,7 +265,7 @@
                                     <div class="govuk-hint" id="UnsuccessfulExternalText-hint">
                                         These comments will be seen by the applicant. Only fill in if you have overturned an outcome.
                                     </div>
-                                    @Html.ValidationMessageFor(m => m.UnsuccessfulExternalText, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.UnsuccessfulExternalText) })
+                                    @Html.ValidationMessageFor(m => m.UnsuccessfulExternalText, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.UnsuccessfulExternalText)})
                                     <textarea class="govuk-textarea"
                                                 id="UnsuccessfulExternalText"
                                                 name="UnsuccessfulExternalText"
@@ -329,11 +278,11 @@
                             <div class="govuk-radios__divider">or</div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
-                                    type="radio"
-                                    id="OptionInProgress"
-                                    asp-for="OversightStatus"
-                                    value=@OversightReviewStatus.InProgress
-                                    data-aria-controls="conditional-OptionInProgress" />
+                                       type="radio"
+                                       id="OptionInProgress"
+                                       asp-for="OversightStatus"
+                                       value=@OversightReviewStatus.InProgress
+                                       data-aria-controls="conditional-OptionInProgress"/>
                                 <label class="govuk-label govuk-radios__label" for="OptionInProgress">
                                     Set to 'in progress'
                                 </label>
@@ -345,7 +294,7 @@
                                         Add your internal comments
                                     </label>
 
-                                    @Html.ValidationMessageFor(m => m.InProgressInternalText, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.InProgressInternalText) })
+                                    @Html.ValidationMessageFor(m => m.InProgressInternalText, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.InProgressInternalText)})
                                     <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressInternalText, "govuk-textarea--error")"
                                                 id="InProgressInternalText"
                                                 name="InProgressInternalText"
@@ -361,7 +310,7 @@
                                         <div id="InProgressExternalText-hint" class="govuk-hint">
                                             These comments will be seen by the applicant.
                                         </div>
-                                        @Html.ValidationMessageFor(m => m.InProgressExternalText, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.InProgressExternalText) })
+                                        @Html.ValidationMessageFor(m => m.InProgressExternalText, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.InProgressExternalText)})
                                         <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressExternalText, "govuk-textarea--error")"
                                                 id="InProgressExternalText"
                                                 name="InProgressExternalText"
@@ -378,12 +327,29 @@
                 <button class="govuk-button" type="submit" data-module="govuk-button">
                     Save and continue
                 </button>
-                <p class="govuk-body">
-                    <a class="govuk-link" asp-controller="Oversight" asp-action="Applications">Back to RoATP application outcomes</a>
-                </p>
             </div>
         </div>
+    }
+    else
+    {
+        @if (!Model.IsReadOnly)
+         {
+             <h2 class="govuk-heading-m">Send the gateway outcome to the applicant</h2>
+             <p class="govuk-body">Let the applicant know their application to join the RoATP is unsuccessful.</p>
+             <button class="govuk-button" data-module="govuk-button">Send outcome</button>
+         }
+    }
     </form>
+    
+
+@if (Model.IsReadOnly)
+{
+    <partial name="_OverallOutcome" for="@Model.OverallOutcome"/>
+}
+
+<p class="govuk-body">
+    <a class="govuk-link" asp-controller="Oversight" asp-action="Applications">Back to RoATP application outcomes</a>
+</p>
 
 </main>
 

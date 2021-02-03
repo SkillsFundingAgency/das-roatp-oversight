@@ -59,13 +59,6 @@
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ApproveGateway, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         
-                        @if (Model.GatewayOutcome.GatewayReviewStatus != GatewayReviewStatus.Fail)
-                        {
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                                <h2 class="govuk-heading-m govuk-!-margin-bottom-3">Gateway outcome</h2>
-                            </legend>
-                        }
-
                         <partial name="_GatewayOutcome" for="@Model.GatewayOutcome"/>
 
                         @if (!Model.IsReadOnly && !Model.IsGatewayFail)

@@ -2,7 +2,7 @@
 @using SFA.DAS.RoatpOversight.Web.Domain
 @model SFA.DAS.RoatpOversight.Web.Models.Partials.GatewayOutcomeViewModel
 
-@if (Model.GatewayReviewStatus != GatewayReviewStatus.Fail)
+@if (Model.GatewayReviewStatus == GatewayReviewStatus.Pass)
 {
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h2 class="govuk-heading-m govuk-!-margin-bottom-3">Gateway outcome</h2>
@@ -20,6 +20,12 @@
                 <strong class="das-tag das-tag--solid-green">
                     Passed
                 </strong>
+            }
+            else if (Model.GatewayReviewStatus == GatewayReviewStatus.Removed)
+            {
+        <strong class="govuk-tag govuk-tag--inactive">
+            Removed
+        </strong>
             }
             else
             {
@@ -60,7 +66,7 @@
             }
         </dd>
     </div>
-    @if (Model.GatewayReviewStatus == GatewayReviewStatus.Fail)
+    @if (Model.GatewayReviewStatus != GatewayReviewStatus.Pass)
     {
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">

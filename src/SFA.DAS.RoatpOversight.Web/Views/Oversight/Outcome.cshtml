@@ -35,7 +35,7 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            @if (Model.OverallOutcome.IsGatewayOutcome || Model.GatewayOutcome.GatewayReviewStatus == GatewayReviewStatus.Fail)
+            @if (Model.OverallOutcome.IsGatewayOutcome || Model.IsGatewayActionPendingConfirmation)
             {
                 <h2 class="govuk-heading-l">Gateway outcome</h2>
             }
@@ -54,13 +54,14 @@
 
             <input type="hidden" name="ApplicationId" value="@Model.ApplicationSummary.ApplicationId" />
             <input type="hidden" asp-for="IsGatewayFail" />
+            <input type="hidden" asp-for="IsGatewayWithdrawal" />
 
             <div das-highlight-error-for="ApproveGateway" error-class="govuk-form-group--error" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
 
                     <partial name="_GatewayOutcome" for="@Model.GatewayOutcome" />
 
-                    @if (!Model.HasFinalOutcome && !Model.IsGatewayFail)
+                    @if (!Model.HasFinalOutcome && !Model.IsGatewayActionPendingConfirmation)
                     {
                         <span das-validation-for="ApproveGateway" class="govuk-error-message"></span>
 
@@ -93,7 +94,7 @@
                 </fieldset>
             </div>
 
-            @if (!Model.IsGatewayFail)
+            @if (!Model.IsGatewayActionPendingConfirmation)
             {
 
                 <div class="govuk-form-group">
@@ -154,7 +155,7 @@
         <partial name="_InProgressDetails" for="@Model.InProgressDetails"/>
     }
 
-    @if (!Model.HasFinalOutcome && !Model.IsGatewayFail)
+    @if (!Model.HasFinalOutcome && !Model.IsGatewayActionPendingConfirmation)
     {
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">

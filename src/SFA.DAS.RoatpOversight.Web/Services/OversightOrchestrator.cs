@@ -58,6 +58,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 OversightStatus = applicationDetails.OversightStatus,
                 ApproveGateway = GetStringValueForApprovalStatusBoolean(applicationDetails.GatewayApproved),
                 ApproveModeration = GetStringValueForApprovalStatusBoolean(applicationDetails.ModerationApproved),
+                IsGatewayWithdrawal = applicationDetails.ApplicationStatus == ApplicationStatus.Removed,
                 HasFinalOutcome = applicationDetails.OversightStatus != OversightReviewStatus.None &&
                              applicationDetails.OversightStatus != OversightReviewStatus.InProgress
             };
@@ -219,11 +220,17 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         {
             return new GatewayOutcomeViewModel
             {
-                GatewayReviewStatus = applicationDetails.GatewayReviewStatus,
+                GatewayReviewStatus = applicationDetails.ApplicationStatus == GatewayReviewStatus.Removed
+                    ? ApplicationStatus.Removed
+                    : applicationDetails.GatewayReviewStatus,
                 GatewayOutcomeMadeDate = applicationDetails.GatewayOutcomeMadeDate,
                 GatewayOutcomeMadeBy = applicationDetails.GatewayOutcomeMadeBy,
-                GatewayComments = applicationDetails.GatewayComments,
-                GatewayExternalComments = applicationDetails.GatewayExternalComments
+                GatewayComments = applicationDetails.ApplicationStatus == ApplicationStatus.Removed
+                    ? applicationDetails.ApplyInternalComments
+                    : applicationDetails.GatewayComments,
+                GatewayExternalComments = applicationDetails.ApplicationStatus == ApplicationStatus.Removed
+                    ? applicationDetails.ApplyExternalComments
+                    : applicationDetails.GatewayExternalComments
             };
         }
 

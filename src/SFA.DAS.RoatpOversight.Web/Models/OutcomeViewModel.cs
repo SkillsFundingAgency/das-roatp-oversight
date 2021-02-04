@@ -16,6 +16,8 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public InProgressDetailsViewModel InProgressDetails { get; set; }
         public OverallOutcomeViewModel OverallOutcome { get; set; }
         public bool IsGatewayFail => GatewayOutcome.GatewayReviewStatus == GatewayReviewStatus.Fail;
+        public bool IsGatewayWithdrawal { get; set; }
+        public bool IsGatewayActionPendingConfirmation => IsGatewayFail || IsGatewayWithdrawal;
         public bool HasFinalOutcome { get; set; }
         public bool ShowInProgressDetails { get; set; }
         public bool ShowAppealLink { get; set; }

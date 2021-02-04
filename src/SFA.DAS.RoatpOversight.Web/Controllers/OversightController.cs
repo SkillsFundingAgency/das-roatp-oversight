@@ -59,6 +59,11 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 return RedirectToAction("Confirmed", new {request.ApplicationId});
             }
 
+            if(request.IsGatewayWithdrawal)
+            {
+                throw new NotImplementedException();
+            }
+
             var cacheKey = await _oversightOrchestrator.SaveOutcomePostRequestToCache(request);
             return RedirectToAction("ConfirmOutcome", new {applicationId = request.ApplicationId, OutcomeKey = cacheKey});
         }

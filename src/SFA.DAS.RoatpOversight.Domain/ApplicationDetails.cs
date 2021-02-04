@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.RoatpOversight.Domain;
 
 namespace SFA.DAS.RoatpOversight.Domain
 {

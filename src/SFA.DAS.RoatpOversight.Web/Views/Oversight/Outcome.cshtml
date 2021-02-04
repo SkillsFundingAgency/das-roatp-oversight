@@ -63,15 +63,16 @@
 
                         @if (!Model.HasFinalOutcome && !Model.IsGatewayFail)
                         {
-                            @Html.ValidationMessageFor(m => m.ApproveGateway, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveGateway)})
+                            <span das-validation-for="ApproveGateway" class="govuk-error-message"></span>
 
                             <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input"
                                            type="radio"
-                                           id="ApproveGateway"
                                            value="@ApprovalStatus.Approve"
-                                           asp-for="ApproveGateway"/>
+                                           asp-for="ApproveGateway"
+                                           aria-describedby="ApproveGateway-error"
+                                           />
                                     <label class="govuk-label govuk-radios__label" for="ApproveGateway">
                                         Approve this outcome
                                     </label>
@@ -82,6 +83,7 @@
                                            id="OptionApproveGatewayNo"
                                            value="@ApprovalStatus.Overturn"
                                            asp-for="ApproveGateway"
+                                           aria-describedby="ApproveGateway-error"
                                            data-module="das-show-hide-controls"
                                            data-aria-controls="conditional-UnsuccessfulExternalText"/>
                                     <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayNo">
@@ -111,18 +113,19 @@
                                 <h2 class="govuk-heading-m">Moderation outcome</h2>
                             </legend>
 
-                            <partial name="_ModerationOutcome" for="@Model.ModerationOutcome"/>
+                            <partial name="_ModerationOutcome" for="@Model.ModerationOutcome" />
 
                             @if (!Model.HasFinalOutcome)
                             {
-                                @Html.ValidationMessageFor(m => m.ApproveModeration, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.ApproveModeration)})
+                                <span das-validation-for="ApproveModeration" class="govuk-error-message"></span>
                                 <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input"
                                                type="radio"
-                                               id="ApproveModeration"
                                                value="@ApprovalStatus.Approve"
-                                               asp-for="ApproveModeration"/>
+                                               asp-for="ApproveModeration"
+                                               aria-describedby="ApproveModeration-error"
+                                               />
                                         <label class="govuk-label govuk-radios__label" for="ApproveModeration">
                                             Approve this outcome
                                         </label>
@@ -133,8 +136,9 @@
                                                id="OptionApproveModerationNo"
                                                value="@ApprovalStatus.Overturn"
                                                asp-for="ApproveModeration"
+                                               aria-describedby="ApproveModeration-error"
                                                data-module="das-show-hide-controls"
-                                               data-aria-controls="conditional-UnsuccessfulExternalText"/>
+                                               data-aria-controls="conditional-UnsuccessfulExternalText" />
                                         <label class="govuk-label govuk-radios__label" for="OptionApproveModerationNo">
                                             Overturn this outcome
                                         </label>
@@ -163,17 +167,15 @@
                             <h2 class="govuk-heading-l">What is the overall outcome of this application?</h2>
                         </legend>
 
-                        @Html.ValidationMessageFor(m => m.OversightStatus, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.OversightStatus)})
-
+                        <span das-validation-for="OversightStatus" class="govuk-error-message"></span>
                         <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
                                        type="radio"
-                                       id="OversightStatus"
                                        asp-for="OversightStatus"
                                        value=@OversightReviewStatus.Successful
                                        data-aria-controls="conditional-OptionSuccessful"
-                                       data-module="das-disabled"/>
+                                       data-module="das-disabled" />
                                 <label class="govuk-label govuk-radios__label" for="OversightStatus">
                                     @OversightReviewStatus.Successful
                                 </label>
@@ -185,10 +187,10 @@
                                         Add your internal comments (optional)
                                     </label>
                                     <textarea class="govuk-textarea"
-                                                id="SuccessfulText"
-                                                name="SuccessfulText"
-                                                rows="10"
-                                                maxlength="@OversightSettings.TextAreaMaxLength">@Model.SuccessfulText</textarea>
+                                              id="SuccessfulText"
+                                              name="SuccessfulText"
+                                              rows="10"
+                                              maxlength="@OversightSettings.TextAreaMaxLength">@Model.SuccessfulText</textarea>
                                 </div>
                             </div>
 
@@ -199,7 +201,7 @@
                                        asp-for="OversightStatus"
                                        value=@OversightReviewStatus.SuccessfulAlreadyActive
                                        data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
-                                       data-module="das-disabled"/>
+                                       data-module="das-disabled" />
                                 <label class="govuk-label govuk-radios__label" for="OptionSuccessfulAlreadyActive">
                                     Successful - already active
                                 </label>
@@ -211,10 +213,10 @@
                                         Add your internal comments (optional)
                                     </label>
                                     <textarea class="govuk-textarea"
-                                                id="SuccessfulAlreadyActiveText"
-                                                name="SuccessfulAlreadyActiveText"
-                                                rows="10"
-                                                maxlength="@OversightSettings.TextAreaMaxLength">@Model.SuccessfulAlreadyActiveText</textarea>
+                                              id="SuccessfulAlreadyActiveText"
+                                              name="SuccessfulAlreadyActiveText"
+                                              rows="10"
+                                              maxlength="@OversightSettings.TextAreaMaxLength">@Model.SuccessfulAlreadyActiveText</textarea>
                                 </div>
                             </div>
                             <div class="govuk-radios__item">
@@ -224,7 +226,7 @@
                                        asp-for="OversightStatus"
                                        value=@OversightReviewStatus.SuccessfulFitnessForFunding
                                        data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
-                                       data-module="das-disabled"/>
+                                       data-module="das-disabled" />
                                 <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
                                     Successful - fitness for funding
                                 </label>
@@ -236,10 +238,10 @@
                                         Add your internal comments (optional)
                                     </label>
                                     <textarea class="govuk-textarea"
-                                                id="SuccessfulFitnessForFundingText"
-                                                name="SuccessfulFitnessForFundingText"
-                                                rows="10"
-                                                maxlength="@OversightSettings.TextAreaMaxLength">@Model.SuccessfulFitnessForFundingText</textarea>
+                                              id="SuccessfulFitnessForFundingText"
+                                              name="SuccessfulFitnessForFundingText"
+                                              rows="10"
+                                              maxlength="@OversightSettings.TextAreaMaxLength">@Model.SuccessfulFitnessForFundingText</textarea>
                                 </div>
                             </div>
                             <div class="govuk-radios__item">
@@ -249,7 +251,7 @@
                                        asp-for="OversightStatus"
                                        value=@OversightReviewStatus.Unsuccessful
                                        data-aria-controls="conditional-OptionUnsuccessful"
-                                       data-module="das-disabled"/>
+                                       data-module="das-disabled" />
                                 <label class="govuk-label govuk-radios__label" for="OptionUnsuccessful">
                                     Unsuccessful
                                 </label>
@@ -260,13 +262,13 @@
                                     <label class="govuk-label" for="UnsuccessfulText">
                                         Add your internal comments
                                     </label>
-                                    @Html.ValidationMessageFor(m => m.UnsuccessfulText, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.UnsuccessfulText)})
+                                    <span das-validation-for="UnsuccessfulText" class="govuk-error-message"></span>
                                     <textarea class="govuk-textarea"
-                                                id="UnsuccessfulText"
-                                                name="UnsuccessfulText"
-                                                asp-for="UnsuccessfulText"
-                                                rows="10"
-                                                maxlength="@OversightSettings.TextAreaMaxLength">@Model.UnsuccessfulText</textarea>
+                                              id="UnsuccessfulText"
+                                              name="UnsuccessfulText"
+                                              asp-for="UnsuccessfulText"
+                                              rows="10"
+                                              maxlength="@OversightSettings.TextAreaMaxLength">@Model.UnsuccessfulText</textarea>
                                 </div>
 
                                 <div class="govuk-form-group das-reveal__conditional--hidden" data-module="das-reveal" id="conditional-UnsuccessfulExternalText">
@@ -277,14 +279,14 @@
                                     <div class="govuk-hint" id="UnsuccessfulExternalText-hint">
                                         These comments will be seen by the applicant. Only fill in if you have overturned an outcome.
                                     </div>
-                                    @Html.ValidationMessageFor(m => m.UnsuccessfulExternalText, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.UnsuccessfulExternalText)})
+                                    <span das-validation-for="UnsuccessfulExternalText" class="govuk-error-message"></span>
                                     <textarea class="govuk-textarea"
-                                                id="UnsuccessfulExternalText"
-                                                name="UnsuccessfulExternalText"
-                                                asp-for="UnsuccessfulExternalText"
-                                                rows="10"
-                                                maxlength="@OversightSettings.TextAreaMaxLength"
-                                                aria-describedby="UnsuccessfulExternalText-hint">@Model.UnsuccessfulExternalText</textarea>
+                                              id="UnsuccessfulExternalText"
+                                              name="UnsuccessfulExternalText"
+                                              asp-for="UnsuccessfulExternalText"
+                                              rows="10"
+                                              maxlength="@OversightSettings.TextAreaMaxLength"
+                                              aria-describedby="UnsuccessfulExternalText-hint">@Model.UnsuccessfulExternalText</textarea>
                                 </div>
                             </div>
                             @if (Model.OversightStatus == OversightReviewStatus.None)
@@ -296,7 +298,7 @@
                                            id="OptionInProgress"
                                            asp-for="OversightStatus"
                                            value=@OversightReviewStatus.InProgress
-                                           data-aria-controls="conditional-OptionInProgress"/>
+                                           data-aria-controls="conditional-OptionInProgress" />
                                     <label class="govuk-label govuk-radios__label" for="OptionInProgress">
                                         Set to 'in progress'
                                     </label>
@@ -307,13 +309,12 @@
                                         <label class="govuk-label" for="InProgressInternalText">
                                             Add your internal comments
                                         </label>
-
-                                        @Html.ValidationMessageFor(m => m.InProgressInternalText, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.InProgressInternalText)})
+                                        <span das-validation-for="InProgressInternalText" class="govuk-error-message"></span>
                                         <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressInternalText, "govuk-textarea--error")"
-                                                id="InProgressInternalText"
-                                                name="InProgressInternalText"
-                                                rows="10"
-                                                maxlength="@OversightSettings.TextAreaMaxLength">@Model.InProgressInternalText</textarea>
+                                                  id="InProgressInternalText"
+                                                  name="InProgressInternalText"
+                                                  rows="10"
+                                                  maxlength="@OversightSettings.TextAreaMaxLength">@Model.InProgressInternalText</textarea>
                                     </div>
                                     <div>
                                         <div class="govuk-form-group">
@@ -324,13 +325,13 @@
                                             <div id="InProgressExternalText-hint" class="govuk-hint">
                                                 These comments will be seen by the applicant.
                                             </div>
-                                            @Html.ValidationMessageFor(m => m.InProgressExternalText, null, new {@class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.InProgressExternalText)})
+                                            <span das-validation-for="InProgressExternalText" class="govuk-error-message"></span>
                                             <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressExternalText, "govuk-textarea--error")"
-                                                id="InProgressExternalText"
-                                                name="InProgressExternalText"
-                                                rows="10"
-                                                maxlength="@OversightSettings.TextAreaMaxLength"
-                                                aria-describedby="InProgressExternalText-hint">@Model.InProgressExternalText</textarea>
+                                                      id="InProgressExternalText"
+                                                      name="InProgressExternalText"
+                                                      rows="10"
+                                                      maxlength="@OversightSettings.TextAreaMaxLength"
+                                                      aria-describedby="InProgressExternalText-hint">@Model.InProgressExternalText</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -360,6 +361,16 @@
 @if (Model.HasFinalOutcome)
 {
     <partial name="_OverallOutcome" for="@Model.OverallOutcome"/>
+}
+
+@if(Model.ShowAppealLink)
+{
+    <div class="das-actions-box">
+        <h2 class="govuk-heading-m">Application actions</h2>
+        <p class="govuk-body govuk-body govuk-!-margin-bottom-1">
+            <a class="govuk-link govuk-link--no-visited-state" asp-action="Appeal" asp-route-applicationId="@Model.ApplicationSummary.ApplicationId">Appeal this application</a>
+        </p>
+    </div>
 }
 
 <p class="govuk-body">

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
@@ -104,6 +105,12 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         {
             var viewModel = await _oversightOrchestrator.GetConfirmedViewModel(request.ApplicationId);
             return View(viewModel);
+        }
+
+        [HttpGet("Oversight/Outcome/{applicationId}/appeal")]
+        public IActionResult Appeal(AppealRequest request)
+        {
+            throw new NotImplementedException();
         }
     }
 }

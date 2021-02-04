@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 namespace SFA.DAS.RoatpOversight.Web.TagHelpers
 {
     [HtmlTargetElement("div", Attributes = HighlightErrorForAttributeName + "," + ErrorCssClass)]
+    [HtmlTargetElement("textarea", Attributes = HighlightErrorForAttributeName + "," + ErrorCssClass)]
     public class DasHighlightErrorsTagHelper : TagHelper
     {
         private const string HighlightErrorForAttributeName = "das-highlight-error-for";

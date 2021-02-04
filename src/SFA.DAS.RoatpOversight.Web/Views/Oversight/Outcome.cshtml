@@ -1,6 +1,5 @@
 ﻿@using SFA.DAS.RoatpOversight.Domain
 @using SFA.DAS.RoatpOversight.Web.Domain
-@using SFA.DAS.RoatpOversight.Web.Extensions
 @model SFA.DAS.RoatpOversight.Web.Models.OutcomeViewModel
 @{
     ViewData["Title"] = "RoATP application outcomes - Application summary";
@@ -313,7 +312,7 @@
                                             Add your internal comments
                                         </label>
                                         <span das-validation-for="InProgressInternalText" class="govuk-error-message"></span>
-                                        <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressInternalText, "govuk-textarea--error")"
+                                        <textarea das-highlight-error-for="InProgressInternalText" error-class="govuk-textarea--error" class="govuk-textarea"
                                                   id="InProgressInternalText"
                                                   name="InProgressInternalText"
                                                   rows="10"
@@ -329,7 +328,8 @@
                                                 These comments will be seen by the applicant.
                                             </div>
                                             <span das-validation-for="InProgressExternalText" class="govuk-error-message"></span>
-                                            <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressExternalText, "govuk-textarea--error")"
+                                            <textarea class="govuk-textarea"
+                                                      das-highlight-error-for="InProgressExternalText" error-class="govuk-textarea--error" 
                                                       id="InProgressExternalText"
                                                       name="InProgressExternalText"
                                                       rows="10"

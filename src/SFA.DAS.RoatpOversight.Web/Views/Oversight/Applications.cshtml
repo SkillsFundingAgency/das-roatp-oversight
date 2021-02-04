@@ -127,7 +127,7 @@
                                         <td data-label="Application submitted date" class="govuk-table__cell">@outcome.ApplicationSubmittedDate.ToSfaShortDateString()</td>
                                         <td data-label="Application determined date" class="govuk-table__cell">@outcome.ApplicationDeterminedDate.ToSfaShortDateString()</td>
                                         <td data-label="Overall outcome" class="govuk-table__cell">
-                                            <span class="@outcome.OversightStatus.GetCssClass()">@outcome.OversightStatus.GetLabel()</span>
+                                            <span class="das-no-wrap @outcome.OversightStatus.GetCssClass()">@outcome.OversightStatus.GetLabel()</span>
                                         </td>
                                     </tr>
                                 }

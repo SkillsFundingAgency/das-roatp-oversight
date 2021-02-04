@@ -18,6 +18,6 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public string InProgressInternalText { get; set; }
         public string InProgressExternalText { get; set; }
         public bool IsGatewayFail { get; set; }
-        public bool IsGatewayWithdrawal { get; set; }
+        public bool IsGatewayRemoved { get; set; }
     }
 }

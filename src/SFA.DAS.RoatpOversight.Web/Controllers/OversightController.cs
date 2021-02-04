@@ -50,18 +50,19 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         [HttpPost("Oversight/Outcome/{applicationId}")]
         public async Task<IActionResult> Outcome([CustomizeValidator(Interceptor = typeof(OutcomeValidatorInterceptor))]OutcomePostRequest request)
         {
+            var userId = HttpContext.User.UserId();
+            var userName = HttpContext.User.UserDisplayName();
+
             if (request.IsGatewayFail)
             {
-                var userId = HttpContext.User.UserId();
-                var userName = HttpContext.User.UserDisplayName();
-
                 await _outcomeOrchestrator.RecordGatewayFailOutcome(request.ApplicationId, userId, userName);
                 return RedirectToAction("Confirmed", new {request.ApplicationId});
             }
 
-            if(request.IsGatewayWithdrawal)
+            if(request.IsGatewayRemoved)
             {
-                throw new NotImplementedException();
+                await _outcomeOrchestrator.RecordGatewayRemovedOutcome(request.ApplicationId, userId, userName);
+                return RedirectToAction("Confirmed", new { request.ApplicationId });
             }
 
             var cacheKey = await _oversightOrchestrator.SaveOutcomePostRequestToCache(request);

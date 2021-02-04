@@ -58,9 +58,10 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 OversightStatus = applicationDetails.OversightStatus,
                 ApproveGateway = GetStringValueForApprovalStatusBoolean(applicationDetails.GatewayApproved),
                 ApproveModeration = GetStringValueForApprovalStatusBoolean(applicationDetails.ModerationApproved),
-                IsGatewayWithdrawal = applicationDetails.ApplicationStatus == ApplicationStatus.Removed,
+                IsGatewayRemoved = applicationDetails.ApplicationStatus == ApplicationStatus.Removed,
+                IsGatewayFail = applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Fail,
                 HasFinalOutcome = applicationDetails.OversightStatus != OversightReviewStatus.None &&
-                             applicationDetails.OversightStatus != OversightReviewStatus.InProgress
+                                applicationDetails.OversightStatus != OversightReviewStatus.InProgress
             };
 
             if (applicationDetails.OversightStatus == OversightReviewStatus.None)

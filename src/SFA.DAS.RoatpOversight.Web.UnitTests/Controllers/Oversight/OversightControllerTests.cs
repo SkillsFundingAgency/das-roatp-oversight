@@ -142,6 +142,29 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 
 
         [Test]
+        public async Task Post_Outcome_Gateway_Removed_Records_Gateway_Removed_Outcome()
+        {
+            var viewModel = new OutcomeViewModel { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };
+
+            _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
+
+            var command = new OutcomePostRequest
+            {
+                ApplicationId = _applicationDetailsApplicationId,
+                OversightStatus = OversightReviewStatus.Unsuccessful,
+                ApproveGateway = GatewayReviewStatus.Fail,
+                ApproveModeration = ModerationReviewStatus.Fail,
+                UnsuccessfulText = "test",
+                IsGatewayRemoved = true
+            };
+
+            await _controller.Outcome(command);
+
+            _outcomeOrchestrator.Verify(x => x.RecordGatewayRemovedOutcome(It.Is<Guid>(id => id == command.ApplicationId), It.IsAny<string>(), It.IsAny<string>()));
+        }
+
+
+        [Test]
         public async Task Post_Outcome_Gateway_Fail_Redirects_To_Confirmed_Page()
         {
             var viewModel = new OutcomeViewModel { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };

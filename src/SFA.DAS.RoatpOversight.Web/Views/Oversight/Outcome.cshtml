@@ -287,7 +287,7 @@
                                                 aria-describedby="UnsuccessfulExternalText-hint">@Model.UnsuccessfulExternalText</textarea>
                                 </div>
                             </div>
-                            @if (Model.OversightStatus == OversightReviewStatus.None)
+                            @if (Model.IsNew)
                             {
                                 <div class="govuk-radios__divider">or</div>
                                 <div class="govuk-radios__item">
@@ -312,6 +312,7 @@
                                         <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressInternalText, "govuk-textarea--error")"
                                                 id="InProgressInternalText"
                                                 name="InProgressInternalText"
+                                                asp-for="InProgressInternalText"
                                                 rows="10"
                                                 maxlength="@OversightSettings.TextAreaMaxLength">@Model.InProgressInternalText</textarea>
                                     </div>
@@ -328,6 +329,7 @@
                                             <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressExternalText, "govuk-textarea--error")"
                                                 id="InProgressExternalText"
                                                 name="InProgressExternalText"
+                                                asp-for="InProgressExternalText"
                                                 rows="10"
                                                 maxlength="@OversightSettings.TextAreaMaxLength"
                                                 aria-describedby="InProgressExternalText-hint">@Model.InProgressExternalText</textarea>

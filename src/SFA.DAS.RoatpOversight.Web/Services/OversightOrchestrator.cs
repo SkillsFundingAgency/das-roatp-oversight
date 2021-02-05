@@ -47,6 +47,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             var viewModel = new OutcomeViewModel
             {
+                IsNew = applicationDetails.OversightStatus == OversightReviewStatus.None,
                 ApplicationSummary = CreateApplicationSummaryViewModel(applicationDetails),
                 GatewayOutcome = CreateGatewayOutcomeViewModel(applicationDetails),
                 FinancialHealthOutcome = CreateFinancialHealthOutcomeViewModel(applicationDetails),
@@ -61,7 +62,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                              applicationDetails.OversightStatus != OversightReviewStatus.InProgress
             };
 
-            if (applicationDetails.OversightStatus == OversightReviewStatus.None)
+            if (applicationDetails.OversightStatus == OversightReviewStatus.None || applicationDetails.OversightStatus == OversightReviewStatus.InProgress)
             {
                 var cachedItem = await _cacheStorageService.RetrieveFromCache<OutcomePostRequest>(outcomeKey.ToString());
                 if (cachedItem == null) return viewModel;

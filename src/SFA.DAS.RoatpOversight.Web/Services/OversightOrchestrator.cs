@@ -201,8 +201,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                     financialDetailsPass = true;
             }
 
-            if (applicationDetails.GatewayReviewStatus == Domain.GatewayReviewStatus.Pass &&
-                applicationDetails.ModerationReviewStatus == Domain.ModerationReviewStatus.Pass &&
+            if (applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Pass &&
+                applicationDetails.ModerationReviewStatus == ModerationReviewStatus.Pass &&
                 financialDetailsPass)
             {
                 result.AssessmentOutcome = AssessmentOutcomeStatus.Passed;

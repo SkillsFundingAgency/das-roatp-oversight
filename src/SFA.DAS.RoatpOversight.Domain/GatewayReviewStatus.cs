@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.RoatpOversight.Web.Domain
+﻿namespace SFA.DAS.RoatpOversight.Domain
 {
     public class GatewayReviewStatus
     {

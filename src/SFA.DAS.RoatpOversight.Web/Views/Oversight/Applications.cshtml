@@ -56,6 +56,7 @@
                                     <th scope="col" class="govuk-table__header">Provider route</th>
                                     <th scope="col" class="govuk-table__header">Application reference number</th>
                                     <th scope="col" class="govuk-table__header">Application submitted date</th>
+                                    <th scope="col" class="govuk-table__header">Outcome</th>
                                 </tr>
                             </thead>
                             <tbody class="govuk-table__body">
@@ -71,6 +72,18 @@
                                         <td data-label="Provider route" class="govuk-table__cell">@application.ProviderRoute</td>
                                         <td data-label="Application reference number" class="govuk-table__cell">@application.ApplicationReferenceNumber</td>
                                         <td data-label="Application submitted date" class="govuk-table__cell">@application.ApplicationSubmittedDate.ToSfaShortDateString()</td>
+                                        <td data-label="Outcome" class="govuk-table__cell">
+                                            @{
+                                                @if (application.OutcomePass)
+                                                {
+                                                    <span class="govuk-tag das-tag--solid-green">Pass</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="govuk-tag das-tag--solid-red">Fail</span>
+                                                }
+                                            }
+                                        </td>
                                     </tr>
                                 }
                             </tbody>

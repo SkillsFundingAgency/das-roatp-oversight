@@ -280,7 +280,7 @@
                                                 aria-describedby="UnsuccessfulExternalText-hint">@Model.UnsuccessfulExternalText</textarea>
                                 </div>
                             </div>
-                            @if (Model.OversightStatus == OversightReviewStatus.None)
+                            @if (Model.IsNew)
                             {
                                 <div class="govuk-radios__divider">or</div>
                                 <div class="govuk-radios__item">

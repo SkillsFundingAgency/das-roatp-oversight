@@ -1,6 +1,4 @@
-﻿using System;
-using SFA.DAS.RoatpOversight.Domain;
-using SFA.DAS.RoatpOversight.Web.Domain;
+﻿using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Models.Partials;
 
 namespace SFA.DAS.RoatpOversight.Web.Models
@@ -8,7 +6,7 @@ namespace SFA.DAS.RoatpOversight.Web.Models
     public class OutcomeViewModel
     {
         public ApplicationSummaryViewModel ApplicationSummary { get; set; }
-
+        public bool IsNew { get; set; }
         public GatewayOutcomeViewModel GatewayOutcome { get; set; }
 
         public FinancialHealthOutcomeViewModel FinancialHealthOutcome { get; set; }

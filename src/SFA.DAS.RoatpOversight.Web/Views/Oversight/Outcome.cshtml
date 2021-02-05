@@ -305,6 +305,7 @@
                                         <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressInternalText, "govuk-textarea--error")"
                                                 id="InProgressInternalText"
                                                 name="InProgressInternalText"
+                                                asp-for="InProgressInternalText"
                                                 rows="10"
                                                 maxlength="@OversightSettings.TextAreaMaxLength">@Model.InProgressInternalText</textarea>
                                     </div>
@@ -321,6 +322,7 @@
                                             <textarea class="govuk-textarea @Html.AddClassIfPropertyInError(x => x.InProgressExternalText, "govuk-textarea--error")"
                                                 id="InProgressExternalText"
                                                 name="InProgressExternalText"
+                                                asp-for="InProgressExternalText"
                                                 rows="10"
                                                 maxlength="@OversightSettings.TextAreaMaxLength"
                                                 aria-describedby="InProgressExternalText-hint">@Model.InProgressExternalText</textarea>

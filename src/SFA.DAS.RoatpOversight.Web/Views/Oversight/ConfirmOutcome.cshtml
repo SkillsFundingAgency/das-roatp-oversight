@@ -1,6 +1,5 @@
-﻿@using SFA.DAS.AdminService.Common.Extensions;
+﻿@using SFA.DAS.AdminService.Common.Extensions
 @using SFA.DAS.RoatpOversight.Domain
-@using SFA.DAS.RoatpOversight.Web.Extensions
 @model SFA.DAS.RoatpOversight.Web.Models.ConfirmOutcomeViewModel
 @{
     ViewData["Title"] = @Model.PageTitle;
@@ -34,8 +33,8 @@
                 <input type="hidden" asp-for="InternalComments" />
                 <input type="hidden" asp-for="ExternalComments" />
 
-                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x=> x.Confirm, "govuk-form-group--error")">
-                    <fieldset class="govuk-fieldset">
+                <div class="govuk-form-group" das-highlight-error-for="Confirm" error-class="govuk-form-group--error">
+                    <fieldset class="govuk-fieldset" aria-describedby="Confirm-error">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <span class="govuk-caption-xl">Overall outcome</span>
                             <h1 class="govuk-heading-xl">@Model.PageTitle</h1>
@@ -152,7 +151,7 @@
                             </ul>
                         }
 
-                        @Html.ValidationMessageFor(m => m.Confirm, null, new { @class = "govuk-error-message error", id = "error-message-" + Html.IdFor(m => m.Confirm) })
+                        <span das-validation-for="Confirm" class="govuk-error-message"></span>
 
                         <div class="govuk-radios">
                             <div class="govuk-radios__item">

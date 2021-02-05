@@ -57,7 +57,7 @@
             <input type="hidden" asp-for="IsGatewayRemoved" />
 
             <div das-highlight-error-for="ApproveGateway" error-class="govuk-form-group--error" class="govuk-form-group">
-                <fieldset class="govuk-fieldset">
+                <fieldset class="govuk-fieldset" aria-describedby="ApproveGateway-error">
 
                     <partial name="_GatewayOutcome" for="@Model.GatewayOutcome" />
 
@@ -70,8 +70,7 @@
                                 <input class="govuk-radios__input"
                                        type="radio"
                                        value="@ApprovalStatus.Approve"
-                                       asp-for="ApproveGateway"
-                                       aria-describedby="ApproveGateway-error" />
+                                       asp-for="ApproveGateway" />
                                 <label class="govuk-label govuk-radios__label" for="ApproveGateway">
                                     Approve this outcome
                                 </label>
@@ -82,7 +81,6 @@
                                        id="OptionApproveGatewayNo"
                                        value="@ApprovalStatus.Overturn"
                                        asp-for="ApproveGateway"
-                                       aria-describedby="ApproveGateway-error"
                                        data-module="das-show-hide-controls"
                                        data-aria-controls="conditional-UnsuccessfulExternalText" />
                                 <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayNo">
@@ -107,7 +105,7 @@
                 </div>
 
                 <div das-highlight-error-for="ApproveModeration" error-class="govuk-form-group--error" class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
+                    <fieldset class="govuk-fieldset" aria-describedby="ApproveModeration-error">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-m">Moderation outcome</h2>
                         </legend>
@@ -117,13 +115,13 @@
                         @if (!Model.HasFinalOutcome)
                         {
                             <span das-validation-for="ApproveModeration" class="govuk-error-message"></span>
+
                             <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input"
                                            type="radio"
                                            value="@ApprovalStatus.Approve"
-                                           asp-for="ApproveModeration"
-                                           aria-describedby="ApproveModeration-error" />
+                                           asp-for="ApproveModeration" />
                                     <label class="govuk-label govuk-radios__label" for="ApproveModeration">
                                         Approve this outcome
                                     </label>
@@ -134,7 +132,6 @@
                                            id="OptionApproveModerationNo"
                                            value="@ApprovalStatus.Overturn"
                                            asp-for="ApproveModeration"
-                                           aria-describedby="ApproveModeration-error"
                                            data-module="das-show-hide-controls"
                                            data-aria-controls="conditional-UnsuccessfulExternalText" />
                                     <label class="govuk-label govuk-radios__label" for="OptionApproveModerationNo">
@@ -160,26 +157,26 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <div das-highlight-error-for="OversightStatus" error-class="govuk-form-group--error" class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
+                    <fieldset class="govuk-fieldset" aria-describedby="OversightStatus-error">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h2 class="govuk-heading-l">What is the overall outcome of this application?</h2>
                         </legend>
 
                         <span das-validation-for="OversightStatus" class="govuk-error-message"></span>
+
                         <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input"
                                        type="radio"
                                        asp-for="OversightStatus"
                                        value=@OversightReviewStatus.Successful
-                                       aria-describedby="OversightStatus-error"
                                        data-aria-controls="conditional-OptionSuccessful"
                                        data-module="das-disabled" />
                                 <label class="govuk-label govuk-radios__label" for="OversightStatus">
                                     @OversightReviewStatus.Successful
                                 </label>
                             </div>
-                            <div class="govuk-radios__conditional" id="conditional-OptionSuccessful">
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-OptionSuccessful">
                                 <div class="govuk-form-group">
                                     <a name="OptionSuccessfulText"></a>
                                     <label class="govuk-label" for="SuccessfulText">
@@ -199,14 +196,13 @@
                                        id="OptionSuccessfulAlreadyActive"
                                        asp-for="OversightStatus"
                                        value=@OversightReviewStatus.SuccessfulAlreadyActive
-                                       aria-describedby="OversightStatus-error"
                                        data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
                                        data-module="das-disabled" />
                                 <label class="govuk-label govuk-radios__label" for="OptionSuccessfulAlreadyActive">
                                     Successful - already active
                                 </label>
                             </div>
-                            <div class="govuk-radios__conditional" id="conditional-OptionSuccessfulAlreadyActive">
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-OptionSuccessfulAlreadyActive">
                                 <div class="govuk-form-group">
                                     <a name="OptionSuccessfulAlreadyActiveText"></a>
                                     <label class="govuk-label" for="SuccessfulAlreadyActiveText">
@@ -225,14 +221,13 @@
                                        id="OptionSuccessfulFitnessForFunding"
                                        asp-for="OversightStatus"
                                        value=@OversightReviewStatus.SuccessfulFitnessForFunding
-                                       aria-describedby="OversightStatus-error"
                                        data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
                                        data-module="das-disabled" />
                                 <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
                                     Successful - fitness for funding
                                 </label>
                             </div>
-                            <div class="govuk-radios__conditional" id="conditional-OptionSuccessfulFitnessForFunding">
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-OptionSuccessfulFitnessForFunding">
                                 <div class="govuk-form-group">
                                     <a name="OptionSuccessfulFitnessForFundingText"></a>
                                     <label class="govuk-label" for="SuccessfulFitnessForFundingText">
@@ -251,26 +246,28 @@
                                        id="OptionUnsuccessful"
                                        asp-for="OversightStatus"
                                        value=@OversightReviewStatus.Unsuccessful
-                                       aria-describedby="OversightStatus-error"
                                        data-aria-controls="conditional-OptionUnsuccessful"
                                        data-module="das-disabled" />
                                 <label class="govuk-label govuk-radios__label" for="OptionUnsuccessful">
                                     Unsuccessful
                                 </label>
                             </div>
-                            <div class="govuk-radios__conditional" id="conditional-OptionUnsuccessful">
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-OptionUnsuccessful">
                                 <div class="govuk-form-group">
                                     <a name="OptionUnsuccessfulText"></a>
                                     <label class="govuk-label" for="UnsuccessfulText">
                                         Add your internal comments
                                     </label>
+
                                     <span das-validation-for="UnsuccessfulText" class="govuk-error-message"></span>
+
                                     <textarea class="govuk-textarea"
                                               id="UnsuccessfulText"
                                               name="UnsuccessfulText"
                                               asp-for="UnsuccessfulText"
                                               rows="10"
-                                              maxlength="@OversightSettings.TextAreaMaxLength">@Model.UnsuccessfulText</textarea>
+                                              maxlength="@OversightSettings.TextAreaMaxLength"
+                                              aria-describedby="UnsuccessfulText-error">@Model.UnsuccessfulText</textarea>
                                 </div>
 
                                 <div class="govuk-form-group das-reveal__conditional--hidden" data-module="das-reveal" id="conditional-UnsuccessfulExternalText">
@@ -288,7 +285,7 @@
                                               asp-for="UnsuccessfulExternalText"
                                               rows="10"
                                               maxlength="@OversightSettings.TextAreaMaxLength"
-                                              aria-describedby="UnsuccessfulExternalText-hint">@Model.UnsuccessfulExternalText</textarea>
+                                              aria-describedby="UnsuccessfulExternalText-hint UnsuccessfulExternalText-error">@Model.UnsuccessfulExternalText</textarea>
                                 </div>
                             </div>
                             @if (Model.OversightStatus == OversightReviewStatus.None)
@@ -300,13 +297,12 @@
                                            id="OptionInProgress"
                                            asp-for="OversightStatus"
                                            value=@OversightReviewStatus.InProgress
-                                           aria-describedby="OversightStatus-error"
                                            data-aria-controls="conditional-OptionInProgress" />
                                     <label class="govuk-label govuk-radios__label" for="OptionInProgress">
                                         Set to 'in progress'
                                     </label>
                                 </div>
-                                <div class="govuk-radios__conditional" id="conditional-OptionInProgress">
+                                <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-OptionInProgress">
                                     <div class="govuk-form-group">
                                         <a name="OptionInProgressInternalText"></a>
                                         <label class="govuk-label" for="InProgressInternalText">
@@ -317,7 +313,8 @@
                                                   id="InProgressInternalText"
                                                   name="InProgressInternalText"
                                                   rows="10"
-                                                  maxlength="@OversightSettings.TextAreaMaxLength">@Model.InProgressInternalText</textarea>
+                                                  maxlength="@OversightSettings.TextAreaMaxLength"
+                                                  aria-describedby="InProgressInternalText-error">@Model.InProgressInternalText</textarea>
                                     </div>
                                     <div>
                                         <div class="govuk-form-group">
@@ -335,7 +332,7 @@
                                                       name="InProgressExternalText"
                                                       rows="10"
                                                       maxlength="@OversightSettings.TextAreaMaxLength"
-                                                      aria-describedby="InProgressExternalText-hint">@Model.InProgressExternalText</textarea>
+                                                      aria-describedby="InProgressExternalText-hint InProgressExternalText-error">@Model.InProgressExternalText</textarea>
                                         </div>
                                     </div>
                                 </div>

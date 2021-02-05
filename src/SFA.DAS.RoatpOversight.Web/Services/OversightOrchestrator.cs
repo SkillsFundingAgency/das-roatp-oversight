@@ -189,11 +189,11 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
 
             var financialDetailsPass = false;
-            if (applicationDetails.FinancialReviewStatus == Domain.FinancialReviewStatus.Exempt)
+            if (applicationDetails.FinancialReviewStatus == FinancialReviewStatus.Exempt)
                 financialDetailsPass = true;
             else
             {
-                if (applicationDetails.FinancialReviewStatus == Domain.FinancialReviewStatus.Pass &&
+                if (applicationDetails.FinancialReviewStatus == FinancialReviewStatus.Pass &&
                     (applicationDetails.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Exempt ||
                      applicationDetails.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Outstanding ||
                      applicationDetails.FinancialGradeAwarded == FinancialApplicationSelectedGrade.Good ||

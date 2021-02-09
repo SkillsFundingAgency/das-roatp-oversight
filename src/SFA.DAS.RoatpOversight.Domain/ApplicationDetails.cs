@@ -44,5 +44,7 @@ namespace SFA.DAS.RoatpOversight.Domain
         public string InProgressExternalComments { get; set; }
         public bool? GatewayApproved { get; set; }
         public bool? ModerationApproved { get; set; }
+        public string InternalComments { get; set; }
+        public string ExternalComments { get; set; }
     }
 }

@@ -58,7 +58,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 OversightStatus = applicationDetails.OversightStatus,
                 ApproveGateway = GetStringValueForApprovalStatusBoolean(applicationDetails.GatewayApproved),
                 ApproveModeration = GetStringValueForApprovalStatusBoolean(applicationDetails.ModerationApproved),
-                IsReadOnly = applicationDetails.OversightStatus != OversightReviewStatus.None &&
+                HasFinalOutcome = applicationDetails.OversightStatus != OversightReviewStatus.None &&
                              applicationDetails.OversightStatus != OversightReviewStatus.InProgress
             };
 
@@ -271,7 +271,11 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             {
                 OversightStatus = applicationDetails.OversightStatus,
                 ApplicationDeterminedDate = applicationDetails.ApplicationDeterminedDate,
-                OversightUserName = applicationDetails.OversightUserName
+                OversightUserName = applicationDetails.OversightUserName,
+                InternalComments = applicationDetails.InternalComments,
+                ExternalComments = applicationDetails.ExternalComments,
+                IsGatewayOutcome = applicationDetails.OversightStatus == OversightReviewStatus.Rejected ||
+                                   applicationDetails.OversightStatus == OversightReviewStatus.Withdrawn
             };
         }
     }

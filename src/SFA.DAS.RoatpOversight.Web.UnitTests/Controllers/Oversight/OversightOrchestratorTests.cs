@@ -198,6 +198,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(assessmentOutcome, result.ApplicationSummary.AssessmentOutcome);
         }
 
+        
         [TestCase(OversightReviewStatus.None, false)]
         [TestCase(OversightReviewStatus.Successful, false)]
         [TestCase(OversightReviewStatus.SuccessfulAlreadyActive, false)]
@@ -214,7 +215,8 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 
             var result = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
 
-            Assert.AreEqual(expectedShowAppealLink, result.ShowAppealLink);
+            //Assert.AreEqual(expectedShowAppealLink, result.ShowAppealLink);
+            Assert.IsFalse(result.ShowAppealLink);
         }
 
         private ApplicationDetails GetApplication()

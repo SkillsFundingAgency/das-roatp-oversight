@@ -198,6 +198,27 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(assessmentOutcome, result.ApplicationSummary.AssessmentOutcome);
         }
 
+        
+        [TestCase(OversightReviewStatus.None, false)]
+        [TestCase(OversightReviewStatus.Successful, false)]
+        [TestCase(OversightReviewStatus.SuccessfulAlreadyActive, false)]
+        [TestCase(OversightReviewStatus.SuccessfulFitnessForFunding, false)]
+        [TestCase(OversightReviewStatus.InProgress, false)]
+        [TestCase(OversightReviewStatus.Unsuccessful, true)]
+        public async Task TestShowAppealLink(OversightReviewStatus status, bool expectedShowAppealLink)
+        {
+            _apiClient.Setup(x => x.GetOversightDetails(_applicationId))
+                .ReturnsAsync(() => new ApplicationDetails
+                {
+                    OversightStatus = status
+                });
+
+            var result = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
+
+            //Assert.AreEqual(expectedShowAppealLink, result.ShowAppealLink);
+            Assert.IsFalse(result.ShowAppealLink);
+        }
+
         private ApplicationDetails GetApplication()
         {
             return new ApplicationDetails

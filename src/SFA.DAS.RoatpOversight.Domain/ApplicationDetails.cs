@@ -48,5 +48,7 @@ namespace SFA.DAS.RoatpOversight.Domain
         public string ExternalComments { get; set; }
         public string ApplyInternalComments { get; set; }
         public string ApplyExternalComments { get; set; }
+        public DateTime? ApplicationRemovedOn { get; set; }
+        public string ApplicationRemovedBy { get; set; }
     }
 }

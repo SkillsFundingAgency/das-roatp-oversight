@@ -222,11 +222,15 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         {
             return new GatewayOutcomeViewModel
             {
-                GatewayReviewStatus = applicationDetails.ApplicationStatus == GatewayReviewStatus.Removed
+                GatewayReviewStatus = applicationDetails.ApplicationStatus == ApplicationStatus.Removed
                     ? ApplicationStatus.Removed
                     : applicationDetails.GatewayReviewStatus,
-                GatewayOutcomeMadeDate = applicationDetails.GatewayOutcomeMadeDate,
-                GatewayOutcomeMadeBy = applicationDetails.GatewayOutcomeMadeBy,
+                GatewayOutcomeMadeDate = applicationDetails.ApplicationStatus == ApplicationStatus.Removed
+                    ? applicationDetails.ApplicationRemovedOn
+                    : applicationDetails.GatewayOutcomeMadeDate,
+                GatewayOutcomeMadeBy = applicationDetails.ApplicationStatus == ApplicationStatus.Removed
+                    ? applicationDetails.ApplicationRemovedBy
+                    : applicationDetails.GatewayOutcomeMadeBy,
                 GatewayComments = applicationDetails.ApplicationStatus == ApplicationStatus.Removed
                     ? applicationDetails.ApplyInternalComments
                     : applicationDetails.GatewayComments,

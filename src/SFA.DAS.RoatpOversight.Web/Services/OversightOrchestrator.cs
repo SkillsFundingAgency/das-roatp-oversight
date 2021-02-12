@@ -220,7 +220,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
         private GatewayOutcomeViewModel CreateGatewayOutcomeViewModel(ApplicationDetails applicationDetails)
         {
-            return new GatewayOutcomeViewModel
+            var result = new GatewayOutcomeViewModel
             {
                 GatewayReviewStatus = applicationDetails.ApplicationStatus == ApplicationStatus.Removed
                     ? ApplicationStatus.Removed
@@ -238,6 +238,24 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                     ? applicationDetails.ApplyExternalComments
                     : applicationDetails.GatewayExternalComments
             };
+
+            if (applicationDetails.GatewayApproved.HasValue)
+            {
+                if (applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Pass)
+                {
+                    result.GovernanceOutcome = applicationDetails.GatewayApproved.Value
+                        ? PassFailStatus.Passed
+                        : PassFailStatus.Failed;
+                }
+                else if (applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Fail)
+                {
+                    result.GovernanceOutcome = applicationDetails.GatewayApproved.Value
+                        ? PassFailStatus.Failed
+                        : PassFailStatus.Passed;
+                }
+            }
+
+            return result;
         }
 
         private FinancialHealthOutcomeViewModel CreateFinancialHealthOutcomeViewModel(
@@ -256,13 +274,31 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
         private ModerationOutcomeViewModel CreateModerationOutcomeViewModel(ApplicationDetails applicationDetails)
         {
-            return new ModerationOutcomeViewModel
+            var result = new ModerationOutcomeViewModel
             {
                 ModerationReviewStatus = applicationDetails.ModerationReviewStatus,
                 ModerationOutcomeMadeOn = applicationDetails.ModerationOutcomeMadeOn,
                 ModeratedBy = applicationDetails.ModeratedBy,
                 ModerationComments = applicationDetails.ModerationComments
             };
+
+            if (applicationDetails.ModerationApproved.HasValue)
+            {
+                if (applicationDetails.ModerationReviewStatus == ModerationReviewStatus.Pass)
+                {
+                    result.GovernanceOutcome = applicationDetails.ModerationApproved.Value
+                        ? PassFailStatus.Passed
+                        : PassFailStatus.Failed;
+                }
+                else if (applicationDetails.ModerationReviewStatus == ModerationReviewStatus.Fail)
+                {
+                    result.GovernanceOutcome = applicationDetails.ModerationApproved.Value
+                        ? PassFailStatus.Failed
+                        : PassFailStatus.Passed;
+                }
+            }
+
+            return result;
         }
 
         private InProgressDetailsViewModel CreateInProgressDetailsViewModel(ApplicationDetails applicationDetails)

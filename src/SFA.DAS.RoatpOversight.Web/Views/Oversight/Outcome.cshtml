@@ -353,9 +353,7 @@
     {
         @if (!Model.HasFinalOutcome)
          {
-             <h2 class="govuk-heading-m">Send the gateway outcome to the applicant</h2>
-             <p class="govuk-body">Let the applicant know their application to join the RoATP is unsuccessful.</p>
-             <button class="govuk-button" data-module="govuk-button">Send outcome</button>
+             <partial name="_ConfirmGatewayAction" />
          }
     }
     </form>

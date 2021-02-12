@@ -1,0 +1,14 @@
+﻿@model SFA.DAS.RoatpOversight.Web.Models.OutcomeViewModel
+
+<h2 class="govuk-heading-m">Send the gateway outcome to the applicant</h2>
+<p class="govuk-body">
+    @if (Model.IsGatewayRemoved)
+    {
+        <text>Let the applicant know we've removed their application to join the RoATP.</text>
+    }
+    else if (Model.IsGatewayFail)
+    {
+        <text>Let the applicant know their application to join the RoATP is unsuccessful.</text>
+    }
+</p>
+<button class="govuk-button" data-module="govuk-button">Send outcome</button>

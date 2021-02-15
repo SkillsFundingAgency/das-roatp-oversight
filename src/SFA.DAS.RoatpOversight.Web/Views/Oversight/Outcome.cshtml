@@ -366,13 +366,12 @@
 
 @if(Model.ShowAppealLink)
 {
-    <div class="das-actions-box">
+    <div class="das-actions-box govuk-!-margin-bottom-6">
         <h2 class="govuk-heading-m">Application actions</h2>
         <p class="govuk-body govuk-body govuk-!-margin-bottom-1">
             <a class="govuk-link govuk-link--no-visited-state" asp-action="Appeal" asp-route-applicationId="@Model.ApplicationSummary.ApplicationId">Appeal this application</a>
         </p>
     </div>
-    <br/>
 }
 
 <p class="govuk-body">

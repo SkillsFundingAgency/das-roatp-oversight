@@ -110,7 +110,8 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         [HttpGet("Oversight/Outcome/{applicationId}/appeal")]
         public IActionResult Appeal(AppealRequest request)
         {
-            throw new NotImplementedException();
+            var viewModel = new AppealViewModel();
+            return View(viewModel);
         }
     }
 }

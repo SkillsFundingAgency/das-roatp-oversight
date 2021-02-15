@@ -1,3 +1,89 @@
 ﻿@model SFA.DAS.RoatpOversight.Web.Models.AppealViewModel
 
-<h1>A very APPEALing page to go here</h1>
+@{
+    ViewData["Title"] = "Enter the applicant's appeal message";
+}
+
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" asp-controller="Home" asp-action="Dashboard">RoATP dashboard</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" asp-controller="Oversight" asp-action="Applications">RoATP application outcomes</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" asp-controller="Oversight" asp-action="ApplicationSummary">Application summary</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">Enter the applicant's appeal message</li>
+    </ol>
+</div>
+
+<main class="govuk-main-wrapper " id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <partial name="_ValidationSummaryPartial"/>
+
+      <form action="/form-handler" method="post" novalidate>
+        <div class="govuk-form-group">
+          <h1 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--xl" for="appeal-message">
+              Enter the applicant's appeal message
+            </label>
+          </h1>
+          <textarea class="govuk-textarea" id="appeal-message" name="appeal-message" rows="15"></textarea>
+        </div>
+
+        @if (true)
+        {
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="file-upload">
+              Upload a file (optional)
+            </label>
+            <div id="file-upload-hint" class="govuk-hint">
+              <div>You can upload a maximum of 4 files. </div>
+              <div>Each file must be a PDF and smaller than 5MB.</div>
+            </div>
+            <input class="govuk-file-upload" id="file-upload" name="file-upload" type="file" aria-describedby="file-upload-hint">
+          </div>
+
+          <div class="govuk-form-group">
+            <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+              Upload file
+            </button>
+          </div>
+        }
+        else
+        {
+          <div class="govuk-form-group">
+            <table class="govuk-table">
+              <caption class="govuk-visually-hidden">Uploaded file</caption>
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Uploaded file</th>
+                    <th scope="col" class="govuk-table__header govuk-table__header--numeric"></th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <th scope="row" class="govuk-table__header">@* @Model.AppealFile *@ A filename</th>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">
+                    <button class="das-button--inline-link" name="" value="">
+                        Remove
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        }
+
+        <button class="govuk-button" data-module="govuk-button">
+          Save and continue
+        </button>
+
+      </form>
+    </div>
+  </div>
+</main>

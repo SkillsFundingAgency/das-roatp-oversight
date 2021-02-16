@@ -37,7 +37,7 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
 
             });
 
-            RuleSet(RuleSets.GatewayFail, () =>
+            RuleSet(RuleSets.GatewayOutcome, () =>
             {
                 //no rules
             });
@@ -46,7 +46,7 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
         public static class RuleSets
         {
             public const string Default = "Default";
-            public const string GatewayFail = "GatewayFail";
+            public const string GatewayOutcome = "GatewayOutcome";
         }
     }
 

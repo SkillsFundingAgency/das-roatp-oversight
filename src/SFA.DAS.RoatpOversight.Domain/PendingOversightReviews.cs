@@ -18,12 +18,27 @@ namespace SFA.DAS.RoatpOversight.Domain
         public string ApplicationReferenceNumber { get; set; }
         public DateTime ApplicationSubmittedDate { get; set; }
 
+        public string ApplicationStatus { get; set; }
         public string GatewayReviewStatus { get; set; }
         public string FinancialReviewStatus { get; set; }
         public string ModerationReviewStatus { get; set; }
-        public bool OutcomePass => GatewayReviewStatus == Domain.GatewayReviewStatus.Pass
-                                            && ModerationReviewStatus == Domain.ModerationReviewStatus.Pass
-                                            && (FinancialReviewStatus == Domain.FinancialReviewStatus.Pass
-                                            || FinancialReviewStatus == Domain.FinancialReviewStatus.Exempt);
+
+        public PendingOutcomeReviewStatus Status
+        {
+            get
+            {
+                if (ApplicationStatus == Domain.ApplicationStatus.Removed) return PendingOutcomeReviewStatus.Removed;
+
+                if (GatewayReviewStatus == Domain.GatewayReviewStatus.Pass
+                    && ModerationReviewStatus == Domain.ModerationReviewStatus.Pass
+                    && (FinancialReviewStatus == Domain.FinancialReviewStatus.Pass
+                        || FinancialReviewStatus == Domain.FinancialReviewStatus.Exempt))
+                {
+                    return PendingOutcomeReviewStatus.Pass;
+                }
+
+                return PendingOutcomeReviewStatus.Fail;
+            }
+        }
     }
 }

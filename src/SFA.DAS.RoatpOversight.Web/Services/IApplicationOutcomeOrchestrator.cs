@@ -8,5 +8,6 @@ namespace SFA.DAS.RoatpOversight.Web.Services
     {
         Task<bool> RecordOutcome(Guid applicationId, bool? approveGateway, bool? approveModerator, OversightReviewStatus outcome, string userId, string userName, string internalComments, string externalComments);
         Task RecordGatewayFailOutcome(Guid applicationId, string userId, string userName);
+        Task RecordGatewayRemovedOutcome(Guid applicationId, string userId, string userName);
     }
 }

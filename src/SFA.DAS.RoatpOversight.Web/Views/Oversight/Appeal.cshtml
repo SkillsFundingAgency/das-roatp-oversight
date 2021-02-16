@@ -29,13 +29,17 @@
       <form method="post" novalidate>
 
         <div class="govuk-form-group" das-highlight-error-for="Message" error-class="govuk-form-group--error">
-          <h1 class="govuk-label-wrapper">
-              <label class="govuk-label govuk-label--xl" for="appeal-message">
-                  Enter the applicant's appeal message
-              </label>
-          </h1>
+            <h1 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--xl" for="appeal-message">
+                    Enter the applicant's appeal message
+                </label>
+            </h1>
+            
+            <span das-validation-for="Message" class="govuk-error-message"></span>
+
             <textarea asp-for="Message" name="Message" class="govuk-textarea" rows="15"
-                      das-highlight-error-for="Message" error-class="govuk-textarea--error">
+                      das-highlight-error-for="Message" error-class="govuk-textarea--error"
+                        aria-describedby="Message-error">
             </textarea>
         </div>
 

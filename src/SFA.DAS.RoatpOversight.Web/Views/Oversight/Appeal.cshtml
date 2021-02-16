@@ -33,7 +33,9 @@
                   Enter the applicant's appeal message
               </label>
           </h1>
-          <textarea class="govuk-textarea" asp-for="Message" name="Message" rows="15"></textarea>
+            <textarea asp-for="Message" name="Message" class="govuk-textarea" rows="15"
+                      das-highlight-error-for="Message" error-class="govuk-textarea--error">
+            </textarea>
         </div>
 
               @if (true)

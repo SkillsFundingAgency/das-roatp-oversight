@@ -1,4 +1,5 @@
-﻿@model SFA.DAS.RoatpOversight.Web.Models.AppealViewModel
+﻿@using SFA.DAS.RoatpOversight.Web.Models
+@model SFA.DAS.RoatpOversight.Web.Models.AppealViewModel
 
 @{
     ViewData["Title"] = "Enter the applicant's appeal message";
@@ -52,7 +53,7 @@
                   </div>
 
                   <div class="govuk-form-group">
-                      <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                      <button class="govuk-button govuk-button--secondary" data-module="govuk-button" name="SelectedOption" value="@AppealPostRequest.SubmitOption.Upload">
                           Upload file
                       </button>
                   </div>
@@ -82,7 +83,7 @@
                   </div>
               }
 
-              <button class="govuk-button" data-module="govuk-button">
+              <button class="govuk-button" data-module="govuk-button" name="SelectedOption" value="@AppealPostRequest.SubmitOption.SaveAndContinue">
                   Save and continue
               </button>
 

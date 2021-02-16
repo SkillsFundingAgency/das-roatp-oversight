@@ -20,7 +20,8 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Validators
             _request = new AppealPostRequest
             {
                 ApplicationId = Guid.NewGuid(),
-                Message = "This is a test message"
+                Message = "This is a test message",
+                SelectedOption = AppealPostRequest.SubmitOption.SaveAndContinue
             };
         }
 
@@ -40,6 +41,18 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Validators
 
             Assert.IsFalse(result.IsValid);
             Assert.IsTrue(result.Errors.Any(x => x.PropertyName == nameof(_request.Message)));
+        }
+
+
+        [Test]
+        public void Validator_Returns_Valid_When_AppealMessage_Is_Empty_And_User_Opted_To_Upload_Files()
+        {
+            _request.Message = string.Empty;
+            _request.SelectedOption = AppealPostRequest.SubmitOption.Upload;
+
+            var result = _validator.Validate(_request);
+            
+            Assert.IsTrue(result.IsValid);
         }
     }
 }

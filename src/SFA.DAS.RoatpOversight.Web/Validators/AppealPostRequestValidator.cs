@@ -7,7 +7,10 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
     {
         public AppealPostRequestValidator()
         {
-            RuleFor(x => x.Message).NotEmpty().WithMessage("Enter the applicant's appeal message");
+            RuleFor(x => x.Message)
+                .NotEmpty()
+                .WithMessage("Enter the applicant's appeal message")
+                .When(x => x.SelectedOption == AppealPostRequest.SubmitOption.SaveAndContinue);
         }
     }
 }

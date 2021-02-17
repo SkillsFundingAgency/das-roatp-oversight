@@ -7,6 +7,7 @@ using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService;
 using System.Net;
 using SFA.DAS.AdminService.Common.Infrastructure;
+using SFA.DAS.RoatpOversight.Domain.ApiTypes;
 
 namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
 {
@@ -51,6 +52,11 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         public async Task RecordGatewayFailOutcome(RecordOversightGatewayFailOutcomeCommand command)
         {
             await Post("Oversight/GatewayFailOutcome", command);
+        }
+
+        public async Task UploadAppealFile(UploadAppealFileCommand command)
+        {
+            await Post("Oversight/Appeal", command);
         }
     }
 }

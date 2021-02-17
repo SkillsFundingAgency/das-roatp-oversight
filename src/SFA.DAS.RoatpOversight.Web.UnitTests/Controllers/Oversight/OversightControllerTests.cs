@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -21,6 +24,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
     {
         private Mock<IOversightOrchestrator> _oversightOrchestrator;
         private Mock<IApplicationOutcomeOrchestrator> _outcomeOrchestrator;
+        private Mock<IAppealOrchestrator> _appealOrchestrator;
 
         private OversightController _controller;
         private readonly Guid _applicationDetailsApplicationId = Guid.NewGuid();
@@ -31,9 +35,11 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         {
             _oversightOrchestrator = new Mock<IOversightOrchestrator>();
             _outcomeOrchestrator = new Mock<IApplicationOutcomeOrchestrator>();
+            _appealOrchestrator = new Mock<IAppealOrchestrator>();
 
             _controller = new OversightController(_outcomeOrchestrator.Object,
-                                                  _oversightOrchestrator.Object)
+                                                  _oversightOrchestrator.Object,
+                                                  _appealOrchestrator.Object)
             {
                 ControllerContext = MockedControllerContext.Setup()
             };
@@ -160,6 +166,49 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 
             var result = await _controller.Outcome(command) as RedirectToActionResult;
             Assert.AreEqual("Confirmed", result.ActionName);
+        }
+
+        [Test]
+        public async Task Post_Appeal_File_Upload_Is_Recorded()
+        {
+            var applicationId = Guid.NewGuid();
+
+            _appealOrchestrator.Setup(x =>
+                x.UploadAppealFile(It.IsAny<Guid>(), It.IsAny<FileUpload>(), It.IsAny<string>(), It.IsAny<string>()));
+
+            var file = GenerateMockFile();
+
+            var request = new AppealPostRequest
+            {
+                ApplicationId = applicationId,
+                FileUpload = file.Object,
+                SelectedOption = AppealPostRequest.SubmitOption.Upload
+            };
+
+            await _controller.Appeal(request);
+
+            _appealOrchestrator.Verify(x => x.UploadAppealFile(It.Is<Guid>(id => id == applicationId),
+                It.Is<FileUpload>(f => f.FileName == file.Object.FileName && f.ContentType == file.Object.ContentType),
+                It.IsAny<string>(),
+                It.IsAny<string>()),
+                Times.Once);
+        }
+
+        private Mock<IFormFile> GenerateMockFile()
+        {
+            var fileMock = new Mock<IFormFile>();
+            //Setup mock file using a memory stream
+            var content = "Hello World from a Fake File";
+            var fileName = "test.pdf";
+            var ms = new MemoryStream();
+            var writer = new StreamWriter(ms);
+            writer.Write(content);
+            writer.Flush();
+            ms.Position = 0;
+            fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
+            fileMock.Setup(_ => _.FileName).Returns(fileName);
+            fileMock.Setup(_ => _.Length).Returns(ms.Length);
+            return fileMock;
         }
     }
 }

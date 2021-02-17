@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using SFA.DAS.RoatpOversight.Domain;
+using SFA.DAS.RoatpOversight.Domain.ApiTypes;
 
 namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
 {
@@ -13,5 +14,6 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         Task<RoatpRegistrationDetails> GetRegistrationDetails(Guid applicationId);
         Task<bool> RecordOutcome(RecordOversightOutcomeCommand command);
         Task RecordGatewayFailOutcome(RecordOversightGatewayFailOutcomeCommand command);
+        Task UploadAppealFile(UploadAppealFileCommand command);
     }
 }

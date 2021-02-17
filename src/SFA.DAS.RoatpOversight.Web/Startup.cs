@@ -180,6 +180,7 @@ namespace SFA.DAS.RoatpOversight.Web
             services.AddTransient<IApplicationOutcomeOrchestrator, ApplicationOutcomeOrchestrator>();
             services.AddTransient<IRoatpRegisterTokenService, RoatpRegisterTokenService>();
             services.AddTransient<IOversightOrchestrator, OversightOrchestrator>();
+            services.AddTransient<IAppealOrchestrator, AppealOrchestrator>();
 
             DependencyInjection.ConfigureDependencyInjection(services);
         }

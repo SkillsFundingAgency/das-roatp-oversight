@@ -26,7 +26,7 @@
 
       <partial name="_ValidationSummaryPartial"/>
 
-      <form method="post" novalidate>
+      <form enctype="multipart/form-data" method="post" novalidate>
 
         <div class="govuk-form-group" das-highlight-error-for="Message" error-class="govuk-form-group--error">
             <h1 class="govuk-label-wrapper">
@@ -46,14 +46,14 @@
               @if (true)
               {
                   <div class="govuk-form-group">
-                      <label class="govuk-label" for="file-upload">
+                      <label class="govuk-label" for="FileUpload">
                           Upload a file (optional)
                       </label>
-                      <div id="file-upload-hint" class="govuk-hint">
+                      <div id="FileUpload-Hint" class="govuk-hint">
                           <div>You can upload a maximum of 4 files. </div>
                           <div>Each file must be a PDF and smaller than 5MB.</div>
                       </div>
-                      <input class="govuk-file-upload" id="file-upload" name="file-upload" type="file" aria-describedby="file-upload-hint">
+                      <input class="govuk-file-upload" id="FileUpload" name="FileUpload" type="file" aria-describedby="FileUpload-Hint">
                   </div>
 
                   <div class="govuk-form-group">

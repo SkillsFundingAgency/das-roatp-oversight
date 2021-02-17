@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +6,7 @@ using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.AdminService.Common.Extensions;
+using SFA.DAS.RoatpOversight.Domain.Extensions;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Models;
@@ -19,12 +19,15 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
     {
         private readonly IApplicationOutcomeOrchestrator _outcomeOrchestrator;
         private readonly IOversightOrchestrator _oversightOrchestrator;
+        private readonly IAppealOrchestrator _appealOrchestrator;
 
         public OversightController(IApplicationOutcomeOrchestrator outcomeOrchestrator,
-                                   IOversightOrchestrator oversightOrchestrator)
+                                   IOversightOrchestrator oversightOrchestrator,
+                                   IAppealOrchestrator appealOrchestrator)
         {
             _outcomeOrchestrator = outcomeOrchestrator;
             _oversightOrchestrator = oversightOrchestrator;
+            _appealOrchestrator = appealOrchestrator;
         }
 
         public async Task<IActionResult> Applications()
@@ -115,8 +118,19 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         }
 
         [HttpPost("Oversight/Outcome/{applicationId}/appeal")]
-        public IActionResult Appeal(AppealPostRequest request)
+        public async Task<IActionResult> Appeal(AppealPostRequest request)
         {
+            var userId = HttpContext.User.UserId();
+            var userName = HttpContext.User.UserDisplayName();
+
+            if (request.SelectedOption == AppealPostRequest.SubmitOption.Upload)
+            {
+                var fileUpload = await request.FileUpload.ToFileUpload();
+                await _appealOrchestrator.UploadAppealFile(request.ApplicationId, fileUpload, userId, userName);
+
+                return RedirectToAction("Appeal", new AppealRequest { ApplicationId = request.ApplicationId });
+            }
+
             throw new NotImplementedException();
         }
     }

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpOversight.Web.Models;
@@ -104,7 +102,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Validators
         private static Mock<IFormFile> GenerateMockFile(int size)
         {
             var fileMock = new Mock<IFormFile>();
-            fileMock.Setup(_ => _.Length).Returns(size);
+            fileMock.Setup(x => x.Length).Returns(size);
             return fileMock;
         }
     }

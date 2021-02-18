@@ -87,12 +87,15 @@
             </dd>
         </div>
     }
-    <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-            Governance
-        </dt>
-        <dd class="govuk-summary-list__value">
-            <span class="@Model.GovernanceOutcome.GetCssClass()">@Model.GovernanceOutcome.GetLabel()</span>
-        </dd>
-    </div>
+    @if (Model.GovernanceOutcome != PassFailStatus.None)
+    {
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Governance
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <span class="@Model.GovernanceOutcome.GetCssClass()">@Model.GovernanceOutcome.GetLabel()</span>
+            </dd>
+        </div>
+    }
 </dl>

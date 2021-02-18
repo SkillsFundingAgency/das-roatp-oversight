@@ -117,9 +117,9 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         }
 
         [HttpGet("Oversight/Outcome/{applicationId}/appeal")]
-        public IActionResult Appeal(AppealRequest request)
+        public async Task<IActionResult> Appeal(AppealRequest request)
         {
-            var viewModel = new AppealViewModel{ApplicationId = request.ApplicationId};
+            var viewModel = await _appealOrchestrator.GetAppealViewModel(request.ApplicationId);
             return View(viewModel);
         }
 

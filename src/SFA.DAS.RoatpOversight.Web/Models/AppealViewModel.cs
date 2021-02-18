@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using SFA.DAS.RoatpOversight.Web.Models.Partials;
 
 namespace SFA.DAS.RoatpOversight.Web.Models
 {
@@ -6,5 +8,13 @@ namespace SFA.DAS.RoatpOversight.Web.Models
     {
         public Guid ApplicationId { get; set; }
         public string Message { get; set; }
+        public bool AllowAdditionalUploads { get; set; }
+
+        public List<UploadedFileViewModel> UploadedFiles { get; set; }
+
+        public AppealViewModel()
+        {
+            UploadedFiles = new List<UploadedFileViewModel>();
+        }
     }
 }

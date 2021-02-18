@@ -63,5 +63,10 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         {
             await Post("Oversight/Appeal/Upload", command);
         }
+
+        public async Task<AppealFiles> GetStagedUploads(GetStagedFilesRequest request)
+        {
+            return await Get<AppealFiles>($"Oversight/{request.ApplicationId}/uploads");
+        }
     }
 }

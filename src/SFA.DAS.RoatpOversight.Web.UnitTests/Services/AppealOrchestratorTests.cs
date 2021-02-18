@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
@@ -43,6 +44,54 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
                 c.File == _fileUpload &&
                 c.UserId == _userId &&
                 c.UserName == _userName)));
+        }
+
+        [Test]
+        public async Task GetAppealViewModel_Gets_Staged_Upload_Files()
+        {
+            var files = new AppealFiles{ Files = new List<AppealFile>()};
+            files.Files.Add(new AppealFile { Id = Guid.NewGuid(), Filename = "test1.pdf" });
+            files.Files.Add(new AppealFile { Id = Guid.NewGuid(), Filename = "test2.pdf" });
+            files.Files.Add(new AppealFile { Id = Guid.NewGuid(), Filename = "test3.pdf" });
+
+            _applyApiClient.Setup(x =>
+                x.GetStagedUploads(It.Is<GetStagedFilesRequest>(r =>
+                    r.ApplicationId == _applicationId))).ReturnsAsync(files);
+
+            var result = await _orchestrator.GetAppealViewModel(_applicationId);
+
+            Assert.AreEqual(files.Files.Count, result.UploadedFiles.Count);
+
+            var i = 0;
+            foreach (var expectedFile in files.Files)
+            {
+                Assert.AreEqual(expectedFile.Id, result.UploadedFiles[i].Id);
+                Assert.AreEqual(expectedFile.Filename, result.UploadedFiles[i].Filename);
+                i++;
+            }
+        }
+
+        [TestCase(0, true)]
+        [TestCase(1, true)]
+        [TestCase(2, true)]
+        [TestCase(3, true)]
+        [TestCase(4, false)]
+        [TestCase(999, false)]
+        public async Task GetAppealViewModel_Prevents_Uploads_Beyond_A_Maximum(int filesUploaded, bool expectUploadsEnabled)
+        {
+            var files = new AppealFiles { Files = new List<AppealFile>() };
+            for (var i = 0; i < filesUploaded; i++)
+            {
+                files.Files.Add(new AppealFile { Id = Guid.NewGuid(), Filename = $"test{i}.pdf" });
+            }
+
+            _applyApiClient.Setup(x =>
+                x.GetStagedUploads(It.Is<GetStagedFilesRequest>(r =>
+                    r.ApplicationId == _applicationId))).ReturnsAsync(files);
+
+            var result = await _orchestrator.GetAppealViewModel(_applicationId);
+
+            Assert.AreEqual(expectUploadsEnabled, result.AllowAdditionalUploads);
         }
     }
 }

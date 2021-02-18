@@ -56,7 +56,7 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
 
         public async Task UploadAppealFile(UploadAppealFileCommand command)
         {
-            await Post("Oversight/Appeal", command);
+            await Post("Oversight/Appeal/Upload", command);
         }
     }
 }

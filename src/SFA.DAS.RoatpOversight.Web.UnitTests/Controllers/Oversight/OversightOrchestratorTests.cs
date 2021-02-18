@@ -215,8 +215,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 
             var result = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
 
-            //Assert.AreEqual(expectedShowAppealLink, result.ShowAppealLink);
-            Assert.IsFalse(result.ShowAppealLink);
+            Assert.AreEqual(expectedShowAppealLink, result.ShowAppealLink);
         }
 
         private ApplicationDetails GetApplication()

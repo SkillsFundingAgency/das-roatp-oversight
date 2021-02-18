@@ -404,3 +404,13 @@
 .js-enabled .das-reveal__conditional--hidden {
   display: none;
 }
+
+.das-actions-box {
+    position: relative;
+    border: 1px solid #b1b4b6;
+    padding: 20px;
+}
+
+.das-body--preformatted {
+    white-space: pre-wrap;
+}

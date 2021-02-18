@@ -11,6 +11,11 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
                 .NotEmpty()
                 .WithMessage("Enter the applicant's appeal message")
                 .When(x => x.SelectedOption == AppealPostRequest.SubmitOption.SaveAndContinue);
+
+            RuleFor(x => x.FileUpload)
+                .NotNull()
+                .WithMessage("Select a file")
+                .When(x => x.SelectedOption == AppealPostRequest.SubmitOption.Upload);
         }
     }
 }

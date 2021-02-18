@@ -74,10 +74,11 @@
       
           @if (Model.AllowAdditionalUploads)
           {
-              <div class="govuk-form-group">
+              <div class="govuk-form-group" das-highlight-error-for="FileUpload" error-class="govuk-form-group--error">
                   <label class="govuk-label" for="FileUpload">
                       Upload a file (optional)
                   </label>
+                  <span das-validation-for="FileUpload" class="govuk-error-message"></span>
                   <div id="FileUpload-Hint" class="govuk-hint">
                       <div>You can upload a maximum of 4 files. </div>
                       <div>Each file must be a PDF and smaller than 5MB.</div>

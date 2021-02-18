@@ -54,5 +54,16 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Validators
             
             Assert.IsTrue(result.IsValid);
         }
+
+        [Test]
+        public void Validator_Returns_Invalid_When_Uploading_Without_Selecting_A_File()
+        {
+            _request.SelectedOption = AppealPostRequest.SubmitOption.Upload;
+            _request.FileUpload = null;
+
+            var result = _validator.Validate(_request);
+
+            Assert.IsFalse(result.IsValid);
+        }
     }
 }

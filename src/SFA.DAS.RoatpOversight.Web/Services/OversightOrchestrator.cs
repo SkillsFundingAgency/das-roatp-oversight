@@ -59,8 +59,10 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 OversightStatus = applicationDetails.OversightStatus,
                 ApproveGateway = GetStringValueForApprovalStatusBoolean(applicationDetails.GatewayApproved),
                 ApproveModeration = GetStringValueForApprovalStatusBoolean(applicationDetails.ModerationApproved),
+                IsGatewayRemoved = applicationDetails.ApplicationStatus == ApplicationStatus.Removed,
+                IsGatewayFail = applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Fail,
                 HasFinalOutcome = applicationDetails.OversightStatus != OversightReviewStatus.None &&
-                             applicationDetails.OversightStatus != OversightReviewStatus.InProgress
+                                applicationDetails.OversightStatus != OversightReviewStatus.InProgress
             };
 
             if (applicationDetails.OversightStatus == OversightReviewStatus.None || applicationDetails.OversightStatus == OversightReviewStatus.InProgress)
@@ -220,11 +222,21 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         {
             return new GatewayOutcomeViewModel
             {
-                GatewayReviewStatus = applicationDetails.GatewayReviewStatus,
-                GatewayOutcomeMadeDate = applicationDetails.GatewayOutcomeMadeDate,
-                GatewayOutcomeMadeBy = applicationDetails.GatewayOutcomeMadeBy,
-                GatewayComments = applicationDetails.GatewayComments,
-                GatewayExternalComments = applicationDetails.GatewayExternalComments
+                GatewayReviewStatus = applicationDetails.ApplicationStatus == ApplicationStatus.Removed
+                    ? ApplicationStatus.Removed
+                    : applicationDetails.GatewayReviewStatus,
+                GatewayOutcomeMadeDate = applicationDetails.ApplicationStatus == ApplicationStatus.Removed
+                    ? applicationDetails.ApplicationRemovedOn
+                    : applicationDetails.GatewayOutcomeMadeDate,
+                GatewayOutcomeMadeBy = applicationDetails.ApplicationStatus == ApplicationStatus.Removed
+                    ? applicationDetails.ApplicationRemovedBy
+                    : applicationDetails.GatewayOutcomeMadeBy,
+                GatewayComments = applicationDetails.ApplicationStatus == ApplicationStatus.Removed
+                    ? applicationDetails.ApplyInternalComments
+                    : applicationDetails.GatewayComments,
+                GatewayExternalComments = applicationDetails.ApplicationStatus == ApplicationStatus.Removed
+                    ? applicationDetails.ApplyExternalComments
+                    : applicationDetails.GatewayExternalComments
             };
         }
 

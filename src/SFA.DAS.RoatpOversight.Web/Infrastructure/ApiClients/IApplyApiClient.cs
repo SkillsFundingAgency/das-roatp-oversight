@@ -14,6 +14,7 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         Task<RoatpRegistrationDetails> GetRegistrationDetails(Guid applicationId);
         Task<bool> RecordOutcome(RecordOversightOutcomeCommand command);
         Task RecordGatewayFailOutcome(RecordOversightGatewayFailOutcomeCommand command);
+        Task RecordGatewayRemovedOutcome(RecordOversightGatewayRemovedOutcomeCommand command);
         Task UploadAppealFile(UploadAppealFileCommand command);
     }
 }

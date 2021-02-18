@@ -54,6 +54,11 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
             await Post("Oversight/GatewayFailOutcome", command);
         }
 
+        public async Task RecordGatewayRemovedOutcome(RecordOversightGatewayRemovedOutcomeCommand command)
+        {
+            await Post("Oversight/GatewayRemovedOutcome", command);
+        }
+		
         public async Task UploadAppealFile(UploadAppealFileCommand command)
         {
             await Post("Oversight/Appeal/Upload", command);

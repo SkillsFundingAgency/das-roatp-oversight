@@ -1,4 +1,6 @@
-﻿@using SFA.DAS.AdminService.Common.Extensions;
+﻿@using Microsoft.CodeAnalysis.CSharp.Syntax
+@using SFA.DAS.AdminService.Common.Extensions;
+@using SFA.DAS.RoatpOversight.Domain
 @using SFA.DAS.RoatpOversight.Web.Extensions
 @model SFA.DAS.RoatpOversight.Web.Models.ApplicationsViewModel
 
@@ -74,13 +76,17 @@
                                         <td data-label="Application submitted date" class="govuk-table__cell">@application.ApplicationSubmittedDate.ToSfaShortDateString()</td>
                                         <td data-label="Outcome" class="govuk-table__cell">
                                             @{
-                                                @if (application.OutcomePass)
+                                                @if (application.Status == PendingOutcomeReviewStatus.Pass)
                                                 {
                                                     <span class="govuk-tag das-tag--solid-green">Pass</span>
                                                 }
-                                                else
+                                                else if (application.Status == PendingOutcomeReviewStatus.Fail)
                                                 {
                                                     <span class="govuk-tag das-tag--solid-red">Fail</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="govuk-tag govuk-tag--inactive">Removed</span>
                                                 }
                                             }
                                         </td>

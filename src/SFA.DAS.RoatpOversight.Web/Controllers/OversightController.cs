@@ -53,16 +53,16 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             var userId = HttpContext.User.UserId();
             var userName = HttpContext.User.UserDisplayName();
 
+            if (request.IsGatewayRemoved)
+            {
+                await _outcomeOrchestrator.RecordGatewayRemovedOutcome(request.ApplicationId, userId, userName);
+                return RedirectToAction("Confirmed", new { request.ApplicationId });
+            }
+
             if (request.IsGatewayFail)
             {
                 await _outcomeOrchestrator.RecordGatewayFailOutcome(request.ApplicationId, userId, userName);
                 return RedirectToAction("Confirmed", new {request.ApplicationId});
-            }
-
-            if(request.IsGatewayRemoved)
-            {
-                await _outcomeOrchestrator.RecordGatewayRemovedOutcome(request.ApplicationId, userId, userName);
-                return RedirectToAction("Confirmed", new { request.ApplicationId });
             }
 
             var cacheKey = await _oversightOrchestrator.SaveOutcomePostRequestToCache(request);

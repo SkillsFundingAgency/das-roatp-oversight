@@ -406,9 +406,9 @@
 }
 
 .das-actions-box {
-  position: relative;
-  border: 1px solid #b1b4b6;
-  padding: 20px;
+    position: relative;
+    border: 1px solid #b1b4b6;
+    padding: 20px;
 }
 
 .das-body--preformatted {

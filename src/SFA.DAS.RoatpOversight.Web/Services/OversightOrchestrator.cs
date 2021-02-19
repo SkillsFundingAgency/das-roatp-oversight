@@ -54,7 +54,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ModerationOutcome = CreateModerationOutcomeViewModel(applicationDetails),
                 InProgressDetails = CreateInProgressDetailsViewModel(applicationDetails),
                 OverallOutcome = CreateOverallOutcomeViewModel(applicationDetails),
-                ShowAppealLink = false, //applicationDetails.OversightStatus == OversightReviewStatus.Unsuccessful,
+                ShowAppealLink = applicationDetails.OversightStatus == OversightReviewStatus.Unsuccessful,
                 ShowInProgressDetails = applicationDetails.InProgressDate.HasValue,
                 OversightStatus = applicationDetails.OversightStatus,
                 ApproveGateway = GetStringValueForApprovalStatusBoolean(applicationDetails.GatewayApproved),

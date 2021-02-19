@@ -133,7 +133,12 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             {
                 var fileUpload = await request.FileUpload.ToFileUpload();
                 await _appealOrchestrator.UploadAppealFile(request.ApplicationId, fileUpload, userId, userName);
+                return RedirectToAction("Appeal", new AppealRequest { ApplicationId = request.ApplicationId });
+            }
 
+            if (request.SelectedOption == AppealPostRequest.SubmitOption.RemoveFile)
+            {
+                await _appealOrchestrator.RemoveAppealFile(request.ApplicationId, request.FileId, userId, userName);
                 return RedirectToAction("Appeal", new AppealRequest { ApplicationId = request.ApplicationId });
             }
 

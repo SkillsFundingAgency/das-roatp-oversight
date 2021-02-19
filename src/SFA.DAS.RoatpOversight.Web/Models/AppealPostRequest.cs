@@ -9,11 +9,13 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public string Message { get; set; }
         public SubmitOption SelectedOption { get; set; }
         public IFormFile FileUpload { get; set; }
+        public Guid FileId { get; set; }
 
         public enum SubmitOption
         {
             SaveAndContinue,
-            Upload
+            Upload,
+            RemoveFile
         }
     }
 }

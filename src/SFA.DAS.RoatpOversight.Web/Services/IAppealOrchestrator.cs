@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Domain.ApiTypes;
@@ -14,6 +13,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
     {
         Task UploadAppealFile(Guid applicationId, FileUpload file, string userId, string userName);
         Task<AppealViewModel> GetAppealViewModel(Guid applicationId);
+        Task RemoveAppealFile(Guid applicationId, Guid fileId, string userId, string userName);
     }
 
     public class AppealOrchestrator : IAppealOrchestrator
@@ -50,6 +50,19 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
 
             return result;
+        }
+
+        public async Task RemoveAppealFile(Guid applicationId, Guid fileId, string userId, string userName)
+        {
+            var command = new RemoveAppealFileCommand
+            {
+                ApplicationId = applicationId,
+                FileId = fileId,
+                UserId = userId,
+                UserName = userName
+            };
+
+            await _applyApiClient.RemoveAppealFile(command);
         }
     }
 }

@@ -16,6 +16,7 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         Task RecordGatewayFailOutcome(RecordOversightGatewayFailOutcomeCommand command);
         Task RecordGatewayRemovedOutcome(RecordOversightGatewayRemovedOutcomeCommand command);
         Task UploadAppealFile(UploadAppealFileCommand command);
+        Task RemoveAppealFile(RemoveAppealFileCommand command);
         Task<AppealFiles> GetStagedUploads(GetStagedFilesRequest request);
     }
 }

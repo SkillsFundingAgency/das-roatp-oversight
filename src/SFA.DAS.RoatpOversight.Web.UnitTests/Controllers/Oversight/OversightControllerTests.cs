@@ -217,6 +217,27 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 Times.Once);
         }
 
+        [Test]
+        public async Task Post_Appeal_RemoveFile_Removal_Is_Recorded()
+        {
+            var applicationId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+
+            _appealOrchestrator.Setup(x =>
+                x.RemoveAppealFile(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>()));
+
+            var request = new AppealPostRequest
+            {
+                ApplicationId = applicationId,
+                SelectedOption = AppealPostRequest.SubmitOption.RemoveFile,
+                FileId = fileId
+            };
+            
+            await _controller.Appeal(request);
+
+            _appealOrchestrator.Verify(x => x.RemoveAppealFile(applicationId, fileId, It.IsAny<string>(), It.IsAny<string>()));
+        }
+
         private Mock<IFormFile> GenerateMockFile()
         {
             var fileMock = new Mock<IFormFile>();

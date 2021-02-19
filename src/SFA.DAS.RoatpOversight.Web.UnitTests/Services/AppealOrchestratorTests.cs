@@ -17,6 +17,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         private Mock<IApplyApiClient> _applyApiClient;
 
         private readonly Guid _applicationId = Guid.NewGuid();
+        private readonly Guid _fileId = Guid.NewGuid();
         private FileUpload _fileUpload;
         private readonly string _userId = "userid";
         private readonly string _userName = "username";
@@ -42,6 +43,18 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
             _applyApiClient.Verify(x => x.UploadAppealFile(It.Is<UploadAppealFileCommand>(c =>
                 c.ApplicationId == _applicationId &&
                 c.File == _fileUpload &&
+                c.UserId == _userId &&
+                c.UserName == _userName)));
+        }
+
+        [Test]
+        public async Task RemoveAppealFile_Removes_File()
+        {
+            await _orchestrator.RemoveAppealFile(_applicationId, _fileId, _userId, _userName);
+
+            _applyApiClient.Verify(x => x.RemoveAppealFile(It.Is<RemoveAppealFileCommand>(c =>
+                c.ApplicationId == _applicationId &&
+                c.FileId == _fileId &&
                 c.UserId == _userId &&
                 c.UserName == _userName)));
         }

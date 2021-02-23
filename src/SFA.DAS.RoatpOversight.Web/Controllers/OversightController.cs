@@ -142,7 +142,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 return RedirectToAction("Appeal", new AppealRequest { ApplicationId = request.ApplicationId });
             }
 
-            throw new NotImplementedException();
+            return RedirectToAction("Outcome", new OutcomeRequest {ApplicationId = request.ApplicationId});
         }
     }
 }

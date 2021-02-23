@@ -238,6 +238,27 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _appealOrchestrator.Verify(x => x.RemoveAppealFile(applicationId, fileId, It.IsAny<string>(), It.IsAny<string>()));
         }
 
+        [Test]
+        public async Task Post_Appeal_User_Is_Redirected_To_Outcome_Page()
+        {
+            var applicationId = Guid.NewGuid();
+
+            var request = new AppealPostRequest
+            {
+                ApplicationId = applicationId,
+                Message = "This is aan appeal",
+                SelectedOption = AppealPostRequest.SubmitOption.SaveAndContinue
+            };
+
+            var result = await _controller.Appeal(request);
+
+            Assert.IsInstanceOf<RedirectToActionResult>(result);
+            var redirectResult = (RedirectToActionResult) result;
+
+            Assert.AreEqual("Outcome", redirectResult.ActionName);
+            Assert.IsTrue(redirectResult.RouteValues.ContainsKey("ApplicationId"));
+        }
+
         private Mock<IFormFile> GenerateMockFile()
         {
             var fileMock = new Mock<IFormFile>();

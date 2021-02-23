@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -24,8 +25,9 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         private Mock<IOversightOrchestrator> _oversightOrchestrator;
         private Mock<IApplicationOutcomeOrchestrator> _outcomeOrchestrator;
         private Mock<IAppealOrchestrator> _appealOrchestrator;
-        private Mock<ITempDataDictionary> _tempDataDictionary;
+        private ITempDataDictionary _tempDataDictionary;
 
+        private readonly Fixture _autoFixture = new Fixture();
         private OversightController _controller;
         private readonly Guid _applicationDetailsApplicationId = Guid.NewGuid();
         private const string _ukprnOfCompletedOversightApplication = "11112222";
@@ -44,9 +46,10 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 ControllerContext = MockedControllerContext.Setup()
             };
 
-            _tempDataDictionary = new Mock<ITempDataDictionary>();
-
-            _controller.TempData = _tempDataDictionary.Object;
+            var tempDataProvider = Mock.Of<ITempDataProvider>();
+            var tempDataDictionaryFactory = new TempDataDictionaryFactory(tempDataProvider);
+            _tempDataDictionary = tempDataDictionaryFactory.GetTempData(new DefaultHttpContext());
+            _controller.TempData = _tempDataDictionary;
         }
 
         [Test]
@@ -196,6 +199,24 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         }
 
         [Test]
+        public async Task Get_Appeal_Returns_View()
+        {
+            var request = new AppealRequest
+            {
+                ApplicationId =  Guid.NewGuid()
+            };
+
+            _appealOrchestrator.Setup(x =>
+                    x.GetAppealViewModel(
+                        It.Is<AppealRequest>(r => r.ApplicationId == request.ApplicationId),
+                        It.IsAny<string>()))
+                .ReturnsAsync(() => new AppealViewModel());
+
+            var result = await _controller.Appeal(request);
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
+
+        [Test]
         public async Task Post_Appeal_File_Upload_Is_Recorded()
         {
             var applicationId = Guid.NewGuid();
@@ -263,11 +284,56 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.IsTrue(redirectResult.RouteValues.ContainsKey("ApplicationId"));
         }
 
+        [Test]
+        public async Task Get_Appeal_Preserves_Any_Message_Stored_In_TempData()
+        {
+            var request = new AppealRequest
+            {
+                ApplicationId = Guid.NewGuid()
+            };
+
+            var message = _autoFixture.Create<string>();
+
+            _tempDataDictionary["Message"] = message;
+
+            _appealOrchestrator.Setup(x =>
+                    x.GetAppealViewModel(
+                        It.Is<AppealRequest>(r => r.ApplicationId == request.ApplicationId),
+                        It.Is<string>(m => m == message)))
+                .ReturnsAsync(() => new AppealViewModel());
+
+            var result = await _controller.Appeal(request);
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
+
+        [TestCase(AppealPostRequest.SubmitOption.Upload)]
+        [TestCase(AppealPostRequest.SubmitOption.RemoveFile)]
+        public async Task Post_Appeal_Preserves_Any_Message_In_TempData_On_Post_Of_Non_CTA(AppealPostRequest.SubmitOption submitOption)
+        {
+            var applicationId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+
+            _appealOrchestrator.Setup(x =>
+                x.RemoveAppealFile(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>()));
+
+            var request = new AppealPostRequest
+            {
+                ApplicationId = applicationId,
+                Message = _autoFixture.Create<string>(),
+                FileUpload = submitOption == AppealPostRequest.SubmitOption.Upload ? GenerateMockFile().Object : null,
+                FileId = submitOption == AppealPostRequest.SubmitOption.RemoveFile ? fileId : Guid.Empty,
+                SelectedOption = submitOption
+            };
+
+            await _controller.Appeal(request);
+
+            Assert.AreEqual(request.Message, _tempDataDictionary["Message"]);
+        }
+
         private Mock<IFormFile> GenerateMockFile()
         {
             var fileMock = new Mock<IFormFile>();
-            //Setup mock file using a memory stream
-            var content = "Hello World from a Fake File";
+            var content = _autoFixture.Create<string>();
             var fileName = "test.pdf";
             var ms = new MemoryStream();
             var writer = new StreamWriter(ms);

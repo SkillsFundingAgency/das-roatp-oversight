@@ -6,6 +6,7 @@ using NUnit.Framework;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Domain.ApiTypes;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
+using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Services;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
@@ -71,7 +72,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
                 x.GetStagedUploads(It.Is<GetStagedFilesRequest>(r =>
                     r.ApplicationId == _applicationId))).ReturnsAsync(files);
 
-            var result = await _orchestrator.GetAppealViewModel(_applicationId);
+            var result = await _orchestrator.GetAppealViewModel(new AppealRequest{ApplicationId = _applicationId }, string.Empty);
 
             Assert.AreEqual(files.Files.Count, result.UploadedFiles.Count);
 
@@ -102,7 +103,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
                 x.GetStagedUploads(It.Is<GetStagedFilesRequest>(r =>
                     r.ApplicationId == _applicationId))).ReturnsAsync(files);
 
-            var result = await _orchestrator.GetAppealViewModel(_applicationId);
+            var result = await _orchestrator.GetAppealViewModel(new AppealRequest{ApplicationId = _applicationId}, string.Empty);
 
             Assert.AreEqual(expectUploadsEnabled, result.AllowAdditionalUploads);
         }

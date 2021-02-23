@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SFA.DAS.AdminService.Common.Extensions;
 using SFA.DAS.RoatpOversight.Domain.Extensions;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
+using SFA.DAS.RoatpOversight.Web.Extensions;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Validators;
 
@@ -119,7 +121,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         [HttpGet("Oversight/Outcome/{applicationId}/appeal")]
         public async Task<IActionResult> Appeal(AppealRequest request)
         {
-            var viewModel = await _appealOrchestrator.GetAppealViewModel(request.ApplicationId);
+            var viewModel = await _appealOrchestrator.GetAppealViewModel(request, TempData.GetValue<string>("Message"));
             return View(viewModel);
         }
 
@@ -133,12 +135,14 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             {
                 var fileUpload = await request.FileUpload.ToFileUpload();
                 await _appealOrchestrator.UploadAppealFile(request.ApplicationId, fileUpload, userId, userName);
+                TempData.AddValue("Message", request.Message);
                 return RedirectToAction("Appeal", new AppealRequest { ApplicationId = request.ApplicationId });
             }
 
             if (request.SelectedOption == AppealPostRequest.SubmitOption.RemoveFile)
             {
                 await _appealOrchestrator.RemoveAppealFile(request.ApplicationId, request.FileId, userId, userName);
+                TempData.AddValue("Message", request.Message);
                 return RedirectToAction("Appeal", new AppealRequest { ApplicationId = request.ApplicationId });
             }
 

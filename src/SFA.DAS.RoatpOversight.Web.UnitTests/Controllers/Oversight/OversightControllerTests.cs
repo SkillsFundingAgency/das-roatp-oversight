@@ -4,14 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.AdminService.Common.Testing.MockedObjects;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Controllers;
-using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Models.Partials;
@@ -25,6 +24,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         private Mock<IOversightOrchestrator> _oversightOrchestrator;
         private Mock<IApplicationOutcomeOrchestrator> _outcomeOrchestrator;
         private Mock<IAppealOrchestrator> _appealOrchestrator;
+        private Mock<ITempDataDictionary> _tempDataDictionary;
 
         private OversightController _controller;
         private readonly Guid _applicationDetailsApplicationId = Guid.NewGuid();
@@ -43,6 +43,10 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             {
                 ControllerContext = MockedControllerContext.Setup()
             };
+
+            _tempDataDictionary = new Mock<ITempDataDictionary>();
+
+            _controller.TempData = _tempDataDictionary.Object;
         }
 
         [Test]

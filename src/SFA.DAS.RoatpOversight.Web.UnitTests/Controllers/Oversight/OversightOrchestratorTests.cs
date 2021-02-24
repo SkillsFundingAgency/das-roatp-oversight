@@ -218,6 +218,49 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(expectedShowAppealLink, result.ShowAppealLink);
         }
 
+        [TestCase(GatewayReviewStatus.Pass, true, PassFailStatus.Passed)]
+        [TestCase(GatewayReviewStatus.Pass, false, PassFailStatus.Failed)]
+        [TestCase(GatewayReviewStatus.Fail, true, PassFailStatus.Failed)]
+        [TestCase(GatewayReviewStatus.Fail, false, PassFailStatus.Passed)]
+        [TestCase(GatewayReviewStatus.Fail, null, PassFailStatus.None)]
+        [TestCase(GatewayReviewStatus.Pass, null, PassFailStatus.None)]
+        [TestCase(GatewayReviewStatus.Removed, null, PassFailStatus.None)]
+        public async Task TestGatewayGovernanceOutcomeIsCorrect(string gatewayReviewStatus, bool? approved, PassFailStatus expectedOutcome)
+        {
+            _apiClient.Setup(x => x.GetOversightDetails(_applicationId))
+                .ReturnsAsync(() => new ApplicationDetails
+                {
+                    GatewayReviewStatus = gatewayReviewStatus,
+                    GatewayApproved = approved
+                });
+
+            var result = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
+
+            Assert.AreEqual(expectedOutcome, result.GatewayOutcome.GovernanceOutcome);
+        }
+
+
+        [TestCase(ModerationReviewStatus.Pass, true, PassFailStatus.Passed)]
+        [TestCase(ModerationReviewStatus.Pass, false, PassFailStatus.Failed)]
+        [TestCase(ModerationReviewStatus.Fail, true, PassFailStatus.Failed)]
+        [TestCase(ModerationReviewStatus.Fail, false, PassFailStatus.Passed)]
+        [TestCase(ModerationReviewStatus.Fail, null, PassFailStatus.None)]
+        [TestCase(ModerationReviewStatus.Pass, null, PassFailStatus.None)]
+        public async Task TestModerationGovernanceOutcomeIsCorrect(string moderationReviewStatus, bool? approved, PassFailStatus expectedOutcome)
+        {
+            _apiClient.Setup(x => x.GetOversightDetails(_applicationId))
+                .ReturnsAsync(() => new ApplicationDetails
+                {
+                    ModerationReviewStatus = moderationReviewStatus,
+                    ModerationApproved = approved
+                });
+
+            var result = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
+
+            Assert.AreEqual(expectedOutcome, result.ModerationOutcome.GovernanceOutcome);
+        }
+
+
         private ApplicationDetails GetApplication()
         {
             return new ApplicationDetails

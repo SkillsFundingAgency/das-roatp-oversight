@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.RoatpOversight.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.Models.Partials
 {
@@ -10,5 +11,6 @@ namespace SFA.DAS.RoatpOversight.Web.Models.Partials
         public string GatewayOutcomeMadeBy { get; set; }
         public string GatewayComments { get; set; }
         public string GatewayExternalComments { get; set; }
+        public PassFailStatus GovernanceOutcome { get; set; }
     }
 }

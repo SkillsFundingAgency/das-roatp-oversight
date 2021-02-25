@@ -8,6 +8,11 @@ namespace SFA.DAS.RoatpOversight.Web.Services
     {
         public async Task<bool> IsPdf(IFormFile file)
         {
+            if (file.ContentType != "application/pdf")
+            {
+                return false;
+            }
+
             var pdfHeader = new byte[] { 0x25, 0x50, 0x44, 0x46 };
 
             using (var fileContents = file.OpenReadStream())

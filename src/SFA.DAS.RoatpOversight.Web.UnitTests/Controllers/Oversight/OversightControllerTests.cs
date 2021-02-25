@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoFixture;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
@@ -27,7 +29,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         private Mock<IAppealOrchestrator> _appealOrchestrator;
         private ITempDataDictionary _tempDataDictionary;
 
-        private readonly Fixture _autoFixture = new Fixture();
+        private static readonly Fixture _autoFixture = new Fixture();
         private OversightController _controller;
         private readonly Guid _applicationDetailsApplicationId = Guid.NewGuid();
         private const string _ukprnOfCompletedOversightApplication = "11112222";
@@ -224,19 +226,19 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _appealOrchestrator.Setup(x =>
                 x.UploadAppealFile(It.IsAny<Guid>(), It.IsAny<FileUpload>(), It.IsAny<string>(), It.IsAny<string>()));
 
-            var file = GenerateMockFile();
+            var file = GenerateFile();
 
             var request = new AppealPostRequest
             {
                 ApplicationId = applicationId,
-                FileUpload = file.Object,
+                FileUpload = file,
                 SelectedOption = AppealPostRequest.SubmitOption.Upload
             };
 
             await _controller.Appeal(request);
 
             _appealOrchestrator.Verify(x => x.UploadAppealFile(It.Is<Guid>(id => id == applicationId),
-                It.Is<FileUpload>(f => f.FileName == file.Object.FileName && f.ContentType == file.Object.ContentType),
+                It.Is<FileUpload>(f => f.FileName == file.FileName && f.ContentType == file.ContentType),
                 It.IsAny<string>(),
                 It.IsAny<string>()),
                 Times.Once);
@@ -320,7 +322,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             {
                 ApplicationId = applicationId,
                 Message = _autoFixture.Create<string>(),
-                FileUpload = submitOption == AppealPostRequest.SubmitOption.Upload ? GenerateMockFile().Object : null,
+                FileUpload = submitOption == AppealPostRequest.SubmitOption.Upload ? GenerateFile() : null,
                 FileId = submitOption == AppealPostRequest.SubmitOption.RemoveFile ? fileId : Guid.Empty,
                 SelectedOption = submitOption
             };
@@ -330,20 +332,19 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(request.Message, _tempDataDictionary["Message"]);
         }
 
-        private Mock<IFormFile> GenerateMockFile()
+        private static IFormFile GenerateFile()
         {
-            var fileMock = new Mock<IFormFile>();
-            var content = _autoFixture.Create<string>();
             var fileName = "test.pdf";
-            var ms = new MemoryStream();
-            var writer = new StreamWriter(ms);
-            writer.Write(content);
-            writer.Flush();
-            ms.Position = 0;
-            fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
-            fileMock.Setup(_ => _.FileName).Returns(fileName);
-            fileMock.Setup(_ => _.Length).Returns(ms.Length);
-            return fileMock;
+            var content = _autoFixture.Create<string>();
+            return new FormFile(new MemoryStream(Encoding.UTF8.GetBytes(content)),
+                0,
+                content.Length,
+                fileName,
+                fileName)
+            {
+                Headers = new HeaderDictionary(),
+                ContentType = "application/octet-stream"
+            };
         }
     }
 }

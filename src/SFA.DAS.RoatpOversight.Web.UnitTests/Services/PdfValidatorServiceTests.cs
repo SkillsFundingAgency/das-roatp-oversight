@@ -24,7 +24,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         [Test]
         public async Task IsPdf_Returns_True_If_File_Has_Pdf_Header()
         {
-            var file = GenerateFile(true);
+            var file = GenerateFile(true, true);
             var result = await _pdfValidatorService.IsPdf(file);
             Assert.IsTrue(result);
         }
@@ -32,12 +32,20 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         [Test]
         public async Task IsPdf_ReturnsFalse_If_File_Does_Not_Have_Pdf_Header()
         {
-            var file = GenerateFile(false);
+            var file = GenerateFile(false, true);
             var result = await _pdfValidatorService.IsPdf(file);
             Assert.IsFalse(result);
         }
 
-        private static IFormFile GenerateFile(bool hasPdfHeader)
+        [Test]
+        public async Task IsPdf_ReturnsFalse_If_File_Does_Not_Have_Pdf_ContentType()
+        {
+            var file = GenerateFile(true, false);
+            var result = await _pdfValidatorService.IsPdf(file);
+            Assert.IsFalse(result);
+        }
+
+        private static IFormFile GenerateFile(bool hasPdfHeader, bool hasPdfContentType)
         {
             var pdfHeader = new byte[] { 0x25, 0x50, 0x44, 0x46 };
 
@@ -53,7 +61,11 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
             var contentToGenerate = Enumerable.Repeat((byte)0x20, remainingContentToGenerate);
             fileContent.Write(contentToGenerate.ToArray());
 
-            return new FormFile(fileContent, 0, fileContent.Length, "test", "test");
+            return new FormFile(fileContent, 0, fileContent.Length, "test", "test")
+            {
+                Headers = new HeaderDictionary(),
+                ContentType = hasPdfContentType ? "application/pdf" : "image/jpeg"
+            };
         }
     }
 }

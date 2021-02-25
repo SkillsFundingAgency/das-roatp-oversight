@@ -1,5 +1,6 @@
 ﻿@using SFA.DAS.AdminService.Common.Extensions
 @using SFA.DAS.RoatpOversight.Domain;
+@using SFA.DAS.RoatpOversight.Web.Extensions
 @model SFA.DAS.RoatpOversight.Web.Models.Partials.GatewayOutcomeViewModel
 
 @if (Model.GatewayReviewStatus == GatewayReviewStatus.Pass)
@@ -83,6 +84,17 @@
                         <pre class="govuk-body das-preformatted-body">@Model.GatewayExternalComments</pre>
                     </div>
                 </details>
+            </dd>
+        </div>
+    }
+    @if (Model.GovernanceOutcome != PassFailStatus.None)
+    {
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Governance
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <span class="@Model.GovernanceOutcome.GetCssClass()">@Model.GovernanceOutcome.GetLabel()</span>
             </dd>
         </div>
     }

@@ -182,7 +182,7 @@ namespace SFA.DAS.RoatpOversight.Web
             services.AddTransient<IOversightOrchestrator, OversightOrchestrator>();
             services.AddTransient<IAppealOrchestrator, AppealOrchestrator>();
             services.AddSingleton<IPdfValidatorService, PdfValidatorService>();
-
+            services.AddSingleton<IMultipartFormDataService, MultipartFormDataService>();
             DependencyInjection.ConfigureDependencyInjection(services);
         }
 

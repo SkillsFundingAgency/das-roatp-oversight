@@ -1,13 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SFA.DAS.AdminService.Common.Extensions;
-using SFA.DAS.RoatpOversight.Domain.Extensions;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Extensions;
@@ -133,8 +130,8 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
             if (request.SelectedOption == AppealPostRequest.SubmitOption.Upload)
             {
-                var fileUpload = await request.FileUpload.ToFileUpload();
-                await _appealOrchestrator.UploadAppealFile(request.ApplicationId, fileUpload, userId, userName);
+                //var fileUpload = await request.FileUpload.ToFileUpload();
+                await _appealOrchestrator.UploadAppealFile(request.ApplicationId, request.FileUpload, userId, userName);
                 TempData.AddValue("Message", request.Message);
                 return RedirectToAction("Appeal", new AppealRequest { ApplicationId = request.ApplicationId });
             }

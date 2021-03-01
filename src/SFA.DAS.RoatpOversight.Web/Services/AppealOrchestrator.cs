@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.RoatpOversight.Domain;
+using Microsoft.AspNetCore.Http;
 using SFA.DAS.RoatpOversight.Domain.ApiTypes;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Models;
@@ -18,17 +18,17 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             _applyApiClient = applyApiClient;
         }
 
-        public async Task UploadAppealFile(Guid applicationId, FileUpload file, string userId, string userName)
+        public async Task UploadAppealFile(Guid applicationId, IFormFile file, string userId, string userName)
         {
-            var command = new UploadAppealFileCommand
+            var request = new UploadAppealFileRequest
             {
                 ApplicationId = applicationId,
-                File = file,
                 UserId = userId,
-                UserName = userName
+                UserName = userName,
+                File = file
             };
 
-            await _applyApiClient.UploadAppealFile(command);
+            await _applyApiClient.UploadAppealFile(applicationId, request);
         }
 
         public async Task<AppealViewModel> GetAppealViewModel(AppealRequest request, string message)
@@ -50,13 +50,11 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         {
             var command = new RemoveAppealFileCommand
             {
-                ApplicationId = applicationId,
-                FileId = fileId,
                 UserId = userId,
                 UserName = userName
             };
 
-            await _applyApiClient.RemoveAppealFile(command);
+            await _applyApiClient.RemoveAppealFile(applicationId, fileId, command);
         }
     }
 }

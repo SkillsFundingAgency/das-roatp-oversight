@@ -224,7 +224,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var applicationId = Guid.NewGuid();
 
             _appealOrchestrator.Setup(x =>
-                x.UploadAppealFile(It.IsAny<Guid>(), It.IsAny<FileUpload>(), It.IsAny<string>(), It.IsAny<string>()));
+                x.UploadAppealFile(It.IsAny<Guid>(), It.IsAny<IFormFile>(), It.IsAny<string>(), It.IsAny<string>()));
 
             var file = GenerateFile();
 
@@ -238,7 +238,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             await _controller.Appeal(request);
 
             _appealOrchestrator.Verify(x => x.UploadAppealFile(It.Is<Guid>(id => id == applicationId),
-                It.Is<FileUpload>(f => f.FileName == file.FileName && f.ContentType == file.ContentType),
+                It.Is<IFormFile>(f => f.FileName == file.FileName && f.ContentType == file.ContentType),
                 It.IsAny<string>(),
                 It.IsAny<string>()),
                 Times.Once);
@@ -273,7 +273,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var request = new AppealPostRequest
             {
                 ApplicationId = applicationId,
-                Message = "This is aan appeal",
+                Message = "This is an appeal",
                 SelectedOption = AppealPostRequest.SubmitOption.SaveAndContinue
             };
 

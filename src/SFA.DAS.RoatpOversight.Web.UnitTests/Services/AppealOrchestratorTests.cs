@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
+using AutoFixture;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpOversight.Domain;
@@ -19,19 +24,20 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 
         private readonly Guid _applicationId = Guid.NewGuid();
         private readonly Guid _fileId = Guid.NewGuid();
-        private FileUpload _fileUpload;
+        private IFormFile _fileUpload;
         private readonly string _userId = "userid";
         private readonly string _userName = "username";
+        private static readonly Fixture _autoFixture = new Fixture();
 
         [SetUp]
         public void SetUp()
         {
             _applyApiClient = new Mock<IApplyApiClient>();
 
-            _applyApiClient.Setup(x => x.UploadAppealFile(It.IsAny<UploadAppealFileCommand>()))
+            _applyApiClient.Setup(x => x.UploadAppealFile(_applicationId, It.IsAny<UploadAppealFileRequest>()))
                 .Returns(Task.CompletedTask);
 
-            _fileUpload = new FileUpload {ContentType = "pdf", FileName = "testfile"};
+            _fileUpload = GenerateFile();
 
             _orchestrator = new AppealOrchestrator(_applyApiClient.Object);
         }
@@ -41,8 +47,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         {
             await _orchestrator.UploadAppealFile(_applicationId, _fileUpload, _userId, _userName);
 
-            _applyApiClient.Verify(x => x.UploadAppealFile(It.Is<UploadAppealFileCommand>(c =>
-                c.ApplicationId == _applicationId &&
+            _applyApiClient.Verify(x => x.UploadAppealFile(_applicationId, It.Is<UploadAppealFileRequest>(c =>
                 c.File == _fileUpload &&
                 c.UserId == _userId &&
                 c.UserName == _userName)));
@@ -53,9 +58,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         {
             await _orchestrator.RemoveAppealFile(_applicationId, _fileId, _userId, _userName);
 
-            _applyApiClient.Verify(x => x.RemoveAppealFile(It.Is<RemoveAppealFileCommand>(c =>
-                c.ApplicationId == _applicationId &&
-                c.FileId == _fileId &&
+            _applyApiClient.Verify(x => x.RemoveAppealFile(_applicationId, _fileId, It.Is<RemoveAppealFileCommand>(c =>
                 c.UserId == _userId &&
                 c.UserName == _userName)));
         }
@@ -106,6 +109,21 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
             var result = await _orchestrator.GetAppealViewModel(new AppealRequest{ApplicationId = _applicationId}, string.Empty);
 
             Assert.AreEqual(expectUploadsEnabled, result.AllowAdditionalUploads);
+        }
+
+        private static IFormFile GenerateFile()
+        {
+            var fileName = "test.pdf";
+            var content = _autoFixture.Create<string>();
+            return new FormFile(new MemoryStream(Encoding.UTF8.GetBytes(content)),
+                0,
+                content.Length,
+                fileName,
+                fileName)
+            {
+                Headers = new HeaderDictionary(),
+                ContentType = "application/octet-stream"
+            };
         }
     }
 }

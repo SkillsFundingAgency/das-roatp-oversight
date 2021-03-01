@@ -130,7 +130,6 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
             if (request.SelectedOption == AppealPostRequest.SubmitOption.Upload)
             {
-                //var fileUpload = await request.FileUpload.ToFileUpload();
                 await _appealOrchestrator.UploadAppealFile(request.ApplicationId, request.FileUpload, userId, userName);
                 TempData.AddValue("Message", request.Message);
                 return RedirectToAction("Appeal", new AppealRequest { ApplicationId = request.ApplicationId });

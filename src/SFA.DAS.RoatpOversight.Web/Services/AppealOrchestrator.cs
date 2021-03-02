@@ -12,6 +12,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
     public class AppealOrchestrator : IAppealOrchestrator
     {
         private readonly IApplyApiClient _applyApiClient;
+        private const int MaxFileUploads = 4;
 
         public AppealOrchestrator(IApplyApiClient applyApiClient)
         {
@@ -38,7 +39,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             var result = new AppealViewModel
             {
                 ApplicationId = request.ApplicationId,
-                AllowAdditionalUploads = stagedUploads.Files.Count < 4,
+                AllowAdditionalUploads = stagedUploads.Files.Count < MaxFileUploads,
                 UploadedFiles = stagedUploads.Files.Select(x => new UploadedFileViewModel{Id = x.Id, Filename = x.Filename}).ToList(),
                 Message = message
             };

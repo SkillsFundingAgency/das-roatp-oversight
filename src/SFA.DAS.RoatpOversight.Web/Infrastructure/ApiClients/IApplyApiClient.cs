@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using SFA.DAS.RoatpOversight.Domain;
+using SFA.DAS.RoatpOversight.Domain.ApiTypes;
 
 namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
 {
@@ -14,5 +15,8 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         Task<bool> RecordOutcome(RecordOversightOutcomeCommand command);
         Task RecordGatewayFailOutcome(RecordOversightGatewayFailOutcomeCommand command);
         Task RecordGatewayRemovedOutcome(RecordOversightGatewayRemovedOutcomeCommand command);
+        Task UploadAppealFile(Guid applicationId, UploadAppealFileRequest request);
+        Task RemoveAppealFile(Guid applicationId, Guid fileId, RemoveAppealFileCommand command);
+        Task<AppealFiles> GetStagedUploads(GetStagedFilesRequest request);
     }
 }

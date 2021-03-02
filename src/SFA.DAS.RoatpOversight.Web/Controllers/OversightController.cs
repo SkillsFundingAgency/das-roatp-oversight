@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RoatpOversight.Domain;
@@ -9,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.AdminService.Common.Extensions;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
+using SFA.DAS.RoatpOversight.Web.Extensions;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Validators;
 
@@ -19,12 +18,15 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
     {
         private readonly IApplicationOutcomeOrchestrator _outcomeOrchestrator;
         private readonly IOversightOrchestrator _oversightOrchestrator;
+        private readonly IAppealOrchestrator _appealOrchestrator;
 
         public OversightController(IApplicationOutcomeOrchestrator outcomeOrchestrator,
-                                   IOversightOrchestrator oversightOrchestrator)
+                                   IOversightOrchestrator oversightOrchestrator,
+                                   IAppealOrchestrator appealOrchestrator)
         {
             _outcomeOrchestrator = outcomeOrchestrator;
             _oversightOrchestrator = oversightOrchestrator;
+            _appealOrchestrator = appealOrchestrator;
         }
 
         public async Task<IActionResult> Applications()
@@ -114,9 +116,33 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         }
 
         [HttpGet("Oversight/Outcome/{applicationId}/appeal")]
-        public IActionResult Appeal(AppealRequest request)
+        public async Task<IActionResult> Appeal(AppealRequest request)
         {
-            throw new NotImplementedException();
+            var viewModel = await _appealOrchestrator.GetAppealViewModel(request, TempData.GetValue<string>("Message"));
+            return View(viewModel);
+        }
+
+        [HttpPost("Oversight/Outcome/{applicationId}/appeal")]
+        public async Task<IActionResult> Appeal(AppealPostRequest request)
+        {
+            var userId = HttpContext.User.UserId();
+            var userName = HttpContext.User.UserDisplayName();
+
+            if (request.SelectedOption == AppealPostRequest.SubmitOption.Upload)
+            {
+                await _appealOrchestrator.UploadAppealFile(request.ApplicationId, request.FileUpload, userId, userName);
+                TempData.AddValue("Message", request.Message);
+                return RedirectToAction("Appeal", new AppealRequest { ApplicationId = request.ApplicationId });
+            }
+
+            if (request.SelectedOption == AppealPostRequest.SubmitOption.RemoveFile)
+            {
+                await _appealOrchestrator.RemoveAppealFile(request.ApplicationId, request.FileId, userId, userName);
+                TempData.AddValue("Message", request.Message);
+                return RedirectToAction("Appeal", new AppealRequest { ApplicationId = request.ApplicationId });
+            }
+
+            return RedirectToAction("Outcome", new OutcomeRequest {ApplicationId = request.ApplicationId});
         }
     }
 }

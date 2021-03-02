@@ -1,0 +1,103 @@
+﻿@using SFA.DAS.RoatpOversight.Web.Models
+@model SFA.DAS.RoatpOversight.Web.Models.AppealViewModel
+
+@{
+    ViewData["Title"] = "Enter the applicant's appeal message";
+}
+
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" asp-controller="Home" asp-action="Dashboard">RoATP dashboard</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" asp-controller="Oversight" asp-action="Applications">RoATP application outcomes</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" asp-controller="Oversight" asp-action="Outcome">Application summary</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">Enter the applicant's appeal message</li>
+    </ol>
+</div>
+
+<main class="govuk-main-wrapper " id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <partial name="_ValidationSummaryPartial"/>
+
+      <form enctype="multipart/form-data" method="post" novalidate>
+
+        <div class="govuk-form-group" das-highlight-error-for="Message" error-class="govuk-form-group--error">
+            <h1 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--xl" for="appeal-message">
+                    Enter the applicant's appeal message
+                </label>
+            </h1>
+            
+            <span das-validation-for="Message" class="govuk-error-message"></span>
+
+            <textarea asp-for="Message" name="Message" class="govuk-textarea" rows="10"
+                      das-highlight-error-for="Message" error-class="govuk-textarea--error"
+                        aria-describedby="Message-error">
+            </textarea>
+        </div>
+
+          @if(Model.UploadedFiles.Count > 0)
+          {
+              <div class="govuk-form-group">
+                  <table class="govuk-table">
+                      <caption class="govuk-visually-hidden">Uploaded files</caption>
+                      <thead class="govuk-table__head">
+                          <tr class="govuk-table__row">
+                              <th scope="col" class="govuk-table__header">Uploaded files</th>
+                              <th scope="col" class="govuk-table__header govuk-table__header--numeric"></th>
+                          </tr>
+                      </thead>
+                      <tbody class="govuk-table__body">
+                      
+                      @foreach (var file in Model.UploadedFiles)
+                      {
+                          <tr class="govuk-table__row">
+                              <th scope="row" class="govuk-table__header">@file.Filename</th>
+                              <td class="govuk-table__cell govuk-table__cell--numeric">
+                                  <button class="das-button--inline-link" name="SelectedOption" value="@AppealPostRequest.SubmitOption.RemoveFile" asp-route-fileid="@file.Id">
+                                      Remove
+                                  </button>
+                              </td>
+                          </tr>
+                      }
+                      </tbody>
+                  </table>
+              </div>
+          }
+      
+          @if (Model.AllowAdditionalUploads)
+          {
+              <div class="govuk-form-group" das-highlight-error-for="FileUpload" error-class="govuk-form-group--error">
+                  <label class="govuk-label" for="FileUpload">
+                      Upload a file (optional)
+                  </label>
+                  <span das-validation-for="FileUpload" class="govuk-error-message"></span>
+                  <div id="FileUpload-Hint" class="govuk-hint">
+                      <div>You can upload a maximum of 4 files. </div>
+                      <div>Each file must be a PDF and smaller than 5MB.</div>
+                  </div>
+                  <input class="govuk-file-upload" id="FileUpload" name="FileUpload" type="file" aria-describedby="FileUpload-Hint" accept=".pdf" >
+              </div>
+
+              <div class="govuk-form-group">
+                  <button class="govuk-button govuk-button--secondary" data-module="govuk-button" name="SelectedOption" value="@AppealPostRequest.SubmitOption.Upload">
+                      Upload file
+                  </button>
+              </div>
+          }
+
+          <button class="govuk-button" data-module="govuk-button" name="SelectedOption" value="@AppealPostRequest.SubmitOption.SaveAndContinue">
+              Save and continue
+          </button>
+
+      </form>
+    </div>
+  </div>
+</main>

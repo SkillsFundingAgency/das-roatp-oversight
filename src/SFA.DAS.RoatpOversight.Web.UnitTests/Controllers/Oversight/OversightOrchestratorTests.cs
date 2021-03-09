@@ -7,6 +7,7 @@ using Castle.DynamicProxy.Generators;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.ApplyService.Types;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;

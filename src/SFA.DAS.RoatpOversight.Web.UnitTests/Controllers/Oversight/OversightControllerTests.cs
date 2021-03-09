@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.AdminService.Common.Testing.MockedObjects;
+using SFA.DAS.ApplyService.Types;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Controllers;
 using SFA.DAS.RoatpOversight.Web.Exceptions;

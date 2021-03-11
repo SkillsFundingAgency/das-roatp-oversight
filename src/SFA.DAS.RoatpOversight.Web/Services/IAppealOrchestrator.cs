@@ -10,5 +10,6 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         Task UploadAppealFile(Guid applicationId, IFormFile file, string userId, string userName);
         Task<AppealViewModel> GetAppealViewModel(AppealRequest request, string message);
         Task RemoveAppealFile(Guid applicationId, Guid fileId, string userId, string userName);
+        Task CreateAppeal(Guid applicationId, Guid oversightReviewId, string message, string userId, string userName);
     }
 }

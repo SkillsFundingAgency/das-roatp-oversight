@@ -142,6 +142,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 return RedirectToAction("Appeal", new AppealRequest { ApplicationId = request.ApplicationId });
             }
 
+            await _appealOrchestrator.CreateAppeal(request.ApplicationId, request.OversightReviewId, request.Message, userId, userName);
             return RedirectToAction("Outcome", new OutcomeRequest {ApplicationId = request.ApplicationId});
         }
     }

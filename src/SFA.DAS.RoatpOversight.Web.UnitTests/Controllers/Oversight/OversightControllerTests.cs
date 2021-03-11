@@ -267,6 +267,34 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         }
 
         [Test]
+        public async Task Post_Appeal_New_Appeal_Recorded()
+        {
+            var applicationId = Guid.NewGuid();
+            var oversightReviewId = Guid.NewGuid();
+
+            _appealOrchestrator.Setup(x =>
+                x.CreateAppeal(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+            
+            var request = new AppealPostRequest
+            {
+                OversightReviewId = oversightReviewId,
+                ApplicationId = applicationId,
+                FileUpload = null,
+                SelectedOption = AppealPostRequest.SubmitOption.SaveAndContinue,
+                Message = _autoFixture.Create<string>()
+            };
+
+            await _controller.Appeal(request);
+
+            _appealOrchestrator.Verify(x => x.CreateAppeal(It.Is<Guid>(id => id == applicationId),
+                    It.Is<Guid>(reviewId => reviewId == oversightReviewId),
+                    It.Is<string>(m => m == request.Message),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()),
+                Times.Once);
+        }
+
+        [Test]
         public async Task Post_Appeal_User_Is_Redirected_To_Outcome_Page()
         {
             var applicationId = Guid.NewGuid();

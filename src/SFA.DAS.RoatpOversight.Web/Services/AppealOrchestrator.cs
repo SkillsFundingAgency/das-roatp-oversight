@@ -34,11 +34,13 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
         public async Task<AppealViewModel> GetAppealViewModel(AppealRequest request, string message)
         {
+            var oversightReview = await _applyApiClient.GetOversightDetails(request.ApplicationId);
             var stagedUploads = await _applyApiClient.GetStagedUploads(new GetStagedFilesRequest {ApplicationId = request.ApplicationId});
 
             var result = new AppealViewModel
             {
                 ApplicationId = request.ApplicationId,
+                OversightReviewId = oversightReview.OversightReviewId,
                 AllowAdditionalUploads = stagedUploads.Files.Count < MaxFileUploads,
                 UploadedFiles = stagedUploads.Files.Select(x => new UploadedFileViewModel{Id = x.Id, Filename = x.Filename}).ToList(),
                 Message = message
@@ -56,6 +58,18 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
 
             await _applyApiClient.RemoveAppealFile(applicationId, fileId, command);
+        }
+
+        public async Task CreateAppeal(Guid applicationId, Guid oversightReviewId, string message, string userId, string userName)
+        {
+            var request = new CreateAppealRequest
+            {
+                Message = message,
+                UserId = userId,
+                UserName = userName
+            };
+
+            await _applyApiClient.CreateAppeal(applicationId, oversightReviewId, request);
         }
     }
 }

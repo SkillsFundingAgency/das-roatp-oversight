@@ -14,6 +14,7 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public ModerationOutcomeViewModel ModerationOutcome { get; set; }
         public InProgressDetailsViewModel InProgressDetails { get; set; }
         public OverallOutcomeViewModel OverallOutcome { get; set; }
+        public AppealOutcomeViewModel AppealViewModel { get; set; }
         public bool IsGatewayFail { get; set; }
         public bool IsGatewayRemoved { get; set; }
         public bool IsGatewayActionPendingConfirmation => IsGatewayFail || IsGatewayRemoved;

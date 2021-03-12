@@ -19,5 +19,6 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         Task RemoveAppealFile(Guid applicationId, Guid fileId, RemoveAppealFileCommand command);
         Task<AppealFiles> GetStagedUploads(GetStagedFilesRequest request);
         Task CreateAppeal(Guid applicationId, Guid oversightReviewId, CreateAppealRequest request);
+        Task<GetAppealResponse> GetAppeal(Guid applicationId, Guid oversightReviewId);
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ApplyService.Types;
 using SFA.DAS.RoatpOversight.Domain;
+using SFA.DAS.RoatpOversight.Domain.ApiTypes;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
@@ -45,6 +47,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         public async Task<OutcomeViewModel> GetOversightDetailsViewModel(Guid applicationId, Guid? outcomeKey)
         {
             var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
+            var appealResponse = await _applyApiClient.GetAppeal(applicationId, applicationDetails.OversightReviewId);
 
             var viewModel = new OutcomeViewModel
             {
@@ -55,6 +58,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ModerationOutcome = CreateModerationOutcomeViewModel(applicationDetails),
                 InProgressDetails = CreateInProgressDetailsViewModel(applicationDetails),
                 OverallOutcome = CreateOverallOutcomeViewModel(applicationDetails),
+                AppealViewModel = appealResponse == null ? null : CreateAppealViewModel(appealResponse),
                 ShowAppealLink = applicationDetails.OversightStatus == OversightReviewStatus.Unsuccessful,
                 ShowInProgressDetails = applicationDetails.InProgressDate.HasValue,
                 OversightStatus = applicationDetails.OversightStatus,
@@ -326,6 +330,23 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ExternalComments = applicationDetails.ExternalComments,
                 IsGatewayOutcome = applicationDetails.OversightStatus == OversightReviewStatus.Rejected ||
                                    applicationDetails.OversightStatus == OversightReviewStatus.Withdrawn
+            };
+        }
+
+        private AppealOutcomeViewModel CreateAppealViewModel(GetAppealResponse appealResponse)
+        {
+            return new AppealOutcomeViewModel
+            {
+                Message = appealResponse.Message,
+                CreatedOn = appealResponse.CreatedOn,
+                UserId = appealResponse.UserId,
+                UserName = appealResponse.UserName,
+                Uploads = appealResponse.Uploads.Select((upload => new AppealOutcomeViewModel.AppealUpload
+                    {
+                        Id = upload.Id,
+                        Filename = upload.Filename,
+                        ContentType = upload.ContentType,
+                    })).ToList()
             };
         }
     }

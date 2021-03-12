@@ -1,0 +1,49 @@
+﻿@using SFA.DAS.AdminService.Common.Extensions
+@model SFA.DAS.RoatpOversight.Web.Models.Partials.AppealOutcomeViewModel
+
+<div class="govuk-form-group">
+    <fieldset class="govuk-fieldset">
+
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h2 class="govuk-heading-l govuk-!-margin-bottom-3">Application appeal</h2>
+        </legend>
+
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Appeal date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <span>@Model.CreatedOn.ToSfaShortDateString()</span>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Applicant's appeal message
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <pre class="govuk-body das-preformatted-body">@Model.Message</pre>
+                </dd>
+            </div>
+            @if (Model.Uploads.Count > 0)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Uploaded files
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+
+                        <ul class="govuk-list govuk-!-margin-bottom-0">
+                            @foreach (var upload in @Model.Uploads)
+                            {
+                                <li>
+                                    <a class="govuk-link" href="#">@upload.Filename</a>
+                                </li>
+                            }
+                        </ul>
+                    </dd>
+                </div>
+            }
+        </dl>
+    </fieldset>
+</div>

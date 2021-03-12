@@ -373,6 +373,15 @@
         </div>
     }
 
+    @if (Model.AppealViewModel != null)
+    {
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <partial name="_Appeal" for="@Model.AppealViewModel"/>
+            </div>
+        </div>
+    }
+
     @if(Model.ShowAppealLink)
     {
         <div class="govuk-grid-row">

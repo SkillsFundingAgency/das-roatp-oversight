@@ -27,12 +27,14 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         private Mock<ICacheStorageService> _cacheStorageService;
         private string _dashboardAddress;
         private Guid _applicationId;
-        private Fixture _autoFixture = new Fixture();
+        private Guid _oversightReviewId;
+        private readonly Fixture _autoFixture = new Fixture();
 
         [SetUp]
         public void SetUp()
         {
             _applicationId = Guid.NewGuid();
+            _oversightReviewId = Guid.NewGuid();
             _apiClient = new Mock<IApplyApiClient>();
             _configuration = new Mock<IWebConfiguration>();
             _cacheStorageService = new Mock<ICacheStorageService>();
@@ -262,9 +264,30 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                     OversightStatus = status
                 });
 
+            _apiClient.Setup(x => x.GetAppeal(_applicationId, _oversightReviewId))
+                .ReturnsAsync(() => null);
+
             var result = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
 
             Assert.AreEqual(expectedShowAppealLink, result.ShowAppealLink);
+        }
+
+        [Test]
+        public async Task TestHideAppealLink()
+        {
+            _apiClient.Setup(x => x.GetOversightDetails(_applicationId))
+                .ReturnsAsync(() => new ApplicationDetails
+                {
+                    OversightReviewId = _oversightReviewId,
+                    OversightStatus = OversightReviewStatus.Unsuccessful,
+                });
+
+            _apiClient.Setup(x => x.GetAppeal(_applicationId, _oversightReviewId))
+                .ReturnsAsync(() => _autoFixture.Create<GetAppealResponse>());
+            
+            var result = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
+
+            Assert.IsFalse(result.ShowAppealLink);
         }
 
         [TestCase(GatewayReviewStatus.Pass, true, PassFailStatus.Passed)]
@@ -334,7 +357,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 ModerationOutcomeMadeOn = DateTime.Today,
                 ModeratedBy = "Lesley",
                 ModerationComments = "moderation comments",
-                OversightReviewId = Guid.NewGuid()
+                OversightReviewId = _oversightReviewId
             };
         }
 

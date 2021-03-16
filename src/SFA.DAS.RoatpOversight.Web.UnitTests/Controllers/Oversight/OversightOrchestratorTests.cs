@@ -75,7 +75,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var expectedApplicationDetails = GetApplication();
             var appealResponse = _autoFixture.Create<GetAppealResponse>();
             _apiClient.Setup(x => x.GetOversightDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
-            _apiClient.Setup(x => x.GetAppeal(_applicationId, expectedApplicationDetails.OversightReviewId))
+            _apiClient.Setup(x => x.GetAppeal(_applicationId, expectedApplicationDetails.OversightReviewId.Value))
                 .ReturnsAsync(() => appealResponse);
 
             var actualViewModel = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
@@ -135,7 +135,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         {
             var expectedApplicationDetails = GetApplication();
             _apiClient.Setup(x => x.GetOversightDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
-            _apiClient.Setup(x => x.GetAppeal(_applicationId, expectedApplicationDetails.OversightReviewId))
+            _apiClient.Setup(x => x.GetAppeal(_applicationId, expectedApplicationDetails.OversightReviewId.Value))
                 .ReturnsAsync(() => null);
 
             var actualViewModel = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);

@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="SFA.DAS.AdminService.Common" Version="0.1.21" />
-    <PackageReference Include="SFA.DAS.ApplyService.Types" Version="0.1.1528" />
+    <PackageReference Include="SFA.DAS.ApplyService.Types" Version="0.1.1553" />
   </ItemGroup>
 
 </Project>

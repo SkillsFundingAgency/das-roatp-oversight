@@ -92,6 +92,11 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
             return await Get<GetAppealResponse>($"/Oversight/{applicationId}/oversight-reviews/{oversightReviewId}/appeal");
         }
 
+        public async Task<GetAppealUploadResponse> GetAppealFile(Guid applicationId, Guid appealId, Guid fileId)
+        {
+            return await Get<GetAppealUploadResponse>($"Oversight/{applicationId}/appeals/{appealId}/uploads/{fileId}");
+        }
+
         private async Task PostMultipartAsync(string requestUri, object request)
         {
             var content = _multipartFormDataService.CreateMultipartFormDataContent(request);

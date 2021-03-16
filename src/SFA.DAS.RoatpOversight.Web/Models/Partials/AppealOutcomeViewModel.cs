@@ -5,6 +5,8 @@ namespace SFA.DAS.RoatpOversight.Web.Models.Partials
 {
     public class AppealOutcomeViewModel
     {
+        public Guid ApplicationId { get; set; }
+        public Guid AppealId { get; set; }
         public string Message { get; set; }
         public DateTime CreatedOn { get; set; }
         public string UserId { get; set; }

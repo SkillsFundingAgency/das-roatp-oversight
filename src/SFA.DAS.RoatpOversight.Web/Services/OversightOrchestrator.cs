@@ -29,19 +29,16 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
         public async Task<ApplicationsViewModel> GetApplicationsViewModel()
         {
-            var viewModel = new ApplicationsViewModel();
+            var result = new ApplicationsViewModel();
             var pendingApplications = await _applyApiClient.GetOversightsPending();
             var completedApplications = await _applyApiClient.GetOversightsCompleted();
 
-            viewModel.ApplicationDetails = pendingApplications;
+            result.ApplicationDetails = pendingApplications;
+            result.ApplicationCount = pendingApplications.Reviews.Count;
+            result.OverallOutcomeDetails = completedApplications;
+            result.OverallOutcomeCount = completedApplications.Reviews.Count;
 
-            viewModel.ApplicationCount = pendingApplications.Reviews.Count;
-
-            viewModel.OverallOutcomeDetails = completedApplications;
-
-            viewModel.OverallOutcomeCount = completedApplications.Reviews.Count;
-
-            return viewModel;
+            return result;
         }
 
         public async Task<OutcomeViewModel> GetOversightDetailsViewModel(Guid applicationId, Guid? outcomeKey)
@@ -58,7 +55,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ModerationOutcome = CreateModerationOutcomeViewModel(applicationDetails),
                 InProgressDetails = CreateInProgressDetailsViewModel(applicationDetails),
                 OverallOutcome = CreateOverallOutcomeViewModel(applicationDetails),
-                AppealViewModel = appealResponse == null ? null : CreateAppealViewModel(appealResponse),
+                AppealViewModel = appealResponse == null ? null : CreateAppealViewModel(applicationDetails, appealResponse),
                 ShowAppealLink = applicationDetails.OversightStatus == OversightReviewStatus.Unsuccessful && appealResponse == null,
                 ShowInProgressDetails = applicationDetails.InProgressDate.HasValue,
                 OversightStatus = applicationDetails.OversightStatus,
@@ -333,10 +330,12 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
         }
 
-        private AppealOutcomeViewModel CreateAppealViewModel(GetAppealResponse appealResponse)
+        private AppealOutcomeViewModel CreateAppealViewModel(ApplicationDetails applicationDetails, GetAppealResponse appealResponse)
         {
             return new AppealOutcomeViewModel
             {
+                ApplicationId = applicationDetails.ApplicationId,
+                AppealId = appealResponse.Id,
                 Message = appealResponse.Message,
                 CreatedOn = appealResponse.CreatedOn,
                 UserId = appealResponse.UserId,

@@ -361,6 +361,38 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(request.Message, _tempDataDictionary["Message"]);
         }
 
+        [Test]
+        public async Task Get_AppealFile_Returns_Uploaded_File()
+        {
+            var applicationId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var appealId = Guid.NewGuid();
+
+            var fileUpload = new FileUpload
+            {
+                ContentType = "application/pdf",
+                Data = _autoFixture.Create<byte[]>(),
+                FileName = _autoFixture.Create<string>()
+            };
+
+            var request = new AppealUploadRequest
+            {
+                AppealId = appealId,
+                AppealUploadId = fileId,
+                ApplicationId = applicationId
+            };
+
+            _appealOrchestrator.Setup(x => x.GetAppealFile(applicationId, appealId, fileId)).ReturnsAsync(fileUpload);
+
+            var result = await _controller.AppealUpload(request);
+
+            Assert.IsInstanceOf<FileContentResult>(result);
+            var fileContentResult = (FileContentResult) result;
+            Assert.AreEqual(fileUpload.FileName, fileContentResult.FileDownloadName);
+            Assert.AreEqual(fileUpload.ContentType, fileContentResult.ContentType);
+            Assert.AreEqual(fileUpload.Data, fileContentResult.FileContents);
+        }
+
         private static IFormFile GenerateFile()
         {
             var fileName = "test.pdf";

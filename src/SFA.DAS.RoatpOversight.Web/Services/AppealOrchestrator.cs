@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Domain.ApiTypes;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Models;
@@ -70,6 +71,18 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
 
             await _applyApiClient.CreateAppeal(applicationId, oversightReviewId, request);
+        }
+
+        public async Task<FileUpload> GetAppealFile(Guid applicationId, Guid appealId, Guid fileId)
+        {
+            var result = await _applyApiClient.GetAppealFile(applicationId, appealId, fileId);
+
+            return new FileUpload
+            {
+                FileName = result.Filename,
+                ContentType = result.ContentType,
+                Data = result.Content
+            };
         }
     }
 }

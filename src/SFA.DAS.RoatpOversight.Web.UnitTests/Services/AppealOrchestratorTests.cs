@@ -25,6 +25,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         private readonly Guid _applicationId = Guid.NewGuid();
         private readonly Guid _oversightReviewId = Guid.NewGuid();
         private readonly Guid _fileId = Guid.NewGuid();
+
         private IFormFile _fileUpload;
         private string _message;
         private readonly string _userId = "userid";
@@ -128,6 +129,21 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
                     It.Is<CreateAppealRequest>(r =>
                         r.Message == _message && r.UserId == _userId && r.UserName == _userName)),
                 Times.Once);
+        }
+
+        [Test]
+        public async Task GetAppealFile_Returns_File()
+        {
+            var appealId = Guid.NewGuid();
+            var apiResponse = AutoFixture.Create<GetAppealUploadResponse>();
+
+            _applyApiClient.Setup(x => x.GetAppealFile(_applicationId, appealId, _fileId)).ReturnsAsync(() => apiResponse);
+
+            var result = await _orchestrator.GetAppealFile(_applicationId, appealId, _fileId);
+
+            Assert.AreEqual(apiResponse.Filename, result.FileName);
+            Assert.AreEqual(apiResponse.ContentType, result.ContentType);
+            Assert.AreEqual(apiResponse.Content, result.Data);
         }
 
         private static IFormFile GenerateFile()

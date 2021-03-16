@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.AdminService.Common.Extensions
+@using SFA.DAS.RoatpOversight.Web.Models
 @model SFA.DAS.RoatpOversight.Web.Models.Partials.AppealOutcomeViewModel
 
 <div class="govuk-form-group">
@@ -37,7 +38,7 @@
                             @foreach (var upload in @Model.Uploads)
                             {
                                 <li>
-                                    <a class="govuk-link" href="#">@upload.Filename</a>
+                                    <a class="govuk-link" href="@Url.Action("AppealUpload", "Oversight", new AppealUploadRequest { ApplicationId = @Model.ApplicationId, AppealId = @Model.AppealId, AppealUploadId = upload.Id})">@upload.Filename</a>
                                 </li>
                             }
                         </ul>

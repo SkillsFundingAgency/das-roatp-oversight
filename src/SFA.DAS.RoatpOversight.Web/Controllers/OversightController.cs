@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RoatpOversight.Domain;
@@ -145,5 +146,15 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             await _appealOrchestrator.CreateAppeal(request.ApplicationId, request.OversightReviewId, request.Message, userId, userName);
             return RedirectToAction("Outcome", new OutcomeRequest {ApplicationId = request.ApplicationId});
         }
+
+        [HttpGet("Oversight/Outcome/{applicationId}/appeals/{appealId}/uploads/{appealUploadId}")]
+        public async Task<IActionResult> AppealUpload(AppealUploadRequest request)
+        {
+            var file = await _appealOrchestrator.GetAppealFile(request.ApplicationId, request.AppealId,
+                request.AppealUploadId);
+
+            return File(file.Data,file.ContentType, file.FileName);
+        }
+
     }
 }

@@ -41,7 +41,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             var result = new AppealViewModel
             {
                 ApplicationId = request.ApplicationId,
-                OversightReviewId = oversightReview.OversightReviewId,
+                OversightReviewId = oversightReview.OversightReviewId.Value,
                 AllowAdditionalUploads = stagedUploads.Files.Count < MaxFileUploads,
                 UploadedFiles = stagedUploads.Files.Select(x => new UploadedFileViewModel{Id = x.Id, Filename = x.Filename}).ToList(),
                 Message = message

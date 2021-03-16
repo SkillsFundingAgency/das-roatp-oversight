@@ -44,7 +44,12 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         public async Task<OutcomeViewModel> GetOversightDetailsViewModel(Guid applicationId, Guid? outcomeKey)
         {
             var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
-            var appealResponse = await _applyApiClient.GetAppeal(applicationId, applicationDetails.OversightReviewId);
+
+            GetAppealResponse appealResponse = null;
+            if (applicationDetails.OversightReviewId.HasValue)
+            {
+                appealResponse = await _applyApiClient.GetAppeal(applicationId, applicationDetails.OversightReviewId.Value);
+            }
 
             var viewModel = new OutcomeViewModel
             {

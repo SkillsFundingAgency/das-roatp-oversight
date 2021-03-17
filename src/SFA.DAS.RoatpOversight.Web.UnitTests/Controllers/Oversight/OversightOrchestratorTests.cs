@@ -75,7 +75,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var expectedApplicationDetails = GetApplication();
             var expectedOversightReview = GetOversightReview();
             var appealResponse = _autoFixture.Create<GetAppealResponse>();
-            _apiClient.Setup(x => x.GetOversightDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
+            _apiClient.Setup(x => x.GetApplicationDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
             _apiClient.Setup(x => x.GetOversightReview(_applicationId)).ReturnsAsync(() => expectedOversightReview);
             
             _apiClient.Setup(x => x.GetAppeal(_applicationId, expectedOversightReview.Id))
@@ -138,7 +138,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         {
             var expectedApplicationDetails = GetApplication();
             var expectedOversightReview = GetOversightReview();
-            _apiClient.Setup(x => x.GetOversightDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
+            _apiClient.Setup(x => x.GetApplicationDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
             _apiClient.Setup(x => x.GetOversightReview(_applicationId)).ReturnsAsync(() => expectedOversightReview);
             _apiClient.Setup(x => x.GetAppeal(_applicationId, expectedOversightReview.Id))
                 .ReturnsAsync(() => null);
@@ -166,7 +166,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var cachedItem = autoFixture.Create<OutcomePostRequest>();
             cachedItem.ApplicationId = _applicationId;
 
-            _apiClient.Setup(x => x.GetOversightDetails(_applicationId)).ReturnsAsync(GetApplication);
+            _apiClient.Setup(x => x.GetApplicationDetails(_applicationId)).ReturnsAsync(GetApplication);
 
             _cacheStorageService.Setup(x =>
                     x.RetrieveFromCache<OutcomePostRequest>(It.Is<string>(key => key == cacheKey.ToString())))
@@ -240,7 +240,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 
         public async Task OutcomeViewModel_assessment_outcome_tests(string financialReviewStatus, string financialGradeAwarded, string gatewayReviewStatus, string moderationReviewStatus, string assessmentOutcome)
         {
-            _apiClient.Setup(x => x.GetOversightDetails(_applicationId))
+            _apiClient.Setup(x => x.GetApplicationDetails(_applicationId))
                 .ReturnsAsync(() => new ApplicationDetails
                 {
                     FinancialReviewStatus = financialReviewStatus,
@@ -263,7 +263,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [TestCase(OversightReviewStatus.Unsuccessful, true)]
         public async Task TestShowAppealLink(OversightReviewStatus status, bool expectedShowAppealLink)
         {
-            _apiClient.Setup(x => x.GetOversightDetails(_applicationId))
+            _apiClient.Setup(x => x.GetApplicationDetails(_applicationId))
                 .ReturnsAsync(() => new ApplicationDetails());
 
             _apiClient.Setup(x => x.GetOversightReview(_applicationId))
@@ -283,7 +283,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [Test]
         public async Task TestHideAppealLink()
         {
-            _apiClient.Setup(x => x.GetOversightDetails(_applicationId))
+            _apiClient.Setup(x => x.GetApplicationDetails(_applicationId))
                 .ReturnsAsync(() => new ApplicationDetails());
 
             _apiClient.Setup(x => x.GetOversightReview(_applicationId))
@@ -310,7 +310,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [TestCase(GatewayReviewStatus.Removed, null, PassFailStatus.None)]
         public async Task TestGatewayGovernanceOutcomeIsCorrect(string gatewayReviewStatus, bool? approved, PassFailStatus expectedOutcome)
         {
-            _apiClient.Setup(x => x.GetOversightDetails(_applicationId))
+            _apiClient.Setup(x => x.GetApplicationDetails(_applicationId))
                 .ReturnsAsync(() => new ApplicationDetails
                 {
                     GatewayReviewStatus = gatewayReviewStatus
@@ -336,7 +336,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [TestCase(ModerationReviewStatus.Pass, null, PassFailStatus.None)]
         public async Task TestModerationGovernanceOutcomeIsCorrect(string moderationReviewStatus, bool? approved, PassFailStatus expectedOutcome)
         {
-            _apiClient.Setup(x => x.GetOversightDetails(_applicationId))
+            _apiClient.Setup(x => x.GetApplicationDetails(_applicationId))
                 .ReturnsAsync(() => new ApplicationDetails
                 {
                     ModerationReviewStatus = moderationReviewStatus

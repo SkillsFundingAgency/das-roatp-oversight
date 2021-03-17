@@ -10,7 +10,7 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         Task Ping();
         Task<PendingOversightReviews> GetOversightsPending();
         Task<CompletedOversightReviews> GetOversightsCompleted();
-        Task<ApplicationDetails> GetOversightDetails(Guid applicationId);
+        Task<ApplicationDetails> GetApplicationDetails(Guid applicationId);
         Task<RoatpRegistrationDetails> GetRegistrationDetails(Guid applicationId);
         Task<bool> RecordOutcome(RecordOversightOutcomeCommand command);
         Task RecordGatewayFailOutcome(RecordOversightGatewayFailOutcomeCommand command);

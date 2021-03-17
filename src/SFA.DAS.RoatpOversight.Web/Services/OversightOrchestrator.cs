@@ -43,10 +43,10 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
         public async Task<OutcomeViewModel> GetOversightDetailsViewModel(Guid applicationId, Guid? outcomeKey)
         {
-            var applicationDetailsTask = _applyApiClient.GetOversightDetails(applicationId);
+            var applicationDetailsTask = _applyApiClient.GetApplicationDetails(applicationId);
             var oversightReviewTask = _applyApiClient.GetOversightReview(applicationId);
             await Task.WhenAll(applicationDetailsTask, oversightReviewTask);
-            var applicationDetails = _applyApiClient.GetOversightDetails(applicationId).Result;
+            var applicationDetails = _applyApiClient.GetApplicationDetails(applicationId).Result;
             var oversightReview = _applyApiClient.GetOversightReview(applicationId).Result;
 
             GetAppealResponse appealResponse = null;
@@ -111,10 +111,10 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 throw new ConfirmOutcomeCacheKeyNotFoundException();
             }
 
-            var applicationDetailsTask = _applyApiClient.GetOversightDetails(applicationId);
+            var applicationDetailsTask = _applyApiClient.GetApplicationDetails(applicationId);
             var oversightReviewTask = _applyApiClient.GetOversightReview(applicationId);
             await Task.WhenAll(applicationDetailsTask, oversightReviewTask);
-            var applicationDetails = _applyApiClient.GetOversightDetails(applicationId).Result;
+            var applicationDetails = _applyApiClient.GetApplicationDetails(applicationId).Result;
             var oversightReview = _applyApiClient.GetOversightReview(applicationId).Result;
 
             VerifyApplicationHasNoFinalOutcome(oversightReview);

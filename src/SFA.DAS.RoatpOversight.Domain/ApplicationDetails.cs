@@ -1,6 +1,5 @@
 ﻿using System;
 using SFA.DAS.ApplyService.Types;
-using SFA.DAS.RoatpOversight.Domain;
 
 namespace SFA.DAS.RoatpOversight.Domain
 {
@@ -13,9 +12,6 @@ namespace SFA.DAS.RoatpOversight.Domain
         public string ApplicationReferenceNumber { get; set; }
         public DateTime ApplicationSubmittedDate { get; set; }
         public string ApplicationStatus { get; set; }
-        public OversightReviewStatus OversightStatus { get; set; }
-        public DateTime? ApplicationDeterminedDate { get; set; }
-        public string OversightUserName { get; set; }
 
         public string ApplicationEmailAddress { get; set; }
         public string AssessorReviewStatus { get; set; }
@@ -38,16 +34,6 @@ namespace SFA.DAS.RoatpOversight.Domain
         public DateTime? ModerationOutcomeMadeOn { get; set; }
         public string ModeratedBy { get; set; }
         public string ModerationComments { get; set; }
-        public DateTime? InProgressDate { get; set; }
-        public Guid? OversightReviewId { get; set; }
-        public string InProgressUserId { get; set; }
-        public string InProgressUserName { get; set; }
-        public string InProgressInternalComments { get; set; }
-        public string InProgressExternalComments { get; set; }
-        public bool? GatewayApproved { get; set; }
-        public bool? ModerationApproved { get; set; }
-        public string InternalComments { get; set; }
-        public string ExternalComments { get; set; }
         public string ApplyInternalComments { get; set; }
         public string ApplyExternalComments { get; set; }
         public DateTime? ApplicationRemovedOn { get; set; }

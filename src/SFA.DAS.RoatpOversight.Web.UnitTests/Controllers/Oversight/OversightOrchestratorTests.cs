@@ -264,9 +264,12 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         public async Task TestShowAppealLink(OversightReviewStatus status, bool expectedShowAppealLink)
         {
             _apiClient.Setup(x => x.GetOversightDetails(_applicationId))
-                .ReturnsAsync(() => new ApplicationDetails
+                .ReturnsAsync(() => new ApplicationDetails());
+
+            _apiClient.Setup(x => x.GetOversightReview(_applicationId))
+                .ReturnsAsync(() => new GetOversightReviewResponse
                 {
-                    OversightStatus = status
+                    Status = status
                 });
 
             _apiClient.Setup(x => x.GetAppeal(_applicationId, _oversightReviewId))
@@ -310,7 +313,12 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _apiClient.Setup(x => x.GetOversightDetails(_applicationId))
                 .ReturnsAsync(() => new ApplicationDetails
                 {
-                    GatewayReviewStatus = gatewayReviewStatus,
+                    GatewayReviewStatus = gatewayReviewStatus
+                });
+
+            _apiClient.Setup(x => x.GetOversightReview(_applicationId))
+                .ReturnsAsync(() => new GetOversightReviewResponse
+                {
                     GatewayApproved = approved
                 });
 
@@ -331,7 +339,12 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _apiClient.Setup(x => x.GetOversightDetails(_applicationId))
                 .ReturnsAsync(() => new ApplicationDetails
                 {
-                    ModerationReviewStatus = moderationReviewStatus,
+                    ModerationReviewStatus = moderationReviewStatus
+                });
+
+            _apiClient.Setup(x => x.GetOversightReview(_applicationId))
+                .ReturnsAsync(() => new GetOversightReviewResponse
+                {
                     ModerationApproved = approved
                 });
 

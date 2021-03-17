@@ -57,25 +57,25 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             var viewModel = new OutcomeViewModel
             {
-                IsNew = applicationDetails.OversightStatus == OversightReviewStatus.None,
+                IsNew = oversightReview == null,
                 ApplicationSummary = CreateApplicationSummaryViewModel(applicationDetails),
-                GatewayOutcome = CreateGatewayOutcomeViewModel(applicationDetails),
+                GatewayOutcome = CreateGatewayOutcomeViewModel(applicationDetails, oversightReview),
                 FinancialHealthOutcome = CreateFinancialHealthOutcomeViewModel(applicationDetails),
-                ModerationOutcome = CreateModerationOutcomeViewModel(applicationDetails),
-                InProgressDetails = CreateInProgressDetailsViewModel(applicationDetails),
+                ModerationOutcome = CreateModerationOutcomeViewModel(applicationDetails, oversightReview),
+                InProgressDetails = CreateInProgressDetailsViewModel(oversightReview),
                 OverallOutcome = CreateOverallOutcomeViewModel(oversightReview),
                 AppealViewModel = appealResponse == null ? null : CreateAppealViewModel(applicationDetails, appealResponse),
-                ShowAppealLink = applicationDetails.OversightStatus == OversightReviewStatus.Unsuccessful && appealResponse == null,
-                ShowInProgressDetails = applicationDetails.InProgressDate.HasValue,
+                ShowAppealLink = oversightReview != null && oversightReview.Status == OversightReviewStatus.Unsuccessful && appealResponse == null,
+                ShowInProgressDetails = oversightReview?.InProgressDate != null,
                 OversightStatus = oversightReview?.Status ?? OversightReviewStatus.None,
-                ApproveGateway = GetStringValueForApprovalStatusBoolean(applicationDetails.GatewayApproved),
-                ApproveModeration = GetStringValueForApprovalStatusBoolean(applicationDetails.ModerationApproved),
+                ApproveGateway = GetStringValueForApprovalStatusBoolean(oversightReview?.GatewayApproved),
+                ApproveModeration = GetStringValueForApprovalStatusBoolean(oversightReview?.ModerationApproved),
                 IsGatewayRemoved = applicationDetails.ApplicationStatus == ApplicationStatus.Removed,
                 IsGatewayFail = applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Fail,
                 HasFinalOutcome = oversightReview != null && oversightReview.Status != OversightReviewStatus.None && oversightReview.Status != OversightReviewStatus.InProgress
             };
 
-            if (applicationDetails.OversightStatus == OversightReviewStatus.None || applicationDetails.OversightStatus == OversightReviewStatus.InProgress)
+            if (oversightReview == null || oversightReview.Status == OversightReviewStatus.InProgress)
             {
                 var cachedItem = await _cacheStorageService.RetrieveFromCache<OutcomePostRequest>(outcomeKey.ToString());
                 if (cachedItem == null) return viewModel;
@@ -232,7 +232,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             return result;
         }
 
-        private GatewayOutcomeViewModel CreateGatewayOutcomeViewModel(ApplicationDetails applicationDetails)
+        private GatewayOutcomeViewModel CreateGatewayOutcomeViewModel(ApplicationDetails applicationDetails, GetOversightReviewResponse oversightReview)
         {
             var result = new GatewayOutcomeViewModel
             {
@@ -253,17 +253,17 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                     : applicationDetails.GatewayExternalComments
             };
 
-            if (applicationDetails.GatewayApproved.HasValue)
+            if (oversightReview?.GatewayApproved != null)
             {
                 if (applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Pass)
                 {
-                    result.GovernanceOutcome = applicationDetails.GatewayApproved.Value
+                    result.GovernanceOutcome = oversightReview.GatewayApproved.Value
                         ? PassFailStatus.Passed
                         : PassFailStatus.Failed;
                 }
                 else if (applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Fail)
                 {
-                    result.GovernanceOutcome = applicationDetails.GatewayApproved.Value
+                    result.GovernanceOutcome = oversightReview.GatewayApproved.Value
                         ? PassFailStatus.Failed
                         : PassFailStatus.Passed;
                 }
@@ -286,7 +286,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
         }
 
-        private ModerationOutcomeViewModel CreateModerationOutcomeViewModel(ApplicationDetails applicationDetails)
+        private ModerationOutcomeViewModel CreateModerationOutcomeViewModel(ApplicationDetails applicationDetails, GetOversightReviewResponse oversightReview)
         {
             var result = new ModerationOutcomeViewModel
             {
@@ -296,17 +296,17 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ModerationComments = applicationDetails.ModerationComments
             };
 
-            if (applicationDetails.ModerationApproved.HasValue)
+            if (oversightReview?.ModerationApproved != null)
             {
                 if (applicationDetails.ModerationReviewStatus == ModerationReviewStatus.Pass)
                 {
-                    result.GovernanceOutcome = applicationDetails.ModerationApproved.Value
+                    result.GovernanceOutcome = oversightReview.ModerationApproved.Value
                         ? PassFailStatus.Passed
                         : PassFailStatus.Failed;
                 }
                 else if (applicationDetails.ModerationReviewStatus == ModerationReviewStatus.Fail)
                 {
-                    result.GovernanceOutcome = applicationDetails.ModerationApproved.Value
+                    result.GovernanceOutcome = oversightReview.ModerationApproved.Value
                         ? PassFailStatus.Failed
                         : PassFailStatus.Passed;
                 }
@@ -315,16 +315,16 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             return result;
         }
 
-        private InProgressDetailsViewModel CreateInProgressDetailsViewModel(ApplicationDetails applicationDetails)
+        private InProgressDetailsViewModel CreateInProgressDetailsViewModel(GetOversightReviewResponse oversightReview)
         {
-            if (!applicationDetails.InProgressDate.HasValue) return null;
+            if (oversightReview?.InProgressDate == null) return null;
 
             return new InProgressDetailsViewModel
             {
-                ApplicationDeterminedDate = applicationDetails.InProgressDate.Value,
-                InternalComments = applicationDetails.InProgressInternalComments,
-                ExternalComments = applicationDetails.InProgressExternalComments,
-                UserName = applicationDetails.InProgressUserName
+                ApplicationDeterminedDate = oversightReview.InProgressDate.Value,
+                InternalComments = oversightReview.InProgressInternalComments,
+                ExternalComments = oversightReview.InProgressExternalComments,
+                UserName = oversightReview.InProgressUserName
             };
         }
 

@@ -73,9 +73,12 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         public async Task GetOversightDetails_returns_viewmodel()
         {
             var expectedApplicationDetails = GetApplication();
+            var expectedOversightReview = GetOversightReview();
             var appealResponse = _autoFixture.Create<GetAppealResponse>();
             _apiClient.Setup(x => x.GetOversightDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
-            _apiClient.Setup(x => x.GetAppeal(_applicationId, expectedApplicationDetails.OversightReviewId.Value))
+            _apiClient.Setup(x => x.GetOversightReview(_applicationId)).ReturnsAsync(() => expectedOversightReview);
+            
+            _apiClient.Setup(x => x.GetAppeal(_applicationId, expectedOversightReview.Id))
                 .ReturnsAsync(() => appealResponse);
 
             var actualViewModel = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
@@ -90,7 +93,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 actualViewModel.ApplicationSummary.OrganisationName);
             Assert.AreEqual(expectedApplicationDetails.ProviderRoute, actualViewModel.ApplicationSummary.ProviderRoute);
             Assert.AreEqual(expectedApplicationDetails.Ukprn, actualViewModel.ApplicationSummary.Ukprn);
-            Assert.AreEqual(expectedApplicationDetails.OversightStatus, actualViewModel.OversightStatus);
+            Assert.AreEqual(expectedOversightReview.Status, actualViewModel.OversightStatus);
             Assert.AreEqual(expectedApplicationDetails.ApplicationStatus,
                 actualViewModel.ApplicationSummary.ApplicationStatus);
             Assert.AreEqual(expectedApplicationDetails.ApplicationEmailAddress,
@@ -134,8 +137,10 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         public async Task GetOversightDetails_returns_viewmodel_without_appeal()
         {
             var expectedApplicationDetails = GetApplication();
+            var expectedOversightReview = GetOversightReview();
             _apiClient.Setup(x => x.GetOversightDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
-            _apiClient.Setup(x => x.GetAppeal(_applicationId, expectedApplicationDetails.OversightReviewId.Value))
+            _apiClient.Setup(x => x.GetOversightReview(_applicationId)).ReturnsAsync(() => expectedOversightReview);
+            _apiClient.Setup(x => x.GetAppeal(_applicationId, expectedOversightReview.Id))
                 .ReturnsAsync(() => null);
 
             var actualViewModel = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
@@ -276,10 +281,13 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         public async Task TestHideAppealLink()
         {
             _apiClient.Setup(x => x.GetOversightDetails(_applicationId))
-                .ReturnsAsync(() => new ApplicationDetails
+                .ReturnsAsync(() => new ApplicationDetails());
+
+            _apiClient.Setup(x => x.GetOversightReview(_applicationId))
+                .ReturnsAsync(() => new GetOversightReviewResponse
                 {
-                    OversightReviewId = _oversightReviewId,
-                    OversightStatus = OversightReviewStatus.Unsuccessful,
+                    Id = _oversightReviewId,
+                    Status = OversightReviewStatus.Unsuccessful
                 });
 
             _apiClient.Setup(x => x.GetAppeal(_applicationId, _oversightReviewId))
@@ -357,7 +365,14 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 ModerationOutcomeMadeOn = DateTime.Today,
                 ModeratedBy = "Lesley",
                 ModerationComments = "moderation comments",
-                OversightReviewId = _oversightReviewId
+            };
+        }
+
+        private GetOversightReviewResponse GetOversightReview()
+        {
+            return new GetOversightReviewResponse
+            {
+                Id = _oversightReviewId,
             };
         }
 

@@ -43,12 +43,16 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
         public async Task<OutcomeViewModel> GetOversightDetailsViewModel(Guid applicationId, Guid? outcomeKey)
         {
-            var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
+            var applicationDetailsTask = _applyApiClient.GetOversightDetails(applicationId);
+            var oversightReviewTask = _applyApiClient.GetOversightReview(applicationId);
+            await Task.WhenAll(applicationDetailsTask, oversightReviewTask);
+            var applicationDetails = _applyApiClient.GetOversightDetails(applicationId).Result;
+            var oversightReview = _applyApiClient.GetOversightReview(applicationId).Result;
 
             GetAppealResponse appealResponse = null;
-            if (applicationDetails.OversightReviewId.HasValue)
+            if (oversightReview != null)
             {
-                appealResponse = await _applyApiClient.GetAppeal(applicationId, applicationDetails.OversightReviewId.Value);
+                appealResponse = await _applyApiClient.GetAppeal(applicationId, oversightReview.Id);
             }
 
             var viewModel = new OutcomeViewModel
@@ -59,17 +63,16 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 FinancialHealthOutcome = CreateFinancialHealthOutcomeViewModel(applicationDetails),
                 ModerationOutcome = CreateModerationOutcomeViewModel(applicationDetails),
                 InProgressDetails = CreateInProgressDetailsViewModel(applicationDetails),
-                OverallOutcome = CreateOverallOutcomeViewModel(applicationDetails),
+                OverallOutcome = CreateOverallOutcomeViewModel(oversightReview),
                 AppealViewModel = appealResponse == null ? null : CreateAppealViewModel(applicationDetails, appealResponse),
                 ShowAppealLink = applicationDetails.OversightStatus == OversightReviewStatus.Unsuccessful && appealResponse == null,
                 ShowInProgressDetails = applicationDetails.InProgressDate.HasValue,
-                OversightStatus = applicationDetails.OversightStatus,
+                OversightStatus = oversightReview?.Status ?? OversightReviewStatus.None,
                 ApproveGateway = GetStringValueForApprovalStatusBoolean(applicationDetails.GatewayApproved),
                 ApproveModeration = GetStringValueForApprovalStatusBoolean(applicationDetails.ModerationApproved),
                 IsGatewayRemoved = applicationDetails.ApplicationStatus == ApplicationStatus.Removed,
                 IsGatewayFail = applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Fail,
-                HasFinalOutcome = applicationDetails.OversightStatus != OversightReviewStatus.None &&
-                                applicationDetails.OversightStatus != OversightReviewStatus.InProgress
+                HasFinalOutcome = oversightReview != null && oversightReview.Status != OversightReviewStatus.None && oversightReview.Status != OversightReviewStatus.InProgress
             };
 
             if (applicationDetails.OversightStatus == OversightReviewStatus.None || applicationDetails.OversightStatus == OversightReviewStatus.InProgress)
@@ -109,8 +112,9 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             }
 
             var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
+            var oversightReview = await _applyApiClient.GetOversightReview(applicationId);
 
-            VerifyApplicationHasNoFinalOutcome(applicationDetails.OversightStatus);
+            VerifyApplicationHasNoFinalOutcome(oversightReview);
 
             var viewModel = new ConfirmOutcomeViewModel
             {
@@ -173,9 +177,9 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
         }
 
-        private void VerifyApplicationHasNoFinalOutcome(OversightReviewStatus oversightStatus)
+        private void VerifyApplicationHasNoFinalOutcome(GetOversightReviewResponse oversightReview)
         {
-            if (oversightStatus != OversightReviewStatus.None && oversightStatus != OversightReviewStatus.InProgress)
+            if (oversightReview != null && oversightReview.Status != OversightReviewStatus.None && oversightReview.Status != OversightReviewStatus.InProgress)
             {
                 throw new InvalidStateException();
             }
@@ -321,17 +325,19 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
         }
 
-        private OverallOutcomeViewModel CreateOverallOutcomeViewModel(ApplicationDetails applicationDetails)
+        private OverallOutcomeViewModel CreateOverallOutcomeViewModel(GetOversightReviewResponse oversightReview)
         {
+            if (oversightReview == null) return new OverallOutcomeViewModel();
+
             return new OverallOutcomeViewModel
             {
-                OversightStatus = applicationDetails.OversightStatus,
-                ApplicationDeterminedDate = applicationDetails.ApplicationDeterminedDate,
-                OversightUserName = applicationDetails.OversightUserName,
-                InternalComments = applicationDetails.InternalComments,
-                ExternalComments = applicationDetails.ExternalComments,
-                IsGatewayOutcome = applicationDetails.OversightStatus == OversightReviewStatus.Rejected ||
-                                   applicationDetails.OversightStatus == OversightReviewStatus.Withdrawn
+                OversightStatus = oversightReview.Status,
+                ApplicationDeterminedDate = oversightReview.ApplicationDeterminedDate,
+                OversightUserName = oversightReview.UserName,
+                InternalComments = oversightReview.InternalComments,
+                ExternalComments = oversightReview.ExternalComments,
+                IsGatewayOutcome = oversightReview.Status == OversightReviewStatus.Rejected ||
+                                   oversightReview.Status == OversightReviewStatus.Withdrawn
             };
         }
 

@@ -21,5 +21,6 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         Task CreateAppeal(Guid applicationId, Guid oversightReviewId, CreateAppealRequest request);
         Task<GetAppealResponse> GetAppeal(Guid applicationId, Guid oversightReviewId);
         Task<GetAppealUploadResponse> GetAppealFile(Guid applicationId, Guid appealId, Guid fileId);
+        Task<GetOversightReviewResponse> GetOversightReview(Guid applicationId);
     }
 }

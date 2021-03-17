@@ -39,8 +39,8 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 
             _applyApiClient = new Mock<IApplyApiClient>();
 
-            _applyApiClient.Setup(x => x.GetOversightDetails(_applicationId))
-                .ReturnsAsync(() => new ApplicationDetails{OversightReviewId = _oversightReviewId});
+            _applyApiClient.Setup(x => x.GetOversightReview(_applicationId))
+                .ReturnsAsync(() => new GetOversightReviewResponse{Id = _oversightReviewId});
 
             _applyApiClient.Setup(x => x.UploadAppealFile(_applicationId, It.IsAny<UploadAppealFileRequest>()))
                 .Returns(Task.CompletedTask);

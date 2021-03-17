@@ -111,8 +111,11 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 throw new ConfirmOutcomeCacheKeyNotFoundException();
             }
 
-            var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
-            var oversightReview = await _applyApiClient.GetOversightReview(applicationId);
+            var applicationDetailsTask = _applyApiClient.GetOversightDetails(applicationId);
+            var oversightReviewTask = _applyApiClient.GetOversightReview(applicationId);
+            await Task.WhenAll(applicationDetailsTask, oversightReviewTask);
+            var applicationDetails = _applyApiClient.GetOversightDetails(applicationId).Result;
+            var oversightReview = _applyApiClient.GetOversightReview(applicationId).Result;
 
             VerifyApplicationHasNoFinalOutcome(oversightReview);
 
@@ -168,12 +171,12 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
         public async Task<ConfirmedViewModel> GetConfirmedViewModel(Guid applicationId)
         {
-            var applicationDetails = await _applyApiClient.GetOversightDetails(applicationId);
+            var review = await _applyApiClient.GetOversightReview(applicationId);
 
             return new ConfirmedViewModel
             {
                 ApplicationId = applicationId,
-                OversightStatus = applicationDetails.OversightStatus
+                OversightStatus = review.Status
             };
         }
 

@@ -35,13 +35,16 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
         public async Task<AppealViewModel> GetAppealViewModel(AppealRequest request, string message)
         {
-            var oversightReview = await _applyApiClient.GetOversightDetails(request.ApplicationId);
-            var stagedUploads = await _applyApiClient.GetStagedUploads(new GetStagedFilesRequest {ApplicationId = request.ApplicationId});
+            var oversightReviewTask = _applyApiClient.GetOversightReview(request.ApplicationId);
+            var stagedUploadsTask = _applyApiClient.GetStagedUploads(new GetStagedFilesRequest { ApplicationId = request.ApplicationId });
+            await Task.WhenAll(oversightReviewTask, stagedUploadsTask);
+            var oversightReview = _applyApiClient.GetOversightReview(request.ApplicationId).Result;
+            var stagedUploads = _applyApiClient.GetStagedUploads(new GetStagedFilesRequest {ApplicationId = request.ApplicationId}).Result;
 
             var result = new AppealViewModel
             {
                 ApplicationId = request.ApplicationId,
-                OversightReviewId = oversightReview.OversightReviewId.Value,
+                OversightReviewId = oversightReview.Id,
                 AllowAdditionalUploads = stagedUploads.Files.Count < MaxFileUploads,
                 UploadedFiles = stagedUploads.Files.Select(x => new UploadedFileViewModel{Id = x.Id, Filename = x.Filename}).ToList(),
                 Message = message

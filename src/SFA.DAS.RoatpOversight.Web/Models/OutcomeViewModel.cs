@@ -35,5 +35,13 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public string InProgressInternalText { get; set; }
         public string InProgressExternalText { get; set; }
         public OversightReviewStatus OversightStatus { get; set; }
+        
+        public AppealStatus SelectedAppealStatus { get; set; }
+        
+        public string SuccessfulExternalText { get; set; }
+
+        public string SuccessfulAlreadyActiveExternalText { get; set; }
+        public string UnsuccessfulPartiallyUpheldText { get; set; }
+        public string UnsuccessfulPartiallyUpheldExternalText { get; set; }
     }
 }

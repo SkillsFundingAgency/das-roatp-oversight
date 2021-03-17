@@ -343,6 +343,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 AppealId = appealResponse.Id,
                 Message = appealResponse.Message,
                 CreatedOn = appealResponse.CreatedOn,
+                Status = appealResponse.Status,
                 UserId = appealResponse.UserId,
                 UserName = appealResponse.UserName,
                 Uploads = appealResponse.Uploads.Select((upload => new AppealOutcomeViewModel.AppealUpload

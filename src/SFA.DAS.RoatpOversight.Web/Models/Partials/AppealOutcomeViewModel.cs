@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.ApplyService.Types;
 
 namespace SFA.DAS.RoatpOversight.Web.Models.Partials
 {
@@ -12,7 +13,8 @@ namespace SFA.DAS.RoatpOversight.Web.Models.Partials
         public string UserId { get; set; }
         public string UserName { get; set; }
         public List<AppealUpload> Uploads { get; set; }
-
+        public AppealStatus Status { get; set; }
+        
         public class AppealUpload
         {
             public Guid Id { get; set; }

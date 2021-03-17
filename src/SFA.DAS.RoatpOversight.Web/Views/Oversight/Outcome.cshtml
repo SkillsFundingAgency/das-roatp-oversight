@@ -1,4 +1,5 @@
-﻿@using SFA.DAS.RoatpOversight.Web.Domain
+﻿@using SFA.DAS.ApplyService.Types
+@using SFA.DAS.RoatpOversight.Web.Domain
 @model SFA.DAS.RoatpOversight.Web.Models.OutcomeViewModel
 @{
     ViewData["Title"] = "RoATP application outcomes - Application summary";
@@ -42,19 +43,20 @@
     </div>
 
     <form method="post">
+        
+        <input type="hidden" name="ApplicationId" value="@Model.ApplicationSummary.ApplicationId" />
+        <input type="hidden" asp-for="IsGatewayFail" />
+        <input type="hidden" asp-for="IsGatewayRemoved" />
+
         @if (!Model.OverallOutcome.IsGatewayOutcome)
         {
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full">
 
-                    <input type="hidden" name="ApplicationId" value="@Model.ApplicationSummary.ApplicationId" />
-                    <input type="hidden" asp-for="IsGatewayFail" />
-                    <input type="hidden" asp-for="IsGatewayRemoved" />
-
                     <div das-highlight-error-for="ApproveGateway" error-class="govuk-form-group--error" class="govuk-form-group">
                         <fieldset class="govuk-fieldset" aria-describedby="ApproveGateway-error">
 
-                            <partial name="_GatewayOutcome" for="@Model.GatewayOutcome" />
+                            <partial name="_GatewayOutcome" for="@Model.GatewayOutcome"/>
 
                             @if (!Model.HasFinalOutcome && !Model.IsGatewayActionPendingConfirmation)
                             {
@@ -63,21 +65,21 @@
                                 <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input"
-                                                type="radio"
-                                                value="@ApprovalStatus.Approve"
-                                                asp-for="ApproveGateway" />
+                                               type="radio"
+                                               value="@ApprovalStatus.Approve"
+                                               asp-for="ApproveGateway"/>
                                         <label class="govuk-label govuk-radios__label" for="ApproveGateway">
                                             Approve this outcome
                                         </label>
                                     </div>
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input"
-                                                type="radio"
-                                                id="OptionApproveGatewayNo"
-                                                value="@ApprovalStatus.Overturn"
-                                                asp-for="ApproveGateway"
-                                                data-module="das-show-hide-controls"
-                                                data-aria-controls="conditional-UnsuccessfulExternalText" />
+                                               type="radio"
+                                               id="OptionApproveGatewayNo"
+                                               value="@ApprovalStatus.Overturn"
+                                               asp-for="ApproveGateway"
+                                               data-module="das-show-hide-controls"
+                                               data-aria-controls="conditional-UnsuccessfulExternalText"/>
                                         <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayNo">
                                             Overturn this outcome
                                         </label>
@@ -95,7 +97,7 @@
                                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                                     <h2 class="govuk-heading-m">Financial health outcome</h2>
                                 </legend>
-                                <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome" />
+                                <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome"/>
                             </fieldset>
                         </div>
 
@@ -105,7 +107,7 @@
                                     <h2 class="govuk-heading-m">Moderation outcome</h2>
                                 </legend>
 
-                                <partial name="_ModerationOutcome" for="@Model.ModerationOutcome" />
+                                <partial name="_ModerationOutcome" for="@Model.ModerationOutcome"/>
 
                                 @if (!Model.HasFinalOutcome)
                                 {
@@ -114,21 +116,21 @@
                                     <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
                                         <div class="govuk-radios__item">
                                             <input class="govuk-radios__input"
-                                                    type="radio"
-                                                    value="@ApprovalStatus.Approve"
-                                                    asp-for="ApproveModeration" />
+                                                   type="radio"
+                                                   value="@ApprovalStatus.Approve"
+                                                   asp-for="ApproveModeration"/>
                                             <label class="govuk-label govuk-radios__label" for="ApproveModeration">
                                                 Approve this outcome
                                             </label>
                                         </div>
                                         <div class="govuk-radios__item">
                                             <input class="govuk-radios__input"
-                                                    type="radio"
-                                                    id="OptionApproveModerationNo"
-                                                    value="@ApprovalStatus.Overturn"
-                                                    asp-for="ApproveModeration"
-                                                    data-module="das-show-hide-controls"
-                                                    data-aria-controls="conditional-UnsuccessfulExternalText" />
+                                                   type="radio"
+                                                   id="OptionApproveModerationNo"
+                                                   value="@ApprovalStatus.Overturn"
+                                                   asp-for="ApproveModeration"
+                                                   data-module="das-show-hide-controls"
+                                                   data-aria-controls="conditional-UnsuccessfulExternalText"/>
                                             <label class="govuk-label govuk-radios__label" for="OptionApproveModerationNo">
                                                 Overturn this outcome
                                             </label>
@@ -141,7 +143,7 @@
                 </div>
             </div>
         }
-            
+
         @if (Model.ShowInProgressDetails)
         {
             <div class="govuk-grid-row">
@@ -158,16 +160,15 @@
         else
         {
             @if (!Model.HasFinalOutcome)
-            {
-                <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-two-thirds">
-                        <partial name="_ConfirmGatewayAction" />
-                    </div>
-                </div>
-            }
+             {
+                 <div class="govuk-grid-row">
+                     <div class="govuk-grid-column-two-thirds">
+                         <partial name="_ConfirmGatewayAction"/>
+                     </div>
+                 </div>
+             }
         }
-    </form>
-    
+   
 
     @if (Model.HasFinalOutcome)
     {
@@ -186,11 +187,13 @@
             </div>
         </div>
 
-        //todo: check appeal status to determine whether there is an appeal outcome
-        
-        <partial name="_SelectAppealOutcome" model="@Model"/>
-
+         @if (Model.AppealViewModel.Status == AppealStatus.None)
+         {
+             <partial name="_SelectAppealOutcome" model="@Model"/>
+         }
     }
+
+    </form>
 
     @if(Model.ShowAppealLink)
     {

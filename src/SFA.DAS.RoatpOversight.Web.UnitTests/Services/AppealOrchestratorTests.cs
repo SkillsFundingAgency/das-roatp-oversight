@@ -23,16 +23,24 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         private Mock<IApplyApiClient> _applyApiClient;
 
         private readonly Guid _applicationId = Guid.NewGuid();
+        private readonly Guid _oversightReviewId = Guid.NewGuid();
         private readonly Guid _fileId = Guid.NewGuid();
+
         private IFormFile _fileUpload;
+        private string _message;
         private readonly string _userId = "userid";
         private readonly string _userName = "username";
-        private static readonly Fixture _autoFixture = new Fixture();
+        private static readonly Fixture AutoFixture = new Fixture();
 
         [SetUp]
         public void SetUp()
         {
+            _message = AutoFixture.Create<string>();
+
             _applyApiClient = new Mock<IApplyApiClient>();
+
+            _applyApiClient.Setup(x => x.GetOversightReview(_applicationId))
+                .ReturnsAsync(() => new GetOversightReviewResponse{Id = _oversightReviewId});
 
             _applyApiClient.Setup(x => x.UploadAppealFile(_applicationId, It.IsAny<UploadAppealFileRequest>()))
                 .Returns(Task.CompletedTask);
@@ -111,10 +119,37 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
             Assert.AreEqual(expectUploadsEnabled, result.AllowAdditionalUploads);
         }
 
+        [Test]
+        public async Task CreateAppeal_Adds_Appeal()
+        {
+            await _orchestrator.CreateAppeal(_applicationId, _oversightReviewId, _message, _userId, _userName);
+
+            _applyApiClient.Verify(x => x.CreateAppeal(_applicationId,
+                    _oversightReviewId,
+                    It.Is<CreateAppealRequest>(r =>
+                        r.Message == _message && r.UserId == _userId && r.UserName == _userName)),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task GetAppealFile_Returns_File()
+        {
+            var appealId = Guid.NewGuid();
+            var apiResponse = AutoFixture.Create<GetAppealUploadResponse>();
+
+            _applyApiClient.Setup(x => x.GetAppealFile(_applicationId, appealId, _fileId)).ReturnsAsync(() => apiResponse);
+
+            var result = await _orchestrator.GetAppealFile(_applicationId, appealId, _fileId);
+
+            Assert.AreEqual(apiResponse.Filename, result.FileName);
+            Assert.AreEqual(apiResponse.ContentType, result.ContentType);
+            Assert.AreEqual(apiResponse.Content, result.Data);
+        }
+
         private static IFormFile GenerateFile()
         {
             var fileName = "test.pdf";
-            var content = _autoFixture.Create<string>();
+            var content = AutoFixture.Create<string>();
             return new FormFile(new MemoryStream(Encoding.UTF8.GetBytes(content)),
                 0,
                 content.Length,

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RoatpOversight.Web.Models.Partials;
 
 namespace SFA.DAS.RoatpOversight.Web.Models
@@ -9,6 +8,7 @@ namespace SFA.DAS.RoatpOversight.Web.Models
     public class AppealViewModel
     {
         public Guid ApplicationId { get; set; }
+        public Guid OversightReviewId { get; set; }
         public string Message { get; set; }
         public IFormFile FileUpload { get; set; }
         public bool AllowAdditionalUploads { get; set; }

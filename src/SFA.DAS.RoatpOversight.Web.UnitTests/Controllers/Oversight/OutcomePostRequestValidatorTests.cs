@@ -5,6 +5,7 @@ using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Validators;
 using FluentValidation;
+using SFA.DAS.ApplyService.Types;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 {
@@ -50,6 +51,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         {
             var request = new OutcomePostRequest
             {
+                SelectedOption = OutcomePostRequest.SubmitOption.SubmitOutcome,
                 ApproveGateway = GatewayReviewStatus.Pass,
                 ApproveModeration = ModerationReviewStatus.Pass,
                 OversightStatus = OversightReviewStatus.InProgress,
@@ -66,6 +68,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         {
             var request = new OutcomePostRequest
             {
+                SelectedOption = OutcomePostRequest.SubmitOption.SubmitOutcome,
                 OversightStatus = oversightStatus,
                 ApproveGateway = ApprovalStatus.Approve,
                 ApproveModeration = ApprovalStatus.Approve
@@ -83,6 +86,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         {
             var request = new OutcomePostRequest
             {
+                SelectedOption = OutcomePostRequest.SubmitOption.SubmitOutcome,
                 OversightStatus = OversightReviewStatus.Unsuccessful,
                 ApproveGateway = overturnGateway ? ApprovalStatus.Overturn : ApprovalStatus.Approve,
                 ApproveModeration = overturnModeration ? ApprovalStatus.Overturn : ApprovalStatus.Approve,

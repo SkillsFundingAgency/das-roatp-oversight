@@ -18,7 +18,13 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
                     $"OutcomeValidatorInterceptor cannot be used with type {commonContext.InstanceToValidate.GetType().Name}");
             }
 
-            if(target.IsGatewayFail || target.IsGatewayRemoved)
+            if (target.SelectedOption == OutcomePostRequest.SubmitOption.SubmitAppealOutcome)
+            {
+                return new ValidationContext<OutcomePostRequest>(target, null,
+                    new RulesetValidatorSelector(OutcomePostRequestValidator.RuleSets.AppealOutcome));
+            }
+
+            if(target.SelectedOption == OutcomePostRequest.SubmitOption.SubmitGatewayOutcome)
             {
                 return new ValidationContext<OutcomePostRequest>(target, null,
                     new RulesetValidatorSelector(OutcomePostRequestValidator.RuleSets.GatewayOutcome));

@@ -10,7 +10,7 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         Task Ping();
         Task<PendingOversightReviews> GetOversightsPending();
         Task<CompletedOversightReviews> GetOversightsCompleted();
-        Task<ApplicationDetails> GetOversightDetails(Guid applicationId);
+        Task<ApplicationDetails> GetApplicationDetails(Guid applicationId);
         Task<RoatpRegistrationDetails> GetRegistrationDetails(Guid applicationId);
         Task<bool> RecordOutcome(RecordOversightOutcomeCommand command);
         Task RecordGatewayFailOutcome(RecordOversightGatewayFailOutcomeCommand command);
@@ -18,5 +18,9 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         Task UploadAppealFile(Guid applicationId, UploadAppealFileRequest request);
         Task RemoveAppealFile(Guid applicationId, Guid fileId, RemoveAppealFileCommand command);
         Task<AppealFiles> GetStagedUploads(GetStagedFilesRequest request);
+        Task CreateAppeal(Guid applicationId, Guid oversightReviewId, CreateAppealRequest request);
+        Task<GetAppealResponse> GetAppeal(Guid applicationId, Guid oversightReviewId);
+        Task<GetAppealUploadResponse> GetAppealFile(Guid applicationId, Guid appealId, Guid fileId);
+        Task<GetOversightReviewResponse> GetOversightReview(Guid applicationId);
     }
 }

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.AdminService.Common.Testing.MockedObjects;
+using SFA.DAS.ApplyService.Types;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Controllers;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
@@ -266,6 +267,34 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         }
 
         [Test]
+        public async Task Post_Appeal_New_Appeal_Recorded()
+        {
+            var applicationId = Guid.NewGuid();
+            var oversightReviewId = Guid.NewGuid();
+
+            _appealOrchestrator.Setup(x =>
+                x.CreateAppeal(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+            
+            var request = new AppealPostRequest
+            {
+                OversightReviewId = oversightReviewId,
+                ApplicationId = applicationId,
+                FileUpload = null,
+                SelectedOption = AppealPostRequest.SubmitOption.SaveAndContinue,
+                Message = _autoFixture.Create<string>()
+            };
+
+            await _controller.Appeal(request);
+
+            _appealOrchestrator.Verify(x => x.CreateAppeal(It.Is<Guid>(id => id == applicationId),
+                    It.Is<Guid>(reviewId => reviewId == oversightReviewId),
+                    It.Is<string>(m => m == request.Message),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()),
+                Times.Once);
+        }
+
+        [Test]
         public async Task Post_Appeal_User_Is_Redirected_To_Outcome_Page()
         {
             var applicationId = Guid.NewGuid();
@@ -330,6 +359,38 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             await _controller.Appeal(request);
 
             Assert.AreEqual(request.Message, _tempDataDictionary["Message"]);
+        }
+
+        [Test]
+        public async Task Get_AppealFile_Returns_Uploaded_File()
+        {
+            var applicationId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
+            var appealId = Guid.NewGuid();
+
+            var fileUpload = new FileUpload
+            {
+                ContentType = "application/pdf",
+                Data = _autoFixture.Create<byte[]>(),
+                FileName = _autoFixture.Create<string>()
+            };
+
+            var request = new AppealUploadRequest
+            {
+                AppealId = appealId,
+                AppealUploadId = fileId,
+                ApplicationId = applicationId
+            };
+
+            _appealOrchestrator.Setup(x => x.GetAppealFile(applicationId, appealId, fileId)).ReturnsAsync(fileUpload);
+
+            var result = await _controller.AppealUpload(request);
+
+            Assert.IsInstanceOf<FileContentResult>(result);
+            var fileContentResult = (FileContentResult) result;
+            Assert.AreEqual(fileUpload.FileName, fileContentResult.FileDownloadName);
+            Assert.AreEqual(fileUpload.ContentType, fileContentResult.ContentType);
+            Assert.AreEqual(fileUpload.Data, fileContentResult.FileContents);
         }
 
         private static IFormFile GenerateFile()

@@ -27,35 +27,37 @@
       <partial name="_ValidationSummaryPartial"/>
 
       <form enctype="multipart/form-data" method="post" novalidate>
+          
+          <input type="hidden" asp-for="OversightReviewId"/>
 
-        <div class="govuk-form-group" das-highlight-error-for="Message" error-class="govuk-form-group--error">
-            <h1 class="govuk-label-wrapper">
-                <label class="govuk-label govuk-label--xl" for="appeal-message">
-                    Enter the applicant's appeal message
-                </label>
-            </h1>
-            
-            <span das-validation-for="Message" class="govuk-error-message"></span>
+          <div class="govuk-form-group" das-highlight-error-for="Message" error-class="govuk-form-group--error">
+              <h1 class="govuk-label-wrapper">
+                  <label class="govuk-label govuk-label--xl" for="appeal-message">
+                      Enter the applicant's appeal message
+                  </label>
+              </h1>
 
-            <textarea asp-for="Message" name="Message" class="govuk-textarea" rows="10"
+              <span das-validation-for="Message" class="govuk-error-message"></span>
+
+              <textarea asp-for="Message" name="Message" class="govuk-textarea" rows="10"
                       das-highlight-error-for="Message" error-class="govuk-textarea--error"
                         aria-describedby="Message-error">
             </textarea>
-        </div>
+          </div>
 
-          @if(Model.UploadedFiles.Count > 0)
+          @if (Model.UploadedFiles.Count > 0)
           {
               <div class="govuk-form-group">
                   <table class="govuk-table">
                       <caption class="govuk-visually-hidden">Uploaded files</caption>
                       <thead class="govuk-table__head">
-                          <tr class="govuk-table__row">
-                              <th scope="col" class="govuk-table__header">Uploaded files</th>
-                              <th scope="col" class="govuk-table__header govuk-table__header--numeric"></th>
-                          </tr>
+                      <tr class="govuk-table__row">
+                          <th scope="col" class="govuk-table__header">Uploaded files</th>
+                          <th scope="col" class="govuk-table__header govuk-table__header--numeric"></th>
+                      </tr>
                       </thead>
                       <tbody class="govuk-table__body">
-                      
+
                       @foreach (var file in Model.UploadedFiles)
                       {
                           <tr class="govuk-table__row">
@@ -71,7 +73,7 @@
                   </table>
               </div>
           }
-      
+
           @if (Model.AllowAdditionalUploads)
           {
               <div class="govuk-form-group" das-highlight-error-for="FileUpload" error-class="govuk-form-group--error">
@@ -83,7 +85,7 @@
                       <div>You can upload a maximum of 4 files. </div>
                       <div>Each file must be a PDF and smaller than 5MB.</div>
                   </div>
-                  <input class="govuk-file-upload" id="FileUpload" name="FileUpload" type="file" aria-describedby="FileUpload-Hint" accept=".pdf" >
+                  <input class="govuk-file-upload" id="FileUpload" name="FileUpload" type="file" aria-describedby="FileUpload-Hint" accept=".pdf">
               </div>
 
               <div class="govuk-form-group">

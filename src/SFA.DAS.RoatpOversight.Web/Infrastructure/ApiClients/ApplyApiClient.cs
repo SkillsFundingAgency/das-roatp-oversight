@@ -41,7 +41,7 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
             return await Get<CompletedOversightReviews>($"/Oversights/Completed");
         }
 
-        public async Task<ApplicationDetails> GetOversightDetails(Guid applicationId)
+        public async Task<ApplicationDetails> GetApplicationDetails(Guid applicationId)
         {
             return await Get<ApplicationDetails>($"/Oversights/{applicationId}");
         }
@@ -80,6 +80,26 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         public async Task<AppealFiles> GetStagedUploads(GetStagedFilesRequest request)
         {
             return await Get<AppealFiles>($"Oversight/{request.ApplicationId}/uploads");
+        }
+
+        public async Task CreateAppeal(Guid applicationId, Guid oversightReviewId, CreateAppealRequest request)
+        {
+            await Post($"/Oversight/{applicationId}/oversight-reviews/{oversightReviewId}/appeal", request);
+        }
+
+        public async Task<GetAppealResponse> GetAppeal(Guid applicationId, Guid oversightReviewId)
+        {
+            return await Get<GetAppealResponse>($"/Oversight/{applicationId}/oversight-reviews/{oversightReviewId}/appeal");
+        }
+
+        public async Task<GetAppealUploadResponse> GetAppealFile(Guid applicationId, Guid appealId, Guid fileId)
+        {
+            return await Get<GetAppealUploadResponse>($"Oversight/{applicationId}/appeals/{appealId}/uploads/{fileId}");
+        }
+
+        public async Task<GetOversightReviewResponse> GetOversightReview(Guid applicationId)
+        {
+            return await Get<GetOversightReviewResponse>($"Oversight/{applicationId}/review");
         }
 
         private async Task PostMultipartAsync(string requestUri, object request)

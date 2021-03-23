@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.ApplyService.Types;
 
 namespace SFA.DAS.RoatpOversight.Domain
 {

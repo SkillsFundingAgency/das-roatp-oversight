@@ -26,6 +26,7 @@ using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Settings;
 using SFA.DAS.RoatpOversight.Web.Validators;
 using SFA.DAS.Validation.Mvc.Filters;
+using SFA.DAS.RoatpOversight.Web.StartupExtensions;
 
 namespace SFA.DAS.RoatpOversight.Web
 {
@@ -91,17 +92,9 @@ namespace SFA.DAS.RoatpOversight.Web
 
             services.AddSession(opt => { opt.IdleTimeout = TimeSpan.FromHours(1); });
 
-            if (_env.IsDevelopment())
-            {
-                services.AddDistributedMemoryCache();
-            }
-            else
-            { 
-                services.AddDistributedRedisCache(options =>
-                {
-                    options.Configuration = ApplicationConfiguration.SessionRedisConnectionString;
-                });
-            }
+            services.AddCache(ApplicationConfiguration, _env);
+            services.AddDataProtection(ApplicationConfiguration, _env);
+
             services.AddTransient<ICacheStorageService, CacheStorageService>();
 
             AddAntiforgery(services);

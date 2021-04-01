@@ -28,7 +28,7 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
 
         public async Task Ping()
         {
-            await Get($"/ping");
+            await Get<string>($"/ping");
         }
 
         public async Task<PendingOversightReviews> GetOversightsPending()

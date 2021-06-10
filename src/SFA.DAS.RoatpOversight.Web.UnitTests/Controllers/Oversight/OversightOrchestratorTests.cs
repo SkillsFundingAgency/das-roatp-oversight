@@ -438,7 +438,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                     ApplicationSubmittedDate = new DateTime(2019, 10, 21),
                     ApplicationDeterminedDate = new DateTime(2019, 10, 01),
                     OversightStatus = OversightReviewStatus.Successful,
-                    ApplicationStatus = ApplicationStatus.Approved
+                    ApplicationStatus = ApplicationStatus.Successful
                 },
                 new CompletedOversightReview
                 {
@@ -449,7 +449,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                     ApplicationSubmittedDate = new DateTime(2019, 10, 20),
                     ApplicationDeterminedDate = new DateTime(2019, 10, 29),
                     OversightStatus = OversightReviewStatus.Unsuccessful,
-                    ApplicationStatus = ApplicationStatus.Rejected
+                    ApplicationStatus = ApplicationStatus.Unsuccessful
                 }}
             };
         }

@@ -8,7 +8,7 @@ namespace SFA.DAS.RoatpOversight.Web.Settings
         string DataProtectionKeysDatabase { get; set; }
 
         AuthSettings StaffAuthentication { get; set; }
-        ClientApiAuthentication ApplyApiAuthentication { get; set; }
+        ManagedIdentityApiAuthentication ApplyApiAuthentication { get; set; }
         ClientApiAuthentication RoatpRegisterApiAuthentication { get; set; }
         string EsfaAdminServicesBaseUrl { get; set; }
     }

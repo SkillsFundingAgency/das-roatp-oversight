@@ -15,7 +15,7 @@ namespace SFA.DAS.RoatpOversight.Web.Settings
         public AuthSettings StaffAuthentication { get; set; }
 
         [JsonRequired]
-        public ClientApiAuthentication ApplyApiAuthentication { get; set; }
+        public ManagedIdentityApiAuthentication ApplyApiAuthentication { get; set; }
 
         [JsonRequired] 
         public ClientApiAuthentication RoatpRegisterApiAuthentication { get; set; }

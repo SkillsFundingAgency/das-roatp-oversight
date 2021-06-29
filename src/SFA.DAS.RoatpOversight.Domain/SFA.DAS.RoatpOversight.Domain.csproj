@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SFA.DAS.AdminService.Common" Version="0.1.64" />
+    <PackageReference Include="SFA.DAS.AdminService.Common" Version="0.1.75" />
     <PackageReference Include="SFA.DAS.ApplyService.Types" Version="0.1.1553" />
   </ItemGroup>
 

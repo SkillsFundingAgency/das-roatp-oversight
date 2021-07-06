@@ -41,7 +41,7 @@
 
                     <li class="govuk-tabs__list-item">
                         <a class="govuk-tabs__tab" href="#outcomes">
-                            Overall outcome (@Model.OverallOutcomeCount)
+                            Application outcomes (@Model.OverallOutcomeCount)
                         </a>
                     </li>
                 </ul>
@@ -57,7 +57,9 @@
                                     <th scope="col" class="govuk-table__header">UKPRN</th>
                                     <th scope="col" class="govuk-table__header">Provider route</th>
                                     <th scope="col" class="govuk-table__header">Application reference number</th>
-                                    <th scope="col" class="govuk-table__header">Application submitted date</th>
+                                    <th class="govuk-table__header" scope="col">
+                                        <sortable-column column-name="SubmittedDate" column-label="Application submitted date" default="true" default-order="Descending"></sortable-column>
+                                    </th>
                                     <th scope="col" class="govuk-table__header">Outcome</th>
                                 </tr>
                             </thead>
@@ -112,7 +114,9 @@
                                     <th scope="col" class="govuk-table__header">UKPRN</th>
                                     <th scope="col" class="govuk-table__header">Provider route</th>
                                     <th scope="col" class="govuk-table__header">Application reference number</th>
-                                    <th scope="col" class="govuk-table__header">Application submitted date</th>
+                                    <th class="govuk-table__header" scope="col">
+                                        <sortable-column column-name="SubmittedDate" column-label="Application submitted date" default="true" default-order="Descending"></sortable-column>
+                                    </th>
                                     <th scope="col" class="govuk-table__header">Application determined date</th>
                                     <th scope="col" class="govuk-table__header">Overall outcome</th>
                                 </tr>

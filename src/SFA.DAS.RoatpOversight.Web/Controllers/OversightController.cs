@@ -30,9 +30,9 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             _appealOrchestrator = appealOrchestrator;
         }
 
-        public async Task<IActionResult> Applications()
+        public async Task<IActionResult> Applications(string sortColumn, string sortOrder)
         {
-            var viewModel = await _oversightOrchestrator.GetApplicationsViewModel();
+            var viewModel = await _oversightOrchestrator.GetApplicationsViewModel(sortColumn, sortOrder);
             return View(viewModel);
         }
 

@@ -31,14 +31,14 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
             await Get<string>($"/ping");
         }
 
-        public async Task<PendingOversightReviews> GetOversightsPending()
+        public async Task<PendingOversightReviews> GetOversightsPending(string sortColumn, string sortOrder)
         {
-            return await Get<PendingOversightReviews>($"/Oversights/Pending");
+            return await Get<PendingOversightReviews>($"/Oversights/Pending?sortColumn={sortColumn}&sortOrder={sortOrder}");
         }
 
-        public async Task<CompletedOversightReviews> GetOversightsCompleted()
+        public async Task<CompletedOversightReviews> GetOversightsCompleted(string sortColumn, string sortOrder)
         {
-            return await Get<CompletedOversightReviews>($"/Oversights/Completed");
+            return await Get<CompletedOversightReviews>($"/Oversights/Completed?sortColumn={sortColumn}&sortOrder={sortOrder}");
         }
 
         public async Task<ApplicationDetails> GetApplicationDetails(Guid applicationId)

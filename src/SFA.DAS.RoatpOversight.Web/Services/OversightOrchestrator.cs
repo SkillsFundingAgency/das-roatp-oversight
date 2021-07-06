@@ -27,11 +27,11 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             _cacheStorageService = cacheStorageService;
         }
 
-        public async Task<ApplicationsViewModel> GetApplicationsViewModel()
+        public async Task<ApplicationsViewModel> GetApplicationsViewModel(string sortColumn, string sortOrder)
         {
             var result = new ApplicationsViewModel();
-            var pendingApplications = await _applyApiClient.GetOversightsPending();
-            var completedApplications = await _applyApiClient.GetOversightsCompleted();
+            var pendingApplications = await _applyApiClient.GetOversightsPending(sortColumn, sortOrder);
+            var completedApplications = await _applyApiClient.GetOversightsCompleted(sortColumn, sortOrder);
 
             result.ApplicationDetails = pendingApplications;
             result.ApplicationCount = pendingApplications.Reviews.Count;

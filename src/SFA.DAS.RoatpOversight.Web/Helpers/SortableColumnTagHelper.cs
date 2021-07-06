@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using SFA.DAS.RoatpOversight.Domain.Extensions;
 using SFA.DAS.RoatpOversight.Domain.Types;
+using SFA.DAS.RoatpOversight.Web.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.Helpers
 {
@@ -24,6 +25,9 @@ namespace SFA.DAS.RoatpOversight.Web.Helpers
 
         [HtmlAttributeName("default")]
         public bool IsDefault { get; set; }
+
+        [HtmlAttributeName("fragment")]
+        public string Fragment { get; set; }
 
         [HtmlAttributeName("default-order")]
         public SortOrder DefaultSortOrder { get; set; }
@@ -58,6 +62,9 @@ namespace SFA.DAS.RoatpOversight.Web.Helpers
             };
 
             var href = _urlHelper.Action(action, controller, values);
+
+            if (!string.IsNullOrEmpty(Fragment))
+                href = $"{href}#{Fragment}";
 
             var sortOrderCssSuffix = string.Empty;
             if (isSortColumn)

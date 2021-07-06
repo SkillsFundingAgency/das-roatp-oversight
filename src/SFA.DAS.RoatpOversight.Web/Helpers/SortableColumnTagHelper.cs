@@ -8,14 +8,13 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using SFA.DAS.RoatpOversight.Domain.Extensions;
 using SFA.DAS.RoatpOversight.Domain.Types;
-using SFA.DAS.RoatpOversight.Web.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.Helpers
 {
-    [HtmlTargetElement("sortable-column")]
+    [HtmlTargetElement("sfa-roatp-sortable-column")]
     public class SortableColumnTagHelper : TagHelper
     {
-        private const string CssClass = "govuk-link das-table__sort ";
+        private const string CssClass = "govuk-link das-table__sort";
 
         [HtmlAttributeName("column-name")]
         public string ColumnName { get; set; }
@@ -45,9 +44,6 @@ namespace SFA.DAS.RoatpOversight.Web.Helpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            output.TagName = "";
-            var content = new StringBuilder();
-
             var action = ViewContext.RouteData.Values["action"] as string;
             var controller = ViewContext.RouteData.Values["controller"] as string;
 
@@ -61,10 +57,7 @@ namespace SFA.DAS.RoatpOversight.Web.Helpers
                 SortOrder = isSortColumn ? sortOrder.Reverse().ToString() : DefaultSortOrder.ToString()
             };
 
-            var href = _urlHelper.Action(action, controller, values);
-
-            if (!string.IsNullOrEmpty(Fragment))
-                href = $"{href}#{Fragment}";
+            var href = _urlHelper.Action(action, controller, values, null, null, Fragment);
 
             var sortOrderCssSuffix = string.Empty;
             if (isSortColumn)
@@ -74,13 +67,14 @@ namespace SFA.DAS.RoatpOversight.Web.Helpers
 
             var ariaSort = sortOrder.ToString().ToLower();
 
-            content.Append($"<a class=\"{CssClass}{sortOrderCssSuffix}\" href=\"{href}\" aria-sort=\"{ariaSort}\">");
+            var content = new StringBuilder();
+            content.Append($"<a class=\"{CssClass} {sortOrderCssSuffix}\" href=\"{href}\" aria-sort=\"{ariaSort}\">");
             content.Append(Label);
             content.Append("</a>");
 
+            output.TagName = "";
             output.PostContent.SetHtmlContent(content.ToString());
             output.Attributes.Clear();
-
         }
 
         private SortOrder GetSortOrderFromQueryString()

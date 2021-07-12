@@ -34,13 +34,13 @@
 
                 <ul class="govuk-tabs__list">
                     <li class="govuk-tabs__list-item @(Model.SelectedTab == "applications" ? "govuk-tabs__list-item--selected" : "")">
-                        <a class="govuk-tabs__tab" asp-fragment="applications" asp-route-SelectedTab="applications" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder" onclick="location.reload()">
+                        <a class="govuk-tabs__tab" asp-fragment="applications" asp-route-SelectedTab="applications" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder" onclick="location.href = location.href + '&SelectedTab=applications';">
                             Applications (@Model.ApplicationCount)
                         </a>
                     </li>
 
                     <li class="govuk-tabs__list-item @(Model.SelectedTab == "outcomes" ? "govuk-tabs__list-item--selected" : "")">
-                        <a class="govuk-tabs__tab" asp-fragment="outcomes" asp-route-SelectedTab="outcomes" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder" onclick="location.reload()">
+                        <a class="govuk-tabs__tab" asp-fragment="outcomes" asp-route-SelectedTab="outcomes" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder" onclick="location.href = location.href + '&SelectedTab=outcomes';">
                             Application outcomes (@Model.OverallOutcomeCount)
                         </a>
                     </li>

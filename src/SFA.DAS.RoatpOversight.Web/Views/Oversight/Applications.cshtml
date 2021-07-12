@@ -34,13 +34,13 @@
 
                 <ul class="govuk-tabs__list">
                     <li class="govuk-tabs__list-item @(string.IsNullOrEmpty(Model.SelectedTab) || Model.SelectedTab == "applications" ? "govuk-tabs__list-item--selected" : "")">
-                        <a class="govuk-tabs__tab" asp-route-selectedTab="applications" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder">
+                        <a class="govuk-tabs__tab" asp-fragment="applications" asp-route-selectedTab="applications" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder">
                             Applications (@Model.ApplicationCount)
                         </a>
                     </li>
 
                     <li class="govuk-tabs__list-item @(Model.SelectedTab == "outcomes" ? "govuk-tabs__list-item--selected" : "")">
-                        <a class="govuk-tabs__tab" asp-route-selectedTab="outcomes" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder">
+                        <a class="govuk-tabs__tab" asp-fragment="outcomes" asp-route-selectedTab="outcomes" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder">
                             Application outcomes (@Model.OverallOutcomeCount)
                         </a>
                     </li>
@@ -58,7 +58,7 @@
                                     <th scope="col" class="govuk-table__header">Provider route</th>
                                     <th scope="col" class="govuk-table__header">Application reference number</th>
                                     <th class="govuk-table__header" scope="col">
-                                        <sfa-roatp-sortable-column selected-tab="applications" column-name="SubmittedDate" column-label="Application submitted date" default="true" default-order="Descending" />
+                                        <sfa-roatp-sortable-column fragment="applications" selected-tab="applications" column-name="SubmittedDate" column-label="Application submitted date" default="true" default-order="Descending" />
                                     </th>
                                     <th scope="col" class="govuk-table__header">Outcome</th>
                                 </tr>
@@ -115,7 +115,7 @@
                                     <th scope="col" class="govuk-table__header">Provider route</th>
                                     <th scope="col" class="govuk-table__header">Application reference number</th>
                                     <th class="govuk-table__header" scope="col">
-                                        <sfa-roatp-sortable-column selected-tab="outcomes" column-name="SubmittedDate" column-label="Application submitted date" default="true" default-order="Descending" />
+                                        <sfa-roatp-sortable-column fragment="outcomes" selected-tab="outcomes" column-name="SubmittedDate" column-label="Application submitted date" default="true" default-order="Descending" />
                                     </th>
                                     <th scope="col" class="govuk-table__header">Application determined date</th>
                                     <th scope="col" class="govuk-table__header">Overall outcome</th>

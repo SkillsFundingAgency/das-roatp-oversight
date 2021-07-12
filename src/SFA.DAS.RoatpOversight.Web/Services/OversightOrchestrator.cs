@@ -27,7 +27,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             _cacheStorageService = cacheStorageService;
         }
 
-        public async Task<ApplicationsViewModel> GetApplicationsViewModel(string sortColumn, string sortOrder)
+        public async Task<ApplicationsViewModel> GetApplicationsViewModel(string selectedTab, string sortColumn, string sortOrder)
         {    
             var pendingApplications = await _applyApiClient.GetOversightsPending(sortColumn, sortOrder);
             var completedApplications = await _applyApiClient.GetOversightsCompleted(sortColumn, sortOrder);
@@ -38,6 +38,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ApplicationCount = pendingApplications.Reviews.Count,
                 OverallOutcomeDetails = completedApplications,
                 OverallOutcomeCount = completedApplications.Reviews.Count,
+                SelectedTab = selectedTab,
                 SortColumn = sortColumn,
                 SortOrder = sortOrder
             };

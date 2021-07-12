@@ -27,28 +27,26 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <div class="govuk-tabs" data-module="govuk-tabs">
+            <div class="govuk-tabs">
                 <h2 class="govuk-tabs__title">
                     Contents
                 </h2>
 
                 <ul class="govuk-tabs__list">
-                    <li class="govuk-tabs__list-item @(Model.SelectedTab == "applications" ? "govuk-tabs__list-item--selected" : "")">
-                        @{ var applications_onclick = $"location.href = location.origin + location.pathname + '?SortColumn={@Model.SortColumn}&SortOrder={@Model.SortOrder}&SelectedTab=applications#applications'";  }
-                        <a class="govuk-tabs__tab" asp-fragment="applications" asp-route-SelectedTab="applications" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder" onclick="@applications_onclick">
+                    <li class="govuk-tabs__list-item @(string.IsNullOrEmpty(Model.SelectedTab) || Model.SelectedTab == "applications" ? "govuk-tabs__list-item--selected" : "")">
+                        <a class="govuk-tabs__tab" asp-route-selectedTab="applications" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder">
                             Applications (@Model.ApplicationCount)
                         </a>
                     </li>
 
                     <li class="govuk-tabs__list-item @(Model.SelectedTab == "outcomes" ? "govuk-tabs__list-item--selected" : "")">
-                        @{ var outcomes_onclick = $"location.href = location.origin + location.pathname + '?SortColumn={@Model.SortColumn}&SortOrder={@Model.SortOrder}&SelectedTab=outcomes#outcomes'"; }
-                        <a class="govuk-tabs__tab" asp-fragment="outcomes" asp-route-SelectedTab="outcomes" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder" onclick="@outcomes_onclick">
+                        <a class="govuk-tabs__tab" asp-route-selectedTab="outcomes" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder">
                             Application outcomes (@Model.OverallOutcomeCount)
                         </a>
                     </li>
                 </ul>
 
-                <div class="govuk-tabs__panel" id="applications">
+                <div class="govuk-tabs__panel @(Model.SelectedTab != null && Model.SelectedTab != "applications" ? "govuk-tabs__panel--hidden" : "")" id="applications">
                     @if (Model.ApplicationCount > 0)
                     {
                         <table class="govuk-table das-table--condensed das-table--responsive-wide">
@@ -105,7 +103,7 @@
                     }
                 </div>
 
-                <div class="govuk-tabs__panel" id="outcomes">
+                <div class="govuk-tabs__panel @(Model.SelectedTab != "outcomes" ? "govuk-tabs__panel--hidden" : "")" id="outcomes">
                     @if (Model.OverallOutcomeCount > 0)
                     {
                         <table class="govuk-table das-table--condensed das-table--responsive-wide">
@@ -117,7 +115,7 @@
                                     <th scope="col" class="govuk-table__header">Provider route</th>
                                     <th scope="col" class="govuk-table__header">Application reference number</th>
                                     <th class="govuk-table__header" scope="col">
-                                        <sfa-roatp-sortable-column selected-tab="outcomes" column-name="SubmittedDate" column-label="Application submitted date" default="true" default-order="Descending" fragment="outcomes" />
+                                        <sfa-roatp-sortable-column selected-tab="outcomes" column-name="SubmittedDate" column-label="Application submitted date" default="true" default-order="Descending" />
                                     </th>
                                     <th scope="col" class="govuk-table__header">Application determined date</th>
                                     <th scope="col" class="govuk-table__header">Overall outcome</th>

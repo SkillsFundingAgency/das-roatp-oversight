@@ -28,15 +28,19 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         }
 
         public async Task<ApplicationsViewModel> GetApplicationsViewModel(string sortColumn, string sortOrder)
-        {
-            var result = new ApplicationsViewModel();
+        {    
             var pendingApplications = await _applyApiClient.GetOversightsPending(sortColumn, sortOrder);
             var completedApplications = await _applyApiClient.GetOversightsCompleted(sortColumn, sortOrder);
 
-            result.ApplicationDetails = pendingApplications;
-            result.ApplicationCount = pendingApplications.Reviews.Count;
-            result.OverallOutcomeDetails = completedApplications;
-            result.OverallOutcomeCount = completedApplications.Reviews.Count;
+            var result = new ApplicationsViewModel
+            {
+                ApplicationDetails = pendingApplications,
+                ApplicationCount = pendingApplications.Reviews.Count,
+                OverallOutcomeDetails = completedApplications,
+                OverallOutcomeCount = completedApplications.Reviews.Count,
+                SortColumn = sortColumn,
+                SortOrder = sortOrder
+            };
 
             return result;
         }

@@ -16,6 +16,9 @@ namespace SFA.DAS.RoatpOversight.Web.Helpers
     {
         private const string CssClass = "govuk-link das-table__sort";
 
+        [HtmlAttributeName("selected-tab")]
+        public string SelectedTab { get; set; }
+
         [HtmlAttributeName("column-name")]
         public string ColumnName { get; set; }
 
@@ -47,12 +50,14 @@ namespace SFA.DAS.RoatpOversight.Web.Helpers
             var action = ViewContext.RouteData.Values["action"] as string;
             var controller = ViewContext.RouteData.Values["controller"] as string;
 
+            var selectedTab = GetSelectedTabFromQueryString();
             var sortColumn = GetColumnFromQueryString();
             var sortOrder = GetSortOrderFromQueryString();
             var isSortColumn = sortColumn == ColumnName || (string.IsNullOrWhiteSpace(sortColumn) && IsDefault);
 
             var values = new
             {
+                SelectedTab = selectedTab,
                 SortColumn = ColumnName,
                 SortOrder = isSortColumn ? sortOrder.Reverse().ToString() : DefaultSortOrder.ToString()
             };
@@ -75,6 +80,16 @@ namespace SFA.DAS.RoatpOversight.Web.Helpers
             output.TagName = "";
             output.PostContent.SetHtmlContent(content.ToString());
             output.Attributes.Clear();
+        }
+
+        private string GetSelectedTabFromQueryString()
+        {
+            if (ViewContext.HttpContext.Request.Query.ContainsKey("SelectedTab"))
+            {
+                return ViewContext.HttpContext.Request.Query["SelectedTab"];
+            }
+
+            return string.Empty;
         }
 
         private SortOrder GetSortOrderFromQueryString()

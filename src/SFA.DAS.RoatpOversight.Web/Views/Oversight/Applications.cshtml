@@ -34,13 +34,15 @@
 
                 <ul class="govuk-tabs__list">
                     <li class="govuk-tabs__list-item @(Model.SelectedTab == "applications" ? "govuk-tabs__list-item--selected" : "")">
-                        <a class="govuk-tabs__tab" asp-fragment="applications" asp-route-SelectedTab="applications" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder" onclick="location.href = location.href + '&SelectedTab=applications';">
+                        @{ var applications_onclick = $"location.href = location.origin + location.pathname + '?SortColumn={@Model.SortColumn}&SortOrder={@Model.SortOrder}&SelectedTab=applications#applications'";  }
+                        <a class="govuk-tabs__tab" asp-fragment="applications" asp-route-SelectedTab="applications" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder" onclick="@applications_onclick">
                             Applications (@Model.ApplicationCount)
                         </a>
                     </li>
 
                     <li class="govuk-tabs__list-item @(Model.SelectedTab == "outcomes" ? "govuk-tabs__list-item--selected" : "")">
-                        <a class="govuk-tabs__tab" asp-fragment="outcomes" asp-route-SelectedTab="outcomes" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder" onclick="location.href = location.href + '&SelectedTab=outcomes';">
+                        @{ var outcomes_onclick = $"location.href = location.origin + location.pathname + '?SortColumn={@Model.SortColumn}&SortOrder={@Model.SortOrder}&SelectedTab=outcomes#outcomes'"; }
+                        <a class="govuk-tabs__tab" asp-fragment="outcomes" asp-route-SelectedTab="outcomes" asp-route-sortColumn="@Model.SortColumn" asp-route-sortOrder="@Model.SortOrder" onclick="@outcomes_onclick">
                             Application outcomes (@Model.OverallOutcomeCount)
                         </a>
                     </li>

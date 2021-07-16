@@ -9,5 +9,9 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public CompletedOversightReviews OverallOutcomeDetails { get; set; }
         public int OverallOutcomeCount { get; set; }
 
+        public string SortColumn { get; set; }
+        public string SortOrder { get; set; }
+        public string SelectedTab { get; set; }
+
     }
 }

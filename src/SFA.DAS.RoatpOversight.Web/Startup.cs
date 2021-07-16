@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -101,7 +102,7 @@ namespace SFA.DAS.RoatpOversight.Web
 
             services.AddApplicationInsightsTelemetry();
             services.AddDasHealthChecks(ApplicationConfiguration, _env.IsDevelopment());
-
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             ConfigureHttpClients(services);
             ConfigureDependencyInjection(services);
         }

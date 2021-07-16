@@ -50,10 +50,10 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         public async Task Orchestrator_builds_overview_viewmodel_from_api()
         {
             var expectedApplicationsPending = GetApplicationsPending();
-            _apiClient.Setup(x => x.GetOversightsPending()).ReturnsAsync(expectedApplicationsPending);
-            _apiClient.Setup(x => x.GetOversightsCompleted()).ReturnsAsync(GetApplicationsDone());
+            _apiClient.Setup(x => x.GetOversightsPending(null,null)).ReturnsAsync(expectedApplicationsPending);
+            _apiClient.Setup(x => x.GetOversightsCompleted(null,null)).ReturnsAsync(GetApplicationsDone());
             _configuration.Setup(x => x.EsfaAdminServicesBaseUrl).Returns(_dashboardAddress);
-            var actualViewModel = await _orchestrator.GetApplicationsViewModel();
+            var actualViewModel = await _orchestrator.GetApplicationsViewModel(null,null,null);
 
             var expectedViewModel = new ApplicationsViewModel
             {

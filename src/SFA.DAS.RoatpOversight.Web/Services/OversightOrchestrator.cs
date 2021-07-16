@@ -30,16 +30,21 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             _registerApiClient = registerApiClient;
         }
 
-        public async Task<ApplicationsViewModel> GetApplicationsViewModel()
-        {
-            var result = new ApplicationsViewModel();
-            var pendingApplications = await _applyApiClient.GetOversightsPending();
-            var completedApplications = await _applyApiClient.GetOversightsCompleted();
+        public async Task<ApplicationsViewModel> GetApplicationsViewModel(string selectedTab, string sortColumn, string sortOrder)
+        {    
+            var pendingApplications = await _applyApiClient.GetOversightsPending(sortColumn, sortOrder);
+            var completedApplications = await _applyApiClient.GetOversightsCompleted(sortColumn, sortOrder);
 
-            result.ApplicationDetails = pendingApplications;
-            result.ApplicationCount = pendingApplications.Reviews.Count;
-            result.OverallOutcomeDetails = completedApplications;
-            result.OverallOutcomeCount = completedApplications.Reviews.Count;
+            var result = new ApplicationsViewModel
+            {
+                ApplicationDetails = pendingApplications,
+                ApplicationCount = pendingApplications.Reviews.Count,
+                OverallOutcomeDetails = completedApplications,
+                OverallOutcomeCount = completedApplications.Reviews.Count,
+                SelectedTab = selectedTab,
+                SortColumn = sortColumn,
+                SortOrder = sortOrder
+            };
 
             return result;
         }

@@ -27,26 +27,26 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <div class="govuk-tabs" data-module="govuk-tabs">
+            <div class="govuk-tabs">
                 <h2 class="govuk-tabs__title">
                     Contents
                 </h2>
 
                 <ul class="govuk-tabs__list">
-                    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
-                        <a class="govuk-tabs__tab" href="#applications">
+                    <li class="govuk-tabs__list-item @(string.IsNullOrEmpty(Model.SelectedTab) || Model.SelectedTab == "applications" ? "govuk-tabs__list-item--selected" : "")">
+                        <a class="govuk-tabs__tab" id="tab_applications" asp-route-selectedTab="applications">
                             Applications (@Model.ApplicationCount)
                         </a>
                     </li>
 
-                    <li class="govuk-tabs__list-item">
-                        <a class="govuk-tabs__tab" href="#outcomes">
-                            Overall outcome (@Model.OverallOutcomeCount)
+                    <li class="govuk-tabs__list-item @(Model.SelectedTab == "outcomes" ? "govuk-tabs__list-item--selected" : "")">
+                        <a class="govuk-tabs__tab" id="tab_outcomes" asp-route-selectedTab="outcomes">
+                            Application outcomes (@Model.OverallOutcomeCount)
                         </a>
                     </li>
                 </ul>
 
-                <div class="govuk-tabs__panel" id="applications">
+                <div class="govuk-tabs__panel @(Model.SelectedTab != null && Model.SelectedTab != "applications" ? "govuk-tabs__panel--hidden" : "")" id="applications">
                     @if (Model.ApplicationCount > 0)
                     {
                         <table class="govuk-table das-table--condensed das-table--responsive-wide">
@@ -57,7 +57,9 @@
                                     <th scope="col" class="govuk-table__header">UKPRN</th>
                                     <th scope="col" class="govuk-table__header">Provider route</th>
                                     <th scope="col" class="govuk-table__header">Application reference number</th>
-                                    <th scope="col" class="govuk-table__header">Application submitted date</th>
+                                    <th class="govuk-table__header" scope="col">
+                                        <sfa-roatp-sortable-column selected-tab="applications" column-name="SubmittedDate" column-label="Application submitted date" default="true" default-order="Descending" />
+                                    </th>
                                     <th scope="col" class="govuk-table__header">Outcome</th>
                                 </tr>
                             </thead>
@@ -101,7 +103,7 @@
                     }
                 </div>
 
-                <div class="govuk-tabs__panel" id="outcomes">
+                <div class="govuk-tabs__panel @(Model.SelectedTab != "outcomes" ? "govuk-tabs__panel--hidden" : "")" id="outcomes">
                     @if (Model.OverallOutcomeCount > 0)
                     {
                         <table class="govuk-table das-table--condensed das-table--responsive-wide">
@@ -112,7 +114,9 @@
                                     <th scope="col" class="govuk-table__header">UKPRN</th>
                                     <th scope="col" class="govuk-table__header">Provider route</th>
                                     <th scope="col" class="govuk-table__header">Application reference number</th>
-                                    <th scope="col" class="govuk-table__header">Application submitted date</th>
+                                    <th class="govuk-table__header" scope="col">
+                                        <sfa-roatp-sortable-column selected-tab="outcomes" column-name="SubmittedDate" column-label="Application submitted date" default="true" default-order="Descending" />
+                                    </th>
                                     <th scope="col" class="govuk-table__header">Application determined date</th>
                                     <th scope="col" class="govuk-table__header">Overall outcome</th>
                                 </tr>

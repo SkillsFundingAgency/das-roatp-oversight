@@ -39,5 +39,7 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public AppealStatus SelectedAppealStatus { get; set; }
         public string UnsuccessfulPartiallyUpheldText { get; set; }
         public string UnsuccessfulPartiallyUpheldExternalText { get; set; }
+
+        public bool OnRegister { get; set; }
     }
 }

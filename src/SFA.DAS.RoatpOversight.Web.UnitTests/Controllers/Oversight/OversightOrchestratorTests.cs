@@ -25,10 +25,12 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         private Mock<IApplyApiClient> _apiClient;
         private Mock<IWebConfiguration> _configuration;
         private Mock<ICacheStorageService> _cacheStorageService;
+        private Mock<IRoatpRegisterApiClient> _roatpRegisterClient;
         private string _dashboardAddress;
         private Guid _applicationId;
         private Guid _oversightReviewId;
         private readonly Fixture _autoFixture = new Fixture();
+        private bool onRegister;
 
         [SetUp]
         public void SetUp()
@@ -36,11 +38,12 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _applicationId = Guid.NewGuid();
             _oversightReviewId = Guid.NewGuid();
             _apiClient = new Mock<IApplyApiClient>();
+            _roatpRegisterClient = new Mock<IRoatpRegisterApiClient>();
             _configuration = new Mock<IWebConfiguration>();
             _cacheStorageService = new Mock<ICacheStorageService>();
             _dashboardAddress = "https://dashboard";
             _orchestrator = new OversightOrchestrator(_apiClient.Object, Mock.Of<ILogger<OversightOrchestrator>>(),
-                _cacheStorageService.Object);
+                _cacheStorageService.Object, _roatpRegisterClient.Object);
         }
 
         [Test]
@@ -69,8 +72,9 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 expectedViewModel.OverallOutcomeDetails.Reviews.First().Ukprn);
         }
 
-        [Test]
-        public async Task GetOversightDetails_returns_viewmodel()
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task GetOversightDetails_returns_viewmodel(bool onRegister)
         {
             var expectedApplicationDetails = GetApplication();
             var expectedOversightReview = GetOversightReview();
@@ -80,6 +84,9 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             
             _apiClient.Setup(x => x.GetAppeal(_applicationId, expectedOversightReview.Id))
                 .ReturnsAsync(() => appealResponse);
+            _roatpRegisterClient
+                .Setup(x => x.GetOrganisationRegisterStatus(It.IsAny<GetOrganisationRegisterStatusRequest>()))
+                .ReturnsAsync(new OrganisationRegisterStatus { UkprnOnRegister = onRegister });
 
             var actualViewModel = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
 
@@ -126,7 +133,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(actualViewModel.AppealViewModel.UserId, appealResponse.UserId);
             Assert.AreEqual(actualViewModel.AppealViewModel.UserName, appealResponse.UserName);
             Assert.AreEqual(actualViewModel.AppealViewModel.CreatedOn, appealResponse.CreatedOn);
-
+            Assert.AreEqual(actualViewModel.OnRegister,onRegister);
             var compareLogic = new CompareLogic(new ComparisonConfig {IgnoreObjectTypes = true});
             var comparisonResult =
                 compareLogic.Compare(appealResponse.Uploads, actualViewModel.AppealViewModel.Uploads);
@@ -142,7 +149,9 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _apiClient.Setup(x => x.GetOversightReview(_applicationId)).ReturnsAsync(() => expectedOversightReview);
             _apiClient.Setup(x => x.GetAppeal(_applicationId, expectedOversightReview.Id))
                 .ReturnsAsync(() => null);
-
+            _roatpRegisterClient
+                .Setup(x => x.GetOrganisationRegisterStatus(It.IsAny<GetOrganisationRegisterStatusRequest>()))
+                .ReturnsAsync(new OrganisationRegisterStatus());
             var actualViewModel = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
 
             Assert.IsNull(actualViewModel.AppealViewModel);
@@ -171,6 +180,9 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _cacheStorageService.Setup(x =>
                     x.RetrieveFromCache<OutcomePostRequest>(It.Is<string>(key => key == cacheKey.ToString())))
                 .ReturnsAsync(cachedItem);
+            _roatpRegisterClient
+                .Setup(x => x.GetOrganisationRegisterStatus(It.IsAny<GetOrganisationRegisterStatusRequest>()))
+                .ReturnsAsync(new OrganisationRegisterStatus());
 
             var actualViewModel = await _orchestrator.GetOversightDetailsViewModel(_applicationId, cacheKey);
 

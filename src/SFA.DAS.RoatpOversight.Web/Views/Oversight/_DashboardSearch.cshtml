@@ -35,6 +35,6 @@
         <p class="app-search-results-info__content">
             Showing results for <span class="app-search-results-info__search-term">@Model.SearchTerm</span>
         </p>
-        <a class="govuk-link app-search-results-info__clear-link" asp-action="Applications" asp-controller="Oversight">Clear results</a>
+        <a class="govuk-link app-search-results-info__clear-link" asp-action="Applications" asp-controller="Oversight" asp-route-selectedTab="@Model.SelectedTab">Clear results</a>
     </div>
 }

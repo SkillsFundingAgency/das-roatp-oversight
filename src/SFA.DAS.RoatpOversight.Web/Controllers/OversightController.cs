@@ -11,28 +11,42 @@ using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Extensions;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Validators;
+using SFA.DAS.RoatpOversight.Web.ModelBinders;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
 {
     [Authorize(Roles = Roles.RoatpApplicationOversightTeam)]
     public class OversightController : Controller
     {
+        private readonly ISearchTermValidator _searchTermValidator;
         private readonly IApplicationOutcomeOrchestrator _outcomeOrchestrator;
         private readonly IOversightOrchestrator _oversightOrchestrator;
         private readonly IAppealOrchestrator _appealOrchestrator;
 
-        public OversightController(IApplicationOutcomeOrchestrator outcomeOrchestrator,
+        public OversightController(ISearchTermValidator searchTermValidator,
+                                   IApplicationOutcomeOrchestrator outcomeOrchestrator,
                                    IOversightOrchestrator oversightOrchestrator,
                                    IAppealOrchestrator appealOrchestrator)
         {
+            _searchTermValidator = searchTermValidator;
             _outcomeOrchestrator = outcomeOrchestrator;
             _oversightOrchestrator = oversightOrchestrator;
             _appealOrchestrator = appealOrchestrator;
         }
 
-        public async Task<IActionResult> Applications(string selectedTab, string sortColumn, string sortOrder)
+        public async Task<IActionResult> Applications(string selectedTab, [StringTrim] string searchTerm, string sortColumn, string sortOrder)
         {
-            var viewModel = await _oversightOrchestrator.GetApplicationsViewModel(selectedTab, sortColumn, sortOrder);
+            if (searchTerm != null)
+            {
+                var validationResponse = _searchTermValidator.Validate(searchTerm);
+
+                foreach (var error in validationResponse.Errors)
+                {
+                    ModelState.AddModelError(error.Field, error.ErrorMessage);
+                }
+            }
+
+            var viewModel = await _oversightOrchestrator.GetApplicationsViewModel(selectedTab, ModelState.IsValid ? searchTerm : null, sortColumn, sortOrder);
             return View(viewModel);
         }
 

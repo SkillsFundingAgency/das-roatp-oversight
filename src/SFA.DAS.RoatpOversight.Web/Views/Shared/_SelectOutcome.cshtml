@@ -21,34 +21,36 @@
                 
             
                 <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
-            @if (!Model.OnRegister)
-                {
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input"
-                               type="radio"
-                               asp-for="OversightStatus"
-                               value=@OversightReviewStatus.Successful
-                               data-aria-controls="conditional-OptionSuccessful"
-                               data-module="das-disabled" />
-                        <label class="govuk-label govuk-radios__label" for="OversightStatus">
-                            @OversightReviewStatus.Successful
-                        </label>
-                    </div>
-                    <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-OptionSuccessful">
-                        <div class="govuk-form-group">
-                            <a name="OptionSuccessfulText"></a>
-                            <label class="govuk-label" for="SuccessfulText">
-                                Add your internal comments (optional)
+                    @if (!Model.OnRegister)
+                    {
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input"
+                                   type="radio"
+                                   asp-for="OversightStatus"
+                                   value=@OversightReviewStatus.Successful
+                                   data-aria-controls="conditional-OptionSuccessful"
+                                   data-module="das-disabled" />
+                            <label class="govuk-label govuk-radios__label" for="OversightStatus">
+                                @OversightReviewStatus.Successful
                             </label>
-                            <textarea class="govuk-textarea"
-                                      id="SuccessfulText"
-                                      name="SuccessfulText"
-                                      rows="10"
-                                      maxlength="@OversightSettings.TextAreaMaxLength">@Model.SuccessfulText</textarea>
                         </div>
-                    </div>
-                        
-                }
+                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-OptionSuccessful">
+                            <div class="govuk-form-group">
+                                <a name="OptionSuccessfulText"></a>
+                                <label class="govuk-label" for="SuccessfulText">
+                                    Add your internal comments (optional)
+                                </label>
+                                <textarea class="govuk-textarea"
+                                          id="SuccessfulText"
+                                          name="SuccessfulText"
+                                          rows="10"
+                                          maxlength="@OversightSettings.TextAreaMaxLength">@Model.SuccessfulText</textarea>
+                            </div>
+                        </div>
+
+                    }
+                    @if (Model.OnRegister)
+                    {
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input"
                                    type="radio"
@@ -56,51 +58,52 @@
                                    asp-for="OversightStatus"
                                    value=@OversightReviewStatus.SuccessfulAlreadyActive
                                    data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
-                                   data-module="das-disabled" />
+                                   data-module="das-disabled"/>
 
-                                <label class="govuk-label govuk-radios__label" for="@optionSuccessfulAlreadyActive">
-                                    Successful - already active
-                                </label>
-                            
-                    </div>
-                    <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-OptionSuccessfulAlreadyActive">
-                        <div class="govuk-form-group">
-                            <a name="OptionSuccessfulAlreadyActiveText"></a>
-                            <label class="govuk-label" for="SuccessfulAlreadyActiveText">
-                                Add your internal comments (optional)
+                            <label class="govuk-label govuk-radios__label" for="@optionSuccessfulAlreadyActive">
+                                Successful - already active
                             </label>
-                            <textarea class="govuk-textarea"
+
+                        </div>
+                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-OptionSuccessfulAlreadyActive">
+                            <div class="govuk-form-group">
+                                <a name="OptionSuccessfulAlreadyActiveText"></a>
+                                <label class="govuk-label" for="SuccessfulAlreadyActiveText">
+                                    Add your internal comments (optional)
+                                </label>
+                                <textarea class="govuk-textarea"
                                       id="SuccessfulAlreadyActiveText"
                                       name="SuccessfulAlreadyActiveText"
                                       rows="10"
                                       maxlength="@OversightSettings.TextAreaMaxLength">@Model.SuccessfulAlreadyActiveText</textarea>
+                            </div>
                         </div>
-                    </div>
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input"
-                               type="radio"
-                               id="OptionSuccessfulFitnessForFunding"
-                               asp-for="OversightStatus"
-                               value=@OversightReviewStatus.SuccessfulFitnessForFunding
-                               data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
-                               data-module="das-disabled" />
-                        <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
-                            Successful - fitness for funding
-                        </label>
-                    </div>
-                    <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-OptionSuccessfulFitnessForFunding">
-                        <div class="govuk-form-group">
-                            <a name="OptionSuccessfulFitnessForFundingText"></a>
-                            <label class="govuk-label" for="SuccessfulFitnessForFundingText">
-                                Add your internal comments (optional)
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input"
+                                   type="radio"
+                                   id="OptionSuccessfulFitnessForFunding"
+                                   asp-for="OversightStatus"
+                                   value=@OversightReviewStatus.SuccessfulFitnessForFunding
+                                   data-aria-controls="conditional-OptionSuccessfulFitnessForFunding"
+                                   data-module="das-disabled"/>
+                            <label class="govuk-label govuk-radios__label" for="OptionSuccessfulFitnessForFunding">
+                                Successful - fitness for funding
                             </label>
-                            <textarea class="govuk-textarea"
+                        </div>
+                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-OptionSuccessfulFitnessForFunding">
+                            <div class="govuk-form-group">
+                                <a name="OptionSuccessfulFitnessForFundingText"></a>
+                                <label class="govuk-label" for="SuccessfulFitnessForFundingText">
+                                    Add your internal comments (optional)
+                                </label>
+                                <textarea class="govuk-textarea"
                                       id="SuccessfulFitnessForFundingText"
                                       name="SuccessfulFitnessForFundingText"
                                       rows="10"
                                       maxlength="@OversightSettings.TextAreaMaxLength">@Model.SuccessfulFitnessForFundingText</textarea>
+                            </div>
                         </div>
-                    </div>
+                    }
                     <div class="govuk-radios__item">
                         <input class="govuk-radios__input"
                                type="radio"

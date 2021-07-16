@@ -32,13 +32,13 @@
             <div class="govuk-tabs">
                 <ul class="govuk-tabs__list">
                     <li class="govuk-tabs__list-item @(string.IsNullOrEmpty(Model.SelectedTab) || Model.SelectedTab == "applications" ? "govuk-tabs__list-item--selected" : "")">
-                        <a class="govuk-tabs__tab" id="tab_applications" asp-route-selectedTab="applications">
+                        <a class="govuk-tabs__tab" id="tab_applications" asp-route-selectedTab="applications" asp-route-searchTerm="@Model.SearchTerm">
                             Applications (@Model.ApplicationCount)
                         </a>
                     </li>
 
                     <li class="govuk-tabs__list-item @(Model.SelectedTab == "outcomes" ? "govuk-tabs__list-item--selected" : "")">
-                        <a class="govuk-tabs__tab" id="tab_outcomes" asp-route-selectedTab="outcomes">
+                        <a class="govuk-tabs__tab" id="tab_outcomes" asp-route-selectedTab="outcomes" asp-route-searchTerm="@Model.SearchTerm">
                             Application outcomes (@Model.OverallOutcomeCount)
                         </a>
                     </li>

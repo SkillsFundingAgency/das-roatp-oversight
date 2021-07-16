@@ -16,7 +16,9 @@ namespace SFA.DAS.RoatpOversight.Web.StartupExtensions
             {
                 services.AddStackExchangeRedisCache(options =>
                 {
-                    options.Configuration = configuration.SessionRedisConnectionString;
+                    var redisConnectionString = configuration.SessionRedisConnectionString;
+                    var sessionCachingDatabase = configuration.SessionCachingDatabase;
+                    options.Configuration = $"{redisConnectionString},{sessionCachingDatabase}";
                 });
             }
 

@@ -54,6 +54,7 @@ namespace SFA.DAS.RoatpOversight.Web.Helpers
             var values = new
             {
                 SelectedTab = SelectedTab,
+                SearchTerm = GetSearchTermFromQueryString(),
                 SortColumn = ColumnName,
                 SortOrder = isSortColumn ? sortOrder.Reverse().ToString() : DefaultSortOrder.ToString()
             };
@@ -99,6 +100,16 @@ namespace SFA.DAS.RoatpOversight.Web.Helpers
             if (ViewContext.HttpContext.Request.Query.ContainsKey("SortColumn"))
             {
                 return ViewContext.HttpContext.Request.Query["SortColumn"];
+            }
+
+            return string.Empty;
+        }
+
+        private string GetSearchTermFromQueryString()
+        {
+            if (ViewContext.HttpContext.Request.Query.ContainsKey("SearchTerm"))
+            {
+                return ViewContext.HttpContext.Request.Query["SearchTerm"];
             }
 
             return string.Empty;

@@ -19,12 +19,14 @@ using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Models.Partials;
 using SFA.DAS.RoatpOversight.Web.Services;
+using SFA.DAS.RoatpOversight.Web.Validators;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 {
     [TestFixture]
     public class OversightControllerTests
     {
+        private Mock<ISearchTermValidator> _searchTermValidator;
         private Mock<IOversightOrchestrator> _oversightOrchestrator;
         private Mock<IApplicationOutcomeOrchestrator> _outcomeOrchestrator;
         private Mock<IAppealOrchestrator> _appealOrchestrator;
@@ -38,11 +40,13 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [SetUp]
         public void SetUp()
         {
+            _searchTermValidator = new Mock<ISearchTermValidator>();
             _oversightOrchestrator = new Mock<IOversightOrchestrator>();
             _outcomeOrchestrator = new Mock<IApplicationOutcomeOrchestrator>();
             _appealOrchestrator = new Mock<IAppealOrchestrator>();
 
-            _controller = new OversightController(_outcomeOrchestrator.Object,
+            _controller = new OversightController(_searchTermValidator.Object,
+                                                  _outcomeOrchestrator.Object,
                                                   _oversightOrchestrator.Object,
                                                   _appealOrchestrator.Object)
             {
@@ -70,9 +74,9 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 
             var viewModel = new ApplicationsViewModel {ApplicationDetails = applicationsPending,ApplicationCount = 1, OverallOutcomeDetails = applicationsDone, OverallOutcomeCount = 1};
 
-            _oversightOrchestrator.Setup(x => x.GetApplicationsViewModel(null,null,null)).ReturnsAsync(viewModel);
+            _oversightOrchestrator.Setup(x => x.GetApplicationsViewModel(null,null,null,null)).ReturnsAsync(viewModel);
 
-            var result = await _controller.Applications(null,null,null) as ViewResult;
+            var result = await _controller.Applications(null,null,null,null) as ViewResult;
             var actualViewModel = result?.Model as ApplicationsViewModel;
 
             Assert.That(result, Is.Not.Null);

@@ -28,6 +28,7 @@ using SFA.DAS.RoatpOversight.Web.Settings;
 using SFA.DAS.RoatpOversight.Web.Validators;
 using SFA.DAS.Validation.Mvc.Filters;
 using SFA.DAS.RoatpOversight.Web.StartupExtensions;
+using SFA.DAS.RoatpOversight.Web.ModelBinders;
 
 namespace SFA.DAS.RoatpOversight.Web
 {
@@ -83,6 +84,7 @@ namespace SFA.DAS.RoatpOversight.Web
             {
                 options.Filters.Add<ValidateModelStateFilter>(int.MaxValue);
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                options.ModelBinderProviders.Insert(0, new StringTrimmingModelBinderProvider());
             })
             // NOTE: Can we move this to 2.2 to match the version of .NET Core we're coding against?
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(options =>
@@ -169,6 +171,8 @@ namespace SFA.DAS.RoatpOversight.Web
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddTransient(x => ApplicationConfiguration);
+
+            services.AddTransient<ISearchTermValidator, SearchTermValidator>();
 
             services.AddTransient<IRoatpApplicationTokenService, RoatpApplicationTokenService>();
             services.AddTransient<IApplicationOutcomeOrchestrator, ApplicationOutcomeOrchestrator>();

@@ -17,14 +17,17 @@ namespace SFA.DAS.RoatpOversight.Web.Services
     {
         private readonly ILogger<OversightOrchestrator> _logger;
         private readonly IApplyApiClient _applyApiClient;
+        private readonly IRoatpRegisterApiClient _registerApiClient;
+
         private readonly ICacheStorageService _cacheStorageService;
 
         public OversightOrchestrator(IApplyApiClient applyApiClient, ILogger<OversightOrchestrator> logger,
-            ICacheStorageService cacheStorageService)
+            ICacheStorageService cacheStorageService, IRoatpRegisterApiClient registerApiClient)
         {
             _applyApiClient = applyApiClient;
             _logger = logger;
             _cacheStorageService = cacheStorageService;
+            _registerApiClient = registerApiClient;
         }
 
         public async Task<ApplicationsViewModel> GetApplicationsViewModel(string selectedTab, string searchTerm, string sortColumn, string sortOrder)
@@ -54,6 +57,13 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             await Task.WhenAll(applicationDetailsTask, oversightReviewTask);
             var applicationDetails = _applyApiClient.GetApplicationDetails(applicationId).Result;
             var oversightReview = _applyApiClient.GetOversightReview(applicationId).Result;
+            var onRegister = false;
+
+            if (applicationDetails?.Ukprn != null)
+            {
+                var registerStatus = await _registerApiClient.GetOrganisationRegisterStatus(new GetOrganisationRegisterStatusRequest { UKPRN = applicationDetails.Ukprn });
+                onRegister = registerStatus.UkprnOnRegister;
+            }
 
             GetAppealResponse appealResponse = null;
             if (oversightReview != null)
@@ -78,7 +88,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ApproveModeration = GetStringValueForApprovalStatusBoolean(oversightReview?.ModerationApproved),
                 IsGatewayRemoved = applicationDetails.ApplicationStatus == ApplicationStatus.Removed,
                 IsGatewayFail = applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Fail,
-                HasFinalOutcome = oversightReview != null && oversightReview.Status != OversightReviewStatus.None && oversightReview.Status != OversightReviewStatus.InProgress
+                HasFinalOutcome = oversightReview != null && oversightReview.Status != OversightReviewStatus.None && oversightReview.Status != OversightReviewStatus.InProgress,
+                OnRegister = onRegister
             };
 
             if (oversightReview == null || oversightReview.Status == OversightReviewStatus.InProgress)

@@ -2,7 +2,13 @@
 @using SFA.DAS.RoatpOversight.Web.Domain
 @using SFA.DAS.RoatpOversight.Web.Models
 @model SFA.DAS.RoatpOversight.Web.Models.OutcomeViewModel
-
+@{
+    var optionSuccessfulAlreadyActive = "OptionSuccessfulAlreadyActive";
+    if (Model.OnRegister)
+    {
+        optionSuccessfulAlreadyActive = "OversightStatus";
+    }
+}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div das-highlight-error-for="OversightStatus" error-class="govuk-form-group--error" class="govuk-form-group">
@@ -12,8 +18,11 @@
                 </legend>
 
                 <span das-validation-for="OversightStatus" class="govuk-error-message"></span>
-
+                
+            
                 <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+            @if (!Model.OnRegister)
+                {
                     <div class="govuk-radios__item">
                         <input class="govuk-radios__input"
                                type="radio"
@@ -38,18 +47,21 @@
                                       maxlength="@OversightSettings.TextAreaMaxLength">@Model.SuccessfulText</textarea>
                         </div>
                     </div>
+                        
+                }
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input"
+                                   type="radio"
+                                   id="@optionSuccessfulAlreadyActive"
+                                   asp-for="OversightStatus"
+                                   value=@OversightReviewStatus.SuccessfulAlreadyActive
+                                   data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
+                                   data-module="das-disabled" />
 
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input"
-                               type="radio"
-                               id="OptionSuccessfulAlreadyActive"
-                               asp-for="OversightStatus"
-                               value=@OversightReviewStatus.SuccessfulAlreadyActive
-                               data-aria-controls="conditional-OptionSuccessfulAlreadyActive"
-                               data-module="das-disabled" />
-                        <label class="govuk-label govuk-radios__label" for="OptionSuccessfulAlreadyActive">
-                            Successful - already active
-                        </label>
+                                <label class="govuk-label govuk-radios__label" for="@optionSuccessfulAlreadyActive">
+                                    Successful - already active
+                                </label>
+                            
                     </div>
                     <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-OptionSuccessfulAlreadyActive">
                         <div class="govuk-form-group">

@@ -2,6 +2,7 @@
 using SFA.DAS.ApplyService.Types;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Models;
+using SFA.DASRoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Validators
 {
@@ -41,42 +42,12 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
             {
                 //no rules
             });
-
-            RuleSet(RuleSets.AppealOutcome, () =>
-                {
-                    RuleFor(x => x.SelectedAppealStatus).NotEmpty().WithMessage("Select the outcome of this appeal");
-
-                    RuleFor(x => x.SuccessfulText).NotEmpty().WithMessage("Enter internal comments")
-                        .When(x => x.SelectedAppealStatus == AppealStatus.Successful);
-
-                    RuleFor(x => x.SuccessfulExternalText).NotEmpty().WithMessage("Enter external comments")
-                        .When(x => x.SelectedAppealStatus == AppealStatus.Successful);
-
-                    RuleFor(x => x.SuccessfulAlreadyActiveText).NotEmpty().WithMessage("Enter internal comments")
-                        .When(x => x.SelectedAppealStatus == AppealStatus.SuccessfulAlreadyActive);
-
-                    RuleFor(x => x.SuccessfulAlreadyActiveExternalText).NotEmpty().WithMessage("Enter external comments")
-                        .When(x => x.SelectedAppealStatus == AppealStatus.SuccessfulAlreadyActive);
-
-                    RuleFor(x => x.UnsuccessfulText).NotEmpty().WithMessage("Enter internal comments")
-                        .When(x => x.SelectedAppealStatus == AppealStatus.Unsuccessful);
-
-                    RuleFor(x => x.UnsuccessfulExternalText).NotEmpty().WithMessage("Enter external comments")
-                        .When(x => x.SelectedAppealStatus == AppealStatus.Unsuccessful);
-
-                    RuleFor(x => x.UnsuccessfulPartiallyUpheldText).NotEmpty().WithMessage("Enter internal comments")
-                        .When(x => x.SelectedAppealStatus == AppealStatus.UnsuccessfulPartiallyUpheld);
-
-                    RuleFor(x => x.UnsuccessfulPartiallyUpheldExternalText).NotEmpty().WithMessage("Enter external comments")
-                        .When(x => x.SelectedAppealStatus == AppealStatus.UnsuccessfulPartiallyUpheld);
-                });
         }
 
         public static class RuleSets
         {
             public const string Default = "Default";
             public const string GatewayOutcome = "GatewayOutcome";
-            public const string AppealOutcome = "AppealOutcome";
         }
     }
 }

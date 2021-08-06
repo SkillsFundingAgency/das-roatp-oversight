@@ -179,35 +179,9 @@
         </div>
     }
 
-    @if (Model.AppealViewModel != null)
-    {
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <partial name="_Appeal" for="@Model.AppealViewModel"/>
-            </div>
-        </div>
-
-         @if (Model.AppealViewModel.Status == AppealStatus.None)
-         {
-             <partial name="_SelectAppealOutcome" model="@Model"/>
-         }
-    }
+  
 
     </form>
-
-    @if(Model.ShowAppealLink)
-    {
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <div class="das-actions-box govuk-!-margin-bottom-6">
-                    <h2 class="govuk-heading-m">Application actions</h2>
-                    <p class="govuk-body govuk-body govuk-!-margin-bottom-1">
-                        <a class="govuk-link govuk-link--no-visited-state" asp-action="Appeal" asp-route-applicationId="@Model.ApplicationSummary.ApplicationId">Appeal this application</a>
-                    </p>
-                </div>
-            </div>
-        </div>
-    }
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">

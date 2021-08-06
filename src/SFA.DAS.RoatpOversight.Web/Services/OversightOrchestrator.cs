@@ -10,6 +10,7 @@ using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Models.Partials;
+using SFA.DASRoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Services
 {
@@ -65,11 +66,6 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 onRegister = registerStatus.UkprnOnRegister;
             }
 
-            GetAppealResponse appealResponse = null;
-            if (oversightReview != null)
-            {
-                appealResponse = await _applyApiClient.GetAppeal(applicationId, oversightReview.Id);
-            }
 
             var viewModel = new OutcomeViewModel
             {
@@ -80,8 +76,6 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ModerationOutcome = CreateModerationOutcomeViewModel(applicationDetails, oversightReview),
                 InProgressDetails = CreateInProgressDetailsViewModel(oversightReview),
                 OverallOutcome = CreateOverallOutcomeViewModel(oversightReview),
-                AppealViewModel = appealResponse == null ? null : CreateAppealViewModel(applicationDetails, appealResponse),
-                ShowAppealLink = oversightReview != null && oversightReview.Status == OversightReviewStatus.Unsuccessful && appealResponse == null,
                 ShowInProgressDetails = oversightReview?.InProgressDate != null,
                 OversightStatus = oversightReview?.Status ?? OversightReviewStatus.None,
                 ApproveGateway = GetStringValueForApprovalStatusBoolean(oversightReview?.GatewayApproved),
@@ -361,24 +355,6 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
         }
 
-        private AppealOutcomeViewModel CreateAppealViewModel(ApplicationDetails applicationDetails, GetAppealResponse appealResponse)
-        {
-            return new AppealOutcomeViewModel
-            {
-                ApplicationId = applicationDetails.ApplicationId,
-                AppealId = appealResponse.Id,
-                Message = appealResponse.Message,
-                CreatedOn = appealResponse.CreatedOn,
-                Status = appealResponse.Status,
-                UserId = appealResponse.UserId,
-                UserName = appealResponse.UserName,
-                Uploads = appealResponse.Uploads.Select((upload => new AppealOutcomeViewModel.AppealUpload
-                    {
-                        Id = upload.Id,
-                        Filename = upload.Filename,
-                        ContentType = upload.ContentType,
-                    })).ToList()
-            };
-        }
+       
     }
 }

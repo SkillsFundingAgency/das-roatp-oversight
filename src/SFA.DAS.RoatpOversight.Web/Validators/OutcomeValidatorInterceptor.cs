@@ -4,7 +4,7 @@ using FluentValidation.AspNetCore;
 using FluentValidation.Internal;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.RoatpOversight.Web.Models;
+using SFA.DASRoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Validators
 {
@@ -16,12 +16,6 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
             {
                 throw new InvalidOperationException(
                     $"OutcomeValidatorInterceptor cannot be used with type {commonContext.InstanceToValidate.GetType().Name}");
-            }
-
-            if (target.SelectedOption == OutcomePostRequest.SubmitOption.SubmitAppealOutcome)
-            {
-                return new ValidationContext<OutcomePostRequest>(target, null,
-                    new RulesetValidatorSelector(OutcomePostRequestValidator.RuleSets.AppealOutcome));
             }
 
             if(target.SelectedOption == OutcomePostRequest.SubmitOption.SubmitGatewayOutcome)

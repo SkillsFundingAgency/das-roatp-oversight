@@ -1,7 +1,7 @@
 ﻿using System;
 using SFA.DAS.ApplyService.Types;
 
-namespace SFA.DASRoatpOversight.Web.Models
+namespace SFA.DAS.RoatpOversight.Web.Models
 {
     public class OutcomePostRequest
     {

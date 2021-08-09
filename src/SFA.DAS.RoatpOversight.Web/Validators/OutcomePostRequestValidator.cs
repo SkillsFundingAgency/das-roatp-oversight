@@ -2,7 +2,6 @@
 using SFA.DAS.ApplyService.Types;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Models;
-using SFA.DASRoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Validators
 {

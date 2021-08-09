@@ -6,7 +6,6 @@ using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Validators;
 using FluentValidation;
 using SFA.DAS.ApplyService.Types;
-using SFA.DASRoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 {

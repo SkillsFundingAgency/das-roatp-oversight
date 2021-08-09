@@ -4,7 +4,7 @@ using FluentValidation.AspNetCore;
 using FluentValidation.Internal;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DASRoatpOversight.Web.Models;
+using SFA.DAS.RoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Validators
 {

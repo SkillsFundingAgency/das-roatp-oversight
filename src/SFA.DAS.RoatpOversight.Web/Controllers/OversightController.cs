@@ -10,7 +10,7 @@ using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Validators;
 using SFA.DAS.RoatpOversight.Web.ModelBinders;
-using SFA.DASRoatpOversight.Web.Models;
+using SFA.DAS.RoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
 {

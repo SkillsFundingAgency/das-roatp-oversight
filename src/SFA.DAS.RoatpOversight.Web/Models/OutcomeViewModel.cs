@@ -13,13 +13,12 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public ModerationOutcomeViewModel ModerationOutcome { get; set; }
         public InProgressDetailsViewModel InProgressDetails { get; set; }
         public OverallOutcomeViewModel OverallOutcome { get; set; }
-        public AppealOutcomeViewModel AppealViewModel { get; set; }
         public bool IsGatewayFail { get; set; }
         public bool IsGatewayRemoved { get; set; }
         public bool IsGatewayActionPendingConfirmation => IsGatewayFail || IsGatewayRemoved;
         public bool HasFinalOutcome { get; set; }
         public bool ShowInProgressDetails { get; set; }
-        public bool ShowAppealLink { get; set; }
+     
 
 
         public string ApproveGateway { get; set; }
@@ -36,7 +35,7 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public string InProgressInternalText { get; set; }
         public string InProgressExternalText { get; set; }
         public OversightReviewStatus OversightStatus { get; set; }
-        public AppealStatus SelectedAppealStatus { get; set; }
+
         public string UnsuccessfulPartiallyUpheldText { get; set; }
         public string UnsuccessfulPartiallyUpheldExternalText { get; set; }
 

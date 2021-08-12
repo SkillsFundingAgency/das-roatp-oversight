@@ -21,6 +21,7 @@ using SFA.DAS.RoatpOversight.Web.Models.Partials;
 using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Validators;
 
+
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 {
     [TestFixture]
@@ -29,7 +30,6 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         private Mock<ISearchTermValidator> _searchTermValidator;
         private Mock<IOversightOrchestrator> _oversightOrchestrator;
         private Mock<IApplicationOutcomeOrchestrator> _outcomeOrchestrator;
-        private Mock<IAppealOrchestrator> _appealOrchestrator;
         private ITempDataDictionary _tempDataDictionary;
 
         private static readonly Fixture _autoFixture = new Fixture();
@@ -43,12 +43,10 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _searchTermValidator = new Mock<ISearchTermValidator>();
             _oversightOrchestrator = new Mock<IOversightOrchestrator>();
             _outcomeOrchestrator = new Mock<IApplicationOutcomeOrchestrator>();
-            _appealOrchestrator = new Mock<IAppealOrchestrator>();
 
             _controller = new OversightController(_searchTermValidator.Object,
                                                   _outcomeOrchestrator.Object,
-                                                  _oversightOrchestrator.Object,
-                                                  _appealOrchestrator.Object)
+                                                  _oversightOrchestrator.Object)
             {
                 ControllerContext = MockedControllerContext.Setup()
             };
@@ -205,197 +203,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual("Confirmed", result.ActionName);
         }
 
-        [Test]
-        public async Task Get_Appeal_Returns_View()
-        {
-            var request = new AppealRequest
-            {
-                ApplicationId =  Guid.NewGuid()
-            };
-
-            _appealOrchestrator.Setup(x =>
-                    x.GetAppealViewModel(
-                        It.Is<AppealRequest>(r => r.ApplicationId == request.ApplicationId),
-                        It.IsAny<string>()))
-                .ReturnsAsync(() => new AppealViewModel());
-
-            var result = await _controller.Appeal(request);
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [Test]
-        public async Task Post_Appeal_File_Upload_Is_Recorded()
-        {
-            var applicationId = Guid.NewGuid();
-
-            _appealOrchestrator.Setup(x =>
-                x.UploadAppealFile(It.IsAny<Guid>(), It.IsAny<IFormFile>(), It.IsAny<string>(), It.IsAny<string>()));
-
-            var file = GenerateFile();
-
-            var request = new AppealPostRequest
-            {
-                ApplicationId = applicationId,
-                FileUpload = file,
-                SelectedOption = AppealPostRequest.SubmitOption.Upload
-            };
-
-            await _controller.Appeal(request);
-
-            _appealOrchestrator.Verify(x => x.UploadAppealFile(It.Is<Guid>(id => id == applicationId),
-                It.Is<IFormFile>(f => f.FileName == file.FileName && f.ContentType == file.ContentType),
-                It.IsAny<string>(),
-                It.IsAny<string>()),
-                Times.Once);
-        }
-
-        [Test]
-        public async Task Post_Appeal_RemoveFile_Removal_Is_Recorded()
-        {
-            var applicationId = Guid.NewGuid();
-            var fileId = Guid.NewGuid();
-
-            _appealOrchestrator.Setup(x =>
-                x.RemoveAppealFile(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>()));
-
-            var request = new AppealPostRequest
-            {
-                ApplicationId = applicationId,
-                SelectedOption = AppealPostRequest.SubmitOption.RemoveFile,
-                FileId = fileId
-            };
-            
-            await _controller.Appeal(request);
-
-            _appealOrchestrator.Verify(x => x.RemoveAppealFile(applicationId, fileId, It.IsAny<string>(), It.IsAny<string>()));
-        }
-
-        [Test]
-        public async Task Post_Appeal_New_Appeal_Recorded()
-        {
-            var applicationId = Guid.NewGuid();
-            var oversightReviewId = Guid.NewGuid();
-
-            _appealOrchestrator.Setup(x =>
-                x.CreateAppeal(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
-            
-            var request = new AppealPostRequest
-            {
-                OversightReviewId = oversightReviewId,
-                ApplicationId = applicationId,
-                FileUpload = null,
-                SelectedOption = AppealPostRequest.SubmitOption.SaveAndContinue,
-                Message = _autoFixture.Create<string>()
-            };
-
-            await _controller.Appeal(request);
-
-            _appealOrchestrator.Verify(x => x.CreateAppeal(It.Is<Guid>(id => id == applicationId),
-                    It.Is<Guid>(reviewId => reviewId == oversightReviewId),
-                    It.Is<string>(m => m == request.Message),
-                    It.IsAny<string>(),
-                    It.IsAny<string>()),
-                Times.Once);
-        }
-
-        [Test]
-        public async Task Post_Appeal_User_Is_Redirected_To_Outcome_Page()
-        {
-            var applicationId = Guid.NewGuid();
-
-            var request = new AppealPostRequest
-            {
-                ApplicationId = applicationId,
-                Message = "This is an appeal",
-                SelectedOption = AppealPostRequest.SubmitOption.SaveAndContinue
-            };
-
-            var result = await _controller.Appeal(request);
-
-            Assert.IsInstanceOf<RedirectToActionResult>(result);
-            var redirectResult = (RedirectToActionResult) result;
-
-            Assert.AreEqual("Outcome", redirectResult.ActionName);
-            Assert.IsTrue(redirectResult.RouteValues.ContainsKey("ApplicationId"));
-        }
-
-        [Test]
-        public async Task Get_Appeal_Preserves_Any_Message_Stored_In_TempData()
-        {
-            var request = new AppealRequest
-            {
-                ApplicationId = Guid.NewGuid()
-            };
-
-            var message = _autoFixture.Create<string>();
-
-            _tempDataDictionary["Message"] = message;
-
-            _appealOrchestrator.Setup(x =>
-                    x.GetAppealViewModel(
-                        It.Is<AppealRequest>(r => r.ApplicationId == request.ApplicationId),
-                        It.Is<string>(m => m == message)))
-                .ReturnsAsync(() => new AppealViewModel());
-
-            var result = await _controller.Appeal(request);
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        [TestCase(AppealPostRequest.SubmitOption.Upload)]
-        [TestCase(AppealPostRequest.SubmitOption.RemoveFile)]
-        public async Task Post_Appeal_Preserves_Any_Message_In_TempData_On_Post_Of_Non_CTA(AppealPostRequest.SubmitOption submitOption)
-        {
-            var applicationId = Guid.NewGuid();
-            var fileId = Guid.NewGuid();
-
-            _appealOrchestrator.Setup(x =>
-                x.RemoveAppealFile(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>()));
-
-            var request = new AppealPostRequest
-            {
-                ApplicationId = applicationId,
-                Message = _autoFixture.Create<string>(),
-                FileUpload = submitOption == AppealPostRequest.SubmitOption.Upload ? GenerateFile() : null,
-                FileId = submitOption == AppealPostRequest.SubmitOption.RemoveFile ? fileId : Guid.Empty,
-                SelectedOption = submitOption
-            };
-
-            await _controller.Appeal(request);
-
-            Assert.AreEqual(request.Message, _tempDataDictionary["Message"]);
-        }
-
-        [Test]
-        public async Task Get_AppealFile_Returns_Uploaded_File()
-        {
-            var applicationId = Guid.NewGuid();
-            var fileId = Guid.NewGuid();
-            var appealId = Guid.NewGuid();
-
-            var fileUpload = new FileUpload
-            {
-                ContentType = "application/pdf",
-                Data = _autoFixture.Create<byte[]>(),
-                FileName = _autoFixture.Create<string>()
-            };
-
-            var request = new AppealUploadRequest
-            {
-                AppealId = appealId,
-                AppealUploadId = fileId,
-                ApplicationId = applicationId
-            };
-
-            _appealOrchestrator.Setup(x => x.GetAppealFile(applicationId, appealId, fileId)).ReturnsAsync(fileUpload);
-
-            var result = await _controller.AppealUpload(request);
-
-            Assert.IsInstanceOf<FileContentResult>(result);
-            var fileContentResult = (FileContentResult) result;
-            Assert.AreEqual(fileUpload.FileName, fileContentResult.FileDownloadName);
-            Assert.AreEqual(fileUpload.ContentType, fileContentResult.ContentType);
-            Assert.AreEqual(fileUpload.Data, fileContentResult.FileContents);
-        }
+        
 
         private static IFormFile GenerateFile()
         {

@@ -25,13 +25,11 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public string UnsuccessfulPartiallyUpheldExternalText { get; set; }
 
         public SubmitOption SelectedOption { get; set; }
-        public AppealStatus SelectedAppealStatus { get; set; }
 
         public enum SubmitOption
         {
             SubmitOutcome,
-            SubmitGatewayOutcome,
-            SubmitAppealOutcome
+            SubmitGatewayOutcome
         }
     }
 }

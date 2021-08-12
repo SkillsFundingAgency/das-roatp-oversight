@@ -66,37 +66,7 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         {
             await Post("Oversight/GatewayRemovedOutcome", command);
         }
-		
-        public async Task UploadAppealFile(Guid applicationId, UploadAppealFileRequest request)
-        {
-            await PostMultipartAsync($"/Oversight/{applicationId}/uploads", request);
-        }
-
-        public async Task RemoveAppealFile(Guid applicationId, Guid fileId, RemoveAppealFileCommand command)
-        {
-            await Post($"Oversight/{applicationId}/uploads/{fileId}/remove", command);
-        }
-
-        public async Task<AppealFiles> GetStagedUploads(GetStagedFilesRequest request)
-        {
-            return await Get<AppealFiles>($"Oversight/{request.ApplicationId}/uploads");
-        }
-
-        public async Task CreateAppeal(Guid applicationId, Guid oversightReviewId, CreateAppealRequest request)
-        {
-            await Post($"/Oversight/{applicationId}/oversight-reviews/{oversightReviewId}/appeal", request);
-        }
-
-        public async Task<GetAppealResponse> GetAppeal(Guid applicationId, Guid oversightReviewId)
-        {
-            return await Get<GetAppealResponse>($"/Oversight/{applicationId}/oversight-reviews/{oversightReviewId}/appeal");
-        }
-
-        public async Task<GetAppealUploadResponse> GetAppealFile(Guid applicationId, Guid appealId, Guid fileId)
-        {
-            return await Get<GetAppealUploadResponse>($"Oversight/{applicationId}/appeals/{appealId}/uploads/{fileId}");
-        }
-
+        
         public async Task<GetOversightReviewResponse> GetOversightReview(Guid applicationId)
         {
             return await Get<GetOversightReviewResponse>($"Oversight/{applicationId}/review");

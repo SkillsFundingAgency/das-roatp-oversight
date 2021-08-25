@@ -41,6 +41,17 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
             return await Get<CompletedOversightReviews>($"/Oversights/Completed?searchTerm={searchTerm}&sortColumn={sortColumn}&sortOrder={sortOrder}");
         }
 
+        //TO-DO To get the pending Appeals, completed appeals 
+        public async Task<PendingAppealOutcomes> GetPendingAppealOutcomes(string searchTerm, string sortColumn, string sortOrder)
+        {
+            return await Get<PendingAppealOutcomes>($"/Oversights/Pending?searchTerm={searchTerm}&sortColumn={sortColumn}&sortOrder={sortOrder}");
+        }
+
+        public async Task<CompletedAppealOutcomes> GetCompletedAppealOutcomesCompleted(string searchTerm, string sortColumn, string sortOrder)
+        {
+            return await Get<CompletedAppealOutcomes>($"/Oversights/Completed?searchTerm={searchTerm}&sortColumn={sortColumn}&sortOrder={sortOrder}");
+        }
+
         public async Task<ApplicationDetails> GetApplicationDetails(Guid applicationId)
         {
             return await Get<ApplicationDetails>($"/Oversights/{applicationId}");

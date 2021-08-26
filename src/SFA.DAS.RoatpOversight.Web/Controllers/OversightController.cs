@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RoatpOversight.Domain;
@@ -7,10 +8,11 @@ using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.AdminService.Common.Extensions;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
+using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Validators;
 using SFA.DAS.RoatpOversight.Web.ModelBinders;
-using SFA.DAS.RoatpOversight.Web.Models;
+
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
 {
@@ -20,14 +22,16 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         private readonly ISearchTermValidator _searchTermValidator;
         private readonly IApplicationOutcomeOrchestrator _outcomeOrchestrator;
         private readonly IOversightOrchestrator _oversightOrchestrator;
+        private readonly IApplyApiClient _apiClient;
 
         public OversightController(ISearchTermValidator searchTermValidator,
                                    IApplicationOutcomeOrchestrator outcomeOrchestrator,
-                                   IOversightOrchestrator oversightOrchestrator)
+                                   IOversightOrchestrator oversightOrchestrator, IApplyApiClient apiClient)
         {
             _searchTermValidator = searchTermValidator;
             _outcomeOrchestrator = outcomeOrchestrator;
             _oversightOrchestrator = oversightOrchestrator;
+            _apiClient = apiClient;
         }
 
         public async Task<IActionResult> Applications(string selectedTab, [StringTrim] string searchTerm, string sortColumn, string sortOrder)
@@ -124,6 +128,22 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         {
             var viewModel = await _oversightOrchestrator.GetConfirmedViewModel(request.ApplicationId);
             return View(viewModel);
+        }
+
+
+        [HttpGet("Oversight/{applicationId}/appeal/file/{fileName}")]
+        public async Task<IActionResult> DownloadAppealFile(Guid applicationId, string fileName)
+        {
+            var response = await _apiClient.DownloadFile(applicationId, fileName);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var fileStream = await response.Content.ReadAsStreamAsync();
+
+                return File(fileStream, response.Content.Headers.ContentType.MediaType, response.Content.Headers.ContentDisposition.FileNameStar);
+            }
+
+            return NotFound();
         }
     }
 }

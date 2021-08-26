@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Domain.ApiTypes;
@@ -18,5 +19,6 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         Task<GetOversightReviewResponse> GetOversightReview(Guid applicationId);
 
         Task<AppealDetails> GetAppealDetails(Guid applicationId);
+        Task<HttpResponseMessage> DownloadFile(Guid applicationId, string fileName);
     }
 }

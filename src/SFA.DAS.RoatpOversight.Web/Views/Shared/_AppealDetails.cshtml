@@ -36,21 +36,44 @@
                             </div>
                         </details>
                     }
-                @if (!string.IsNullOrEmpty(Model.HowFailedOnPolicyOrProcesses))
-                {
-                    <details class="govuk-details" data-module="govuk-details">
-                        <summary class="govuk-details__summary">
-                            <span class="govuk-details__summary-text">
-                                The ESFA has failed to understand or recognise the evidence submitted
-                            </span>
-                        </summary>
-                        <div class="govuk-details__text">
-                            <pre class="govuk-body das-preformatted-body">@Model.HowFailedOnEvidenceSubmitted</pre>
-                        </div>
-                    </details>
-                }
+                    @if (!string.IsNullOrEmpty(Model.HowFailedOnPolicyOrProcesses))
+                    {
+                        <details class="govuk-details" data-module="govuk-details">
+                            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">
+                                    The ESFA has failed to understand or recognise the evidence submitted
+                                </span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <pre class="govuk-body das-preformatted-body">@Model.HowFailedOnEvidenceSubmitted</pre>
+                            </div>
+                        </details>
+                    }
                 </dd>
             </div>
+            
+            @if (Model.AppealFiles != null && Model.AppealFiles.Count > 0)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Uploaded files
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <ul class="govuk-list">
+                            @foreach (var file in Model.AppealFiles)
+                            {
+                                <li>
+                                    <a class="govuk-link" asp-action="DownloadAppealFile" asp-controller="Oversight" asp-route-applicationId="@Model.ApplicationId" asp-route-fileName="@file.Filename">
+                                        @file.Filename
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </dd>
+                    
+                </div>
+            }
+
         </dl>
     </fieldset>
 </div>

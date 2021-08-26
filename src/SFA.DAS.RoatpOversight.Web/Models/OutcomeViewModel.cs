@@ -1,4 +1,4 @@
-﻿using SFA.DAS.ApplyService.Types;
+﻿using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Models.Partials;
 
 namespace SFA.DAS.RoatpOversight.Web.Models
@@ -40,5 +40,7 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public string UnsuccessfulPartiallyUpheldExternalText { get; set; }
 
         public bool OnRegister { get; set; }
+
+        public AppealDetails Appeal { get; set; }
     }
 }

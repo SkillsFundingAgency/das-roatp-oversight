@@ -1,5 +1,4 @@
-﻿@using SFA.DAS.ApplyService.Types
-@using SFA.DAS.RoatpOversight.Web.Domain
+﻿@using SFA.DAS.RoatpOversight.Web.Domain
 @model SFA.DAS.RoatpOversight.Web.Models.OutcomeViewModel
 @{
     ViewData["Title"] = "RoATP application outcomes - Application summary";
@@ -178,7 +177,14 @@
             </div>
         </div>
     }
-
+        @if (Model.Appeal!=null)
+        {
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <partial name="_AppealDetails" for="@Model.Appeal"/>
+                </div>
+            </div>
+        }
   
 
     </form>

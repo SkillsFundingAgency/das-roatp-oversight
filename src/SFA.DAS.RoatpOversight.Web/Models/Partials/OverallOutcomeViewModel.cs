@@ -1,5 +1,4 @@
 ﻿using System;
-using SFA.DAS.ApplyService.Types;
 using SFA.DAS.RoatpOversight.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.Models.Partials

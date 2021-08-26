@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.ApplyService.Types;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Domain.ApiTypes;
 using SFA.DAS.RoatpOversight.Web.Domain;
@@ -57,6 +56,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             var applicationDetails = _applyApiClient.GetApplicationDetails(applicationId).Result;
             var oversightReview = _applyApiClient.GetOversightReview(applicationId).Result;
             var onRegister = false;
+            var appealDetails = await _applyApiClient.GetAppealDetails(applicationId);
 
             if (applicationDetails?.Ukprn != null)
             {
@@ -81,7 +81,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 IsGatewayRemoved = applicationDetails.ApplicationStatus == ApplicationStatus.Removed,
                 IsGatewayFail = applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Fail,
                 HasFinalOutcome = oversightReview != null && oversightReview.Status != OversightReviewStatus.None && oversightReview.Status != OversightReviewStatus.InProgress,
-                OnRegister = onRegister
+                OnRegister = onRegister,
+                Appeal = appealDetails
             };
 
             if (oversightReview == null || oversightReview.Status == OversightReviewStatus.InProgress)

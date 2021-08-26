@@ -15,6 +15,7 @@ using SFA.DAS.AdminService.Common.Testing.MockedObjects;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Controllers;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
+using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Models.Partials;
 using SFA.DAS.RoatpOversight.Web.Services;
@@ -28,6 +29,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
     {
         private Mock<ISearchTermValidator> _searchTermValidator;
         private Mock<IOversightOrchestrator> _oversightOrchestrator;
+        private Mock<IApplyApiClient> _applyApiClient;
         private Mock<IApplicationOutcomeOrchestrator> _outcomeOrchestrator;
         private ITempDataDictionary _tempDataDictionary;
 
@@ -42,10 +44,12 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _searchTermValidator = new Mock<ISearchTermValidator>();
             _oversightOrchestrator = new Mock<IOversightOrchestrator>();
             _outcomeOrchestrator = new Mock<IApplicationOutcomeOrchestrator>();
+            _applyApiClient=new Mock<IApplyApiClient>();
 
             _controller = new OversightController(_searchTermValidator.Object,
                                                   _outcomeOrchestrator.Object,
-                                                  _oversightOrchestrator.Object)
+                                                  _oversightOrchestrator.Object,
+                                                  _applyApiClient.Object)
             {
                 ControllerContext = MockedControllerContext.Setup()
             };

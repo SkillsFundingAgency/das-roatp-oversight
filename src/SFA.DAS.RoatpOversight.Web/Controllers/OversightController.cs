@@ -86,6 +86,20 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             return RedirectToAction("ConfirmOutcome", new {applicationId = request.ApplicationId, OutcomeKey = cacheKey});
         }
 
+        [HttpGet("Oversight/Appeal/{applicationId}")]
+        public async Task<IActionResult> Appeal(AppealRequest request)
+        {
+            try
+            {
+                var vm = await _oversightOrchestrator.GetAppealDetailsViewModel(request.ApplicationId, request.OutcomeKey);
+                return View(vm);
+            }
+            catch (InvalidStateException)
+            {
+                return RedirectToAction("Applications");
+            }
+        }
+
         [HttpGet("Oversight/Outcome/{applicationId}/confirm/{outcomeKey}")]
         public async Task<IActionResult> ConfirmOutcome(ConfirmOutcomeRequest request)
         {

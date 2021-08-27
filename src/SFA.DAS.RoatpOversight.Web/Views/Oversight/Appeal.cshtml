@@ -42,7 +42,7 @@
     </div>
 
     <form method="post">
-        
+
         <input type="hidden" name="ApplicationId" value="@Model.ApplicationSummary.ApplicationId" />
         <input type="hidden" asp-for="IsGatewayFail" />
         <input type="hidden" asp-for="IsGatewayRemoved" />
@@ -55,52 +55,54 @@
                     <div das-highlight-error-for="ApproveGateway" error-class="govuk-form-group--error" class="govuk-form-group">
                         <fieldset class="govuk-fieldset" aria-describedby="ApproveGateway-error">
 
-                            <partial name="_GatewayOutcome" for="@Model.GatewayOutcome"/>
+                            <partial name="_GatewayOutcome" for="@Model.GatewayOutcome" />
 
                         </fieldset>
                     </div>
 
 
-                        <div class="govuk-form-group">
-                            <fieldset class="govuk-fieldset">
-                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                                    <h2 class="govuk-heading-m">Financial health outcome</h2>
-                                </legend>
-                                <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome"/>
-                            </fieldset>
-                        </div>
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                <h2 class="govuk-heading-m">Financial health outcome</h2>
+                            </legend>
+                            <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome" />
+                        </fieldset>
+                    </div>
 
-                        <div das-highlight-error-for="ApproveModeration" error-class="govuk-form-group--error" class="govuk-form-group">
-                            <fieldset class="govuk-fieldset" aria-describedby="ApproveModeration-error">
-                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                                    <h2 class="govuk-heading-m">Moderation outcome</h2>
-                                </legend>
+                    <div das-highlight-error-for="ApproveModeration" error-class="govuk-form-group--error" class="govuk-form-group">
+                        <fieldset class="govuk-fieldset" aria-describedby="ApproveModeration-error">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                <h2 class="govuk-heading-m">Moderation outcome</h2>
+                            </legend>
 
-                                <partial name="_ModerationOutcome" for="@Model.ModerationOutcome"/>
-                            </fieldset>
-                        </div>
+                            <partial name="_ModerationOutcome" for="@Model.ModerationOutcome" />
+                        </fieldset>
+                    </div>
                 </div>
             </div>
         }
 
 
-    @if (Model.HasFinalOutcome)
-    {
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <partial name="_OverallOutcome" for="@Model.OverallOutcome"/>
+        @if (Model.HasFinalOutcome)
+        {
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <partial name="_OverallOutcome" for="@Model.OverallOutcome" />
+                </div>
             </div>
-        </div>
-    }
-    @if (Model.Appeal!=null)
-    {
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <partial name="_AppealDetails" for="@Model.Appeal"/>
+        }
+        @if (Model.Appeal != null)
+        {
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <partial name="_AppealDetails" for="@Model.Appeal" />
+                </div>
             </div>
-        </div>
-    }
-  
+
+            <partial name="_SelectAppealOutcome" model="@Model" />
+        }
+
 
     </form>
 

@@ -83,7 +83,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 IsGatewayFail = applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Fail,
                 HasFinalOutcome = oversightReview != null && oversightReview.Status != OversightReviewStatus.None && oversightReview.Status != OversightReviewStatus.InProgress,
                 OnRegister = onRegister,
-                Appeal = appealDetails
+                Appeal = appealDetails,
+                AppealStatus = appealDetails.Status
             };
 
             if (oversightReview == null || oversightReview.Status == OversightReviewStatus.InProgress)

@@ -57,39 +57,9 @@
 
                             <partial name="_GatewayOutcome" for="@Model.GatewayOutcome"/>
 
-                            @if (!Model.HasFinalOutcome && !Model.IsGatewayActionPendingConfirmation)
-                            {
-                                <span das-validation-for="ApproveGateway" class="govuk-error-message"></span>
-
-                                <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
-                                    <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input"
-                                               type="radio"
-                                               value="@ApprovalStatus.Approve"
-                                               asp-for="ApproveGateway"/>
-                                        <label class="govuk-label govuk-radios__label" for="ApproveGateway">
-                                            Approve this outcome
-                                        </label>
-                                    </div>
-                                    <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input"
-                                               type="radio"
-                                               id="OptionApproveGatewayNo"
-                                               value="@ApprovalStatus.Overturn"
-                                               asp-for="ApproveGateway"
-                                               data-module="das-show-hide-controls"
-                                               data-aria-controls="conditional-UnsuccessfulExternalText"/>
-                                        <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayNo">
-                                            Overturn this outcome
-                                        </label>
-                                    </div>
-                                </div>
-                            }
                         </fieldset>
                     </div>
 
-                    @if (!Model.IsGatewayActionPendingConfirmation)
-                    {
 
                         <div class="govuk-form-group">
                             <fieldset class="govuk-fieldset">
@@ -107,67 +77,12 @@
                                 </legend>
 
                                 <partial name="_ModerationOutcome" for="@Model.ModerationOutcome"/>
-
-                                @if (!Model.HasFinalOutcome)
-                                {
-                                    <span das-validation-for="ApproveModeration" class="govuk-error-message"></span>
-
-                                    <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
-                                        <div class="govuk-radios__item">
-                                            <input class="govuk-radios__input"
-                                                   type="radio"
-                                                   value="@ApprovalStatus.Approve"
-                                                   asp-for="ApproveModeration"/>
-                                            <label class="govuk-label govuk-radios__label" for="ApproveModeration">
-                                                Approve this outcome
-                                            </label>
-                                        </div>
-                                        <div class="govuk-radios__item">
-                                            <input class="govuk-radios__input"
-                                                   type="radio"
-                                                   id="OptionApproveModerationNo"
-                                                   value="@ApprovalStatus.Overturn"
-                                                   asp-for="ApproveModeration"
-                                                   data-module="das-show-hide-controls"
-                                                   data-aria-controls="conditional-UnsuccessfulExternalText"/>
-                                            <label class="govuk-label govuk-radios__label" for="OptionApproveModerationNo">
-                                                Overturn this outcome
-                                            </label>
-                                        </div>
-                                    </div>
-                                }
                             </fieldset>
                         </div>
-                    }
                 </div>
             </div>
         }
 
-        @if (Model.ShowInProgressDetails)
-        {
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-full">
-                    <partial name="_InProgressDetails" for="@Model.InProgressDetails"/>
-                </div>
-            </div>
-        }
-
-        @if (!Model.HasFinalOutcome && !Model.IsGatewayActionPendingConfirmation)
-        {
-            <partial name="_SelectOutcome" model="@Model"/>
-        }
-        else
-        {
-            @if (!Model.HasFinalOutcome)
-             {
-                 <div class="govuk-grid-row">
-                     <div class="govuk-grid-column-two-thirds">
-                         <partial name="_ConfirmGatewayAction"/>
-                     </div>
-                 </div>
-             }
-        }
-   
 
     @if (Model.HasFinalOutcome)
     {
@@ -177,14 +92,14 @@
             </div>
         </div>
     }
-        @if (Model.Appeal!=null)
-        {
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-full">
-                    <partial name="_AppealDetails" for="@Model.Appeal"/>
-                </div>
+    @if (Model.Appeal!=null)
+    {
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <partial name="_AppealDetails" for="@Model.Appeal"/>
             </div>
-        }
+        </div>
+    }
   
 
     </form>

@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using SFA.DAS.ApplyService.Types;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Models;
 

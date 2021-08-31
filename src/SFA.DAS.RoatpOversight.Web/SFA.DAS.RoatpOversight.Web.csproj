@@ -7,9 +7,11 @@
 
   <ItemGroup>
     <Compile Remove="ViewModels\**" />
-    <Content Remove="ViewModels\**" />
+    <Compile Remove="Views\**" />
     <EmbeddedResource Remove="ViewModels\**" />
+    <EmbeddedResource Remove="Views\**" />
     <None Remove="ViewModels\**" />
+    <None Remove="Views\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,7 +34,6 @@
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.1" />
     <PackageReference Include="Polly" Version="7.2.0" />
     <PackageReference Include="SFA.DAS.AdminService.Common" Version="0.1.75" />
-    <PackageReference Include="SFA.DAS.ApplyService.Types" Version="0.1.1553" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
     <PackageReference Include="SFA.DAS.Validation.Mvc" Version="6.0.15" />
     <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />

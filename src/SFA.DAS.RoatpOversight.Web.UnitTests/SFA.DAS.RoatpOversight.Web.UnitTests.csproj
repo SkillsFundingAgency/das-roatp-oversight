@@ -19,7 +19,6 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Include="SFA.DAS.AdminService.Common" Version="0.1.75" />
     <PackageReference Include="SFA.DAS.AdminService.Common.Testing" Version="0.1.21" />
-    <PackageReference Include="SFA.DAS.ApplyService.Types" Version="0.1.1553" />
   </ItemGroup>
 
   <ItemGroup>

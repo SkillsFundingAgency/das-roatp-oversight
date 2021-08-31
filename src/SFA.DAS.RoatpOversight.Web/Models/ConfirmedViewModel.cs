@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using SFA.DAS.ApplyService.Types;
 using SFA.DAS.RoatpOversight.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.Models

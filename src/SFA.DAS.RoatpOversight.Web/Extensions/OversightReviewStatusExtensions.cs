@@ -1,5 +1,4 @@
-﻿using SFA.DAS.ApplyService.Types;
-using SFA.DAS.RoatpOversight.Domain;
+﻿using SFA.DAS.RoatpOversight.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.Extensions
 {

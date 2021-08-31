@@ -6,7 +6,6 @@ using AutoFixture;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApplyService.Types;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Domain.ApiTypes;
 using SFA.DAS.RoatpOversight.Web.Domain;
@@ -31,6 +30,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         private Guid _oversightReviewId;
         private readonly Fixture _autoFixture = new Fixture();
         private bool onRegister;
+        private AppealDetails _appealDetails;
 
         [SetUp]
         public void SetUp()
@@ -42,6 +42,11 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _configuration = new Mock<IWebConfiguration>();
             _cacheStorageService = new Mock<ICacheStorageService>();
             _dashboardAddress = "https://dashboard";
+            _appealDetails= new AppealDetails {Status = AppealStatus.Submitted, 
+                AppealSubmittedDate = DateTime.Today, 
+                HowFailedOnEvidenceSubmitted = "how failed evidence",
+                AppealFiles = new List<AppealFile> {new AppealFile {Filename ="file.pdf"}}
+            };
             _orchestrator = new OversightOrchestrator(_apiClient.Object, Mock.Of<ILogger<OversightOrchestrator>>(),
                 _cacheStorageService.Object, _roatpRegisterClient.Object);
         }
@@ -80,7 +85,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var expectedOversightReview = GetOversightReview();
             _apiClient.Setup(x => x.GetApplicationDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
             _apiClient.Setup(x => x.GetOversightReview(_applicationId)).ReturnsAsync(() => expectedOversightReview);
-            
+            _apiClient.Setup(x => x.GetAppealDetails(_applicationId)).ReturnsAsync(_appealDetails);
             _roatpRegisterClient
                 .Setup(x => x.GetOrganisationRegisterStatus(It.IsAny<GetOrganisationRegisterStatusRequest>()))
                 .ReturnsAsync(new OrganisationRegisterStatus { UkprnOnRegister = onRegister });
@@ -126,10 +131,66 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(expectedApplicationDetails.ModeratedBy, actualViewModel.ModerationOutcome.ModeratedBy);
             Assert.AreEqual(expectedApplicationDetails.ModerationComments,
                 actualViewModel.ModerationOutcome.ModerationComments);
-
             Assert.AreEqual(actualViewModel.OnRegister,onRegister);
         }
 
+        [Test]
+        public async Task GetAppealDetails_returns_viewmodel()
+        {
+            var expectedApplicationDetails = GetApplication();
+            var expectedOversightReview = GetOversightReview();
+            _apiClient.Setup(x => x.GetApplicationDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
+            _apiClient.Setup(x => x.GetOversightReview(_applicationId)).ReturnsAsync(() => expectedOversightReview);
+            _apiClient.Setup(x => x.GetAppealDetails(_applicationId)).ReturnsAsync(_appealDetails);
+            _roatpRegisterClient
+                .Setup(x => x.GetOrganisationRegisterStatus(It.IsAny<GetOrganisationRegisterStatusRequest>()))
+                .ReturnsAsync(new OrganisationRegisterStatus { UkprnOnRegister = onRegister });
+
+            var actualViewModel = await _orchestrator.GetAppealDetailsViewModel(_applicationId, null);
+
+            Assert.AreEqual(expectedApplicationDetails.ApplicationId, _applicationId);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationId, actualViewModel.ApplicationSummary.ApplicationId);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationReferenceNumber,
+                actualViewModel.ApplicationSummary.ApplicationReferenceNumber);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationSubmittedDate,
+                actualViewModel.ApplicationSummary.ApplicationSubmittedDate);
+            Assert.AreEqual(expectedApplicationDetails.OrganisationName,
+                actualViewModel.ApplicationSummary.OrganisationName);
+            Assert.AreEqual(expectedApplicationDetails.ProviderRoute, actualViewModel.ApplicationSummary.ProviderRoute);
+            Assert.AreEqual(expectedApplicationDetails.Ukprn, actualViewModel.ApplicationSummary.Ukprn);
+            Assert.AreEqual(expectedOversightReview.Status, actualViewModel.OversightStatus);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationStatus,
+                actualViewModel.ApplicationSummary.ApplicationStatus);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationEmailAddress,
+                actualViewModel.ApplicationSummary.ApplicationEmailAddress);
+            Assert.AreEqual(expectedApplicationDetails.AssessorReviewStatus,
+                actualViewModel.ApplicationSummary.AssessorReviewStatus);
+            Assert.AreEqual(expectedApplicationDetails.GatewayReviewStatus,
+                actualViewModel.GatewayOutcome.GatewayReviewStatus);
+            Assert.AreEqual(expectedApplicationDetails.GatewayOutcomeMadeDate,
+                actualViewModel.GatewayOutcome.GatewayOutcomeMadeDate);
+            Assert.AreEqual(expectedApplicationDetails.GatewayOutcomeMadeBy,
+                actualViewModel.GatewayOutcome.GatewayOutcomeMadeBy);
+            Assert.AreEqual(expectedApplicationDetails.GatewayComments, actualViewModel.GatewayOutcome.GatewayComments);
+            Assert.AreEqual(expectedApplicationDetails.FinancialReviewStatus,
+                actualViewModel.FinancialHealthOutcome.FinancialReviewStatus);
+            Assert.AreEqual(expectedApplicationDetails.FinancialGradeAwarded,
+                actualViewModel.FinancialHealthOutcome.FinancialGradeAwarded);
+            Assert.AreEqual(expectedApplicationDetails.FinancialHealthAssessedOn,
+                actualViewModel.FinancialHealthOutcome.FinancialHealthAssessedOn);
+            Assert.AreEqual(expectedApplicationDetails.FinancialHealthAssessedBy,
+                actualViewModel.FinancialHealthOutcome.FinancialHealthAssessedBy);
+            Assert.AreEqual(expectedApplicationDetails.ModerationReviewStatus,
+                actualViewModel.ModerationOutcome.ModerationReviewStatus);
+            Assert.AreEqual(expectedApplicationDetails.ModerationOutcomeMadeOn,
+                actualViewModel.ModerationOutcome.ModerationOutcomeMadeOn);
+            Assert.AreEqual(expectedApplicationDetails.ModeratedBy, actualViewModel.ModerationOutcome.ModeratedBy);
+            Assert.AreEqual(expectedApplicationDetails.ModerationComments,
+                actualViewModel.ModerationOutcome.ModerationComments);
+            Assert.AreEqual(actualViewModel.Appeal,_appealDetails);
+            Assert.AreEqual(actualViewModel.OnRegister,onRegister);
+        }    
+        
         [Test]
         public async Task Orchestrator_SaveOutcomePostRequestToCache_stores_expected_values()
         {

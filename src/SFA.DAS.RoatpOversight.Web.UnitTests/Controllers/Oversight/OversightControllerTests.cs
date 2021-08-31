@@ -12,10 +12,10 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.AdminService.Common.Testing.MockedObjects;
-using SFA.DAS.ApplyService.Types;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Controllers;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
+using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Models.Partials;
 using SFA.DAS.RoatpOversight.Web.Services;
@@ -29,6 +29,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
     {
         private Mock<ISearchTermValidator> _searchTermValidator;
         private Mock<IOversightOrchestrator> _oversightOrchestrator;
+        private Mock<IApplyApiClient> _applyApiClient;
         private Mock<IApplicationOutcomeOrchestrator> _outcomeOrchestrator;
         private ITempDataDictionary _tempDataDictionary;
 
@@ -43,10 +44,12 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _searchTermValidator = new Mock<ISearchTermValidator>();
             _oversightOrchestrator = new Mock<IOversightOrchestrator>();
             _outcomeOrchestrator = new Mock<IApplicationOutcomeOrchestrator>();
+            _applyApiClient=new Mock<IApplyApiClient>();
 
             _controller = new OversightController(_searchTermValidator.Object,
                                                   _outcomeOrchestrator.Object,
-                                                  _oversightOrchestrator.Object)
+                                                  _oversightOrchestrator.Object,
+                                                  _applyApiClient.Object)
             {
                 ControllerContext = MockedControllerContext.Setup()
             };
@@ -87,12 +90,12 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [Test]
         public async Task GetOutcome_returns_view_with_expected_viewModel()
         {
-            var viewModel = new OutcomeViewModel { ApplicationSummary = new ApplicationSummaryViewModel{ ApplicationId = _applicationDetailsApplicationId} };
+            var viewModel = new OutcomeDetailsViewModel { ApplicationSummary = new ApplicationSummaryViewModel{ ApplicationId = _applicationDetailsApplicationId} };
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
 
             var request = new OutcomeRequest {ApplicationId = _applicationDetailsApplicationId};
             var result = await _controller.Outcome(request) as ViewResult;
-            var actualViewModel = result?.Model as OutcomeViewModel;
+            var actualViewModel = result?.Model as OutcomeDetailsViewModel;
 
             Assert.That(result, Is.Not.Null);
             Assert.That(actualViewModel, Is.Not.Null);
@@ -117,7 +120,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [Test]
         public async Task Post_Outcome_redirects_to_confirmation()
         {
-            var viewModel = new OutcomeViewModel { ApplicationSummary = new ApplicationSummaryViewModel{ ApplicationId = _applicationDetailsApplicationId }};
+            var viewModel = new OutcomeDetailsViewModel { ApplicationSummary = new ApplicationSummaryViewModel{ ApplicationId = _applicationDetailsApplicationId }};
 
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
 
@@ -139,7 +142,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [Test]
         public async Task Post_Outcome_Gateway_Fail_Records_Gateway_Fail_Outcome()
         {
-            var viewModel = new OutcomeViewModel { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };
+            var viewModel = new OutcomeDetailsViewModel { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };
 
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
 
@@ -162,7 +165,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [Test]
         public async Task Post_Outcome_Gateway_Removed_Records_Gateway_Removed_Outcome()
         {
-            var viewModel = new OutcomeViewModel { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };
+            var viewModel = new OutcomeDetailsViewModel { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };
 
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
 
@@ -185,7 +188,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [Test]
         public async Task Post_Outcome_Gateway_Fail_Redirects_To_Confirmed_Page()
         {
-            var viewModel = new OutcomeViewModel { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };
+            var viewModel = new OutcomeDetailsViewModel { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };
 
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
 

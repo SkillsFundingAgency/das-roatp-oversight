@@ -141,6 +141,7 @@
                                 <label class="govuk-label" for="UnsuccessfulText">
                                     Add your internal comments
                                 </label>
+                                <span das-validation-for="UnsuccessfulText" class="govuk-error-message"></span>
                                 <textarea class="govuk-textarea  govuk-js-character-count"
                                           id="UnsuccessfulText"
                                           name="UnsuccessfulText"
@@ -249,7 +250,7 @@
             </fieldset>
         </div>
 
-            <button class="govuk-button" type="submit" data-module="govuk-button" name="SelectedOption" value="@OutcomePostRequest.SubmitOption.SubmitOutcome">
+            <button class="govuk-button" type="submit" data-module="govuk-button" name="SelectedOption">
                 Save and continue
             </button>
 

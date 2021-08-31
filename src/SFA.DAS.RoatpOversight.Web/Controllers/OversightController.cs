@@ -64,6 +64,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             }
         }
 
+
         [HttpPost("Oversight/Outcome/{applicationId}")]
         public async Task<IActionResult> Outcome([CustomizeValidator(Interceptor = typeof(OutcomeValidatorInterceptor))]OutcomePostRequest request)
         {
@@ -93,6 +94,35 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             {
                 var vm = await _oversightOrchestrator.GetAppealDetailsViewModel(request.ApplicationId, request.OutcomeKey);
                 return View(vm);
+            }
+            catch (InvalidStateException)
+            {
+                return RedirectToAction("Applications");
+            }
+        }
+
+
+        [HttpPost("Oversight/Appeal/{applicationId}")]
+        public async Task<IActionResult> Appeal([CustomizeValidator(Interceptor = typeof(AppealValidatorInterceptor))] AppealPostRequest request)
+        {
+            var userId = HttpContext.User.UserId();
+            var userName = HttpContext.User.UserDisplayName();
+
+            var cacheKey = await _oversightOrchestrator.SaveAppealPostRequestToCache(request);
+            return RedirectToAction("ConfirmAppeal", new { applicationId = request.ApplicationId, OutcomeKey = cacheKey });
+        }
+
+        [HttpGet("Oversight/Appeal/{applicationId}/confirm/{outcomeKey}")]
+        public async Task<IActionResult> ConfirmAppeal(ConfirmAppealRequest request)
+        {
+            try
+            {
+                var viewModel = await _oversightOrchestrator.GetConfirmAppealViewModel(request.ApplicationId, request.OutcomeKey);
+                return View(viewModel);
+            }
+            catch (ConfirmOutcomeCacheKeyNotFoundException)
+            {
+                return RedirectToAction("Outcome", new { request.ApplicationId });
             }
             catch (InvalidStateException)
             {

@@ -29,9 +29,11 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         }
 
         public async Task<ApplicationsViewModel> GetApplicationsViewModel(string selectedTab, string searchTerm, string sortColumn, string sortOrder)
-        {    
+        {
             var pendingApplications = await _applyApiClient.GetOversightsPending(searchTerm, sortColumn, sortOrder);
             var completedApplications = await _applyApiClient.GetOversightsCompleted(searchTerm, sortColumn, sortOrder);
+            var pendingAppealApplications = await _applyApiClient.GetPendingAppealOutcomes(searchTerm, sortColumn, sortOrder);
+            var completedAppealApplications = await _applyApiClient.GetCompletedAppealOutcomesCompleted(searchTerm, sortColumn, sortOrder);
 
             var result = new ApplicationsViewModel
             {
@@ -39,6 +41,10 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ApplicationCount = pendingApplications.Reviews.Count,
                 OverallOutcomeDetails = completedApplications,
                 OverallOutcomeCount = completedApplications.Reviews.Count,
+                PendingAppealsDetails = pendingAppealApplications,
+                AppealsCount = pendingAppealApplications.Reviews.Count,
+                CompleteAppealsDetails = completedAppealApplications,
+                AppealsOutcomeCount = completedAppealApplications.Reviews.Count,
                 SelectedTab = selectedTab,
                 SearchTerm = searchTerm,
                 SortColumn = sortColumn,

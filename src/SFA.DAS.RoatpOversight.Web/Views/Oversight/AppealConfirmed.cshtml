@@ -1,0 +1,34 @@
+﻿@model SFA.DAS.RoatpOversight.Web.Models.AppealConfirmedViewModel
+@{
+    ViewData["Title"] = $"Outcome - {Model.Status}";
+}
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" asp-controller="Home" asp-action="Dashboard">RoATP dashboard</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" asp-controller="Oversight" asp-action="Applications">RoATP application outcomes</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">Overall outcome saved</li>
+    </ol>
+</div>
+
+<main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-panel govuk-panel--confirmation">
+                <h1 class="govuk-panel__title">
+                    Appeal outcome confirmed HOLDING PAGE
+                </h1>
+                @* <div class="govuk-panel__body"> *@
+                @*     Appeal will be saved as:<br><strong>@Model.Status.GetLabel()</strong> *@
+                @* </div> *@
+            </div>
+
+            <p class="govuk-body">
+                <a class="govuk-link" asp-controller="Oversight" asp-action="Applications">Go to RoATP application outcomes</a>
+            </p>
+        </div>
+    </div>
+</main>

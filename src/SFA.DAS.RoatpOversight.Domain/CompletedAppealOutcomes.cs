@@ -22,7 +22,7 @@ namespace SFA.DAS.RoatpOversight.Domain
         public DateTime AppealDeterminedDate { get; set; }
         public DateTime AppealSubmittedDate { get; set; }
         public OversightReviewStatus OversightStatus { get; set; }
-        public string ApplicationStatus { get; set; }
+        public string AppealStatus { get; set; }
 
     }
 }

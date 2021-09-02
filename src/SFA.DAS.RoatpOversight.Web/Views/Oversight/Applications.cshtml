@@ -175,7 +175,7 @@
                                         <sfa-roatp-sortable-column selected-tab="appeals" column-name="ApplicationDeterminedDate" column-label="Application determined date" default="true" default-order="Descending" />
                                     </th>
                                     <th class="govuk-table__header" scope="col">
-                                        <sfa-roatp-sortable-column selected-tab="appeals" column-name="AppealSubmitedDate" column-label="Appeal submitted date" default="true" default-order="Descending" />
+                                        <sfa-roatp-sortable-column selected-tab="appeals" column-name="AppealSubmittedDate" column-label="Appeal submitted date" default="true" default-order="Descending" />
                                     </th>                                    
                                 </tr>
                             </thead>
@@ -194,7 +194,7 @@
                                         <td data-label="Application reference number" class="govuk-table__cell">@outcome.ApplicationReferenceNumber</td>
                                         <td data-label="Application submitted date" class="govuk-table__cell">@outcome.ApplicationSubmittedDate.ToSfaShortDateString()</td>
                                         <td data-label="Application determined date" class="govuk-table__cell">@outcome.ApplicationDeterminedDate.ToSfaShortDateString()</td>
-                                        <td data-label="Appeal submitted date" class="govuk-table__cell">@outcome.AppealSubmitedDate.ToSfaShortDateString()</td>                                       
+                                        <td data-label="Appeal submitted date" class="govuk-table__cell">@outcome.AppealSubmittedDate.ToSfaShortDateString()</td>                                       
                                     </tr>
                                 }
                             </tbody>
@@ -236,7 +236,7 @@
                                     <td data-label="UKPRN" class="govuk-table__cell">@application.Ukprn</td>
                                     <td data-label="Provider route" class="govuk-table__cell">@application.ProviderRoute</td>
                                     <td data-label="Application reference number" class="govuk-table__cell">@application.ApplicationReferenceNumber</td>
-                                    <td data-label="Appeal submitted date" class="govuk-table__cell">@application.AppealSubmitedDate.ToSfaShortDateString()</td>
+                                    <td data-label="Appeal submitted date" class="govuk-table__cell">@application.AppealSubmittedDate.ToSfaShortDateString()</td>
                                     <td data-label="Appeal determined date" class="govuk-table__cell">@application.AppealDeterminedDate.ToSfaShortDateString()</td>                                   
                                     <td data-label="Overall outcome" class="govuk-table__cell">
                                         <span class="das-no-wrap @application.OversightStatus.GetCssClass()">@application.OversightStatus.GetLabel()</span>

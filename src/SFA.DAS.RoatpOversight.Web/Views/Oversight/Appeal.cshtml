@@ -1,8 +1,7 @@
-﻿@using SFA.DAS.RoatpOversight.Web.Models
+﻿@using SFA.DAS.RoatpOversight.Web.Domain
 @model SFA.DAS.RoatpOversight.Web.Models.AppealViewModel
-
 @{
-    ViewData["Title"] = "Enter the applicant's appeal message";
+    ViewData["Title"] = "RoATP application outcomes - Application summary";
 }
 
 <div class="govuk-breadcrumbs">
@@ -13,93 +12,202 @@
         <li class="govuk-breadcrumbs__list-item">
             <a class="govuk-breadcrumbs__link" asp-controller="Oversight" asp-action="Applications">RoATP application outcomes</a>
         </li>
-        <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" asp-controller="Oversight" asp-action="Outcome">Application summary</a>
-        </li>
-        <li class="govuk-breadcrumbs__list-item" aria-current="page">Enter the applicant's appeal message</li>
+        <li class="govuk-breadcrumbs__list-item" aria-current="page">Application summary</li>
     </ol>
 </div>
 
-<main class="govuk-main-wrapper " id="main-content" role="main">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+<main class="govuk-main-wrapper">
+    
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
 
-      <partial name="_ValidationSummaryPartial"/>
+            <partial name="_ValidationSummaryPartial" />
 
-      <form enctype="multipart/form-data" method="post" novalidate>
-          
-          <input type="hidden" asp-for="OversightReviewId"/>
+            <span class="govuk-caption-xl">
+                RoATP application outcomes
+            </span>
+            <h1 class="govuk-heading-xl">Application summary</h1>
+            
+            <partial name="_ApplicationSummary" for="@Model.ApplicationSummary" />
 
-          <div class="govuk-form-group" das-highlight-error-for="Message" error-class="govuk-form-group--error">
-              <h1 class="govuk-label-wrapper">
-                  <label class="govuk-label govuk-label--xl" for="appeal-message">
-                      Enter the applicant's appeal message
-                  </label>
-              </h1>
-
-              <span das-validation-for="Message" class="govuk-error-message"></span>
-
-              <textarea asp-for="Message" name="Message" class="govuk-textarea" rows="10"
-                      das-highlight-error-for="Message" error-class="govuk-textarea--error"
-                        aria-describedby="Message-error">
-            </textarea>
-          </div>
-
-          @if (Model.UploadedFiles.Count > 0)
-          {
-              <div class="govuk-form-group">
-                  <table class="govuk-table">
-                      <caption class="govuk-visually-hidden">Uploaded files</caption>
-                      <thead class="govuk-table__head">
-                      <tr class="govuk-table__row">
-                          <th scope="col" class="govuk-table__header">Uploaded files</th>
-                          <th scope="col" class="govuk-table__header govuk-table__header--numeric"></th>
-                      </tr>
-                      </thead>
-                      <tbody class="govuk-table__body">
-
-                      @foreach (var file in Model.UploadedFiles)
-                      {
-                          <tr class="govuk-table__row">
-                              <th scope="row" class="govuk-table__header">@file.Filename</th>
-                              <td class="govuk-table__cell govuk-table__cell--numeric">
-                                  <button class="das-button--inline-link" name="SelectedOption" value="@AppealPostRequest.SubmitOption.RemoveFile" asp-route-fileid="@file.Id">
-                                      Remove
-                                  </button>
-                              </td>
-                          </tr>
-                      }
-                      </tbody>
-                  </table>
-              </div>
-          }
-
-          @if (Model.AllowAdditionalUploads)
-          {
-              <div class="govuk-form-group" das-highlight-error-for="FileUpload" error-class="govuk-form-group--error">
-                  <label class="govuk-label" for="FileUpload">
-                      Upload a file (optional)
-                  </label>
-                  <span das-validation-for="FileUpload" class="govuk-error-message"></span>
-                  <div id="FileUpload-Hint" class="govuk-hint">
-                      <div>You can upload a maximum of 4 files. </div>
-                      <div>Each file must be a PDF and smaller than 5MB.</div>
-                  </div>
-                  <input class="govuk-file-upload" id="FileUpload" name="FileUpload" type="file" aria-describedby="FileUpload-Hint" accept=".pdf">
-              </div>
-
-              <div class="govuk-form-group">
-                  <button class="govuk-button govuk-button--secondary" data-module="govuk-button" name="SelectedOption" value="@AppealPostRequest.SubmitOption.Upload">
-                      Upload file
-                  </button>
-              </div>
-          }
-
-          <button class="govuk-button" data-module="govuk-button" name="SelectedOption" value="@AppealPostRequest.SubmitOption.SaveAndContinue">
-              Save and continue
-          </button>
-
-      </form>
+            @if (Model.OverallOutcome.IsGatewayOutcome || Model.IsGatewayActionPendingConfirmation)
+            {
+                <h2 class="govuk-heading-l">Gateway outcome</h2>
+            }
+            else
+            {
+                <h2 class="govuk-heading-l">Outcome details</h2>
+            }
+        </div>
     </div>
-  </div>
+
+    <form method="post">
+        
+        <input type="hidden" name="ApplicationId" value="@Model.ApplicationSummary.ApplicationId" />
+        <input type="hidden" asp-for="IsGatewayFail" />
+        <input type="hidden" asp-for="IsGatewayRemoved" />
+
+        @if (!Model.OverallOutcome.IsGatewayOutcome)
+        {
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+
+                    <div das-highlight-error-for="ApproveGateway" error-class="govuk-form-group--error" class="govuk-form-group">
+                        <fieldset class="govuk-fieldset" aria-describedby="ApproveGateway-error">
+
+                            <partial name="_GatewayOutcome" for="@Model.GatewayOutcome"/>
+
+                            @if (!Model.HasFinalOutcome && !Model.IsGatewayActionPendingConfirmation)
+                            {
+                                <span das-validation-for="ApproveGateway" class="govuk-error-message"></span>
+
+                                <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input"
+                                               type="radio"
+                                               value="@ApprovalStatus.Approve"
+                                               asp-for="ApproveGateway"/>
+                                        <label class="govuk-label govuk-radios__label" for="ApproveGateway">
+                                            Approve this outcome
+                                        </label>
+                                    </div>
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input"
+                                               type="radio"
+                                               id="OptionApproveGatewayNo"
+                                               value="@ApprovalStatus.Overturn"
+                                               asp-for="ApproveGateway"
+                                               data-module="das-show-hide-controls"
+                                               data-aria-controls="conditional-UnsuccessfulExternalText"/>
+                                        <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayNo">
+                                            Overturn this outcome
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </fieldset>
+                    </div>
+
+                    @if (!Model.IsGatewayActionPendingConfirmation)
+                    {
+
+                        <div class="govuk-form-group">
+                            <fieldset class="govuk-fieldset">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                    <h2 class="govuk-heading-m">Financial health outcome</h2>
+                                </legend>
+                                <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome"/>
+                            </fieldset>
+                        </div>
+
+                        <div das-highlight-error-for="ApproveModeration" error-class="govuk-form-group--error" class="govuk-form-group">
+                            <fieldset class="govuk-fieldset" aria-describedby="ApproveModeration-error">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                    <h2 class="govuk-heading-m">Moderation outcome</h2>
+                                </legend>
+
+                                <partial name="_ModerationOutcome" for="@Model.ModerationOutcome"/>
+
+                                @if (!Model.HasFinalOutcome)
+                                {
+                                    <span das-validation-for="ApproveModeration" class="govuk-error-message"></span>
+
+                                    <div class="govuk-radios govuk-radios--inline govuk-!-margin-bottom-6">
+                                        <div class="govuk-radios__item">
+                                            <input class="govuk-radios__input"
+                                                   type="radio"
+                                                   value="@ApprovalStatus.Approve"
+                                                   asp-for="ApproveModeration"/>
+                                            <label class="govuk-label govuk-radios__label" for="ApproveModeration">
+                                                Approve this outcome
+                                            </label>
+                                        </div>
+                                        <div class="govuk-radios__item">
+                                            <input class="govuk-radios__input"
+                                                   type="radio"
+                                                   id="OptionApproveModerationNo"
+                                                   value="@ApprovalStatus.Overturn"
+                                                   asp-for="ApproveModeration"
+                                                   data-module="das-show-hide-controls"
+                                                   data-aria-controls="conditional-UnsuccessfulExternalText"/>
+                                            <label class="govuk-label govuk-radios__label" for="OptionApproveModerationNo">
+                                                Overturn this outcome
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </fieldset>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        @if (Model.ShowInProgressDetails)
+        {
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <partial name="_InProgressDetails" for="@Model.InProgressDetails"/>
+                </div>
+            </div>
+        }
+
+        @if (!Model.HasFinalOutcome && !Model.IsGatewayActionPendingConfirmation)
+        {
+            <partial name="_SelectOutcome" model="@Model"/>
+        }
+        else
+        {
+            @if (!Model.HasFinalOutcome)
+             {
+                 <div class="govuk-grid-row">
+                     <div class="govuk-grid-column-two-thirds">
+                         <partial name="_ConfirmGatewayAction"/>
+                     </div>
+                 </div>
+             }
+        }
+   
+
+    @if (Model.HasFinalOutcome)
+    {
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <partial name="_OverallOutcome" for="@Model.OverallOutcome"/>
+            </div>
+        </div>
+    }
+        @if (Model.Appeal!=null)
+        {
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <partial name="_AppealDetails" for="@Model.Appeal"/>
+                </div>
+            </div>
+        }
+  
+
+    </form>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p class="govuk-body">
+                <a class="govuk-link" asp-controller="Oversight" asp-action="Applications">Back to RoATP application outcomes</a>
+            </p>
+        </div>
+    </div>
+
 </main>
+
+@section Scripts {
+    <script src="/javascript/das-enable-form-controls.js" no-cdn></script>
+    <script src="/javascript/das-reveal.js" no-cdn></script>
+    <script>
+        $(function() {
+            window.dasJs.enableFormControlsOnChange.init(
+                ['ApproveGateway', 'ApproveModeration']
+            );
+            window.dasJs.conditionalReveal.init();
+        });
+    </script>
+}

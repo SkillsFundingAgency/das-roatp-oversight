@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using KellermanSoftware.CompareNetObjects;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApplyService.Types;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Domain.ApiTypes;
 using SFA.DAS.RoatpOversight.Web.Domain;
@@ -15,6 +13,7 @@ using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Models;
 using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Settings;
+
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 {
@@ -31,6 +30,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         private Guid _oversightReviewId;
         private readonly Fixture _autoFixture = new Fixture();
         private bool onRegister;
+        private AppealDetails _appealDetails;
 
         [SetUp]
         public void SetUp()
@@ -42,6 +42,11 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _configuration = new Mock<IWebConfiguration>();
             _cacheStorageService = new Mock<ICacheStorageService>();
             _dashboardAddress = "https://dashboard";
+            _appealDetails= new AppealDetails {Status = AppealStatus.Submitted, 
+                AppealSubmittedDate = DateTime.Today, 
+                HowFailedOnEvidenceSubmitted = "how failed evidence",
+                AppealFiles = new List<AppealFile> {new AppealFile {Filename ="file.pdf"}}
+            };
             _orchestrator = new OversightOrchestrator(_apiClient.Object, Mock.Of<ILogger<OversightOrchestrator>>(),
                 _cacheStorageService.Object, _roatpRegisterClient.Object);
         }
@@ -90,12 +95,9 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         {
             var expectedApplicationDetails = GetApplication();
             var expectedOversightReview = GetOversightReview();
-            var appealResponse = _autoFixture.Create<GetAppealResponse>();
             _apiClient.Setup(x => x.GetApplicationDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
             _apiClient.Setup(x => x.GetOversightReview(_applicationId)).ReturnsAsync(() => expectedOversightReview);
-            
-            _apiClient.Setup(x => x.GetAppeal(_applicationId, expectedOversightReview.Id))
-                .ReturnsAsync(() => appealResponse);
+            _apiClient.Setup(x => x.GetAppealDetails(_applicationId)).ReturnsAsync(_appealDetails);
             _roatpRegisterClient
                 .Setup(x => x.GetOrganisationRegisterStatus(It.IsAny<GetOrganisationRegisterStatusRequest>()))
                 .ReturnsAsync(new OrganisationRegisterStatus { UkprnOnRegister = onRegister });
@@ -141,34 +143,66 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(expectedApplicationDetails.ModeratedBy, actualViewModel.ModerationOutcome.ModeratedBy);
             Assert.AreEqual(expectedApplicationDetails.ModerationComments,
                 actualViewModel.ModerationOutcome.ModerationComments);
-            Assert.AreEqual(actualViewModel.AppealViewModel.Message, appealResponse.Message);
-            Assert.AreEqual(actualViewModel.AppealViewModel.UserId, appealResponse.UserId);
-            Assert.AreEqual(actualViewModel.AppealViewModel.UserName, appealResponse.UserName);
-            Assert.AreEqual(actualViewModel.AppealViewModel.CreatedOn, appealResponse.CreatedOn);
             Assert.AreEqual(actualViewModel.OnRegister,onRegister);
-            var compareLogic = new CompareLogic(new ComparisonConfig {IgnoreObjectTypes = true});
-            var comparisonResult =
-                compareLogic.Compare(appealResponse.Uploads, actualViewModel.AppealViewModel.Uploads);
-            Assert.IsTrue(comparisonResult.AreEqual);
         }
 
         [Test]
-        public async Task GetOversightDetails_returns_viewmodel_without_appeal()
+        public async Task GetAppealDetails_returns_viewmodel()
         {
             var expectedApplicationDetails = GetApplication();
             var expectedOversightReview = GetOversightReview();
             _apiClient.Setup(x => x.GetApplicationDetails(_applicationId)).ReturnsAsync(expectedApplicationDetails);
             _apiClient.Setup(x => x.GetOversightReview(_applicationId)).ReturnsAsync(() => expectedOversightReview);
-            _apiClient.Setup(x => x.GetAppeal(_applicationId, expectedOversightReview.Id))
-                .ReturnsAsync(() => null);
+            _apiClient.Setup(x => x.GetAppealDetails(_applicationId)).ReturnsAsync(_appealDetails);
             _roatpRegisterClient
                 .Setup(x => x.GetOrganisationRegisterStatus(It.IsAny<GetOrganisationRegisterStatusRequest>()))
-                .ReturnsAsync(new OrganisationRegisterStatus());
-            var actualViewModel = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
+                .ReturnsAsync(new OrganisationRegisterStatus { UkprnOnRegister = onRegister });
 
-            Assert.IsNull(actualViewModel.AppealViewModel);
-        }
+            var actualViewModel = await _orchestrator.GetAppealDetailsViewModel(_applicationId, null);
 
+            Assert.AreEqual(expectedApplicationDetails.ApplicationId, _applicationId);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationId, actualViewModel.ApplicationSummary.ApplicationId);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationReferenceNumber,
+                actualViewModel.ApplicationSummary.ApplicationReferenceNumber);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationSubmittedDate,
+                actualViewModel.ApplicationSummary.ApplicationSubmittedDate);
+            Assert.AreEqual(expectedApplicationDetails.OrganisationName,
+                actualViewModel.ApplicationSummary.OrganisationName);
+            Assert.AreEqual(expectedApplicationDetails.ProviderRoute, actualViewModel.ApplicationSummary.ProviderRoute);
+            Assert.AreEqual(expectedApplicationDetails.Ukprn, actualViewModel.ApplicationSummary.Ukprn);
+            Assert.AreEqual(expectedOversightReview.Status, actualViewModel.OversightStatus);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationStatus,
+                actualViewModel.ApplicationSummary.ApplicationStatus);
+            Assert.AreEqual(expectedApplicationDetails.ApplicationEmailAddress,
+                actualViewModel.ApplicationSummary.ApplicationEmailAddress);
+            Assert.AreEqual(expectedApplicationDetails.AssessorReviewStatus,
+                actualViewModel.ApplicationSummary.AssessorReviewStatus);
+            Assert.AreEqual(expectedApplicationDetails.GatewayReviewStatus,
+                actualViewModel.GatewayOutcome.GatewayReviewStatus);
+            Assert.AreEqual(expectedApplicationDetails.GatewayOutcomeMadeDate,
+                actualViewModel.GatewayOutcome.GatewayOutcomeMadeDate);
+            Assert.AreEqual(expectedApplicationDetails.GatewayOutcomeMadeBy,
+                actualViewModel.GatewayOutcome.GatewayOutcomeMadeBy);
+            Assert.AreEqual(expectedApplicationDetails.GatewayComments, actualViewModel.GatewayOutcome.GatewayComments);
+            Assert.AreEqual(expectedApplicationDetails.FinancialReviewStatus,
+                actualViewModel.FinancialHealthOutcome.FinancialReviewStatus);
+            Assert.AreEqual(expectedApplicationDetails.FinancialGradeAwarded,
+                actualViewModel.FinancialHealthOutcome.FinancialGradeAwarded);
+            Assert.AreEqual(expectedApplicationDetails.FinancialHealthAssessedOn,
+                actualViewModel.FinancialHealthOutcome.FinancialHealthAssessedOn);
+            Assert.AreEqual(expectedApplicationDetails.FinancialHealthAssessedBy,
+                actualViewModel.FinancialHealthOutcome.FinancialHealthAssessedBy);
+            Assert.AreEqual(expectedApplicationDetails.ModerationReviewStatus,
+                actualViewModel.ModerationOutcome.ModerationReviewStatus);
+            Assert.AreEqual(expectedApplicationDetails.ModerationOutcomeMadeOn,
+                actualViewModel.ModerationOutcome.ModerationOutcomeMadeOn);
+            Assert.AreEqual(expectedApplicationDetails.ModeratedBy, actualViewModel.ModerationOutcome.ModeratedBy);
+            Assert.AreEqual(expectedApplicationDetails.ModerationComments,
+                actualViewModel.ModerationOutcome.ModerationComments);
+            Assert.AreEqual(actualViewModel.Appeal,_appealDetails);
+            Assert.AreEqual(actualViewModel.OnRegister,onRegister);
+        }    
+        
         [Test]
         public async Task Orchestrator_SaveOutcomePostRequestToCache_stores_expected_values()
         {
@@ -276,53 +310,6 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var result = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
 
             Assert.AreEqual(assessmentOutcome, result.ApplicationSummary.AssessmentOutcome);
-        }
-
-        
-        [TestCase(OversightReviewStatus.None, false)]
-        [TestCase(OversightReviewStatus.Successful, false)]
-        [TestCase(OversightReviewStatus.SuccessfulAlreadyActive, false)]
-        [TestCase(OversightReviewStatus.SuccessfulFitnessForFunding, false)]
-        [TestCase(OversightReviewStatus.InProgress, false)]
-        [TestCase(OversightReviewStatus.Unsuccessful, true)]
-        public async Task TestShowAppealLink(OversightReviewStatus status, bool expectedShowAppealLink)
-        {
-            _apiClient.Setup(x => x.GetApplicationDetails(_applicationId))
-                .ReturnsAsync(() => new ApplicationDetails());
-
-            _apiClient.Setup(x => x.GetOversightReview(_applicationId))
-                .ReturnsAsync(() => new GetOversightReviewResponse
-                {
-                    Status = status
-                });
-
-            _apiClient.Setup(x => x.GetAppeal(_applicationId, _oversightReviewId))
-                .ReturnsAsync(() => null);
-
-            var result = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
-
-            Assert.AreEqual(expectedShowAppealLink, result.ShowAppealLink);
-        }
-
-        [Test]
-        public async Task TestHideAppealLink()
-        {
-            _apiClient.Setup(x => x.GetApplicationDetails(_applicationId))
-                .ReturnsAsync(() => new ApplicationDetails());
-
-            _apiClient.Setup(x => x.GetOversightReview(_applicationId))
-                .ReturnsAsync(() => new GetOversightReviewResponse
-                {
-                    Id = _oversightReviewId,
-                    Status = OversightReviewStatus.Unsuccessful
-                });
-
-            _apiClient.Setup(x => x.GetAppeal(_applicationId, _oversightReviewId))
-                .ReturnsAsync(() => _autoFixture.Create<GetAppealResponse>());
-            
-            var result = await _orchestrator.GetOversightDetailsViewModel(_applicationId, null);
-
-            Assert.IsFalse(result.ShowAppealLink);
         }
 
         [TestCase(GatewayReviewStatus.Pass, true, PassFailStatus.Passed)]

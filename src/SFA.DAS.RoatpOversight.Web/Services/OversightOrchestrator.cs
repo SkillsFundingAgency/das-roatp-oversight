@@ -329,7 +329,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 case AppealStatus.SuccessfulFitnessForFunding:
                     viewModel.InternalComments = cachedItem.SuccessfulFitnessForFundingText;
                     break;
-                case AppealStatus.InProgressOutcome:
+                case AppealStatus.InProgress:
                     viewModel.InternalComments = cachedItem.InProgressInternalText;
                     viewModel.ExternalComments = cachedItem.InProgressExternalText;
                     break;

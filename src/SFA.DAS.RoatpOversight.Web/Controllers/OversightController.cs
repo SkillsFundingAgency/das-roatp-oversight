@@ -142,7 +142,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             var userId = HttpContext.User.UserId();
             var userName = HttpContext.User.UserDisplayName();
 
-            //await _outcomeOrchestrator.RecordOutcome(request.ApplicationId, approveGateway, approveModeration, request.OversightStatus, userId, userName, request.InternalComments, request.ExternalComments);
+            await _outcomeOrchestrator.RecordAppeal(request.ApplicationId, request.AppealStatus, userId, userName, request.InternalComments, request.ExternalComments);
 
             return RedirectToAction("AppealConfirmed", new { request.ApplicationId });
         }
@@ -152,7 +152,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         {
             //var viewModel = await _oversightOrchestrator.GetConfirmedViewModel(request.ApplicationId);
             //return View(viewModel); rav
-            var viewModel = new AppealConfirmedViewModel {ApplicationId = request.ApplicationId, AppealStatus = request.AppealStatus};
+            var viewModel = new AppealConfirmedViewModel {ApplicationId = request.ApplicationId, AppealStatus = "MFCMFC"};
             return View(viewModel);
         }
 

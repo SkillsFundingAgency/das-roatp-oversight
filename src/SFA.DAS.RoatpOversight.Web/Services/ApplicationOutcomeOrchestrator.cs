@@ -71,8 +71,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             return updateOutcomeSuccess;
         }
 
-        public async Task<bool> RecordAppeal(Guid applicationId, string appealStatus, string userId, string userName,
-            string internalComments, string externalComments)
+        public async Task<bool> RecordAppeal(Guid applicationId, string appealStatus, string userId, string userName, string internalComments,
+            string externalComments)
         {
             _logger.LogInformation($"Recording an appeal outcome of {appealStatus} for application {applicationId}");
             var registrationDetails = await _applicationApiClient.GetRegistrationDetails(applicationId);
@@ -80,7 +80,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             ValidateAppealStatusAgainstExistingStatus(appealStatus, registerStatus, registrationDetails.UKPRN);
 
-            var updateOutcomeCommand = new RecordAppealOutcomeCommand
+            var updateAppealCommand = new RecordAppealOutcomeCommand
             {
                 ApplicationId = applicationId, 
                 AppealStatus = appealStatus,
@@ -90,21 +90,22 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 ExternalComments = externalComments
             };
 
-            var updateOutcomeSuccess = await _applicationApiClient.RecordOutcome(updateOutcomeCommand);
+            var updateOutcomeSuccess = await _applicationApiClient.RecordAppeal(updateAppealCommand);
 
             if (!updateOutcomeSuccess) return false;
 
-            if (outcome == OversightReviewStatus.Successful)
-            {
-                var request = BuildCreateOrganisationRequest(updateOutcomeCommand, registrationDetails);
+            // if (appealStatus == AppealStatus.Successful)
+            // {
+            //     var request = BuildCreateOrganisationRequest(updateAppealCommand, registrationDetails);
+            //
+            //     var updateRegisterResult = await _registerApiClient.CreateOrganisation(request);
+            //
+            //     return updateRegisterResult;
+            // }
 
-                var updateRegisterResult = await _registerApiClient.CreateOrganisation(request);
-
-                return updateRegisterResult;
-            }
-
-            if (outcome == OversightReviewStatus.SuccessfulAlreadyActive ||
-                outcome == OversightReviewStatus.SuccessfulFitnessForFunding)
+            if (appealStatus == AppealStatus.Successful ||
+                appealStatus == AppealStatus.SuccessfulAlreadyActive ||
+                appealStatus == AppealStatus.SuccessfulFitnessForFunding)
             {
                 var updateDeterminedDateRequest = new UpdateOrganisationApplicationDeterminedDateRequest
                 {

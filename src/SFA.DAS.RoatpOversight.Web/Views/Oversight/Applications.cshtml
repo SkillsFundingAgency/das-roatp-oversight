@@ -169,10 +169,10 @@
                                     <th scope="col" class="govuk-table__header">Provider route</th>
                                     <th scope="col" class="govuk-table__header">Application reference number</th>
                                     <th class="govuk-table__header" scope="col">
-                                        <sfa-roatp-sortable-column selected-tab="appeals" column-name="ApplicationSubmittedDate" column-label="Application submitted date" default="true" default-order="Descending" />
+                                        <sfa-roatp-sortable-column selected-tab="appeals" column-name="ApplicationSubmittedDate" column-label="Application submitted date" />
                                     </th>
                                     <th class="govuk-table__header" scope="col">
-                                        <sfa-roatp-sortable-column selected-tab="appeals" column-name="ApplicationDeterminedDate" column-label="Application determined date" default="true" default-order="Descending" />
+                                        <sfa-roatp-sortable-column selected-tab="appeals" column-name="ApplicationDeterminedDate" column-label="Application determined date" />
                                     </th>
                                     <th class="govuk-table__header" scope="col">
                                         <sfa-roatp-sortable-column selected-tab="appeals" column-name="AppealSubmittedDate" column-label="Appeal submitted date" default="true" default-order="Descending" />
@@ -229,7 +229,7 @@
                                 {
                                 <tr class="govuk-table__row">
                                     <td data-label="Organisation name" class="govuk-table__cell">
-                                        <a class="govuk-link govuk-!-margin-bottom-0" asp-action="appealOutcome" asp-route-id="@application.ApplicationId">
+                                        <a class="govuk-link govuk-!-margin-bottom-0" asp-action="AppealOutcome" asp-route-id="@application.ApplicationId">
                                             @application.OrganisationName
                                         </a>
                                     </td>

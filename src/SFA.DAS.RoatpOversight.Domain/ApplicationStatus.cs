@@ -14,5 +14,6 @@
         public const string Withdrawn = "Withdrawn";
         public const string Removed = "Removed";
         public const string InProgressOutcome = "InProgessOutcome";
+        public const string InProgressAppeal = "InProgessAppeal";
     }
 }

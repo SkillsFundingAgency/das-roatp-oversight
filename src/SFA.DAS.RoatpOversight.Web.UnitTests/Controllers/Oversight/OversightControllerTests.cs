@@ -21,7 +21,6 @@ using SFA.DAS.RoatpOversight.Web.Models.Partials;
 using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Validators;
 
-
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 {
     [TestFixture]
@@ -103,6 +102,25 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationSummary.ApplicationId);
         }
 
+
+
+        [Test]
+        public async Task GetAppeal_returns_view_with_expected_viewModel()
+        {
+            var viewModel = new AppealViewModel { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };
+            _oversightOrchestrator.Setup(x => x.GetAppealDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
+
+            var request = new AppealRequest() { ApplicationId = _applicationDetailsApplicationId };
+            var result = await _controller.Appeal(request) as ViewResult;
+            var actualViewModel = result?.Model as AppealViewModel;
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(actualViewModel, Is.Not.Null);
+            Assert.That(actualViewModel, Is.SameAs(viewModel));
+            Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationSummary.ApplicationId);
+        }
+
+
         [TestCase(OversightReviewStatus.Successful)]
         [TestCase(OversightReviewStatus.Unsuccessful)]
         [TestCase(OversightReviewStatus.SuccessfulAlreadyActive)]
@@ -113,6 +131,20 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 
             var request = new OutcomeRequest { ApplicationId = _applicationDetailsApplicationId };
             var result = await _controller.Outcome(request) as RedirectToActionResult;
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.ActionName, Is.EqualTo("Applications"));
+        }
+
+        [TestCase(AppealStatus.Successful)]
+        [TestCase(AppealStatus.Unsuccessful)]
+        [TestCase(AppealStatus.SuccessfulAlreadyActive)]
+        [TestCase(AppealStatus.SuccessfulFitnessForFunding)]
+        public async Task GetAppeal_returns_applications_view_when_appeal_status_is_successful_or_unsuccessful(string status)
+        {
+            _oversightOrchestrator.Setup(x => x.GetAppealDetailsViewModel(_applicationDetailsApplicationId, null)).Throws<InvalidStateException>();
+
+            var request = new AppealRequest() { ApplicationId = _applicationDetailsApplicationId };
+            var result = await _controller.Appeal(request) as RedirectToActionResult;
             Assert.That(result, Is.Not.Null);
             Assert.That(result.ActionName, Is.EqualTo("Applications"));
         }
@@ -136,6 +168,24 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 
             var result = await _controller.Outcome(command) as RedirectToActionResult;
             Assert.AreEqual("ConfirmOutcome", result.ActionName);
+        }
+
+        [Test]
+        public async Task Post_Appeal_redirects_to_confirmation()
+        {
+            var viewModel = new AppealViewModel() { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };
+
+            _oversightOrchestrator.Setup(x => x.GetAppealDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
+                
+            var command = new AppealPostRequest()
+            {
+                ApplicationId = _applicationDetailsApplicationId,
+                AppealStatus = AppealStatus.Unsuccessful,
+                UnsuccessfulText = "test"
+            };
+
+            var result = await _controller.Appeal(command) as RedirectToActionResult;
+            Assert.AreEqual("ConfirmAppeal", result.ActionName);
         }
 
 

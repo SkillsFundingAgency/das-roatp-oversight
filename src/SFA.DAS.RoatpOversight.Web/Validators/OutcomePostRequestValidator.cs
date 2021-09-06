@@ -49,4 +49,39 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
             public const string GatewayOutcome = "GatewayOutcome";
         }
     }
+
+
+
+
+    public class AppealPostRequestValidator : AbstractValidator<AppealPostRequest>
+    {
+        public AppealPostRequestValidator()
+        {
+            RuleSet(RuleSets.Default, () =>
+            {
+                RuleFor(x => x.AppealStatus).NotEmpty()
+                    .WithMessage("Select the overall outcome of this appeal");
+
+                RuleFor(x => x.InProgressInternalText).NotEmpty().WithMessage("Enter internal comments")
+                    .When(x => x.AppealStatus == AppealStatus.InProgressOutcome);
+
+                RuleFor(x => x.InProgressExternalText).NotEmpty().WithMessage("Enter external comments")
+                    .When(x => x.AppealStatus == AppealStatus.InProgressOutcome);
+
+                RuleFor(x => x.UnsuccessfulText).NotEmpty().WithMessage("Enter internal comments")
+                    .When(x => x.AppealStatus == AppealStatus.Unsuccessful);
+
+                RuleFor(x => x.UnsuccessfulExternalText).NotEmpty().WithMessage("Enter external comments")
+                    .When(x => x.AppealStatus == AppealStatus.Unsuccessful);
+
+            });
+
+          
+        }
+
+        public static class RuleSets
+        {
+            public const string Default = "Default";
+        }
+    }
 }

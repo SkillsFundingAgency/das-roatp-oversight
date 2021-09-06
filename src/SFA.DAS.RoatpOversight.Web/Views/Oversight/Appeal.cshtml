@@ -88,8 +88,8 @@
                         </fieldset>
                     </div>
 
-                    @if (!Model.IsGatewayActionPendingConfirmation)
-                    {
+                  @if (!Model.IsGatewayActionPendingConfirmation)
+                  {
 
                         <div class="govuk-form-group">
                             <fieldset class="govuk-fieldset">
@@ -189,6 +189,8 @@
                     <partial name="_AppealOutcomeDetails" for="@Model.Appeal" />
                 </div>
             </div>
+
+            <partial name="_SelectAppealOutcome" model="@Model" />
         }
 
 

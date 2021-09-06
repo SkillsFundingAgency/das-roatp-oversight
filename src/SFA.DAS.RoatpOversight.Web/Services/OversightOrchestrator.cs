@@ -90,6 +90,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 HasFinalOutcome = oversightReview != null && oversightReview.Status != OversightReviewStatus.None && oversightReview.Status != OversightReviewStatus.InProgress,
                 OnRegister = onRegister,
                 Appeal = appealDetails,
+                AppealStatus = appealDetails.Status
             };
 
             if (oversightReview == null || oversightReview.Status == OversightReviewStatus.InProgress)
@@ -294,7 +295,70 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             return viewModel;
         }
 
+
+
+        public async Task<ConfirmAppealViewModel> GetConfirmAppealViewModel(Guid applicationId, Guid confirmCacheKey)
+        {
+            var cachedItem =
+                await _cacheStorageService.RetrieveFromCache<AppealPostRequest>(confirmCacheKey.ToString());
+
+            if (cachedItem == null || cachedItem.ApplicationId != applicationId)
+            {
+                throw new ConfirmOutcomeCacheKeyNotFoundException();
+            }
+
+            var applicationDetailsTask = _applyApiClient.GetApplicationDetails(applicationId);
+            var oversightReviewTask = _applyApiClient.GetOversightReview(applicationId);
+            await Task.WhenAll(applicationDetailsTask, oversightReviewTask);
+            var applicationDetails = _applyApiClient.GetApplicationDetails(applicationId).Result;
+            var oversightReview = _applyApiClient.GetOversightReview(applicationId).Result;
+
+            var viewModel = new ConfirmAppealViewModel
+            {
+                ApplicationId = applicationId,
+                OutcomeKey = confirmCacheKey,
+                ApplicationReferenceNumber = applicationDetails.ApplicationReferenceNumber,
+                ApplicationSubmittedDate = applicationDetails.ApplicationSubmittedDate,
+                OrganisationName = applicationDetails.OrganisationName,
+                Ukprn = applicationDetails.Ukprn,
+                ProviderRoute = applicationDetails.ProviderRoute,
+                ApplicationStatus = applicationDetails.ApplicationStatus,
+                ApplicationEmailAddress = applicationDetails.ApplicationEmailAddress,
+                AppealStatus = cachedItem.AppealStatus
+            };
+
+                 switch (cachedItem.AppealStatus)
+            {
+                case AppealStatus.Successful:
+                    viewModel.InternalComments = cachedItem.SuccessfulText;
+                    break;
+                case AppealStatus.SuccessfulAlreadyActive:
+                    viewModel.InternalComments = cachedItem.SuccessfulAlreadyActiveText;
+                    break;
+                case AppealStatus.SuccessfulFitnessForFunding:
+                    viewModel.InternalComments = cachedItem.SuccessfulFitnessForFundingText;
+                    break;
+                case AppealStatus.InProgress:
+                    viewModel.InternalComments = cachedItem.InProgressInternalText;
+                    viewModel.ExternalComments = cachedItem.InProgressExternalText;
+                    break;
+                case AppealStatus.Unsuccessful:
+                    viewModel.InternalComments = cachedItem.UnsuccessfulText;
+                    viewModel.ExternalComments = cachedItem.UnsuccessfulExternalText;
+                    break;
+            }
+
+            return viewModel;
+        }
+
         public async Task<Guid> SaveOutcomePostRequestToCache(OutcomePostRequest request)
+        {
+            var key = Guid.NewGuid();
+            await _cacheStorageService.SaveToCache(key.ToString(), request, 1);
+            return key;
+        }
+
+        public async Task<Guid> SaveAppealPostRequestToCache(AppealPostRequest request)
         {
             var key = Guid.NewGuid();
             await _cacheStorageService.SaveToCache(key.ToString(), request, 1);
@@ -475,34 +539,6 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                                    oversightReview.Status == OversightReviewStatus.Withdrawn
             };
         }
-
-        private AppealSummaryViewModel CreateAppealViewModel(AppealDetails appealDetails)
-        {
-            if (appealDetails == null) return new AppealSummaryViewModel();
-
-            return new AppealSummaryViewModel
-            {   
-                AppealSubmittedDate = appealDetails.AppealSubmittedDate,
-                AppealFiles = appealDetails.AppealFiles,
-                HowFailedOnEvidenceSubmitted = appealDetails.HowFailedOnEvidenceSubmitted,
-                HowFailedOnPolicyOrProcesses = appealDetails.HowFailedOnPolicyOrProcesses,                
-            };
-        }
-        private AppealOutcomeViewModel CreateAppealOutcomeViewModel(AppealDetails appealDetails)
-        {
-            if (appealDetails == null) return new AppealOutcomeViewModel();
-
-            return new AppealOutcomeViewModel
-            {
-                Status = appealDetails.Status,                
-                AppealDeterminedDate = appealDetails.AppealDeterminedDate,
-                UserName = appealDetails.UserName,
-                InProgressInternalComments = appealDetails.InProgressInternalComments,
-                InProgressExternalComments = appealDetails.InProgressExternalComments,
-            };
-        }
-
-
 
     }
 }

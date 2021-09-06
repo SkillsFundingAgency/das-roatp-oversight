@@ -42,7 +42,7 @@
     </div>
 
     <form method="post">
-        
+
         <input type="hidden" name="ApplicationId" value="@Model.ApplicationSummary.ApplicationId" />
         <input type="hidden" asp-for="IsGatewayFail" />
         <input type="hidden" asp-for="IsGatewayRemoved" />
@@ -55,7 +55,7 @@
                     <div das-highlight-error-for="ApproveGateway" error-class="govuk-form-group--error" class="govuk-form-group">
                         <fieldset class="govuk-fieldset" aria-describedby="ApproveGateway-error">
 
-                            <partial name="_GatewayOutcome" for="@Model.GatewayOutcome"/>
+                            <partial name="_GatewayOutcome" for="@Model.GatewayOutcome" />
 
                             @if (!Model.HasFinalOutcome && !Model.IsGatewayActionPendingConfirmation)
                             {
@@ -66,7 +66,7 @@
                                         <input class="govuk-radios__input"
                                                type="radio"
                                                value="@ApprovalStatus.Approve"
-                                               asp-for="ApproveGateway"/>
+                                               asp-for="ApproveGateway" />
                                         <label class="govuk-label govuk-radios__label" for="ApproveGateway">
                                             Approve this outcome
                                         </label>
@@ -78,7 +78,7 @@
                                                value="@ApprovalStatus.Overturn"
                                                asp-for="ApproveGateway"
                                                data-module="das-show-hide-controls"
-                                               data-aria-controls="conditional-UnsuccessfulExternalText"/>
+                                               data-aria-controls="conditional-UnsuccessfulExternalText" />
                                         <label class="govuk-label govuk-radios__label" for="OptionApproveGatewayNo">
                                             Overturn this outcome
                                         </label>
@@ -96,7 +96,7 @@
                                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                                     <h2 class="govuk-heading-m">Financial health outcome</h2>
                                 </legend>
-                                <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome"/>
+                                <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome" />
                             </fieldset>
                         </div>
 
@@ -106,7 +106,7 @@
                                     <h2 class="govuk-heading-m">Moderation outcome</h2>
                                 </legend>
 
-                                <partial name="_ModerationOutcome" for="@Model.ModerationOutcome"/>
+                                <partial name="_ModerationOutcome" for="@Model.ModerationOutcome" />
 
                                 @if (!Model.HasFinalOutcome)
                                 {
@@ -117,7 +117,7 @@
                                             <input class="govuk-radios__input"
                                                    type="radio"
                                                    value="@ApprovalStatus.Approve"
-                                                   asp-for="ApproveModeration"/>
+                                                   asp-for="ApproveModeration" />
                                             <label class="govuk-label govuk-radios__label" for="ApproveModeration">
                                                 Approve this outcome
                                             </label>
@@ -129,7 +129,7 @@
                                                    value="@ApprovalStatus.Overturn"
                                                    asp-for="ApproveModeration"
                                                    data-module="das-show-hide-controls"
-                                                   data-aria-controls="conditional-UnsuccessfulExternalText"/>
+                                                   data-aria-controls="conditional-UnsuccessfulExternalText" />
                                             <label class="govuk-label govuk-radios__label" for="OptionApproveModerationNo">
                                                 Overturn this outcome
                                             </label>
@@ -147,45 +147,50 @@
         {
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full">
-                    <partial name="_InProgressDetails" for="@Model.InProgressDetails"/>
+                    <partial name="_InProgressDetails" for="@Model.InProgressDetails" />
                 </div>
             </div>
         }
 
         @if (!Model.HasFinalOutcome && !Model.IsGatewayActionPendingConfirmation)
         {
-            <partial name="_SelectOutcome" model="@Model"/>
+            <partial name="_SelectOutcome" model="@Model" />
         }
         else
         {
             @if (!Model.HasFinalOutcome)
-             {
-                 <div class="govuk-grid-row">
-                     <div class="govuk-grid-column-two-thirds">
-                         <partial name="_ConfirmGatewayAction"/>
-                     </div>
-                 </div>
-             }
+            {
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-two-thirds">
+                        <partial name="_ConfirmGatewayAction" />
+                    </div>
+                </div>
+            }
         }
-   
 
-    @if (Model.HasFinalOutcome)
-    {
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <partial name="_OverallOutcome" for="@Model.OverallOutcome"/>
-            </div>
-        </div>
-    }
-        @if (Model.Appeal!=null)
+
+        @if (Model.HasFinalOutcome)
         {
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full">
-                    <partial name="_AppealDetails" for="@Model.Appeal"/>
+                    <partial name="_OverallOutcome" for="@Model.OverallOutcome" />
                 </div>
             </div>
         }
-  
+        @if (Model.Appeal != null)
+        {
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <partial name="_AppealDetails" for="@Model.Appeal" />
+                </div>
+            </div>
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <partial name="_AppealOutcomeDetails" for="@Model.Appeal" />
+                </div>
+            </div>
+        }
+
 
     </form>
 

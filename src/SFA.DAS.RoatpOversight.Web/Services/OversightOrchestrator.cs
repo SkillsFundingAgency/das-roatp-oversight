@@ -89,7 +89,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 IsGatewayFail = applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Fail,
                 HasFinalOutcome = oversightReview != null && oversightReview.Status != OversightReviewStatus.None && oversightReview.Status != OversightReviewStatus.InProgress,
                 OnRegister = onRegister,
-                Appeal = appealDetails
+                Appeal = appealDetails,
             };
 
             if (oversightReview == null || oversightReview.Status == OversightReviewStatus.InProgress)
@@ -120,6 +120,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             await Task.WhenAll(applicationDetailsTask, oversightReviewTask);
             var applicationDetails = _applyApiClient.GetApplicationDetails(applicationId).Result;
             var oversightReview = _applyApiClient.GetOversightReview(applicationId).Result;
+            var appealDetails = await _applyApiClient.GetAppealDetails(applicationId);
             var onRegister = false;
 
             if (applicationDetails?.Ukprn != null)
@@ -145,7 +146,9 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 IsGatewayRemoved = applicationDetails.ApplicationStatus == ApplicationStatus.Removed,
                 IsGatewayFail = applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Fail,
                 HasFinalOutcome = oversightReview != null && oversightReview.Status != OversightReviewStatus.None && oversightReview.Status != OversightReviewStatus.InProgress,
-                OnRegister = onRegister
+                OnRegister = onRegister,
+                //appealSummaryViewModel = CreateAppealViewModel(appealDetails),
+                //appealOutcomeViewModel = CreateAppealOutcomeViewModel(appealDetails),
             };
 
             if (oversightReview == null || oversightReview.Status == OversightReviewStatus.InProgress)
@@ -473,6 +476,33 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
         }
 
-       
+        private AppealSummaryViewModel CreateAppealViewModel(AppealDetails appealDetails)
+        {
+            if (appealDetails == null) return new AppealSummaryViewModel();
+
+            return new AppealSummaryViewModel
+            {   
+                AppealSubmittedDate = appealDetails.AppealSubmittedDate,
+                AppealFiles = appealDetails.AppealFiles,
+                HowFailedOnEvidenceSubmitted = appealDetails.HowFailedOnEvidenceSubmitted,
+                HowFailedOnPolicyOrProcesses = appealDetails.HowFailedOnPolicyOrProcesses,                
+            };
+        }
+        private AppealOutcomeViewModel CreateAppealOutcomeViewModel(AppealDetails appealDetails)
+        {
+            if (appealDetails == null) return new AppealOutcomeViewModel();
+
+            return new AppealOutcomeViewModel
+            {
+                Status = appealDetails.Status,                
+                AppealDeterminedDate = appealDetails.AppealDeterminedDate,
+                UserName = appealDetails.UserName,
+                InProgressInternalComments = appealDetails.InProgressInternalComments,
+                InProgressExternalComments = appealDetails.InProgressExternalComments,
+            };
+        }
+
+
+
     }
 }

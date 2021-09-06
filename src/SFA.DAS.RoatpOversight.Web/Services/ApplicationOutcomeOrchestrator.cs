@@ -94,31 +94,22 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             if (!updateOutcomeSuccess) return false;
 
-            // if (appealStatus == AppealStatus.Successful)
-            // {
-            //     var request = BuildCreateOrganisationRequest(updateAppealCommand, registrationDetails);
-            //
-            //     var updateRegisterResult = await _registerApiClient.CreateOrganisation(request);
-            //
-            //     return updateRegisterResult;
-            // }
-
-            if (appealStatus == AppealStatus.Successful ||
-                appealStatus == AppealStatus.SuccessfulAlreadyActive ||
-                appealStatus == AppealStatus.SuccessfulFitnessForFunding)
-            {
-                var updateDeterminedDateRequest = new UpdateOrganisationApplicationDeterminedDateRequest
+            if (registerStatus?.OrganisationId != null && (appealStatus == AppealStatus.Successful ||
+                                                             appealStatus == AppealStatus.SuccessfulAlreadyActive ||
+                                                             appealStatus == AppealStatus.SuccessfulFitnessForFunding))
                 {
-                    ApplicationDeterminedDate = DateTime.UtcNow.Date,
-                    LegalName = registrationDetails.LegalName,
-                    OrganisationId = registerStatus.OrganisationId.Value,
-                    UpdatedBy = userId
-                };
+                    var updateDeterminedDateRequest = new UpdateOrganisationApplicationDeterminedDateRequest
+                    {
+                        ApplicationDeterminedDate = DateTime.UtcNow.Date,
+                        LegalName = registrationDetails.LegalName,
+                        OrganisationId = registerStatus.OrganisationId.Value,
+                        UpdatedBy = userId
+                    };
 
-                await _registerApiClient.UpdateApplicationDeterminedDate(updateDeterminedDateRequest);
-            }
-
-            return updateOutcomeSuccess;
+                    await _registerApiClient.UpdateApplicationDeterminedDate(updateDeterminedDateRequest);
+                }
+            
+            return true;
         }
 
         public async Task RecordGatewayFailOutcome(Guid applicationId, string userId, string userName)

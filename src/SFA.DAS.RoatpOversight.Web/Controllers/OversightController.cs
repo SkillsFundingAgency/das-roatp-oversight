@@ -144,19 +144,17 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
             await _outcomeOrchestrator.RecordAppeal(request.ApplicationId, request.AppealStatus, userId, userName, request.InternalComments, request.ExternalComments);
 
-            return RedirectToAction("AppealConfirmed", new { request.ApplicationId });
+            return RedirectToAction("AppealConfirmed", new { request.ApplicationId});
         }
 
         [HttpGet("Oversight/Appeal/{applicationId}/confirmed")]
         public async Task<IActionResult> AppealConfirmed(AppealConfirmedRequest request)
         {
-            //var viewModel = await _oversightOrchestrator.GetConfirmedViewModel(request.ApplicationId);
-            //return View(viewModel); rav
-            var viewModel = new AppealConfirmedViewModel {ApplicationId = request.ApplicationId, AppealStatus = "MFCMFC"};
+            //We will probably reuse this as a read only page, so request.ApplicatiId can be used to hydrate model properly 
+            var viewModel = new AppealConfirmedViewModel {ApplicationId = request.ApplicationId};
+
             return View(viewModel);
         }
-
-
 
         [HttpGet("Oversight/Outcome/{applicationId}/confirm/{outcomeKey}")]
         public async Task<IActionResult> ConfirmOutcome(ConfirmOutcomeRequest request)

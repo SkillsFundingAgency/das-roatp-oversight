@@ -53,11 +53,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
             _applicationApiClient.Setup(x => x.GetRegistrationDetails(_applicationId)).ReturnsAsync(_registrationDetails);
 
             _applicationApiClient.Setup(x => x.RecordAppeal(It.Is<RecordAppealOutcomeCommand>(y => y.ApplicationId == _applicationId))).ReturnsAsync(true);
-            //
-            // _applicationApiClient
-            //     .Setup(x => x.RecordGatewayFailOutcome(
-            //         It.Is<RecordOversightGatewayFailOutcomeCommand>(y => y.ApplicationId == _applicationId)))
-            //     .Returns(Task.CompletedTask);
+
 
             _roatpRegisterApiClient.Setup(x => x.CreateOrganisation(It.Is<CreateRoatpOrganisationRequest>(y => y.Ukprn == _registrationDetails.UKPRN))).ReturnsAsync(() => true);
 

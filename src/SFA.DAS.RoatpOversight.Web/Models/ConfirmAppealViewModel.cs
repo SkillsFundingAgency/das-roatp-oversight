@@ -1,9 +1,8 @@
 ﻿using System;
-using SFA.DAS.RoatpOversight.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.Models
 {
-    public class ConfirmOutcomeViewModel
+    public class ConfirmAppealViewModel
     {
         public Guid ApplicationId { get; set; }
         public Guid OutcomeKey { get; set; }
@@ -14,13 +13,10 @@ namespace SFA.DAS.RoatpOversight.Web.Models
         public DateTime ApplicationSubmittedDate { get; set; }
         public string ApplicationStatus { get; set; }
         public string ApplicationEmailAddress { get; set; }
-
-        public string ApproveGateway { get; set; }
-        public string ApproveModeration { get; set; }
-        public OversightReviewStatus OversightStatus { get; set; }
+        public string AppealStatus { get; set; }
         public string InternalComments { get; set; }
         public string ExternalComments { get; set; }
-        
+
         public string Confirm { get; set; }
 
         public string PageTitle
@@ -28,49 +24,47 @@ namespace SFA.DAS.RoatpOversight.Web.Models
             get
             {
                 var statusLabel = "";
-                switch (OversightStatus)
+                switch (AppealStatus)
                 {
-                    case OversightReviewStatus.Successful:
-                    case OversightReviewStatus.SuccessfulAlreadyActive:
-                    case OversightReviewStatus.SuccessfulFitnessForFunding:
+                    case RoatpOversight.Domain.AppealStatus.Successful:
+                    case RoatpOversight.Domain.AppealStatus.SuccessfulAlreadyActive:
+                    case RoatpOversight.Domain.AppealStatus.SuccessfulFitnessForFunding:
                         statusLabel = "successful";
                         break;
-                    case OversightReviewStatus.InProgress:
+                    case RoatpOversight.Domain.AppealStatus.InProgress:
                         statusLabel = "'in progress'";
                         break;
-                    case OversightReviewStatus.Unsuccessful:
+                    case RoatpOversight.Domain.AppealStatus.Unsuccessful:
                         statusLabel = "unsuccessful";
                         break;
                     default:
                         statusLabel = string.Empty;
                         break;
                 }
-                return $"Are you sure you want to mark this application as {statusLabel}?";
+                return $"Are you sure you want to mark this appeal as {statusLabel}?";
             }
         }
 
-        public string OversightStatusLabel
+        public string AppealStatusLabel
         {
             get
             {
-                switch(OversightStatus)
+                switch (AppealStatus)
                 {
-                    case OversightReviewStatus.Successful:
+                    case RoatpOversight.Domain.AppealStatus.Successful:
                         return "Successful";
-                    case OversightReviewStatus.SuccessfulAlreadyActive:
+                    case RoatpOversight.Domain.AppealStatus.SuccessfulAlreadyActive:
                         return "Successful - already active";
-                    case OversightReviewStatus.SuccessfulFitnessForFunding:
+                    case RoatpOversight.Domain.AppealStatus.SuccessfulFitnessForFunding:
                         return "Successful - fitness for funding";
-                    case OversightReviewStatus.InProgress:
+                    case RoatpOversight.Domain.AppealStatus.InProgress:
                         return "'in progress'";
-                    case OversightReviewStatus.Unsuccessful:
+                    case RoatpOversight.Domain.AppealStatus.Unsuccessful:
                         return "unsuccessful";
-                        break;
                     default:
                         return string.Empty;
                 }
             }
         }
     }
-
 }

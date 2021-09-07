@@ -256,7 +256,21 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual("Confirmed", result.ActionName);
         }
 
-        
+        [Test]
+        public async Task Post_Appeal_Redirects_To_Confirmed_Page()
+        {
+            var command = new AppealConfirmedRequest
+            {
+                ApplicationId = _applicationDetailsApplicationId,
+                AppealStatus = AppealStatus.Unsuccessful
+            };
+
+            var result = await _controller.AppealConfirmed(command) as ViewResult;
+            var actualModel = result?.Model as AppealConfirmedViewModel;
+            Assert.AreEqual( actualModel.ApplicationId,_applicationDetailsApplicationId);
+        }
+
+
 
         private static IFormFile GenerateFile()
         {

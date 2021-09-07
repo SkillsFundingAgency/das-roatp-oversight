@@ -61,7 +61,7 @@
                         </fieldset>
                     </div>
 
-                    @if (!Model.GatewayOutcome.GatewayReviewStatus.Contains(GatewayReviewStatus.Reject))
+                    @if (!Model.GatewayOutcome.GatewayReviewStatus.Contains(GatewayReviewStatus.Fail) && !Model.GatewayOutcome.GatewayReviewStatus.Contains(GatewayReviewStatus.Removed))
                     {
                         <div class="govuk-form-group">
                             <fieldset class="govuk-fieldset">

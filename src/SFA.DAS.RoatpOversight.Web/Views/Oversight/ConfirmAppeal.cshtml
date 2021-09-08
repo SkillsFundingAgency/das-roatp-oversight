@@ -98,7 +98,8 @@
                                 </dd>
                             </div>
                 
-
+                        @if (!string.IsNullOrEmpty(@Model.InternalComments))
+                        {
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
                                     Internal comments
@@ -117,36 +118,33 @@
                                     </details>
                                 </dd>
                             </div>
+                        }
+                        @if (!string.IsNullOrEmpty(@Model.ExternalComments))
+                        {
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
                                     External comments
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                        
-                                    @if (!string.IsNullOrEmpty(@Model.ExternalComments))
-                                    {
-                                        <details class="govuk-details das-margin-bottom-5" data-module="govuk-details">
-                                            <summary class="govuk-details__summary">
-                                                <span class="govuk-details__summary-text">
-                                                    View external comments
-                                                </span>
-                                            </summary>
-                                            <p class="govuk-body das-!-color-dark-grey">
-                                                These comments will be seen by the applicant.
-                                            </p>
-                                            <div class="govuk-details__text">
-                                                <pre class="govuk-body das-preformatted-body">@Model.ExternalComments</pre>
-                                            </div>
-                                        </details>
-                                    }
-                                    else
-                                    {
-                                        <p class="govuk-body">
-                                            N/A
+
+
+                                    <details class="govuk-details das-margin-bottom-5" data-module="govuk-details">
+                                        <summary class="govuk-details__summary">
+                                            <span class="govuk-details__summary-text">
+                                                View external comments
+                                            </span>
+                                        </summary>
+                                        <p class="govuk-body das-!-color-dark-grey">
+                                            These comments will be seen by the applicant.
                                         </p>
-                                    }
+                                        <div class="govuk-details__text">
+                                            <pre class="govuk-body das-preformatted-body">@Model.ExternalComments</pre>
+                                        </div>
+                                    </details>
+
                                 </dd>
                             </div>
+                        }
                         </dl>
                         <span das-validation-for="Confirm" class="govuk-error-message"></span>
 

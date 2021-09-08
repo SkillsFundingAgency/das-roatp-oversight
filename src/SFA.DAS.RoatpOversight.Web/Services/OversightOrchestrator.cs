@@ -88,8 +88,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 HasFinalOutcome = oversightReview != null && oversightReview.Status != OversightReviewStatus.None && oversightReview.Status != OversightReviewStatus.InProgress,
                 OnRegister = onRegister,
                 Appeal = appealDetails,
-                AppealStatus = appealDetails.Status,
-                
+                AppealStatus = appealDetails.Status
             };
 
             if (oversightReview == null || oversightReview.Status == OversightReviewStatus.InProgress)

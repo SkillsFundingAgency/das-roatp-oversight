@@ -49,42 +49,43 @@
         <input type="hidden" asp-for="IsGatewayRemoved" />
 
         @if (!Model.OverallOutcome.IsGatewayOutcome)
-        {
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-full">
+                {
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-full">
 
-                    <div das-highlight-error-for="ApproveGateway" error-class="govuk-form-group--error" class="govuk-form-group">
-                        <fieldset class="govuk-fieldset" aria-describedby="ApproveGateway-error">
+                            <div das-highlight-error-for="ApproveGateway" error-class="govuk-form-group--error" class="govuk-form-group">
+                                <fieldset class="govuk-fieldset" aria-describedby="ApproveGateway-error">
 
-                            <partial name="_GatewayOutcome" for="@Model.GatewayOutcome" />
+                                    <partial name="_GatewayOutcome" for="@Model.GatewayOutcome" />
 
-                        </fieldset>
-                    </div>
+                                </fieldset>
+                            </div>
 
-                    @if (!Model.GatewayOutcome.GatewayReviewStatus.Contains(GatewayReviewStatus.Fail) && !Model.GatewayOutcome.GatewayReviewStatus.Contains(GatewayReviewStatus.Removed))
-                    {
-                        <div class="govuk-form-group">
-                            <fieldset class="govuk-fieldset">
-                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                                    <h2 class="govuk-heading-m">Financial health outcome</h2>
-                                </legend>
-                                <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome"/>
-                            </fieldset>
-                        </div>
+                            @if (!Model.GatewayOutcome.GatewayReviewStatus.Contains(GatewayReviewStatus.Fail) && !Model.GatewayOutcome.GatewayReviewStatus.Contains(GatewayReviewStatus.Removed))
+                            {
+                                <div class="govuk-form-group">
+                                    <fieldset class="govuk-fieldset">
+                                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                            <h2 class="govuk-heading-m">Financial health outcome</h2>
+                                        </legend>
+                                        <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome"/>
+                                    </fieldset>
+                                </div>
 
-                        <div das-highlight-error-for="ApproveModeration" error-class="govuk-form-group--error" class="govuk-form-group">
-                            <fieldset class="govuk-fieldset" aria-describedby="ApproveModeration-error">
-                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                                    <h2 class="govuk-heading-m">Moderation outcome</h2>
-                                </legend>
+                                <div das-highlight-error-for="ApproveModeration" error-class="govuk-form-group--error" class="govuk-form-group">
+                                    <fieldset class="govuk-fieldset" aria-describedby="ApproveModeration-error">
+                                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                            <h2 class="govuk-heading-m">Moderation outcome</h2>
+                                        </legend>
 
-                                <partial name="_ModerationOutcome" for="@Model.ModerationOutcome"/>
-                            </fieldset>
-                        </div>
+                                        <partial name="_ModerationOutcome" for="@Model.ModerationOutcome"/>
+                                    </fieldset>
+                                </div>
                     }
-                </div>
-            </div>
-        }
+                        </div>
+                    </div>
+                }
+        
 
 
         @if (Model.HasFinalOutcome)

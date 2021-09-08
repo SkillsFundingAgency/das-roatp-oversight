@@ -128,100 +128,106 @@
                             Unsuccessful
                         </label>
                     </div>
-                    <div class="govuk-radios__conditional govuk-radios__conditional--hidden govuk-!-margin-bottom-6" id="conditional-OptionUnsuccessful">
+                <div class="govuk-radios__conditional govuk-radios__conditional--hidden govuk-!-margin-bottom-6" id="conditional-OptionUnsuccessful">
                        
                         
-                        <div class="govuk-character-count govuk-!-margin-bottom-6" data-module="govuk-character-count" data-maxlength="10000">
+                    <div class="govuk-character-count govuk-!-margin-bottom-6" data-module="govuk-character-count" data-maxlength="10000">
 
 
 
 
-                            <div class="govuk-form-group">
-                                <a name="OptionUnsuccessfulText"></a>
-                                <label class="govuk-label" for="UnsuccessfulText">
-                                    Add your internal comments
-                                </label>
-                                <span das-validation-for="UnsuccessfulText" class="govuk-error-message"></span>
-                                <textarea class="govuk-textarea  govuk-js-character-count"
+                        <div class="govuk-form-group">
+                            <a name="OptionUnsuccessfulText"></a>
+                            <label class="govuk-label" for="UnsuccessfulText">
+                                Add your internal comments
+                            </label>
+                            <span das-validation-for="UnsuccessfulText" class="govuk-error-message"></span>
+                            <textarea class="govuk-textarea  govuk-js-character-count"
                                           id="UnsuccessfulText"
                                           name="UnsuccessfulText"
                                           asp-for="UnsuccessfulText"
                                           rows="10"
                                           maxlength="@OversightSettings.TextAreaMaxLength"
                                           aria-describedby="UnsuccessfulText-info">@Model.UnsuccessfulText</textarea>
-                            </div>
-                            <span id="UnsuccessfulText-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                                You can enter up to 10000 characters
-                            </span>
                         </div>
+                        <span id="UnsuccessfulText-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                            You can enter up to 10000 characters
+                        </span>
+                    </div>
 
                     <div class="govuk-character-count govuk-!-margin-bottom-6" data-module="govuk-character-count" data-maxlength="10000">
 
                         <div class="govuk-form-group" id="conditional-UnsuccessfulExternalText">
-                                <a name="OptionUnsuccessfulExternalText"></a>
-                                <label class="govuk-label" for="UnsuccessfulExternalText">
-                                    Add your external comments
-                                </label>
-                                <div class="govuk-hint" id="UnsuccessfulExternalText-hint">
-                                    These comments will be seen by the applicant.
-                                </div>
-                                <span das-validation-for="UnsuccessfulExternalText" class="govuk-error-message"></span>
-                                <textarea class="govuk-textarea  govuk-js-character-count"
+                            <a name="OptionUnsuccessfulExternalText"></a>
+                            <label class="govuk-label" for="UnsuccessfulExternalText">
+                                Add your external comments
+                            </label>
+                            <div class="govuk-hint" id="UnsuccessfulExternalText-hint">
+                                These comments will be seen by the applicant.
+                            </div>
+                            <span das-validation-for="UnsuccessfulExternalText" class="govuk-error-message"></span>
+                            <textarea class="govuk-textarea  govuk-js-character-count"
                                           id="UnsuccessfulExternalText"
                                           name="UnsuccessfulExternalText"
                                           asp-for="UnsuccessfulExternalText"
                                           rows="10"
                                           maxlength="@OversightSettings.TextAreaMaxLength"
                                           aria-describedby="UnsuccessfulExternalText-info">@Model.UnsuccessfulExternalText</textarea>
-                            </div>
-                            <span id="UnsuccessfulExternalText-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                                You can enter up to 10000 characters
-                            </span>
-
                         </div>
-
-
-
+                        <span id="UnsuccessfulExternalText-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                            You can enter up to 10000 characters
+                        </span>
 
                     </div>
-                    <div class="govuk-radios__divider">or</div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input"
-                                   type="radio"
-                                   id="OptionInProgress"
-                                   asp-for="AppealStatus"
-                                   value=@AppealStatus.InProgress
-                                   data-aria-controls="conditional-OptionInProgress" />
-                            <label class="govuk-label govuk-radios__label" for="OptionInProgress">
-                                Set to 'in progress'
-                            </label>
-                        </div>
-                <div class="govuk-radios__conditional govuk-radios__conditional--hidden govuk-!-margin-bottom-6" id="conditional-OptionInProgress">
-                       
-                        
-                    <div class="govuk-character-count govuk-!-margin-bottom-6" data-module="govuk-character-count" data-maxlength="10000">
 
-                        <div class="govuk-form-group">
-                            <a name="OptionInProgressInternalText"></a>
-                            <label class="govuk-label" for="InProgressInternalText">
-                                Add your internal comments
-                            </label>
-                            <span das-validation-for="InProgressInternalText" class="govuk-error-message"></span>
-                            <textarea das-highlight-error-for="InProgressInternalText" error-class="govuk-textarea--error" class="govuk-textarea   govuk-js-character-count"
+
+
+
+                </div>
+                @if (Model.AppealStatus == AppealStatus.Submitted)
+                {
+                    <div class="govuk-radios__divider">or</div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input"
+                           type="radio"
+                           id="OptionInProgress"
+                           asp-for="AppealStatus"
+                           value=@AppealStatus.InProgress
+                           data-aria-controls="conditional-OptionInProgress" />
+                    <label class="govuk-label govuk-radios__label" for="OptionInProgress">
+                        Set to 'in progress'
+                    </label>
+                </div>
+                
+          
+
+
+                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden govuk-!-margin-bottom-6" id="conditional-OptionInProgress">
+
+
+                            <div class="govuk-character-count govuk-!-margin-bottom-6" data-module="govuk-character-count" data-maxlength="10000">
+
+                                <div class="govuk-form-group">
+                                    <a name="OptionInProgressInternalText"></a>
+                                    <label class="govuk-label" for="InProgressInternalText">
+                                        Add your internal comments
+                                    </label>
+                                    <span das-validation-for="InProgressInternalText" class="govuk-error-message"></span>
+                                    <textarea das-highlight-error-for="InProgressInternalText" error-class="govuk-textarea--error" class="govuk-textarea   govuk-js-character-count"
                                           id="InProgressInternalText"
                                           name="InProgressInternalText"
                                           asp-for="InProgressInternalText"
                                           rows="10"
                                           maxlength="@OversightSettings.TextAreaMaxLength"
                                           aria-describedby="InProgressInternalText-error InProgressInternalText-info">@Model.InProgressInternalText</textarea>
-                        </div>
-                        <span id="InProgressInternalText-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                            You can enter up to 10000 characters
-                        </span>
-                    </div>
-                        
-                        
-                    <div class="govuk-character-count govuk-!-margin-bottom-6" data-module="govuk-character-count" data-maxlength="10000">
+                                </div>
+                                <span id="InProgressInternalText-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                                    You can enter up to 10000 characters
+                                </span>
+                            </div>
+
+
+                            <div class="govuk-character-count govuk-!-margin-bottom-6" data-module="govuk-character-count" data-maxlength="10000">
 
                                 <div class="govuk-form-group">
                                     <a name="OptionInProgressExternalText"></a>
@@ -246,7 +252,10 @@
                                 </span>
                             </div>
                         </div>
-                    </div>
+                    }
+                
+                
+                </div>
             </fieldset>
         </div>
 

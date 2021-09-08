@@ -57,24 +57,36 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var expectedApplicationsPending = GetApplicationsPending();
             _apiClient.Setup(x => x.GetOversightsPending(null,null,null)).ReturnsAsync(expectedApplicationsPending);
             _apiClient.Setup(x => x.GetOversightsCompleted(null,null,null)).ReturnsAsync(GetApplicationsDone());
+            _apiClient.Setup(x => x.GetPendingAppealOutcomes(null, null, null)).ReturnsAsync(GetPendingAppealApplications());
+            _apiClient.Setup(x => x.GetCompletedAppealOutcomesCompleted(null, null, null)).ReturnsAsync(GetCompletedApplicationsDone());
             _configuration.Setup(x => x.EsfaAdminServicesBaseUrl).Returns(_dashboardAddress);
             var actualViewModel = await _orchestrator.GetApplicationsViewModel(null,null,null,null);
 
             var expectedViewModel = new ApplicationsViewModel
             {
-                ApplicationDetails = GetApplicationsPending(), OverallOutcomeDetails = GetApplicationsDone()
+                ApplicationDetails = GetApplicationsPending(), OverallOutcomeDetails = GetApplicationsDone(),PendingAppealsDetails = GetPendingAppealApplications(), CompleteAppealsDetails = GetCompletedApplicationsDone()
             };
             expectedViewModel.ApplicationCount = expectedViewModel.ApplicationDetails.Reviews.Count;
             expectedViewModel.OverallOutcomeCount = expectedViewModel.OverallOutcomeDetails.Reviews.Count;
+            expectedViewModel.AppealsCount = expectedViewModel.PendingAppealsDetails.Reviews.Count;
+            expectedViewModel.AppealsOutcomeCount = expectedViewModel.CompleteAppealsDetails.Reviews.Count;
 
             Assert.AreEqual(actualViewModel.ApplicationCount, expectedViewModel.ApplicationCount);
             Assert.AreEqual(actualViewModel.OverallOutcomeCount, expectedViewModel.OverallOutcomeCount);
+            Assert.AreEqual(actualViewModel.AppealsCount, expectedViewModel.AppealsCount);
+            Assert.AreEqual(actualViewModel.AppealsOutcomeCount, expectedViewModel.AppealsOutcomeCount);
             Assert.AreEqual(actualViewModel.ApplicationDetails.Reviews.Count, expectedViewModel.ApplicationCount);
             Assert.AreEqual(actualViewModel.OverallOutcomeDetails.Reviews.Count, expectedViewModel.OverallOutcomeCount);
+            Assert.AreEqual(actualViewModel.PendingAppealsDetails.Reviews.Count, expectedViewModel.AppealsCount);
+            Assert.AreEqual(actualViewModel.CompleteAppealsDetails.Reviews.Count, expectedViewModel.AppealsOutcomeCount);
             Assert.AreEqual(actualViewModel.ApplicationDetails.Reviews.First().ApplicationId,
                 expectedViewModel.ApplicationDetails.Reviews.First().ApplicationId);
             Assert.AreEqual(actualViewModel.OverallOutcomeDetails.Reviews.First().Ukprn,
                 expectedViewModel.OverallOutcomeDetails.Reviews.First().Ukprn);
+            Assert.AreEqual(actualViewModel.PendingAppealsDetails.Reviews.First().ApplicationId,
+               expectedViewModel.PendingAppealsDetails.Reviews.First().ApplicationId);
+            Assert.AreEqual(actualViewModel.CompleteAppealsDetails.Reviews.First().Ukprn,
+                expectedViewModel.CompleteAppealsDetails.Reviews.First().Ukprn);
         }
 
         [TestCase(true)]
@@ -449,6 +461,72 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                     ApplicationDeterminedDate = new DateTime(2019, 10, 29),
                     OversightStatus = OversightReviewStatus.Unsuccessful,
                     ApplicationStatus = ApplicationStatus.Unsuccessful
+                }}
+            };
+        }
+
+        private PendingAppealOutcomes GetPendingAppealApplications()
+        {
+            return new PendingAppealOutcomes
+            {
+                Reviews = new List<PendingAppealOutcome> {
+                new PendingAppealOutcome
+                {
+                    ApplicationId = _applicationId,
+                    OrganisationName = "ZZZ Limited",
+                    Ukprn = "123456768",
+                    ProviderRoute = "Main",
+                    ApplicationReferenceNumber = "APR000175",
+                    ApplicationSubmittedDate = new DateTime(2019, 10, 21),
+                },
+                new PendingAppealOutcome
+                {
+                    ApplicationId = new Guid("a0fb2cdc-edf1-457c-96d7-2dc69cd5d8e8"),
+                    OrganisationName = "AAA Limited",
+                    Ukprn = "223456768",
+                    ProviderRoute = "Employer",
+                    ApplicationReferenceNumber = "APR000179",
+                    ApplicationSubmittedDate = new DateTime(2019, 10, 20)
+                },
+                new PendingAppealOutcome
+                {
+                    ApplicationId = new Guid("cb84760b-931b-4724-a7fc-81e68659da10"),
+                    OrganisationName = "BBB BBB Limited",
+                    Ukprn = "523456765",
+                    ProviderRoute = "Supporting",
+                    ApplicationReferenceNumber = "APR000173",
+                    ApplicationSubmittedDate = new DateTime(2019, 10, 21)
+                }
+            }
+            };
+        }
+
+        private static CompletedAppealOutcomes GetCompletedApplicationsDone()
+        {
+            return new CompletedAppealOutcomes
+            {
+                Reviews = new List<CompletedAppealOutcome> {
+                new CompletedAppealOutcome
+                {
+                    OrganisationName = "FFF Limited",
+                    Ukprn = "443456768",
+                    ProviderRoute = "Employer",
+                    ApplicationReferenceNumber = "APR000132",
+                    ApplicationSubmittedDate = new DateTime(2019, 10, 21),
+                    AppealDeterminedDate = new DateTime(2019, 10, 01),
+                    OversightStatus = OversightReviewStatus.Successful,
+                    AppealStatus = AppealStatus.Successful
+                },
+                new CompletedAppealOutcome
+                {
+                    OrganisationName = "DDD Limited",
+                    Ukprn = "43234565",
+                    ProviderRoute = "Employer",
+                    ApplicationReferenceNumber = "APR000120",
+                    ApplicationSubmittedDate = new DateTime(2019, 10, 20),
+                    AppealDeterminedDate = new DateTime(2019, 10, 29),
+                    OversightStatus = OversightReviewStatus.Unsuccessful,
+                    AppealStatus = AppealStatus.Unsuccessful
                 }}
             };
         }

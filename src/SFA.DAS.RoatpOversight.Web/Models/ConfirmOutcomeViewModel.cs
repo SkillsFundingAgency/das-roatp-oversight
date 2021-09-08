@@ -103,7 +103,7 @@ namespace SFA.DAS.RoatpOversight.Web.Models
                     case RoatpOversight.Domain.AppealStatus.SuccessfulFitnessForFunding:
                         statusLabel = "successful";
                         break;
-                    case RoatpOversight.Domain.AppealStatus.InProgressOutcome:
+                    case RoatpOversight.Domain.AppealStatus.InProgress:
                         statusLabel = "'in progress'";
                         break;
                     case RoatpOversight.Domain.AppealStatus.Unsuccessful:
@@ -129,7 +129,7 @@ namespace SFA.DAS.RoatpOversight.Web.Models
                         return "Successful - already active";
                     case RoatpOversight.Domain.AppealStatus.SuccessfulFitnessForFunding:
                         return "Successful - fitness for funding";
-                    case RoatpOversight.Domain.AppealStatus.InProgressOutcome:
+                    case RoatpOversight.Domain.AppealStatus.InProgress:
                         return "'in progress'";
                     case RoatpOversight.Domain.AppealStatus.Unsuccessful:
                         return "unsuccessful";

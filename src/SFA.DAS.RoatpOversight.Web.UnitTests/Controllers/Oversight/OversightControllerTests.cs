@@ -72,7 +72,17 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 Reviews = new List<CompletedOversightReview> { new CompletedOversightReview { Ukprn = _ukprnOfCompletedOversightApplication} }
             };
 
-            var viewModel = new ApplicationsViewModel {ApplicationDetails = applicationsPending,ApplicationCount = 1, OverallOutcomeDetails = applicationsDone, OverallOutcomeCount = 1};
+            var PendingAppealapplications = new PendingAppealOutcomes
+            {
+                Reviews = new List<PendingAppealOutcome> { new PendingAppealOutcome { ApplicationId = _applicationDetailsApplicationId } }
+            };
+
+            var CompletedAppealapplications = new CompletedAppealOutcomes
+            {
+                Reviews = new List<CompletedAppealOutcome> { new CompletedAppealOutcome { Ukprn = _ukprnOfCompletedOversightApplication } }
+            };
+
+            var viewModel = new ApplicationsViewModel {ApplicationDetails = applicationsPending,ApplicationCount = 1, OverallOutcomeDetails = applicationsDone, OverallOutcomeCount = 1,PendingAppealsDetails=PendingAppealapplications,AppealsCount=1,CompleteAppealsDetails=CompletedAppealapplications,AppealsOutcomeCount=1};
 
             _oversightOrchestrator.Setup(x => x.GetApplicationsViewModel(null,null,null,null)).ReturnsAsync(viewModel);
 
@@ -84,6 +94,8 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.That(actualViewModel, Is.SameAs(viewModel));
             Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationDetails.Reviews.FirstOrDefault().ApplicationId);
             Assert.AreEqual(_ukprnOfCompletedOversightApplication, actualViewModel.OverallOutcomeDetails.Reviews.FirstOrDefault().Ukprn);
+            Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.PendingAppealsDetails.Reviews.FirstOrDefault().ApplicationId);
+            Assert.AreEqual(_ukprnOfCompletedOversightApplication, actualViewModel.CompleteAppealsDetails.Reviews.FirstOrDefault().Ukprn);
         }
 
         [Test]

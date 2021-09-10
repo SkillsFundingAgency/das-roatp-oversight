@@ -32,7 +32,7 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
                     statusLabel = string.Empty;
                     break;
             }
-            return $"Select whether you are sure you want to mark this appeal as {statusLabel}";
+            return $"Select if you want to mark this appeal as {statusLabel}";
         }
     }
 }

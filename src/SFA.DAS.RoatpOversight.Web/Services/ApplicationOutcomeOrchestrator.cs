@@ -47,7 +47,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             if (outcome == OversightReviewStatus.Successful)
             {
-                var request = BuildCreateOrganisationRequest(updateOutcomeCommand, registrationDetails);
+                var request = BuildCreateOrganisationRequest(userName, registrationDetails);
 
                 var updateRegisterResult = await _registerApiClient.CreateOrganisation(request);
 
@@ -94,9 +94,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             if (!updateOutcomeSuccess) return false;
 
-            if (registerStatus?.OrganisationId != null && (appealStatus == AppealStatus.Successful ||
-                                                             appealStatus == AppealStatus.SuccessfulAlreadyActive ||
-                                                             appealStatus == AppealStatus.SuccessfulFitnessForFunding))
+            if (registerStatus?.OrganisationId != null && (appealStatus == AppealStatus.SuccessfulAlreadyActive ||
+                                                           appealStatus == AppealStatus.SuccessfulFitnessForFunding))
                 {
                     var updateDeterminedDateRequest = new UpdateOrganisationApplicationDeterminedDateRequest
                     {
@@ -108,7 +107,15 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
                     await _registerApiClient.UpdateApplicationDeterminedDate(updateDeterminedDateRequest);
                 }
-            
+
+            if (appealStatus == AppealStatus.Successful)
+            {
+                var request = BuildCreateOrganisationRequest(userName, registrationDetails);
+
+                var updateRegisterResult = await _registerApiClient.CreateOrganisation(request);
+
+                return updateRegisterResult;
+            }
             return true;
         }
 
@@ -140,7 +147,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             await _applicationApiClient.RecordGatewayRemovedOutcome(command);
         }
 
-        private static CreateRoatpOrganisationRequest BuildCreateOrganisationRequest(RecordOversightOutcomeCommand updateOutcomeCommand, RoatpRegistrationDetails registrationDetails)
+        private static CreateRoatpOrganisationRequest BuildCreateOrganisationRequest(string userName, RoatpRegistrationDetails registrationDetails)
         {
             return new CreateRoatpOrganisationRequest
             {
@@ -157,9 +164,10 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 StatusDate = DateTime.Now,
                 TradingName = registrationDetails.TradingName,
                 Ukprn = registrationDetails.UKPRN,
-                Username = updateOutcomeCommand.UserName
+                Username = userName
             };
         }
+
 
         private void ValidateStatusAgainstExistingStatus(OversightReviewStatus outcome, OrganisationRegisterStatus registerStatus, string ukprn)
         {

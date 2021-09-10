@@ -76,7 +76,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 
             _applicationApiClient.Verify(x => x.RecordAppeal(It.Is<RecordAppealOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
             _applicationApiClient.Verify(x => x.GetRegistrationDetails(_applicationId), Times.Once);
-            _roatpRegisterApiClient.Verify(x => x.CreateOrganisation(It.Is<CreateRoatpOrganisationRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Never);
+            _roatpRegisterApiClient.Verify(x => x.CreateOrganisation(It.Is<CreateRoatpOrganisationRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Once);
         }
 
         [TestCase]

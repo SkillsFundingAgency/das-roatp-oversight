@@ -1,0 +1,91 @@
+﻿@using SFA.DAS.AdminService.Common.Extensions
+@using SFA.DAS.RoatpOversight.Web.Extensions
+@using SFA.DAS.RoatpOversight.Domain
+@model SFA.DAS.RoatpOversight.Domain.AppealDetails
+
+<div class="govuk-form-group">
+    <fieldset class="govuk-fieldset">
+
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h2 class="govuk-heading-l govuk-!-margin-bottom-3">Appeal outcome</h2>
+        </legend>
+
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Outcome
+            </dt>           
+            <dd class="govuk-summary-list__value">
+                @{
+                    var appealOutcomeTagClass = string.Empty;
+                    var appealStatus = string.Empty;
+
+                    if (Model.Status == AppealStatus.Unsuccessful)
+                    {
+                        appealOutcomeTagClass = "das-tag--solid-red";
+                        appealStatus = Model.Status;
+                    }
+                    else if(Model.Status == AppealStatus.Successful || Model.Status == AppealStatus.SuccessfulFitnessForFunding || Model.Status == AppealStatus.SuccessfulAlreadyActive)
+                    {
+                        appealOutcomeTagClass = "das-tag--solid-green";
+                        appealStatus = AppealStatus.Successful;
+                    }
+                }
+
+            </dd>
+            
+</div>
+<div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+        Appeal determined date
+    </dt>
+    <dd class="govuk-summary-list__value">
+        @Model.AppealDeterminedDate.ToSfaShortDateString()
+    </dd>
+</div>
+<div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+        Outcome made by
+    </dt>
+    <dd class="govuk-summary-list__value">
+        @Model.UserName
+    </dd>
+</div>
+<div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+        Internal Comments
+    </dt>
+    <dd class="govuk-summary-list__value">
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    View internal comments
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <pre class="govuk-body das-preformatted-body">@Model.InternalComments</pre>
+            </div>
+        </details>
+    </dd>
+</div>
+<div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+        External Comments
+    </dt>
+    <dd class="govuk-summary-list__value">
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    View external comments
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <pre class="govuk-body das-preformatted-body">@Model.ExternalComments</pre>
+            </div>
+        </details>
+    </dd>
+</div>
+        </dl>
+
+    </fieldset>
+</div>

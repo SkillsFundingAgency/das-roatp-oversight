@@ -132,6 +132,21 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationSummary.ApplicationId);
         }
 
+        [Test]
+        public async Task GetAppealOutcome_returns_view_with_expected_viewModel()
+        {
+            var viewModel = new AppealViewModel { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };
+            _oversightOrchestrator.Setup(x => x.GetAppealDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
+
+            var request = new AppealRequest() { ApplicationId = _applicationDetailsApplicationId };
+            var result = await _controller.AppealOutcome(request) as ViewResult;
+            var actualViewModel = result?.Model as AppealViewModel;
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(actualViewModel, Is.Not.Null);
+            Assert.That(actualViewModel, Is.SameAs(viewModel));
+            Assert.AreEqual(_applicationDetailsApplicationId, actualViewModel.ApplicationSummary.ApplicationId);
+        }
 
         [TestCase(OversightReviewStatus.Successful)]
         [TestCase(OversightReviewStatus.Unsuccessful)]
@@ -157,6 +172,20 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
 
             var request = new AppealRequest() { ApplicationId = _applicationDetailsApplicationId };
             var result = await _controller.Appeal(request) as RedirectToActionResult;
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.ActionName, Is.EqualTo("Applications"));
+        }
+
+        [TestCase(AppealStatus.Successful)]
+        [TestCase(AppealStatus.Unsuccessful)]
+        [TestCase(AppealStatus.SuccessfulAlreadyActive)]
+        [TestCase(AppealStatus.SuccessfulFitnessForFunding)]
+        public async Task GetAppealOutcome_returns_applications_view_when_appealoutcome_status_is_successful_or_unsuccessful(string status)
+        {
+            _oversightOrchestrator.Setup(x => x.GetAppealDetailsViewModel(_applicationDetailsApplicationId, null)).Throws<InvalidStateException>();
+
+            var request = new AppealRequest() { ApplicationId = _applicationDetailsApplicationId };
+            var result = await _controller.AppealOutcome(request) as RedirectToActionResult;
             Assert.That(result, Is.Not.Null);
             Assert.That(result.ActionName, Is.EqualTo("Applications"));
         }

@@ -7,6 +7,7 @@ using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Services;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.ResponseCaching.Internal;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 {
@@ -70,6 +71,11 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         {
             _registerStatus.UkprnOnRegister = false;
 
+            var application = new ApplicationDetails
+                { ApplicationId = _applicationId, GatewayReviewStatus = GatewayReviewStatus.Pass };
+
+            _applicationApiClient.Setup(x => x.GetApplicationDetails(_applicationId)).ReturnsAsync(application);
+
             var result = await _orchestrator.RecordAppeal(_applicationId, AppealStatus.Successful, UserId, UserName, InternalComments, ExternalComments);
 
             result.Should().BeTrue();
@@ -79,9 +85,52 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
             _roatpRegisterApiClient.Verify(x => x.CreateOrganisation(It.Is<CreateRoatpOrganisationRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Once);
         }
 
+
+        [Test]
+        public async Task Application_status_updated_and_register_not_updated_for_a_successful_appeal_and_gateway_fail()
+        {
+            _registerStatus.UkprnOnRegister = false;
+
+            var application = new ApplicationDetails
+                { ApplicationId = _applicationId, GatewayReviewStatus = GatewayReviewStatus.Fail };
+
+            _applicationApiClient.Setup(x => x.GetApplicationDetails(_applicationId)).ReturnsAsync(application);
+
+            var result = await _orchestrator.RecordAppeal(_applicationId, AppealStatus.Successful, UserId, UserName, InternalComments, ExternalComments);
+
+            result.Should().BeTrue();
+
+            _applicationApiClient.Verify(x => x.RecordAppeal(It.Is<RecordAppealOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
+            _applicationApiClient.Verify(x => x.GetRegistrationDetails(_applicationId), Times.Once);
+            _roatpRegisterApiClient.Verify(x => x.CreateOrganisation(It.Is<CreateRoatpOrganisationRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Never);
+        }
+
+        [Test]
+        public async Task Application_status_updated_and_register_not_updated_for_a_successful_appeal_and_application_previously_removed()
+        {
+            _registerStatus.UkprnOnRegister = false;
+
+            var application = new ApplicationDetails
+                { ApplicationId = _applicationId, ApplicationRemovedOn = DateTime.Today};
+
+            _applicationApiClient.Setup(x => x.GetApplicationDetails(_applicationId)).ReturnsAsync(application);
+
+            var result = await _orchestrator.RecordAppeal(_applicationId, AppealStatus.Successful, UserId, UserName, InternalComments, ExternalComments);
+
+            result.Should().BeTrue();
+
+            _applicationApiClient.Verify(x => x.RecordAppeal(It.Is<RecordAppealOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
+            _applicationApiClient.Verify(x => x.GetRegistrationDetails(_applicationId), Times.Once);
+            _roatpRegisterApiClient.Verify(x => x.CreateOrganisation(It.Is<CreateRoatpOrganisationRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Never);
+        }
+
         [TestCase]
         public async Task Application_status_updated_only_for_an_unsuccessful_appeal()
         {
+            var application = new ApplicationDetails
+                { ApplicationId = _applicationId, GatewayReviewStatus = GatewayReviewStatus.Pass };
+
+            _applicationApiClient.Setup(x => x.GetApplicationDetails(_applicationId)).ReturnsAsync(application);
             var result = await _orchestrator.RecordAppeal(_applicationId, AppealStatus.Unsuccessful, UserId, UserName, InternalComments, ExternalComments);
         
             result.Should().BeTrue();
@@ -94,12 +143,49 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         [TestCase(AppealStatus.SuccessfulFitnessForFunding)]
         public async Task Application_status_and_register_updated_for_a_successful_already_active_or_fitness_for_funding_appeal(string status)
         {
+            var application = new ApplicationDetails
+                {ApplicationId = _applicationId, GatewayReviewStatus = GatewayReviewStatus.Pass};
+
+            _applicationApiClient.Setup(x => x.GetApplicationDetails(_applicationId)).ReturnsAsync(application);
+
             await _orchestrator.RecordAppeal(_applicationId, status, UserId, UserName, InternalComments, ExternalComments);
         
             _applicationApiClient.Verify(x => x.RecordAppeal(It.Is<RecordAppealOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
             _roatpRegisterApiClient.Verify(x => x.UpdateApplicationDeterminedDate(It.Is<UpdateOrganisationApplicationDeterminedDateRequest>(y => y.OrganisationId == _registerStatus.OrganisationId)), Times.Once);
         }
-        
+
+        [TestCase(AppealStatus.SuccessfulAlreadyActive)]
+        [TestCase(AppealStatus.SuccessfulFitnessForFunding)]
+        public async Task Application_status_updated_and_register_not_updated_for_a_successful_already_active_or_fitness_for_funding_appeal_and_gateway_fail(string status)
+        {
+            var application = new ApplicationDetails
+                { ApplicationId = _applicationId, GatewayReviewStatus = GatewayReviewStatus.Fail };
+
+            _applicationApiClient.Setup(x => x.GetApplicationDetails(_applicationId)).ReturnsAsync(application);
+
+            await _orchestrator.RecordAppeal(_applicationId, status, UserId, UserName, InternalComments, ExternalComments);
+
+            _applicationApiClient.Verify(x => x.RecordAppeal(It.Is<RecordAppealOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
+            _roatpRegisterApiClient.Verify(x => x.UpdateApplicationDeterminedDate(It.Is<UpdateOrganisationApplicationDeterminedDateRequest>(y => y.OrganisationId == _registerStatus.OrganisationId)), Times.Never);
+        }
+
+        [TestCase(AppealStatus.SuccessfulAlreadyActive)]
+        [TestCase(AppealStatus.SuccessfulFitnessForFunding)]
+        public async Task Application_status_updated_and_register_not_updated_for_a_successful_already_active_or_fitness_for_funding_appeal_and_application_previously_removed(string status)
+        {
+            var application = new ApplicationDetails
+                { ApplicationId = _applicationId, GatewayReviewStatus = GatewayReviewStatus.Pass, ApplicationRemovedOn = DateTime.Today};
+
+            _applicationApiClient.Setup(x => x.GetApplicationDetails(_applicationId)).ReturnsAsync(application);
+
+            await _orchestrator.RecordAppeal(_applicationId, status, UserId, UserName, InternalComments, ExternalComments);
+
+            _applicationApiClient.Verify(x => x.RecordAppeal(It.Is<RecordAppealOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
+            _roatpRegisterApiClient.Verify(x => x.UpdateApplicationDeterminedDate(It.Is<UpdateOrganisationApplicationDeterminedDateRequest>(y => y.OrganisationId == _registerStatus.OrganisationId)), Times.Never);
+        }
+
+
+
         [Test]
         public void Successful_appeal_for_provider_already_on_register_throws_exception()
         {

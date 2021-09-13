@@ -130,8 +130,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         {
             var application = await _applicationApiClient.GetApplicationDetails(applicationId);
 
-            if (application.GatewayReviewStatus != GatewayReviewStatus.Fail &&
-                application?.ApplicationRemovedOn == null)
+            if (application.GatewayReviewStatus != GatewayReviewStatus.Fail)
             {
                 if (registerStatus?.OrganisationId != null && (appealStatus == AppealStatus.SuccessfulAlreadyActive ||
                                                                appealStatus == AppealStatus.SuccessfulFitnessForFunding))

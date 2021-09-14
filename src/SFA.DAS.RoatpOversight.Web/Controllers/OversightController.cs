@@ -130,6 +130,31 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             }
         }
 
+
+        [HttpPost("Oversight/Appeal/{applicationId}/confirm/{outcomeKey}")]
+        public async Task<IActionResult> ConfirmAppeal(ConfirmAppealPostRequest request)
+        {
+            if (request.Confirm == OversightConfirmationStatus.No)
+            {
+                return RedirectToAction("Appeal", new { request.ApplicationId, request.OutcomeKey });
+            }
+
+            var userId = HttpContext.User.UserId();
+            var userName = HttpContext.User.UserDisplayName();
+
+            await _outcomeOrchestrator.RecordAppeal(request.ApplicationId, request.AppealStatus, userId, userName, request.InternalComments, request.ExternalComments);
+
+            return RedirectToAction("AppealConfirmed", new { request.ApplicationId, request.AppealStatus});
+        }
+
+        [HttpGet("Oversight/Appeal/{applicationId}/confirmed")]
+        public async Task<IActionResult> AppealConfirmed(AppealConfirmedRequest request)
+        {
+             var viewModel = new AppealConfirmedViewModel {ApplicationId = request.ApplicationId, AppealStatus = request.AppealStatus};
+
+            return View(viewModel);
+        }
+
         [HttpGet("Oversight/Outcome/{applicationId}/confirm/{outcomeKey}")]
         public async Task<IActionResult> ConfirmOutcome(ConfirmOutcomeRequest request)
         {

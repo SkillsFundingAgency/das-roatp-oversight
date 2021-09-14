@@ -18,6 +18,8 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         Task<bool> RecordOutcome(RecordOversightOutcomeCommand command);
         Task RecordGatewayFailOutcome(RecordOversightGatewayFailOutcomeCommand command);
         Task RecordGatewayRemovedOutcome(RecordOversightGatewayRemovedOutcomeCommand command);
+
+        Task<bool> RecordAppeal(RecordAppealOutcomeCommand command);
         Task<GetOversightReviewResponse> GetOversightReview(Guid applicationId);
 
         Task<AppealDetails> GetAppealDetails(Guid applicationId);

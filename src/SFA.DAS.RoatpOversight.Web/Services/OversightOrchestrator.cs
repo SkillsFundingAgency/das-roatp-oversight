@@ -63,14 +63,12 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             var oversightReview = _applyApiClient.GetOversightReview(applicationId).Result;
             var onRegister = false;
             var appealDetails = await _applyApiClient.GetAppealDetails(applicationId);
-   
-
+            
             if (applicationDetails?.Ukprn != null)
             {
                 var registerStatus = await _registerApiClient.GetOrganisationRegisterStatus(new GetOrganisationRegisterStatusRequest { UKPRN = applicationDetails.Ukprn });
                 onRegister = registerStatus.UkprnOnRegister;
             }
-
 
             var viewModel = new AppealViewModel
             {

@@ -24,7 +24,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         {
             _logger.LogInformation($"Recording an oversight outcome of {outcome} for application {applicationId}");
 
-            var registrationDetails = await _applicationApiClient.GetRegistrationDetails(applicationId);
+              var registrationDetails = await _applicationApiClient.GetRegistrationDetails(applicationId);
             var registerStatus = await _registerApiClient.GetOrganisationRegisterStatus(new GetOrganisationRegisterStatusRequest { UKPRN = registrationDetails.UKPRN });
 
             ValidateStatusAgainstExistingStatus(outcome, registerStatus, registrationDetails.UKPRN);
@@ -47,15 +47,13 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             if (outcome == OversightReviewStatus.Successful)
             {
-                var request = BuildCreateOrganisationRequest(updateOutcomeCommand, registrationDetails);
+                var request = BuildCreateOrganisationRequest(userName, registrationDetails);
 
-                var updateRegisterResult = await _registerApiClient.CreateOrganisation(request);
-
-                return updateRegisterResult;
+                await _registerApiClient.CreateOrganisation(request);
             }
 
-            if (outcome == OversightReviewStatus.SuccessfulAlreadyActive ||
-                outcome == OversightReviewStatus.SuccessfulFitnessForFunding)
+            if ((outcome == OversightReviewStatus.SuccessfulAlreadyActive ||
+                 outcome == OversightReviewStatus.SuccessfulFitnessForFunding) && registerStatus.OrganisationId != null)
             {
                 var updateDeterminedDateRequest = new UpdateOrganisationApplicationDeterminedDateRequest
                 {
@@ -67,8 +65,36 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
                 await _registerApiClient.UpdateApplicationDeterminedDate(updateDeterminedDateRequest);
             }
+            
+            return true;
+        }
 
-            return updateOutcomeSuccess;
+        public async Task<bool> RecordAppeal(Guid applicationId, string appealStatus, string userId, string userName, string internalComments,
+            string externalComments)
+        {
+            _logger.LogInformation($"Recording an appeal outcome of {appealStatus} for application {applicationId}");
+            var registrationDetails = await _applicationApiClient.GetRegistrationDetails(applicationId);
+            var registerStatus = await _registerApiClient.GetOrganisationRegisterStatus(new GetOrganisationRegisterStatusRequest { UKPRN = registrationDetails.UKPRN });
+
+            ValidateAppealStatusAgainstExistingStatus(appealStatus, registerStatus, registrationDetails.UKPRN);
+
+            var updateAppealCommand = new RecordAppealOutcomeCommand
+            {
+                ApplicationId = applicationId, 
+                AppealStatus = appealStatus,
+                UserId = userId,
+                UserName = userName,
+                InternalComments = internalComments,
+                ExternalComments = externalComments
+            };
+
+            var updateOutcomeSuccess = await _applicationApiClient.RecordAppeal(updateAppealCommand);
+
+            if (!updateOutcomeSuccess) return false;
+
+            await RecordInRoatp(applicationId, appealStatus, userId, userName, registerStatus, registrationDetails);
+
+            return true;
         }
 
         public async Task RecordGatewayFailOutcome(Guid applicationId, string userId, string userName)
@@ -99,7 +125,37 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             await _applicationApiClient.RecordGatewayRemovedOutcome(command);
         }
 
-        private static CreateRoatpOrganisationRequest BuildCreateOrganisationRequest(RecordOversightOutcomeCommand updateOutcomeCommand, RoatpRegistrationDetails registrationDetails)
+        private async Task RecordInRoatp(Guid applicationId, string appealStatus, string userId, string userName,
+            OrganisationRegisterStatus registerStatus, RoatpRegistrationDetails registrationDetails)
+        {
+            var application = await _applicationApiClient.GetApplicationDetails(applicationId);
+
+            if (application.GatewayReviewStatus != GatewayReviewStatus.Fail)
+            {
+                if (registerStatus?.OrganisationId != null && (appealStatus == AppealStatus.SuccessfulAlreadyActive ||
+                                                               appealStatus == AppealStatus.SuccessfulFitnessForFunding))
+                {
+                    var updateDeterminedDateRequest = new UpdateOrganisationApplicationDeterminedDateRequest
+                    {
+                        ApplicationDeterminedDate = DateTime.UtcNow.Date,
+                        LegalName = registrationDetails.LegalName,
+                        OrganisationId = registerStatus.OrganisationId.Value,
+                        UpdatedBy = userId
+                    };
+
+                    await _registerApiClient.UpdateApplicationDeterminedDate(updateDeterminedDateRequest);
+                }
+
+                if (appealStatus == AppealStatus.Successful)
+                {
+                    var request = BuildCreateOrganisationRequest(userName, registrationDetails);
+
+                    await _registerApiClient.CreateOrganisation(request);
+                }
+            }
+        }
+
+        private static CreateRoatpOrganisationRequest BuildCreateOrganisationRequest(string userName, RoatpRegistrationDetails registrationDetails)
         {
             return new CreateRoatpOrganisationRequest
             {
@@ -116,9 +172,10 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 StatusDate = DateTime.Now,
                 TradingName = registrationDetails.TradingName,
                 Ukprn = registrationDetails.UKPRN,
-                Username = updateOutcomeCommand.UserName
+                Username = userName
             };
         }
+
 
         private void ValidateStatusAgainstExistingStatus(OversightReviewStatus outcome, OrganisationRegisterStatus registerStatus, string ukprn)
         {
@@ -136,6 +193,27 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 {
                     throw new InvalidOperationException(
                         $"Unable to update determined date for provider {ukprn} - provider not on register");
+                }
+            }
+        }
+
+
+        private void ValidateAppealStatusAgainstExistingStatus(string appealStatus, OrganisationRegisterStatus registerStatus, string ukprn)
+        {
+            if (appealStatus == AppealStatus.Successful)
+            {
+                if (registerStatus.UkprnOnRegister)
+                {
+                    throw new InvalidOperationException($"Unable to set appealStatus to 'Successful' - provider {ukprn} - already on register");
+                }
+            }
+
+            if (appealStatus == AppealStatus.SuccessfulAlreadyActive || appealStatus == AppealStatus.SuccessfulFitnessForFunding)
+            {
+                if (!registerStatus.UkprnOnRegister)
+                {
+                    throw new InvalidOperationException(
+                        $"Unable to update appeal determined date for provider {ukprn} - provider not on register");
                 }
             }
         }

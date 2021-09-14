@@ -68,6 +68,14 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
             return await Task.FromResult(statusCode == HttpStatusCode.OK);
         }
 
+        public async Task<bool> RecordAppeal(RecordAppealOutcomeCommand command)
+        {
+            var statusCode = await Post("Oversight/Appeal", command);
+
+            return await Task.FromResult(statusCode == HttpStatusCode.OK);
+        }
+
+
         public async Task RecordGatewayFailOutcome(RecordOversightGatewayFailOutcomeCommand command)
         {
             await Post("Oversight/GatewayFailOutcome", command);
@@ -77,7 +85,7 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         {
             await Post("Oversight/GatewayRemovedOutcome", command);
         }
-        
+
         public async Task<GetOversightReviewResponse> GetOversightReview(Guid applicationId)
         {
             return await Get<GetOversightReviewResponse>($"Oversight/{applicationId}/review");

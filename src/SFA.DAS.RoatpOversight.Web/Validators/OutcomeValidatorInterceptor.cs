@@ -35,27 +35,4 @@ namespace SFA.DAS.RoatpOversight.Web.Validators
             return result;
         }
     }
-
-
-    public class AppealValidatorInterceptor : IValidatorInterceptor
-    {
-        public IValidationContext BeforeMvcValidation(ControllerContext controllerContext, IValidationContext commonContext)
-        {
-            if (!(commonContext.InstanceToValidate is AppealPostRequest target))
-            {
-                throw new InvalidOperationException(
-                    $"AppealValidatorInterceptor cannot be used with type {commonContext.InstanceToValidate.GetType().Name}");
-            }
-
-            return new ValidationContext<AppealPostRequest>(target,
-                null,
-                new RulesetValidatorSelector(AppealPostRequestValidator.RuleSets.Default));
-        }
-
-        public ValidationResult AfterMvcValidation(ControllerContext controllerContext, IValidationContext commonContext,
-            ValidationResult result)
-        {
-            return result;
-        }
-    }
 }

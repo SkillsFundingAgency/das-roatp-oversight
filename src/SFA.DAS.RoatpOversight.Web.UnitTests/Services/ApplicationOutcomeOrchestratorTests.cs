@@ -96,13 +96,23 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 
         [TestCase(OversightReviewStatus.SuccessfulAlreadyActive)]
         [TestCase(OversightReviewStatus.SuccessfulFitnessForFunding)]
-        public async Task Application_status_and_register_updated_for_a_successful_already_active_or_fitness_for_funding_oversight_review(OversightReviewStatus status)
+        public async Task
+            Application_status_and_register_updated_for_a_successful_already_active_or_fitness_for_funding_oversight_review(
+                OversightReviewStatus status)
         {
+            var applicationDetails = new ApplicationDetails
+            {
+                ApplicationId = _applicationId,
+                GatewayReviewStatus = GatewayReviewStatus.Pass
+            };
+
+            _applicationApiClient.Setup(x => x.GetApplicationDetails(_applicationId)).ReturnsAsync(applicationDetails);
             await _orchestrator.RecordOutcome(_applicationId, false, false, status, UserId, UserName, InternalComments, ExternalComments);
 
             _applicationApiClient.Verify(x => x.RecordOutcome(It.Is<RecordOversightOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
             _roatpRegisterApiClient.Verify(x => x.UpdateApplicationDeterminedDate(It.Is<UpdateOrganisationApplicationDeterminedDateRequest>(y => y.OrganisationId == _registerStatus.OrganisationId)), Times.Once);
         }
+
 
         [Test]
         public void Successful_oversight_review_for_provider_already_on_register_throws_exception()

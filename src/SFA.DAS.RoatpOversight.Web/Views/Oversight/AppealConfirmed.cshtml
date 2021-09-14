@@ -36,7 +36,14 @@
                     Appeal outcome saved
                 </h1>
                 <div class="govuk-panel__body">
-                    @Model.Status
+                    @if (Model.Status==AppealStatus.InProgress)
+                    {
+                        @Html.Raw("In progress")
+                    }
+                    else
+                    {
+                        @Model.Status
+                    }
                 </div>
             </div>
 

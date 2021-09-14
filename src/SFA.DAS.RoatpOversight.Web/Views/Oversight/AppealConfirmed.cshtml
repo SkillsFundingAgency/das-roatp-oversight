@@ -1,7 +1,21 @@
-﻿@model SFA.DAS.RoatpOversight.Web.Models.AppealConfirmedViewModel
+﻿@using SFA.DAS.RoatpOversight.Domain
+@model SFA.DAS.RoatpOversight.Web.Models.AppealConfirmedViewModel
 @{
-    //ViewData["Title"] = $"Outcome - {Model.Status}";
-}
+    ViewData["Title"] = $"Outcome - {Model.Status}";
+    var boxColour = string.Empty;
+    switch (Model.Status)
+    {
+        case AppealStatus.Successful:
+            boxColour = "das-tag--solid-green";
+            break;
+        case AppealStatus.Unsuccessful:
+            boxColour = "das-tag--solid-red";
+            break;
+        default:
+            boxColour = "das-tag--solid-blue";
+            break;
+        }
+    }
 <div class="govuk-breadcrumbs">
     <ol class="govuk-breadcrumbs__list">
         <li class="govuk-breadcrumbs__list-item">
@@ -17,13 +31,13 @@
 <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-            <div class="govuk-panel govuk-panel--confirmation">
+            <div class="govuk-panel govuk-panel--confirmation @boxColour">
                 <h1 class="govuk-panel__title">
-                    Appeal outcome confirmed HOLDING PAGE
+                    Appeal outcome saved
                 </h1>
-                @* <div class="govuk-panel__body"> *@
-                @*     Appeal will be saved as:<br><strong>@Model.Status.GetLabel()</strong> *@
-                @* </div> *@
+                <div class="govuk-panel__body">
+                    @Model.Status
+                </div>
             </div>
 
             <p class="govuk-body">

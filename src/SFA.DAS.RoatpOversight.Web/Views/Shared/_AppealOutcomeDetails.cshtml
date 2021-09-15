@@ -2,7 +2,28 @@
 @using SFA.DAS.RoatpOversight.Web.Extensions
 @using SFA.DAS.RoatpOversight.Domain
 @model SFA.DAS.RoatpOversight.Domain.AppealDetails
+@{
+    var appealOutcomeTagClass = string.Empty;
+    var appealStatus = string.Empty;
+    bool showExternalComments = true;
 
+    if (Model.Status == AppealStatus.Unsuccessful)
+    {
+        appealOutcomeTagClass = "das-tag das-tag--solid-red";
+        appealStatus = Model.Status;
+    }
+    else if (Model.Status == AppealStatus.Successful || Model.Status == AppealStatus.SuccessfulFitnessForFunding || Model.Status == AppealStatus.SuccessfulAlreadyActive)
+    {
+        appealOutcomeTagClass = "das-tag das-tag--solid-green";
+        appealStatus = AppealStatus.Successful; 
+        showExternalComments = false;
+    }
+    else
+    {
+        appealOutcomeTagClass = "das-tag das-tag--solid-purple";
+        appealStatus = Model.Status;
+    }
+}
 <div class="govuk-form-group">
     <fieldset class="govuk-fieldset">
 
@@ -12,79 +33,77 @@
 
         <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                Outcome
-            </dt>           
-            <dd class="govuk-summary-list__value">
-                @{
-                    var appealOutcomeTagClass = string.Empty;
-                    var appealStatus = string.Empty;
-
-                    if (Model.Status == AppealStatus.Unsuccessful)
-                    {
-                        appealOutcomeTagClass = "das-tag--solid-red";
-                        appealStatus = Model.Status;
-                    }
-                    else if(Model.Status == AppealStatus.Successful || Model.Status == AppealStatus.SuccessfulFitnessForFunding || Model.Status == AppealStatus.SuccessfulAlreadyActive)
-                    {
-                        appealOutcomeTagClass = "das-tag--solid-green";
-                        appealStatus = AppealStatus.Successful;
-                    }
-                }
-
-            </dd>
-            
-</div>
-<div class="govuk-summary-list__row">
-    <dt class="govuk-summary-list__key">
-        Appeal determined date
-    </dt>
-    <dd class="govuk-summary-list__value">
-        @Model.AppealDeterminedDate.ToSfaShortDateString()
-    </dd>
-</div>
-<div class="govuk-summary-list__row">
-    <dt class="govuk-summary-list__key">
-        Outcome made by
-    </dt>
-    <dd class="govuk-summary-list__value">
-        @Model.UserName
-    </dd>
-</div>
-<div class="govuk-summary-list__row">
-    <dt class="govuk-summary-list__key">
-        Internal Comments
-    </dt>
-    <dd class="govuk-summary-list__value">
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    View internal comments
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                <pre class="govuk-body das-preformatted-body">@Model.InternalComments</pre>
+                <dt class="govuk-summary-list__key">
+                    Outcome
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <strong class="@appealOutcomeTagClass">
+                        @appealStatus
+                    </strong>                    
+                </dd>
             </div>
-        </details>
-    </dd>
-</div>
-<div class="govuk-summary-list__row">
-    <dt class="govuk-summary-list__key">
-        External Comments
-    </dt>
-    <dd class="govuk-summary-list__value">
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    View external comments
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                <pre class="govuk-body das-preformatted-body">@Model.ExternalComments</pre>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Appeal determined date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.AppealDeterminedDate.ToSfaShortDateString()
+                </dd>
             </div>
-        </details>
-    </dd>
-</div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Outcome made by
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.UserName
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Internal Comments
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @if (string.IsNullOrEmpty(Model.InternalComments))
+                    {
+                        <text>N/A</text>
+                    }
+                    else
+                    {
+                        <details class="govuk-details" data-module="govuk-details">
+                            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">
+                                    View internal comments
+                                </span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <pre class="govuk-body das-preformatted-body">@Model.InternalComments</pre>
+                            </div>
+                        </details>
+                    }
+
+                </dd>
+            </div>
+            @if(showExternalComments)
+            {
+                     <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        External Comments
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <details class="govuk-details" data-module="govuk-details">
+                            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">
+                                    View external comments
+                                </span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <pre class="govuk-body das-preformatted-body">@Model.ExternalComments</pre>
+                            </div>
+                        </details>
+                    </dd>
+                </div>
+            }
+
         </dl>
 
     </fieldset>

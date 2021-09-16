@@ -73,11 +73,15 @@
 </div>
 @if (appealStatus == AppealStatus.Successful)
 {
-    await Html.RenderPartialAsync("_AppealSuccessComments.cshtml", Model);
+    await Html.PartialAsync("_AppealSuccessComments.cshtml", Model);
+}
+else if (appealStatus == AppealStatus.InProgress)
+{
+    await Html.PartialAsync("_AppealInprogressComments.cshtml", Model);
 }
 else
 {
-    await Html.RenderPartialAsync("_AppealOutcomeComments.cshtml", Model);
+    await Html.PartialAsync("_AppealOutcomeComments.cshtml", Model);
 }
     </dl>
     </fieldset>

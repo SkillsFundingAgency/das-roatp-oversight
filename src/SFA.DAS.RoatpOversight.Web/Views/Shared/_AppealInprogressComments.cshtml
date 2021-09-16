@@ -1,0 +1,49 @@
+﻿@model SFA.DAS.RoatpOversight.Domain.AppealDetails
+<div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+        Internal Comments
+    </dt>
+    <dd class="govuk-summary-list__value">
+        @if (string.IsNullOrEmpty(Model.InProgressInternalComments))
+        {
+            <text>N/A</text>
+        }
+        else
+        {
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        View internal comments
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <pre class="govuk-body das-preformatted-body">@Model.InProgressInternalComments</pre>
+                </div>
+            </details>
+        }
+    </dd>
+</div>
+<div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            External Comments
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @if (string.IsNullOrEmpty(Model.InProgressExternalComments))
+            {
+                <text>N/A</text>
+            }
+            else
+            {
+                <details class="govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            View external comments
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <pre class="govuk-body das-preformatted-body">@Model.InProgressExternalComments</pre>
+                    </div>
+                </details>
+            }
+        </dd>
+    </div>

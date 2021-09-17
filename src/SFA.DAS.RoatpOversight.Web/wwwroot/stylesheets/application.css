@@ -324,6 +324,12 @@
   background-color: #f47738;
 }
 
+.das-tag--solid-blue {
+  color: #fff;
+  background-color: #1d70b8;
+}
+
+
 /* Preformatted text */
 
 .das-preformatted-body {

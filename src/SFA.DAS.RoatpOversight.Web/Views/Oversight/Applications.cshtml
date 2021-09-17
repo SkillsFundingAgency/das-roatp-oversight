@@ -229,9 +229,18 @@
                                 {
                                 <tr class="govuk-table__row">
                                     <td data-label="Organisation name" class="govuk-table__cell">
-                                        <a class="govuk-link govuk-!-margin-bottom-0" asp-action="AppealOutcome" asp-route-id="@application.ApplicationId">
-                                            @application.OrganisationName
-                                        </a>
+                                        @if(application.AppealStatus!=AppealStatus.InProgress)
+                                        {
+                                            <a class="govuk-link govuk-!-margin-bottom-0" asp-action="AppealOutcome" asp-route-id="@application.ApplicationId">
+                                                @application.OrganisationName
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a class="govuk-link govuk-!-margin-bottom-0" asp-action="Appeal" asp-route-id="@application.ApplicationId">
+                                                @application.OrganisationName
+                                            </a>
+                                        }	
                                     </td>
                                     <td data-label="UKPRN" class="govuk-table__cell">@application.Ukprn</td>
                                     <td data-label="Provider route" class="govuk-table__cell">@application.ProviderRoute</td>

@@ -104,6 +104,17 @@
                 </div>
             </div>
 
+            @if (Model.AppealStatus == AppealStatus.InProgress)
+            {
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-full">
+                        <partial name="_AppealInProgressDetails" for="@Model" />
+                    </div>
+                </div>
+
+            }
+
+
             <partial name="_SelectAppealOutcome" model="@Model" />
         }
 

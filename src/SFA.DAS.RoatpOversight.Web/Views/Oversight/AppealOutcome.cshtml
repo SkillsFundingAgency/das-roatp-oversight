@@ -1,8 +1,7 @@
 ﻿@using SFA.DAS.RoatpOversight.Domain
 @model SFA.DAS.RoatpOversight.Web.Models.AppealViewModel
 @{
-    ViewData["Title"] = "RoATP application outcomes - Application summary";
-    bool IsApplicationWasInProgress = !string.IsNullOrEmpty(Model.Appeal.InProgressInternalComments);
+    ViewData["Title"] = "RoATP application outcomes - Application summary";    
 }
 
 <div class="govuk-breadcrumbs">
@@ -103,7 +102,7 @@
                     <partial name="_AppealDetails" for="@Model.Appeal" />
                 </div>
             </div>
-            if (IsApplicationWasInProgress)
+            if (Model.Appeal.InProgressDate.HasValue)
             {
                 <div class="govuk-grid-row">
                     <div class="govuk-grid-column-full">

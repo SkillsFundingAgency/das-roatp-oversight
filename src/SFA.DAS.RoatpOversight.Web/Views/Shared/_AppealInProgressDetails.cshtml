@@ -1,0 +1,72 @@
+﻿@using SFA.DAS.AdminService.Common.Extensions
+@model SFA.DAS.RoatpOversight.Web.Models.AppealViewModel
+
+<div class="govuk-form-group">
+    <fieldset class="govuk-fieldset">
+
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h2 class="govuk-heading-l govuk-!-margin-bottom-3">Appeal Outcome</h2>
+        </legend>
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Outcome
+                </dt>
+                <dd class="govuk-summary-list__value">
+                   <span class="govuk-tag das-tag--solid-green">In Progress</span>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Appeal determined date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Appeal.InProgressDate?.ToSfaShortDateString()
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Outcome made by
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Appeal.InProgressUserName
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Internal comments
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <details class="govuk-details" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                View internal comments
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <pre class="govuk-body das-preformatted-body">@Model.Appeal.InProgressInternalComments</pre>
+                        </div>
+                    </details>
+                </dd>
+            </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                External comments
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <details class="govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            View external comments
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <pre class="govuk-body das-preformatted-body">@Model.Appeal.InProgressExternalComments</pre>
+                    </div>
+                </details>
+            </dd>
+        </div>
+        </dl>
+    </fieldset>
+</div>

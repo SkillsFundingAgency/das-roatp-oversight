@@ -1,9 +1,6 @@
 ﻿@using SFA.DAS.AdminService.Common.Extensions
 @model SFA.DAS.RoatpOversight.Domain.AppealDetails
-@{
-    var appealOutcomeTagClass = "govuk-tag das-tag";
-    var appealStatus = "In Progress";
-}
+
 <div class="govuk-form-group">
     <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -15,8 +12,8 @@
                 Outcome
             </dt>
             <dd class="govuk-summary-list__value">
-                <strong class="@appealOutcomeTagClass">
-                    @appealStatus
+                <strong class="govuk-tag das-tag">
+                    In Progress
                 </strong>
             </dd>
 </div>

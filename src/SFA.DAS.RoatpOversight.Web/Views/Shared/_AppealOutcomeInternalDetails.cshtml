@@ -8,33 +8,33 @@
         </legend>
         <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                Outcome
-            </dt>
-            <dd class="govuk-summary-list__value">
-                <strong class="govuk-tag das-tag">
-                    In progress
-                </strong>
-            </dd>
-</div>
+                <dt class="govuk-summary-list__key">
+                    Outcome
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <strong class="govuk-tag das-tag">
+                        In progress
+                    </strong>
+                </dd>
+            </div>
 
-<div class="govuk-summary-list__row">
-    <dt class="govuk-summary-list__key">
-        Appeal determined date
-    </dt>
-    <dd class="govuk-summary-list__value">
-        @Model.InProgressDate.ToSfaShortDateString()
-    </dd>
-</div>
-<div class="govuk-summary-list__row">
-    <dt class="govuk-summary-list__key">
-        Outcome made by
-    </dt>
-    <dd class="govuk-summary-list__value">
-        @Model.InProgressUserName
-    </dd>
-</div>
- <partial name="_AppealInprogressComments" for="@Model" />
-    </dl>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Appeal determined date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.InProgressDate.ToSfaShortDateString()
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Outcome made by
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.InProgressUserName
+                </dd>
+            </div>
+            <partial name="_AppealInprogressComments" for="@Model" />
+        </dl>
     </fieldset>
-    </div>
+</div>

@@ -1,8 +1,7 @@
 ﻿@using SFA.DAS.RoatpOversight.Domain
-@using SFA.DAS.RoatpOversight.Web.Domain
 @model SFA.DAS.RoatpOversight.Web.Models.AppealViewModel
 @{
-    ViewData["Title"] = "RoATP application outcomes - Application summary";
+    ViewData["Title"] = "RoATP application outcomes - Application summary";    
 }
 
 <div class="govuk-breadcrumbs">
@@ -102,14 +101,25 @@
                 <div class="govuk-grid-column-full">
                     <partial name="_AppealDetails" for="@Model.Appeal" />
                 </div>
-            </div> 
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-full">
-                    <partial name="_AppealOutcomeDetails" for="@Model.Appeal" />
-                </div>
             </div>
-        }
+            if (Model.Appeal.InProgressDate.HasValue)
+            {
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-full">
+                        <partial name="_AppealOutcomeInternalDetails" for="@Model.Appeal" />
+                    </div>
+                </div>
+            }
+            if (Model.Appeal.Status != AppealStatus.InProgress)
+            {
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-full">
+                     <partial name="_AppealOutcomeDetails" for="@Model.Appeal" />
+                    </div>
+                </div>
+            }
 
+        }
 
     </form>
 </main>

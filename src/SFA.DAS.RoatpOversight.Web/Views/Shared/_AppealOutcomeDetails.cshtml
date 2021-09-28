@@ -1,12 +1,10 @@
 ﻿@using SFA.DAS.AdminService.Common.Extensions
-@using SFA.DAS.RoatpOversight.Web.Extensions
 @using SFA.DAS.RoatpOversight.Domain
 @model SFA.DAS.RoatpOversight.Domain.AppealDetails
 @{
     var appealOutcomeTagClass = string.Empty;
     var appealStatus = string.Empty;
     bool showApplicationSectionOutcome = false;
-
 
     if (Model.Status == AppealStatus.Unsuccessful)
     {
@@ -72,16 +70,16 @@
     </dd>
 </div>
 @if (appealStatus == AppealStatus.Successful)
-{   
+{
     <partial name="_AppealSuccessComments.cshtml" model="@Model" />
 }
 else if (appealStatus == AppealStatus.InProgress)
-{    
+{   
     <partial name="_AppealInprogressComments.cshtml" model="@Model" />
 }
 else
-{   
-    <partial name="_AppealOutcomeComments.cshtml" model="@Model" />
+{
+    <partial name="_AppealOutcomeComments.cshtml" model="@Model" />    
 }
     </dl>
     </fieldset>

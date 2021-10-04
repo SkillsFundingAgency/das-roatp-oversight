@@ -158,7 +158,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
             await _outcomeOrchestrator.RecordAppeal(request.ApplicationId, request.AppealStatus, userId, userName, request.InternalComments, request.ExternalComments);
 
-            return RedirectToAction("AppealConfirmed", new { request.ApplicationId, request.AppealStatus});
+            return RedirectToAction("AppealConfirmed", new { request.ApplicationId });
         }
 
         [HttpGet("Oversight/Appeal/{applicationId}/confirmed")]

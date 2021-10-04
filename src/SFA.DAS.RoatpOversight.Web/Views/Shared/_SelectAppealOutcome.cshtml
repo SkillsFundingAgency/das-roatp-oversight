@@ -10,7 +10,7 @@
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <div das-highlight-error-for="AppealStatus" error-class="govuk-form-group--error" class="govuk-form-group">
+        <div das-highlight-error-for-list="AppealStatus,UnsuccessfulText,UnsuccessfulExternalText,InProgressInternalText,InProgressExternalText" error-class="govuk-form-group--error" class="govuk-form-group">
             <fieldset class="govuk-fieldset" aria-describedby="AppealStatus-error">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h2 class="govuk-heading-l">What is the overall outcome of this appeal?</h2>
@@ -50,7 +50,7 @@
                             </span>
                         </div>
                     }
-                    @if (Model.OnRegister)
+                    else if (Model.OnRegister)
                     {
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input"

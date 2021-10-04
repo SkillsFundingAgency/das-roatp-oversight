@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.RoatpOversight.Web.Models
 {
-    public class ConfirmAppealPostRequest
+    public class ConfirmAppealOutcomePostRequest
     {
         public Guid ApplicationId { get; set; }
         public string AppealStatus { get; set; }

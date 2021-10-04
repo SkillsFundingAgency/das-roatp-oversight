@@ -63,7 +63,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             var oversightReview = _applyApiClient.GetOversightReview(applicationId).Result;
             var onRegister = false;
             var appealDetails = await _applyApiClient.GetAppealDetails(applicationId);
-            
+
             if (applicationDetails?.Ukprn != null)
             {
                 var registerStatus = await _registerApiClient.GetOrganisationRegisterStatus(new GetOrganisationRegisterStatusRequest { UKPRN = applicationDetails.Ukprn });
@@ -290,9 +290,18 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             return viewModel;
         }
 
+        public async Task<AppealConfirmedViewModel> GetAppealConfirmedViewModel(Guid applicationId)
+        {
+            var appealDetails = await _applyApiClient.GetAppealDetails(applicationId);
 
+            return new AppealConfirmedViewModel
+            {
+                ApplicationId = applicationId,
+                AppealStatus = appealDetails.Status
+            };
+        }
 
-        public async Task<ConfirmAppealViewModel> GetConfirmAppealViewModel(Guid applicationId, Guid confirmCacheKey)
+        public async Task<ConfirmAppealViewModel> GetConfirmAppealOutcomeViewModel(Guid applicationId, Guid confirmCacheKey)
         {
             var cachedItem =
                 await _cacheStorageService.RetrieveFromCache<AppealPostRequest>(confirmCacheKey.ToString());

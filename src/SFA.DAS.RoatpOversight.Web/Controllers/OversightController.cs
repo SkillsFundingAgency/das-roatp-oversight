@@ -109,7 +109,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             var userName = HttpContext.User.UserDisplayName();
 
             var cacheKey = await _oversightOrchestrator.SaveAppealPostRequestToCache(request);
-            return RedirectToAction("ConfirmAppeal", new { applicationId = request.ApplicationId, OutcomeKey = cacheKey });
+            return RedirectToAction("ConfirmAppealOutcome", new { applicationId = request.ApplicationId, OutcomeKey = cacheKey });
         }
 
         [HttpGet("Oversight/AppealOutcome/{applicationId}")]
@@ -127,11 +127,11 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         }
 
         [HttpGet("Oversight/Appeal/{applicationId}/confirm/{outcomeKey}")]
-        public async Task<IActionResult> ConfirmAppeal(ConfirmAppealRequest request)
+        public async Task<IActionResult> ConfirmAppealOutcome(ConfirmAppealOutcomeRequest request)
         {
             try
             {
-                var viewModel = await _oversightOrchestrator.GetConfirmAppealViewModel(request.ApplicationId, request.OutcomeKey);
+                var viewModel = await _oversightOrchestrator.GetConfirmAppealOutcomeViewModel(request.ApplicationId, request.OutcomeKey);
                 return View(viewModel);
             }
             catch (ConfirmOutcomeCacheKeyNotFoundException)
@@ -146,7 +146,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
 
         [HttpPost("Oversight/Appeal/{applicationId}/confirm/{outcomeKey}")]
-        public async Task<IActionResult> ConfirmAppeal(ConfirmAppealPostRequest request)
+        public async Task<IActionResult> ConfirmAppealOutcome(ConfirmAppealOutcomePostRequest request)
         {
             if (request.Confirm == OversightConfirmationStatus.No)
             {
@@ -164,7 +164,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         [HttpGet("Oversight/Appeal/{applicationId}/confirmed")]
         public async Task<IActionResult> AppealConfirmed(AppealConfirmedRequest request)
         {
-             var viewModel = new AppealConfirmedViewModel {ApplicationId = request.ApplicationId, AppealStatus = request.AppealStatus};
+            var viewModel = await _oversightOrchestrator.GetAppealConfirmedViewModel(request.ApplicationId);
 
             return View(viewModel);
         }

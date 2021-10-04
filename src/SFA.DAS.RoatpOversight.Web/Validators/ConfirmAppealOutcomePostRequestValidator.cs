@@ -4,15 +4,15 @@ using SFA.DAS.RoatpOversight.Web.Models;
 
 namespace SFA.DAS.RoatpOversight.Web.Validators
 {
-    public class ConfirmAppealPostRequestValidator : AbstractValidator<ConfirmAppealPostRequest>
+    public class ConfirmAppealOutcomePostRequestValidator : AbstractValidator<ConfirmAppealOutcomePostRequest>
     {
-        public ConfirmAppealPostRequestValidator()
+        public ConfirmAppealOutcomePostRequestValidator()
         {
             RuleFor(x => x.Confirm).NotEmpty().WithMessage(GetConfirmationErrorMessage);
         }
     
 
-    private string GetConfirmationErrorMessage(ConfirmAppealPostRequest arg)
+    private string GetConfirmationErrorMessage(ConfirmAppealOutcomePostRequest arg)
         {
             var statusLabel = "";
             switch (arg.AppealStatus)

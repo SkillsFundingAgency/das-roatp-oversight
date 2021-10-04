@@ -56,10 +56,10 @@
                 </ul>
 
                 <div class="govuk-tabs__panel @(Model.SelectedTab != null && Model.SelectedTab != "applications" ? "govuk-tabs__panel--hidden" : "")" id="applications">
-                    @if (Model.ApplicationCount > 0)
-                    {
-                        <table class="govuk-table das-table--condensed das-table--responsive-wide">
-                            <caption class="govuk-table__caption govuk-heading-l">Applications</caption>
+                    <table class="govuk-table das-table--condensed das-table--responsive-wide">
+                        <caption class="govuk-table__caption govuk-heading-l">Applications</caption>
+                        @if (Model.ApplicationCount > 0)
+                        {
                             <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
                                     <th scope="col" class="govuk-table__header">Organisation name</th>
@@ -104,64 +104,64 @@
                                     </tr>
                                 }
                             </tbody>
-                        </table>
-                    }
-                    else
-                    {
-                        <p class="govuk-body-l">No applications to assess.</p>
-                    }
+                        }
+                        else
+                        {
+                            <tr class="govuk-table__row"><td>No applications to assess.</td></tr>
+                        }
+                    </table>
                 </div>
                 <div class="govuk-tabs__panel @(Model.SelectedTab != "outcomes" ? "govuk-tabs__panel--hidden" : "")" id="outcomes">
-                @if (Model.OverallOutcomeCount > 0)
-                {
                     <table class="govuk-table das-table--condensed das-table--responsive-wide">
-                        <caption class="govuk-table__caption govuk-heading-l">Overall outcome</caption>
-                        <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                                <th scope="col" class="govuk-table__header">Organisation name</th>
-                                <th scope="col" class="govuk-table__header">UKPRN</th>
-                                <th scope="col" class="govuk-table__header">Provider route</th>
-                                <th scope="col" class="govuk-table__header">Application reference number</th>
-                                <th class="govuk-table__header" scope="col">
-                                    <sfa-roatp-sortable-column selected-tab="outcomes" column-name="SubmittedDate" column-label="Application submitted date" default="true" default-order="Descending" />
-                                </th>
-                                <th scope="col" class="govuk-table__header">Application determined date</th>
-                                <th scope="col" class="govuk-table__header">Overall outcome</th>
-                            </tr>
-                        </thead>
-                        <tbody class="govuk-table__body">
-                            @foreach (var outcome in Model.OverallOutcomeDetails.Reviews)
-                            {
-
+                        <caption class="govuk-table__caption govuk-heading-l">Application outcomes</caption>
+                        @if (Model.OverallOutcomeCount > 0)
+                        {
+                            <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
-                                    <td data-label="Organisation name" class="govuk-table__cell">
-                                        <a class="govuk-link govuk-!-margin-bottom-0" asp-action="Outcome" asp-route-id="@outcome.ApplicationId">
-                                            @outcome.OrganisationName
-                                        </a>
-                                    </td>
-                                    <td data-label="UKPRN" class="govuk-table__cell">@outcome.Ukprn</td>
-                                    <td data-label="Provider route" class="govuk-table__cell">@outcome.ProviderRoute</td>
-                                    <td data-label="Application reference number" class="govuk-table__cell">@outcome.ApplicationReferenceNumber</td>
-                                    <td data-label="Application submitted date" class="govuk-table__cell">@outcome.ApplicationSubmittedDate.ToSfaShortDateString()</td>
-                                    <td data-label="Application determined date" class="govuk-table__cell">@outcome.ApplicationDeterminedDate.ToSfaShortDateString()</td>
-                                    <td data-label="Overall outcome" class="govuk-table__cell">
-                                        <span class="das-no-wrap @outcome.OversightStatus.GetCssClass()">@outcome.OversightStatus.GetLabel()</span>
-                                    </td>
+                                    <th scope="col" class="govuk-table__header">Organisation name</th>
+                                    <th scope="col" class="govuk-table__header">UKPRN</th>
+                                    <th scope="col" class="govuk-table__header">Provider route</th>
+                                    <th scope="col" class="govuk-table__header">Application reference number</th>
+                                    <th class="govuk-table__header" scope="col">
+                                        <sfa-roatp-sortable-column selected-tab="outcomes" column-name="SubmittedDate" column-label="Application submitted date" default="true" default-order="Descending" />
+                                    </th>
+                                    <th scope="col" class="govuk-table__header">Application determined date</th>
+                                    <th scope="col" class="govuk-table__header">Overall outcome</th>
                                 </tr>
-                            }
-                        </tbody>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                @foreach (var outcome in Model.OverallOutcomeDetails.Reviews)
+                                {
+
+                                    <tr class="govuk-table__row">
+                                        <td data-label="Organisation name" class="govuk-table__cell">
+                                            <a class="govuk-link govuk-!-margin-bottom-0" asp-action="Outcome" asp-route-id="@outcome.ApplicationId">
+                                                @outcome.OrganisationName
+                                            </a>
+                                        </td>
+                                        <td data-label="UKPRN" class="govuk-table__cell">@outcome.Ukprn</td>
+                                        <td data-label="Provider route" class="govuk-table__cell">@outcome.ProviderRoute</td>
+                                        <td data-label="Application reference number" class="govuk-table__cell">@outcome.ApplicationReferenceNumber</td>
+                                        <td data-label="Application submitted date" class="govuk-table__cell">@outcome.ApplicationSubmittedDate.ToSfaShortDateString()</td>
+                                        <td data-label="Application determined date" class="govuk-table__cell">@outcome.ApplicationDeterminedDate.ToSfaShortDateString()</td>
+                                        <td data-label="Overall outcome" class="govuk-table__cell">
+                                            <span class="das-no-wrap @outcome.OversightStatus.GetCssClass()">@outcome.OversightStatus.GetLabel()</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        }
+                        else
+                        {
+                            <tr class="govuk-table__row"><td>No application outcomes.</td></tr>
+                        }
                     </table>
-                }
-                else
-                {
-                    <p class="govuk-body-l">No overall outcomes.</p>
-                }
-            </div>
+                </div>
                 <div class="govuk-tabs__panel @(Model.SelectedTab != "appeals" ? "govuk-tabs__panel--hidden" : "")" id="appeals">
-                    @if (Model.AppealsCount > 0)
-                    {
-                        <table class="govuk-table das-table--condensed das-table--responsive-wide">
-                            <caption class="govuk-table__caption govuk-heading-l">Appeals</caption>
+                    <table class="govuk-table das-table--condensed das-table--responsive-wide">
+                        <caption class="govuk-table__caption govuk-heading-l">Appeals</caption>
+                        @if (Model.AppealsCount > 0)
+                        {
                             <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
                                     <th scope="col" class="govuk-table__header">Organisation name</th>
@@ -176,7 +176,7 @@
                                     </th>
                                     <th class="govuk-table__header" scope="col">
                                         <sfa-roatp-sortable-column selected-tab="appeals" column-name="AppealSubmittedDate" column-label="Appeal submitted date" default="true" default-order="Descending" />
-                                    </th>                                    
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="govuk-table__body">
@@ -194,23 +194,22 @@
                                         <td data-label="Application reference number" class="govuk-table__cell">@outcome.ApplicationReferenceNumber</td>
                                         <td data-label="Application submitted date" class="govuk-table__cell">@outcome.ApplicationSubmittedDate.ToSfaShortDateString()</td>
                                         <td data-label="Application determined date" class="govuk-table__cell">@outcome.ApplicationDeterminedDate.ToSfaShortDateString()</td>
-                                        <td data-label="Appeal submitted date" class="govuk-table__cell">@outcome.AppealSubmittedDate.ToSfaShortDateString()</td>                                       
+                                        <td data-label="Appeal submitted date" class="govuk-table__cell">@outcome.AppealSubmittedDate.ToSfaShortDateString()</td>
                                     </tr>
                                 }
                             </tbody>
-                        </table>
-                    }
-                    else
-                    {
-                        <p class="govuk-body-l"> No applications to assess.</p>
-                    }
+                        }
+                        else
+                        {
+                            <tr class="govuk-table__row"><td>No appeals to assess.</td></tr>
+                        }
+                    </table>
                 </div>
                 <div class="govuk-tabs__panel @(Model.SelectedTab != "appealsoutcome" ? "govuk-tabs__panel--hidden" : "")" id="appealoutcome">
-
-                    @if (Model.AppealsOutcomeCount > 0)
-                    {
-                        <table class="govuk-table das-table--condensed das-table--responsive-wide">
-                            <caption class="govuk-table__caption govuk-heading-l">Appeal outcomes</caption>
+                    <table class="govuk-table das-table--condensed das-table--responsive-wide">
+                        <caption class="govuk-table__caption govuk-heading-l">Appeal outcomes</caption>
+                        @if (Model.AppealsOutcomeCount > 0)
+                        {
                             <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
                                     <th scope="col" class="govuk-table__header">Organisation name</th>
@@ -222,54 +221,46 @@
                                         <sfa-roatp-sortable-column selected-tab="appealsoutcome" column-name="AppealDeterminedDate" column-label="Appeal determined date" default="true" default-order="Descending" />
                                     </th>
                                     <th scope="col" class="govuk-table__header">Appeal outcome</th>
-                                </tr>  
+                                </tr>
                             </thead>
                             <tbody class="govuk-table__body">
                                 @foreach (var application in Model.CompleteAppealsDetails.Reviews)
                                 {
-                                <tr class="govuk-table__row">
-                                    <td data-label="Organisation name" class="govuk-table__cell">
-                                        @if(application.AppealStatus!=AppealStatus.InProgress)
-                                        {
-                                            <a class="govuk-link govuk-!-margin-bottom-0" asp-action="AppealOutcome" asp-route-id="@application.ApplicationId">
-                                                @application.OrganisationName
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <a class="govuk-link govuk-!-margin-bottom-0" asp-action="Appeal" asp-route-id="@application.ApplicationId">
-                                                @application.OrganisationName
-                                            </a>
-                                        }	
-                                    </td>
-                                    <td data-label="UKPRN" class="govuk-table__cell">@application.Ukprn</td>
-                                    <td data-label="Provider route" class="govuk-table__cell">@application.ProviderRoute</td>
-                                    <td data-label="Application reference number" class="govuk-table__cell">@application.ApplicationReferenceNumber</td>
-                                    <td data-label="Appeal submitted date" class="govuk-table__cell">@application.AppealSubmittedDate.ToSfaShortDateString()</td>
-                                    <td data-label="Appeal determined date" class="govuk-table__cell">@application.AppealDeterminedDate.ToSfaShortDateString()</td>                                   
-                                    <td data-label="Overall outcome" class="govuk-table__cell">
-                                        <span class="das-no-wrap @application.AppealStatus.GetCssClass()">@application.AppealStatus.GetLabel()</span>
-                                    </td>
-                                </tr> 
-                                } 
+                                    <tr class="govuk-table__row">
+                                        <td data-label="Organisation name" class="govuk-table__cell">
+                                            @if (application.AppealStatus != AppealStatus.InProgress)
+                                            {
+                                                <a class="govuk-link govuk-!-margin-bottom-0" asp-action="AppealOutcome" asp-route-id="@application.ApplicationId">
+                                                    @application.OrganisationName
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a class="govuk-link govuk-!-margin-bottom-0" asp-action="Appeal" asp-route-id="@application.ApplicationId">
+                                                    @application.OrganisationName
+                                                </a>
+                                            }
+                                        </td>
+                                        <td data-label="UKPRN" class="govuk-table__cell">@application.Ukprn</td>
+                                        <td data-label="Provider route" class="govuk-table__cell">@application.ProviderRoute</td>
+                                        <td data-label="Application reference number" class="govuk-table__cell">@application.ApplicationReferenceNumber</td>
+                                        <td data-label="Appeal submitted date" class="govuk-table__cell">@application.AppealSubmittedDate.ToSfaShortDateString()</td>
+                                        <td data-label="Appeal determined date" class="govuk-table__cell">@application.AppealDeterminedDate.ToSfaShortDateString()</td>
+                                        <td data-label="Overall outcome" class="govuk-table__cell">
+                                            <span class="das-no-wrap @application.AppealStatus.GetCssClass()">@application.AppealStatus.GetLabel()</span>
+                                        </td>
+                                    </tr>
+
+                                }
                             </tbody>
-                        </table>
-                    }
-                    else
-                    {
-                        <p class="govuk-body-l"> No overall outcomes.</p>
-                    } 
+                        }
+                        else
+                        {
+                            <tr class="govuk-table__row"><td>No appeal outcomes.</td></tr>
+                        }
+                    </table>
                 </div>
-                </div>
-          </div>
+            </div>
+        </div>
     </div>
-
-    @*
-
-        <p class="govuk-body">
-            <a class="govuk-link" asp-controller="Home" asp-action="Index">Back</a>
-        </p>
-
-    *@
-
 </main>

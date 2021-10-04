@@ -35,7 +35,7 @@ namespace SFA.DAS.RoatpOversight.Web.TagHelpers
                     if (ViewContext.ModelState.TryGetValue(propertyName, out var modelStateEntry) && modelStateEntry.Errors.Count > 0)
                     {
                         var tagBuilder = new TagBuilder(context.TagName);
-                        tagBuilder.AddCssClass(ErrorCssClass);
+                        tagBuilder.AddCssClass(CssClass);
                         output.MergeAttributes(tagBuilder);
                         break;
                     }

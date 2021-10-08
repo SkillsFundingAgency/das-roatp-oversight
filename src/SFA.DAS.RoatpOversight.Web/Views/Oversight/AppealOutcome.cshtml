@@ -56,23 +56,22 @@
         }
     }
 
+    @if (Model.HasFinalOutcome)
+    {
+        <partial name="_OverallOutcome" for="@Model.OverallOutcome" />
+    }
 
-        @if (Model.HasFinalOutcome)
+    @if (Model.Appeal != null)
+    {
+        <partial name="_AppealDetails" for="@Model.Appeal" />
+        
+        if (Model.Appeal.InProgressDate.HasValue)
         {
-            <partial name="_OverallOutcome" for="@Model.OverallOutcome" />
+            <partial name="_AppealOutcomeInternalDetails" for="@Model.Appeal" />
         }
-
-        @if (Model.Appeal != null)
+        if (Model.Appeal.Status != AppealStatus.InProgress)
         {
-            <partial name="_AppealDetails" for="@Model.Appeal" />
-            
-            if (Model.Appeal.InProgressDate.HasValue)
-            {
-                <partial name="_AppealOutcomeInternalDetails" for="@Model.Appeal" />
-            }
-            if (Model.Appeal.Status != AppealStatus.InProgress)
-            {
-                <partial name="_AppealOutcomeDetails" for="@Model.Appeal" />
-            }
+            <partial name="_AppealOutcomeDetails" for="@Model.Appeal" />
         }
+    }
 </main>

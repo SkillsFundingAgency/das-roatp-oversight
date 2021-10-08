@@ -1,40 +1,35 @@
 ﻿@using SFA.DAS.AdminService.Common.Extensions
 @model SFA.DAS.RoatpOversight.Domain.AppealDetails
 
-<div class="govuk-form-group">
-    <fieldset class="govuk-fieldset">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-            <h2 class="govuk-heading-l govuk-!-margin-bottom-3">Appeal outcome</h2>
-        </legend>
-        <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Outcome
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    <strong class="govuk-tag das-tag--solid-blue">
-                        In progress
-                    </strong>
-                </dd>
-            </div>
-
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Appeal determined date
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.InProgressDate.ToSfaShortDateString()
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Outcome made by
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.InProgressUserName
-                </dd>
-            </div>
-            <partial name="_AppealInprogressComments" for="@Model" />
-        </dl>
-    </fieldset>
+<div class="govuk-!-margin-bottom-8">
+    <h2 class="govuk-heading-l">Appeal outcome</h2>
+    <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Outcome
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <strong class="govuk-tag das-tag--solid-blue">
+                    In progress
+                </strong>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Appeal determined date
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @Model.InProgressDate.ToSfaShortDateString()
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Outcome made by
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @Model.InProgressUserName
+            </dd>
+        </div>
+        <partial name="_AppealInprogressComments" for="@Model" />
+    </dl>
 </div>

@@ -17,15 +17,10 @@
 </div>
 
 <main class="govuk-main-wrapper">
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
 
-            <partial name="_ValidationSummaryPartial" />
-
-            <span class="govuk-caption-xl">
-                RoATP application outcomes
-            </span>
+            <span class="govuk-caption-xl">RoATP application outcomes</span>
             <h1 class="govuk-heading-xl">Application summary</h1>
 
             <partial name="_ApplicationSummary" for="@Model.ApplicationSummary" />
@@ -41,85 +36,43 @@
         </div>
     </div>
 
-    <form class="js-disable-on-submit" method="post">
+    @if (!Model.OverallOutcome.IsGatewayOutcome)
+    {
+        <div class="govuk-!-margin-bottom-8">
+            <partial name="_GatewayOutcome" for="@Model.GatewayOutcome" />
+        </div>
 
-        <input type="hidden" name="ApplicationId" value="@Model.ApplicationSummary.ApplicationId" />
-        <input type="hidden" asp-for="IsGatewayFail" />
-        <input type="hidden" asp-for="IsGatewayRemoved" />
-
-        @if (!Model.OverallOutcome.IsGatewayOutcome)
+        @if (!Model.GatewayOutcome.GatewayReviewStatus.Contains(GatewayReviewStatus.Fail) && !Model.GatewayOutcome.GatewayReviewStatus.Contains(GatewayReviewStatus.Removed))
         {
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-full">
+            <div class="govuk-!-margin-bottom-8">
+                <h2 class="govuk-heading-m">Financial health outcome</h2>
+                <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome" />
+            </div>
 
-                    <div das-highlight-error-for="ApproveGateway" error-class="govuk-form-group--error" class="govuk-form-group">
-                        <fieldset class="govuk-fieldset" aria-describedby="ApproveGateway-error">
-
-                            <partial name="_GatewayOutcome" for="@Model.GatewayOutcome" />
-
-                        </fieldset>
-                    </div>
-
-                    @if (!Model.GatewayOutcome.GatewayReviewStatus.Contains(GatewayReviewStatus.Fail) && !Model.GatewayOutcome.GatewayReviewStatus.Contains(GatewayReviewStatus.Removed))
-                    {
-                        <div class="govuk-form-group">
-                            <fieldset class="govuk-fieldset">
-                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                                    <h2 class="govuk-heading-m">Financial health outcome</h2>
-                                </legend>
-                                <partial name="_FinancialHealthOutcome" for="@Model.FinancialHealthOutcome" />
-                            </fieldset>
-                        </div>
-
-                        <div das-highlight-error-for="ApproveModeration" error-class="govuk-form-group--error" class="govuk-form-group">
-                            <fieldset class="govuk-fieldset" aria-describedby="ApproveModeration-error">
-                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                                    <h2 class="govuk-heading-m">Moderation outcome</h2>
-                                </legend>
-
-                                <partial name="_ModerationOutcome" for="@Model.ModerationOutcome" />
-                            </fieldset>
-                        </div>
-                    }
-                </div>
+            <div class="govuk-!-margin-bottom-8">
+                <h2 class="govuk-heading-m">Moderation outcome</h2>
+                <partial name="_ModerationOutcome" for="@Model.ModerationOutcome" />
             </div>
         }
-
+    }
 
 
         @if (Model.HasFinalOutcome)
         {
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-full">
-                    <partial name="_OverallOutcome" for="@Model.OverallOutcome" />
-                </div>
-            </div>
+            <partial name="_OverallOutcome" for="@Model.OverallOutcome" />
         }
+
         @if (Model.Appeal != null)
         {
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-full">
-                    <partial name="_AppealDetails" for="@Model.Appeal" />
-                </div>
-            </div>
+            <partial name="_AppealDetails" for="@Model.Appeal" />
+            
             if (Model.Appeal.InProgressDate.HasValue)
             {
-                <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-full">
-                        <partial name="_AppealOutcomeInternalDetails" for="@Model.Appeal" />
-                    </div>
-                </div>
+                <partial name="_AppealOutcomeInternalDetails" for="@Model.Appeal" />
             }
             if (Model.Appeal.Status != AppealStatus.InProgress)
             {
-                <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-full">
-                     <partial name="_AppealOutcomeDetails" for="@Model.Appeal" />
-                    </div>
-                </div>
+                <partial name="_AppealOutcomeDetails" for="@Model.Appeal" />
             }
-
         }
-
-    </form>
 </main>

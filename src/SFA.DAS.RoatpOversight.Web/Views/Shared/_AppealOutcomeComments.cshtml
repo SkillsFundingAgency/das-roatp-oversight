@@ -6,7 +6,7 @@
     <dd class="govuk-summary-list__value">
         @if (string.IsNullOrEmpty(Model.InternalComments))
         {
-            <text>N/A</text>
+            <span>N/A</span>
         }
         else
         {
@@ -24,27 +24,26 @@
     </dd>
 </div>
 <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-            External Comments
-        </dt>
-        <dd class="govuk-summary-list__value">
-            @if (string.IsNullOrEmpty(Model.ExternalComments))
-            {
-                <text>N/A</text>
-            }
-            else
-            {
-                <details class="govuk-details" data-module="govuk-details">
-                    <summary class="govuk-details__summary">
-                        <span class="govuk-details__summary-text">
-                            View external comments
-                        </span>
-                    </summary>
-                    <div class="govuk-details__text">
-                        <pre class="govuk-body das-preformatted-body">@Model.ExternalComments</pre>
-                    </div>
-                </details>
-            }
-
-        </dd>
-    </div>
+    <dt class="govuk-summary-list__key">
+        External Comments
+    </dt>
+    <dd class="govuk-summary-list__value">
+        @if (string.IsNullOrEmpty(Model.ExternalComments))
+        {
+            <span>N/A</span>
+        }
+        else
+        {
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        View external comments
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <pre class="govuk-body das-preformatted-body">@Model.ExternalComments</pre>
+                </div>
+            </details>
+        }
+    </dd>
+</div>

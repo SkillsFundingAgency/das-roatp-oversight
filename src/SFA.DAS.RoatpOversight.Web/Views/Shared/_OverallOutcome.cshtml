@@ -2,15 +2,12 @@
 @using SFA.DAS.RoatpOversight.Web.Extensions
 @model SFA.DAS.RoatpOversight.Web.Models.Partials.OverallOutcomeViewModel
 
-<div class="govuk-form-group">
-    <fieldset class="govuk-fieldset">
+<div class="govuk-!-margin-bottom-8">
 
-        @if (Model.ShowHeading)
-        {
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h2 class="govuk-heading-l govuk-!-margin-bottom-3">Overall outcome</h2>
-            </legend>
-        }
+    @if (Model.ShowHeading)
+    {
+            <h2 class="govuk-heading-l">Overall outcome</h2>
+    }
 
     <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
@@ -81,5 +78,4 @@
             </div>
         }
     </dl>
-    </fieldset>
 </div>

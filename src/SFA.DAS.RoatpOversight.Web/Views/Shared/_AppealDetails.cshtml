@@ -2,84 +2,76 @@
 @using SFA.DAS.RoatpOversight.Web.Extensions
 @model SFA.DAS.RoatpOversight.Domain.AppealDetails
 
-<div class="govuk-form-group">
-    <fieldset class="govuk-fieldset">
-
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h2 class="govuk-heading-l govuk-!-margin-bottom-3">Appeal</h2>
-            </legend>
-
-        <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Appeal submitted date
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.AppealSubmittedDate.ToSfaShortDateString()
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Applicant's grounds for appeal
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @if (!string.IsNullOrEmpty(Model.HowFailedOnPolicyOrProcesses))
-                    {
-                    <details class="govuk-details das-margin-bottom-5" data-module="govuk-details">
+<div class="govuk-!-margin-bottom-8">
+    <h2 class="govuk-heading-l">Appeal</h2>
+    <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Appeal submitted date
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @Model.AppealSubmittedDate.ToSfaShortDateString()
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Applicant's grounds for appeal
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @if (!string.IsNullOrEmpty(Model.HowFailedOnPolicyOrProcesses))
+                {
+                <details class="govuk-details das-margin-bottom-5" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            The ESFA has failed to follow its own policy or process
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <pre class="govuk-body das-preformatted-body">@Model.HowFailedOnPolicyOrProcesses</pre>
+                    </div>
+                </details>
+                }
+                @if (!string.IsNullOrEmpty(Model.HowFailedOnEvidenceSubmitted))
+                {
+                    <details class="govuk-details" data-module="govuk-details">
                         <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
-                                The ESFA has failed to follow its own policy or process
+                                The ESFA has failed to understand or recognise the evidence submitted
                             </span>
                         </summary>
                         <div class="govuk-details__text">
-                            <pre class="govuk-body das-preformatted-body">@Model.HowFailedOnPolicyOrProcesses</pre>
+                            <pre class="govuk-body das-preformatted-body">@Model.HowFailedOnEvidenceSubmitted</pre>
                         </div>
                     </details>
-                    }
-                    @if (!string.IsNullOrEmpty(Model.HowFailedOnEvidenceSubmitted))
-                    {
-                        <details class="govuk-details" data-module="govuk-details">
-                            <summary class="govuk-details__summary">
-                                <span class="govuk-details__summary-text">
-                                    The ESFA has failed to understand or recognise the evidence submitted
-                                </span>
-                            </summary>
-                            <div class="govuk-details__text">
-                                <pre class="govuk-body das-preformatted-body">@Model.HowFailedOnEvidenceSubmitted</pre>
-                            </div>
-                        </details>
-                    }
-                </dd>
-            </div>
-            
-           
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Uploaded files
-                </dt>
+                }
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Uploaded files
+            </dt>
 
-                @if (Model.AppealFiles != null && Model.AppealFiles.Count > 0)
-                {
-                    <dd class="govuk-summary-list__value">
-                        <ul class="govuk-list">
-                            @foreach (var file in Model.AppealFiles)
-                            {
-                                <li>
-                                    <a class="govuk-link" asp-action="DownloadAppealFile" asp-controller="Oversight" asp-route-applicationId="@Model.ApplicationId" asp-route-fileName="@file.Filename">
-                                        @file.Filename
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </dd>
-                }
-                else
-                {
-                    <dd class="govuk-summary-list__value">
-                        N/A
-                    </dd>
-                }
-            </div>
-        </dl>
-    </fieldset>
+            @if (Model.AppealFiles != null && Model.AppealFiles.Count > 0)
+            {
+                <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list">
+                        @foreach (var file in Model.AppealFiles)
+                        {
+                            <li>
+                                <a class="govuk-link" asp-action="DownloadAppealFile" asp-controller="Oversight" asp-route-applicationId="@Model.ApplicationId" asp-route-fileName="@file.Filename">
+                                    @file.Filename
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </dd>
+            }
+            else
+            {
+                <dd class="govuk-summary-list__value">
+                    N/A
+                </dd>
+            }
+        </div>
+    </dl>
 </div>

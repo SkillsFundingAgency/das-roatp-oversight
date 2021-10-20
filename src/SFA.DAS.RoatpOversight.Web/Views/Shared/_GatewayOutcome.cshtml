@@ -5,9 +5,7 @@
 
 @if (Model.GatewayReviewStatus == GatewayReviewStatus.Pass)
 {
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-        <h2 class="govuk-heading-m govuk-!-margin-bottom-3">Gateway outcome</h2>
-    </legend>
+    <h2 class="govuk-heading-m">Gateway outcome</h2>
 }
 
 <dl class="govuk-summary-list">
@@ -59,7 +57,7 @@
         <dd class="govuk-summary-list__value">
             @if (string.IsNullOrEmpty(Model.GatewayComments))
             {
-                <text>N/A</text>
+                <span>N/A</span>
             }
             else
             {

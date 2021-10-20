@@ -22,14 +22,13 @@
 
             <partial name="_ValidationSummaryPartial" />
 
-            <form asp-controller="Oversight" asp-action="ConfirmAppeal">
+            <form class="js-disable-on-submit" asp-controller="Oversight" asp-action="ConfirmAppealOutcome">
                 <input type="hidden" asp-for="ApplicationId" />
                 <input type="hidden" asp-for="OutcomeKey" />
                 <input type="hidden" asp-for="AppealStatus" />
                 <input type="hidden" asp-for="InternalComments" />
                 <input type="hidden" asp-for="ExternalComments" />
 
-                <dl class="govuk-summary-list">
                 <div class="govuk-form-group" das-highlight-error-for="Confirm" error-class="govuk-form-group--error">
                     <fieldset class="govuk-fieldset" aria-describedby="Confirm-error">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -53,10 +52,6 @@
                                     @Model.OrganisationName
                                 </dd>
                             </div>
-                            
-                            
-                            
-
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
                                     Provider route
@@ -98,14 +93,13 @@
                                 </dd>
                             </div>
                 
-                        @if (!string.IsNullOrEmpty(@Model.InternalComments))
-                        {
-                            <div class="govuk-summary-list__row">
+                            @if (!string.IsNullOrEmpty(@Model.InternalComments))
+                            {
+                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
                                     Internal comments
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-
                                     <details class="govuk-details das-margin-bottom-5" data-module="govuk-details">
                                         <summary class="govuk-details__summary">
                                             <span class="govuk-details__summary-text">
@@ -117,17 +111,15 @@
                                         </div>
                                     </details>
                                 </dd>
-                            </div>
-                        }
-                        @if (!string.IsNullOrEmpty(@Model.ExternalComments))
-                        {
-                            <div class="govuk-summary-list__row">
+                             </div>
+                            }
+                            @if (!string.IsNullOrEmpty(@Model.ExternalComments))
+                            {
+                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
                                     External comments
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-
-
                                     <details class="govuk-details das-margin-bottom-5" data-module="govuk-details">
                                         <summary class="govuk-details__summary">
                                             <span class="govuk-details__summary-text">
@@ -141,43 +133,42 @@
                                             <pre class="govuk-body das-preformatted-body">@Model.ExternalComments</pre>
                                         </div>
                                     </details>
-
                                 </dd>
-                            </div>
-                        }
+                             </div>
+                            }
                         </dl>
+
                         <span das-validation-for="Confirm" class="govuk-error-message"></span>
 
-                <div class="govuk-radios">
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input"
-                               type="radio"
-                               id="Confirm"
-                               value=@OversightConfirmationStatus.Yes
-                               asp-for="Confirm" />
-                        <label class="govuk-label govuk-radios__label" for="Confirm">
-                            Yes
-                        </label>
-                    </div>
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input"
-                               type="radio"
-                               id="ConfirmNo"
-                               value=@OversightConfirmationStatus.No
-                               asp-for="Confirm" />
-                        <label class="govuk-label govuk-radios__label" for="ConfirmNo">
-                            No
-                        </label>
-                    </div>
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       type="radio"
+                                       id="Confirm"
+                                       value=@OversightConfirmationStatus.Yes
+                                       asp-for="Confirm" />
+                                <label class="govuk-label govuk-radios__label" for="Confirm">
+                                    Yes
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       type="radio"
+                                       id="ConfirmNo"
+                                       value=@OversightConfirmationStatus.No
+                                       asp-for="Confirm" />
+                                <label class="govuk-label govuk-radios__label" for="ConfirmNo">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
-                </fieldset>
-</div>
 
-        <button class="govuk-button" type="submit" data-module="govuk-button">
-            Save and continue
-        </button>
-
-        </form>
-    </div>
+                <button class="govuk-button" type="submit" data-module="govuk-button">
+                    Save and continue
+                </button>
+            </form>
+        </div>
     </div>
 </main>

@@ -6,16 +6,17 @@
     switch (Model.Status)
     {
         case AppealStatus.Successful:
-            boxColour = "das-tag--solid-green";
+            boxColour = "das-panel--confirmation";
             break;
         case AppealStatus.Unsuccessful:
             boxColour = "das-tag--solid-red";
             break;
         default:
-            boxColour = "das-tag--solid-blue";
+            boxColour = "das-panel--featured";
             break;
-        }
     }
+}
+
 <div class="govuk-breadcrumbs">
     <ol class="govuk-breadcrumbs__list">
         <li class="govuk-breadcrumbs__list-item">
@@ -31,14 +32,14 @@
 <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-            <div class="govuk-panel govuk-panel--confirmation @boxColour">
+            <div class="govuk-panel @boxColour">
                 <h1 class="govuk-panel__title">
                     Appeal outcome saved
                 </h1>
                 <div class="govuk-panel__body">
                     @if (Model.Status==AppealStatus.InProgress)
                     {
-                        @Html.Raw("In progress")
+                        <span>In progress</span>
                     }
                     else
                     {

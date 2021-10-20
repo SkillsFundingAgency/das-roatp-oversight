@@ -26,12 +26,10 @@ namespace SFA.DAS.RoatpOversight.Web.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (!ViewContext.ModelState.ContainsKey(Property.Name)) return;
-
-            var modelState = ViewContext.ModelState[Property.Name];
-
-            if (modelState.Errors.Count == 0) return;
-            output.AddClass(CssClass, HtmlEncoder.Default);
+            if (ViewContext.ModelState.TryGetValue(Property.Name, out var modelStateEntry) && modelStateEntry.Errors.Count > 0)
+            {
+                output.AddClass(CssClass, HtmlEncoder.Default);
+            }
         }
     }
 }

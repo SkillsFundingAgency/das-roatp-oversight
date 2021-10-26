@@ -110,7 +110,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
             await _orchestrator.RecordOutcome(_applicationId, false, false, status, UserId, UserName, InternalComments, ExternalComments);
 
             _applicationApiClient.Verify(x => x.RecordOutcome(It.Is<RecordOversightOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
-            _roatpRegisterApiClient.Verify(x => x.UpdateApplicationDeterminedDate(It.Is<UpdateOrganisationApplicationDeterminedDateRequest>(y => y.OrganisationId == _registerStatus.OrganisationId)), Times.Once);
+            _roatpRegisterApiClient.Verify(x => x.UpdateOrganisation(It.Is<UpdateOrganisationRequest>(y => y.OrganisationId == _registerStatus.OrganisationId)), Times.Once);
         }
 
 

@@ -11,7 +11,6 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
 
         Task<bool> UpdateApplicationDeterminedDate(UpdateOrganisationApplicationDeterminedDateRequest request);
 
-
         Task<bool> UpdateOrganisation(UpdateOrganisationRequest request);
     }
 }

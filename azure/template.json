@@ -60,6 +60,9 @@
         "version": {
             "type": "string",
             "defaultValue": "1.0"
+        },
+        "cdnUrl": {
+            "type": "string"
         }
     },
     "variables": {
@@ -175,6 +178,10 @@
                                 {
                                     "name": "Version",
                                     "value": "[parameters('version')]"
+                                },
+                                {
+                                    "name": "cdn:url",
+                                    "value": "[parameters('cdnUrl')]"
                                 }
                             ]
                         }

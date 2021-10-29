@@ -68,6 +68,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                     TradingName = registrationDetails.TradingName,
                 };
 
+                _logger.LogInformation($"Updating organisation details for application {applicationId}");
+
                 return await _registerApiClient.UpdateOrganisation(updateOrganisationRequest);
             }
 

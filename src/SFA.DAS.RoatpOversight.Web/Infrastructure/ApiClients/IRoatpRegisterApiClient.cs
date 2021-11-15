@@ -10,5 +10,7 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
         Task<OrganisationRegisterStatus> GetOrganisationRegisterStatus(GetOrganisationRegisterStatusRequest request);
 
         Task<bool> UpdateApplicationDeterminedDate(UpdateOrganisationApplicationDeterminedDateRequest request);
+
+        Task<bool> UpdateOrganisation(UpdateOrganisationRequest request);
     }
 }

@@ -31,5 +31,11 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
             var result = await Put($"/api/v1/updateorganisation/applicationDeterminedDate", request);
             return await Task.FromResult(result == HttpStatusCode.OK);
         }
+
+        public async Task<bool> UpdateOrganisation(UpdateOrganisationRequest request)
+        {
+            var result = await Put($"/api/v1/organisation/update", request);
+            return await Task.FromResult(result == HttpStatusCode.OK);
+        }
     }
 }

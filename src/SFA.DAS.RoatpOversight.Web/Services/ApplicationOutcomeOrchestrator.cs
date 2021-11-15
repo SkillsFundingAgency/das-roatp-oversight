@@ -55,17 +55,24 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             if ((outcome == OversightReviewStatus.SuccessfulAlreadyActive ||
                  outcome == OversightReviewStatus.SuccessfulFitnessForFunding) && registerStatus.OrganisationId != null)
             {
-                var updateDeterminedDateRequest = new UpdateOrganisationApplicationDeterminedDateRequest
+                var updateOrganisationRequest = new UpdateOrganisationRequest
                 {
                     ApplicationDeterminedDate = DateTime.UtcNow.Date,
                     LegalName = registrationDetails.LegalName,
                     OrganisationId = registerStatus.OrganisationId.Value,
-                    UpdatedBy = userId
+                    Username = userName,
+                    CharityNumber = registrationDetails.CharityNumber,
+                    CompanyNumber = registrationDetails.CompanyNumber,
+                    OrganisationTypeId = registrationDetails.OrganisationTypeId,
+                    ProviderTypeId = registrationDetails.ProviderTypeId,
+                    TradingName = registrationDetails.TradingName,
                 };
 
-                await _registerApiClient.UpdateApplicationDeterminedDate(updateDeterminedDateRequest);
+                _logger.LogInformation($"Updating organisation details for application {applicationId}");
+
+                return await _registerApiClient.UpdateOrganisation(updateOrganisationRequest);
             }
-            
+
             return true;
         }
 

@@ -99,9 +99,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             if (!updateOutcomeSuccess) return false;
 
-            await RecordInRoatp(applicationId, appealStatus, userId, userName, registerStatus, registrationDetails);
-
-            return true;
+            return await RecordInRoatp(applicationId, appealStatus, userId, userName, registerStatus, registrationDetails);
         }
 
         public async Task RecordGatewayFailOutcome(Guid applicationId, string userId, string userName)
@@ -132,7 +130,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             await _applicationApiClient.RecordGatewayRemovedOutcome(command);
         }
 
-        private async Task RecordInRoatp(Guid applicationId, string appealStatus, string userId, string userName,
+        private async Task<bool> RecordInRoatp(Guid applicationId, string appealStatus, string userId, string userName,
             OrganisationRegisterStatus registerStatus, RoatpRegistrationDetails registrationDetails)
         {
             var application = await _applicationApiClient.GetApplicationDetails(applicationId);
@@ -142,24 +140,33 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 if (registerStatus?.OrganisationId != null && (appealStatus == AppealStatus.SuccessfulAlreadyActive ||
                                                                appealStatus == AppealStatus.SuccessfulFitnessForFunding))
                 {
-                    var updateDeterminedDateRequest = new UpdateOrganisationApplicationDeterminedDateRequest
+                    var updateOrganisationRequest = new UpdateOrganisationRequest
                     {
                         ApplicationDeterminedDate = DateTime.UtcNow.Date,
                         LegalName = registrationDetails.LegalName,
                         OrganisationId = registerStatus.OrganisationId.Value,
-                        UpdatedBy = userId
+                        Username = userName,
+                        CharityNumber = registrationDetails.CharityNumber,
+                        CompanyNumber = registrationDetails.CompanyNumber,
+                        OrganisationTypeId = registrationDetails.OrganisationTypeId,
+                        ProviderTypeId = registrationDetails.ProviderTypeId,
+                        TradingName = registrationDetails.TradingName,
                     };
 
-                    await _registerApiClient.UpdateApplicationDeterminedDate(updateDeterminedDateRequest);
-                }
+                    _logger.LogInformation($"Updating organisation details for application {applicationId}");
 
+                    return await _registerApiClient.UpdateOrganisation(updateOrganisationRequest);
+                }
+                
                 if (appealStatus == AppealStatus.Successful)
                 {
                     var request = BuildCreateOrganisationRequest(userName, registrationDetails);
 
-                    await _registerApiClient.CreateOrganisation(request);
+                    return await _registerApiClient.CreateOrganisation(request);
                 }
+                
             }
+            return true;
         }
 
         private static CreateRoatpOrganisationRequest BuildCreateOrganisationRequest(string userName, RoatpRegistrationDetails registrationDetails)

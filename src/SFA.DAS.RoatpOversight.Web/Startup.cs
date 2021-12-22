@@ -197,13 +197,13 @@ namespace SFA.DAS.RoatpOversight.Web
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
             app.UseCookiePolicy();
-            app.UseAuthentication();
             app.UseSession();
             app.UseRequestLocalization();
             app.UseStatusCodePagesWithReExecute("/ErrorPage/{0}");
             app.UseSecurityHeaders();
+            app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseDasHealthChecks();
             app.UseMvc(routes =>
             {

@@ -20,6 +20,7 @@ using Polly.Extensions.Http;
 using SFA.DAS.AdminService.Common;
 using SFA.DAS.AdminService.Common.Extensions;
 using SFA.DAS.RoatpOversight.Web.Domain;
+using SFA.DAS.RoatpOversight.Web.Extensions;
 using SFA.DAS.RoatpOversight.Web.HealthChecks;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService;
@@ -202,7 +203,9 @@ namespace SFA.DAS.RoatpOversight.Web
             app.UseRequestLocalization();
             app.UseStatusCodePagesWithReExecute("/ErrorPage/{0}");
             app.UseSecurityHeaders();
+            app.UseMiddleware<SecurityHeadersMiddleware>();
             app.UseStaticFiles();
+            
             app.UseAuthentication();
             app.UseDasHealthChecks();
             app.UseMvc(routes =>

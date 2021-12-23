@@ -205,7 +205,6 @@ namespace SFA.DAS.RoatpOversight.Web
             app.UseSecurityHeaders();
             app.UseMiddleware<SecurityHeadersMiddleware>();
             app.UseStaticFiles();
-            
             app.UseAuthentication();
             app.UseDasHealthChecks();
             app.UseMvc(routes =>

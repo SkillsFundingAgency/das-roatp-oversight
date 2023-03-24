@@ -14,8 +14,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
         private readonly IRoatpOversightApiClient _roatpV2ApiClient;
         private readonly ILogger<ApplicationOutcomeOrchestrator> _logger;
 
-        public ApplicationOutcomeOrchestrator(IApplyApiClient applicationApiClient, IRoatpRegisterApiClient registerApiClient,
-                                               IRoatpOversightApiClient roatpV2ApiClient, ILogger<ApplicationOutcomeOrchestrator> logger)
+        public ApplicationOutcomeOrchestrator(IApplyApiClient applicationApiClient, IRoatpRegisterApiClient registerApiClient, 
+            IRoatpOversightApiClient roatpV2ApiClient, ILogger<ApplicationOutcomeOrchestrator> logger)
         {
             _applicationApiClient = applicationApiClient;
             _registerApiClient = registerApiClient;

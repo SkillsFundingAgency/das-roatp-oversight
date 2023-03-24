@@ -7,6 +7,7 @@ using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Services;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.RoatpOversight.Web.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 {
@@ -68,12 +69,18 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
                         It.Is<GetOrganisationRegisterStatusRequest>(r => r.UKPRN == _registrationDetails.UKPRN)))
                 .ReturnsAsync(() => _registerStatus);
 
+            _roatpOversightApiClient.Setup(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y=>y.Ukprn==_registrationDetails.UKPRN))).ReturnsAsync(true);
+
             _orchestrator = new ApplicationOutcomeOrchestrator(_applicationApiClient.Object, _roatpRegisterApiClient.Object, _roatpOversightApiClient.Object, _logger.Object);
         }
 
-        [Test]
-        public async Task Application_status_and_register_updated_for_a_successful_oversight_review()
+        [TestCase(ProviderType.Main,1)]
+        [TestCase(ProviderType.Employer, 0)]
+        [TestCase(ProviderType.Supporting, 0)]
+        public async Task Application_status_and_register_updated_for_a_successful_oversight_review(int providerType, int countRoatpOversightCreateProviderCalled)
         {
+            
+            _registrationDetails.ProviderTypeId = providerType;
             _registerStatus.UkprnOnRegister = false;
 
             var result = await _orchestrator.RecordOutcome(_applicationId, false, false, OversightReviewStatus.Successful, UserId, UserName, InternalComments, ExternalComments);
@@ -83,17 +90,20 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
             _applicationApiClient.Verify(x => x.RecordOutcome(It.Is<RecordOversightOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
             _applicationApiClient.Verify(x => x.GetRegistrationDetails(_applicationId), Times.Once);
             _roatpRegisterApiClient.Verify(x => x.CreateOrganisation(It.Is<CreateRoatpOrganisationRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Once);
+            _roatpOversightApiClient.Verify(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Exactly(countRoatpOversightCreateProviderCalled));
         }
 
         [Test]
         public async Task Application_status_updated_only_for_an_unsuccessful_oversight_review()
         {
+          
             var result = await _orchestrator.RecordOutcome(_applicationId, false, false, OversightReviewStatus.Unsuccessful, UserId, UserName, InternalComments, ExternalComments);
 
             result.Should().BeTrue();
 
             _applicationApiClient.Verify(x => x.RecordOutcome(It.Is<RecordOversightOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
             _roatpRegisterApiClient.Verify(x => x.CreateOrganisation(It.IsAny<CreateRoatpOrganisationRequest>()), Times.Never);
+            _roatpOversightApiClient.Verify(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Never);
         }
 
         [TestCase(OversightReviewStatus.SuccessfulAlreadyActive)]
@@ -113,10 +123,12 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 
             _applicationApiClient.Verify(x => x.RecordOutcome(It.Is<RecordOversightOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
             _roatpRegisterApiClient.Verify(x => x.UpdateOrganisation(It.Is<UpdateOrganisationRequest>(y => y.OrganisationId == _registerStatus.OrganisationId)), Times.Once);
+            _roatpOversightApiClient.Verify(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Never);
+        
         }
 
 
-        [Test]
+    [Test]
         public void Successful_oversight_review_for_provider_already_on_register_throws_exception()
         {
             _registerStatus.UkprnOnRegister = true;

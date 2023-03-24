@@ -7,7 +7,6 @@ using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Services;
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.ResponseCaching.Internal;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 {
@@ -16,6 +15,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
     {
         private Mock<IApplyApiClient> _applicationApiClient;
         private Mock<IRoatpRegisterApiClient> _roatpRegisterApiClient;
+        private Mock<IRoatpOversightApiClient> _roatpOversightApiClient;
         private Mock<ILogger<ApplicationOutcomeOrchestrator>> _logger;
         private ApplicationOutcomeOrchestrator _orchestrator;
         private const string UserName = "test user";
@@ -31,6 +31,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         {
             _applicationApiClient = new Mock<IApplyApiClient>();
             _roatpRegisterApiClient = new Mock<IRoatpRegisterApiClient>();
+            _roatpOversightApiClient = new Mock<IRoatpOversightApiClient>();
             _logger = new Mock<ILogger<ApplicationOutcomeOrchestrator>>();
             _applicationId = Guid.NewGuid();
 
@@ -63,7 +64,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
                         It.Is<GetOrganisationRegisterStatusRequest>(r => r.UKPRN == _registrationDetails.UKPRN)))
                 .ReturnsAsync(() => _registerStatus);
 
-            _orchestrator = new ApplicationOutcomeOrchestrator(_applicationApiClient.Object, _roatpRegisterApiClient.Object, _logger.Object);
+            _orchestrator = new ApplicationOutcomeOrchestrator(_applicationApiClient.Object, _roatpRegisterApiClient.Object, _roatpOversightApiClient.Object, _logger.Object);
         }
 
         [Test]

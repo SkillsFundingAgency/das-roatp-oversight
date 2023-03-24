@@ -166,6 +166,17 @@ namespace SFA.DAS.RoatpOversight.Web
             })
            .SetHandlerLifetime(handlerLifeTime)
            .AddPolicyHandler(GetRetryPolicy());
+
+            services.AddHttpClient<IRoatpOversightApiClient, RoatpOversightApiClient>(config =>
+                {
+                    config.BaseAddress = new Uri(ApplicationConfiguration.RoatpOversightOuterApi.BaseUrl);
+                    config.DefaultRequestHeaders.Add(acceptHeaderName, acceptHeaderValue);
+                    config.DefaultRequestHeaders.Add("X-Version", "1");
+                    config.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", ApplicationConfiguration.RoatpOversightOuterApi.SubscriptionKey);
+
+                })
+                .SetHandlerLifetime(handlerLifeTime)
+                .AddPolicyHandler(GetRetryPolicy());
         }
 
         private void ConfigureDependencyInjection(IServiceCollection services)

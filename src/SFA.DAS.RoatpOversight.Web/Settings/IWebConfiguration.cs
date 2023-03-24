@@ -11,6 +11,7 @@ namespace SFA.DAS.RoatpOversight.Web.Settings
         AuthSettings StaffAuthentication { get; set; }
         ManagedIdentityApiAuthentication ApplyApiAuthentication { get; set; }
         ClientApiAuthentication RoatpRegisterApiAuthentication { get; set; }
+        RoatpOversightOuterApi RoatpOversightOuterApi { get; set; }
         string EsfaAdminServicesBaseUrl { get; set; }
     }
 }

@@ -3,7 +3,10 @@ using System.Threading.Tasks;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
+using SFA.DAS.RoatpOversight.Domain.Interfaces;
 using SFA.DAS.RoatpOversight.Web.Domain;
+using RestEase.Implementation;
+using SFA.DAS.RoatpOversight.Web.Exceptions;
 
 namespace SFA.DAS.RoatpOversight.Web.Services
 {
@@ -217,13 +220,17 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             if (providerType == ProviderType.Main)
             {
                 var providerQuest = BuildCreateProviderRequest(userName, userId, registrationDetails);
-                var createProviderSuccess = await _roatpV2ApiClient.CreateProvider(providerQuest);
-                if (!createProviderSuccess)
-                    _logger.LogError("Create provider failed for ukprn {ukprn}", registrationDetails.UKPRN);
+                
+                try
+                {
+                    await _roatpV2ApiClient.CreateProvider(providerQuest);
+                }
+                catch (Exception ex)
+                {
+                        _logger.LogError(ex,"Create provider failed for ukprn {ukprn}", registrationDetails.UKPRN);
+                }
             }
         }
-
-
 
         private void ValidateStatusAgainstExistingStatus(OversightReviewStatus outcome, OrganisationRegisterStatus registerStatus, string ukprn)
         {

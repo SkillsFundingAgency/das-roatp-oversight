@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="RestEase" Version="1.6.1" />
     <PackageReference Include="SFA.DAS.AdminService.Common" Version="0.1.75" />
   </ItemGroup>
 

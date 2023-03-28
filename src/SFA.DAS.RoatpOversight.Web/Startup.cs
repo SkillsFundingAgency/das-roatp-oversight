@@ -18,13 +18,15 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Polly;
 using Polly.Extensions.Http;
+using RestEase.HttpClientFactory;
 using SFA.DAS.AdminService.Common;
 using SFA.DAS.AdminService.Common.Extensions;
+using SFA.DAS.RoatpOversight.Domain.Interfaces;
 using SFA.DAS.RoatpOversight.Web.Domain;
-using SFA.DAS.RoatpOversight.Web.Extensions;
 using SFA.DAS.RoatpOversight.Web.HealthChecks;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService;
+using SFA.DAS.RoatpOversight.Web.Infrastructure.Handlers;
 using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Settings;
 using SFA.DAS.RoatpOversight.Web.Validators;
@@ -167,16 +169,19 @@ namespace SFA.DAS.RoatpOversight.Web
            .SetHandlerLifetime(handlerLifeTime)
            .AddPolicyHandler(GetRetryPolicy());
 
-            services.AddHttpClient<IRoatpOversightApiClient, RoatpOversightApiClient>(config =>
-                {
-                    config.BaseAddress = new Uri(ApplicationConfiguration.RoatpOversightOuterApi.BaseUrl);
-                    config.DefaultRequestHeaders.Add(acceptHeaderName, acceptHeaderValue);
-                    config.DefaultRequestHeaders.Add("X-Version", "1");
-                    config.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", ApplicationConfiguration.RoatpOversightOuterApi.SubscriptionKey);
+            AddOuterApi(services, ApplicationConfiguration.RoatpOversightOuterApi);
 
-                })
-                .SetHandlerLifetime(handlerLifeTime)
-                .AddPolicyHandler(GetRetryPolicy());
+        }
+
+        private void AddOuterApi(IServiceCollection services, RoatpOversightOuterApi configuration)
+        {
+            services.AddTransient<IRoatpOversightOuterApi>((_) => configuration);
+
+            services.AddScoped<HeadersHandler>();
+            
+             services
+                .AddRestEaseClient<IRoatpOversightApiClient>(configuration.BaseUrl)
+                .AddHttpMessageHandler<HeadersHandler>();
         }
 
         private void ConfigureDependencyInjection(IServiceCollection services)
@@ -193,6 +198,7 @@ namespace SFA.DAS.RoatpOversight.Web
             services.AddTransient<IOversightOrchestrator, OversightOrchestrator>();
             services.AddSingleton<IPdfValidatorService, PdfValidatorService>();
             services.AddSingleton<IMultipartFormDataService, MultipartFormDataService>();
+          
             DependencyInjection.ConfigureDependencyInjection(services);
         }
 

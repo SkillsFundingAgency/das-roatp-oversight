@@ -8,6 +8,7 @@ using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Services;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.RoatpOversight.Domain.Interfaces;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 {
@@ -65,7 +66,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
                         It.Is<GetOrganisationRegisterStatusRequest>(r => r.UKPRN == _registrationDetails.UKPRN)))
                 .ReturnsAsync(() => _registerStatus);
 
-            _roatpOversightApiClient.Setup(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y => y.Ukprn == _registrationDetails.UKPRN))).ReturnsAsync(true);
+           _roatpOversightApiClient.Setup(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y => y.Ukprn == _registrationDetails.UKPRN)));
 
             _orchestrator = new ApplicationOutcomeOrchestrator(_applicationApiClient.Object, _roatpRegisterApiClient.Object, _roatpOversightApiClient.Object, _logger.Object);
         }

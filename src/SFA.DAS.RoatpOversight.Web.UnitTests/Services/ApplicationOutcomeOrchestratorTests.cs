@@ -7,6 +7,7 @@ using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Services;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.RoatpOversight.Domain.Interfaces;
 using SFA.DAS.RoatpOversight.Web.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
@@ -69,7 +70,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
                         It.Is<GetOrganisationRegisterStatusRequest>(r => r.UKPRN == _registrationDetails.UKPRN)))
                 .ReturnsAsync(() => _registerStatus);
 
-            _roatpOversightApiClient.Setup(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y=>y.Ukprn==_registrationDetails.UKPRN))).ReturnsAsync(true);
+            _roatpOversightApiClient.Setup(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y=>y.Ukprn==_registrationDetails.UKPRN)));
 
             _orchestrator = new ApplicationOutcomeOrchestrator(_applicationApiClient.Object, _roatpRegisterApiClient.Object, _roatpOversightApiClient.Object, _logger.Object);
         }
@@ -126,7 +127,6 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
             _roatpOversightApiClient.Verify(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Never);
         
         }
-
 
     [Test]
         public void Successful_oversight_review_for_provider_already_on_register_throws_exception()

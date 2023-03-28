@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.RoatpOversight.Domain.Interfaces;
@@ -6,6 +7,7 @@ using SFA.DAS.RoatpOversight.Web.Settings;
 
 namespace SFA.DAS.RoatpOversight.Web.Infrastructure.Handlers
 {
+    [ExcludeFromCodeCoverage]
     public class HeadersHandler: DelegatingHandler
     {
         private readonly RoatpOversightOuterApi _config;

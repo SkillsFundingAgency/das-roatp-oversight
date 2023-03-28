@@ -88,18 +88,6 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             return true;
         }
 
-        private CreateRoatpV2ProviderRequest BuildCreateProviderRequest(string userName, string userId, RoatpRegistrationDetails registrationDetails)
-        {
-            return new CreateRoatpV2ProviderRequest
-            {
-                LegalName = registrationDetails.LegalName,
-                TradingName = registrationDetails.TradingName,
-                Ukprn = registrationDetails.UKPRN,
-                UserDisplayName = userName,
-                UserId = userId
-            };
-        }
-
         public async Task<bool> RecordAppeal(Guid applicationId, string appealStatus, string userId, string userName, string internalComments,
             string externalComments)
         {
@@ -186,13 +174,13 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 {
                     var request = BuildCreateOrganisationRequest(userName, registrationDetails);
 
-                    var createOrganisationResponse= await _registerApiClient.CreateOrganisation(request);
-                    if (createOrganisationResponse)
+                    var hasSuccessfullyCreatedOrganisation = await _registerApiClient.CreateOrganisation(request);
+                    if (hasSuccessfullyCreatedOrganisation )
                     {
                         await AddProviderToRoatpCourseManagement(registrationDetails, userId, userName, request.ProviderTypeId);
                     }
 
-                    return createOrganisationResponse;
+                    return hasSuccessfullyCreatedOrganisation ;
                 }
                 
             }
@@ -222,19 +210,30 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
         private async Task AddProviderToRoatpCourseManagement(RoatpRegistrationDetails registrationDetails, string userId, string userName, int providerType)
         {
-            if (providerType == ProviderType.Main)
+            if (providerType != ProviderType.Main) return;
+
+            var providerQuest = BuildCreateProviderRequest(userName, userId, registrationDetails);
+            
+            try
             {
-                var providerQuest = BuildCreateProviderRequest(userName, userId, registrationDetails);
-                
-                try
-                {
-                    await _roatpV2ApiClient.CreateProvider(providerQuest);
-                }
-                catch (Exception ex)
-                {
-                        _logger.LogError(ex,"Create provider failed for ukprn {ukprn}", registrationDetails.UKPRN);
-                }
+                await _roatpV2ApiClient.CreateProvider(providerQuest);
             }
+            catch (Exception ex)
+            {
+                    _logger.LogError(ex,"Create provider failed for ukprn {ukprn}", registrationDetails.UKPRN);
+            }
+        }
+
+        private CreateRoatpV2ProviderRequest BuildCreateProviderRequest(string userName, string userId, RoatpRegistrationDetails registrationDetails)
+        {
+            return new CreateRoatpV2ProviderRequest
+            {
+                LegalName = registrationDetails.LegalName,
+                TradingName = registrationDetails.TradingName,
+                Ukprn = registrationDetails.UKPRN,
+                UserDisplayName = userName,
+                UserId = userId
+            };
         }
 
         private void ValidateStatusAgainstExistingStatus(OversightReviewStatus outcome, OrganisationRegisterStatus registerStatus, string ukprn)

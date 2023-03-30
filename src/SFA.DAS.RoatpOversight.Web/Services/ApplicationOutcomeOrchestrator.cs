@@ -3,6 +3,10 @@ using System.Threading.Tasks;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Domain;
+using SFA.DAS.RoatpOversight.Domain.Interfaces;
+using SFA.DAS.RoatpOversight.Web.Domain;
+using RestEase.Implementation;
+using SFA.DAS.RoatpOversight.Web.Exceptions;
 
 namespace SFA.DAS.RoatpOversight.Web.Services
 {
@@ -10,13 +14,15 @@ namespace SFA.DAS.RoatpOversight.Web.Services
     {
         private readonly IApplyApiClient _applicationApiClient;
         private readonly IRoatpRegisterApiClient _registerApiClient;
+        private readonly IRoatpOversightApiClient _roatpV2ApiClient;
         private readonly ILogger<ApplicationOutcomeOrchestrator> _logger;
 
-        public ApplicationOutcomeOrchestrator(IApplyApiClient applicationApiClient, IRoatpRegisterApiClient registerApiClient,
-                                              ILogger<ApplicationOutcomeOrchestrator> logger)
+        public ApplicationOutcomeOrchestrator(IApplyApiClient applicationApiClient, IRoatpRegisterApiClient registerApiClient, 
+            IRoatpOversightApiClient roatpV2ApiClient, ILogger<ApplicationOutcomeOrchestrator> logger)
         {
             _applicationApiClient = applicationApiClient;
             _registerApiClient = registerApiClient;
+            _roatpV2ApiClient = roatpV2ApiClient;
             _logger = logger;
         }
 
@@ -48,8 +54,14 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             if (outcome == OversightReviewStatus.Successful)
             {
                 var request = BuildCreateOrganisationRequest(userName, registrationDetails);
+             
 
-                await _registerApiClient.CreateOrganisation(request);
+                var createOrganisationResponse= await _registerApiClient.CreateOrganisation(request);
+                if (createOrganisationResponse)
+                {
+                    await AddProviderToRoatpCourseManagement(registrationDetails, userId, userName,
+                        request.ProviderTypeId);
+                }
             }
 
             if ((outcome == OversightReviewStatus.SuccessfulAlreadyActive ||
@@ -162,7 +174,13 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 {
                     var request = BuildCreateOrganisationRequest(userName, registrationDetails);
 
-                    return await _registerApiClient.CreateOrganisation(request);
+                    var hasSuccessfullyCreatedOrganisation = await _registerApiClient.CreateOrganisation(request);
+                    if (hasSuccessfullyCreatedOrganisation )
+                    {
+                        await AddProviderToRoatpCourseManagement(registrationDetails, userId, userName, request.ProviderTypeId);
+                    }
+
+                    return hasSuccessfullyCreatedOrganisation ;
                 }
                 
             }
@@ -190,6 +208,33 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
         }
 
+        private async Task AddProviderToRoatpCourseManagement(RoatpRegistrationDetails registrationDetails, string userId, string userName, int providerType)
+        {
+            if (providerType != ProviderType.Main) return;
+
+            var providerQuest = BuildCreateProviderRequest(userName, userId, registrationDetails);
+            
+            try
+            {
+                await _roatpV2ApiClient.CreateProvider(providerQuest);
+            }
+            catch (Exception ex)
+            {
+                    _logger.LogError(ex,"Create provider failed for ukprn {ukprn}", registrationDetails.UKPRN);
+            }
+        }
+
+        private CreateRoatpV2ProviderRequest BuildCreateProviderRequest(string userName, string userId, RoatpRegistrationDetails registrationDetails)
+        {
+            return new CreateRoatpV2ProviderRequest
+            {
+                LegalName = registrationDetails.LegalName,
+                TradingName = registrationDetails.TradingName,
+                Ukprn = registrationDetails.UKPRN,
+                UserDisplayName = userName,
+                UserId = userId
+            };
+        }
 
         private void ValidateStatusAgainstExistingStatus(OversightReviewStatus outcome, OrganisationRegisterStatus registerStatus, string ukprn)
         {
@@ -210,7 +255,6 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 }
             }
         }
-
 
         private void ValidateAppealStatusAgainstExistingStatus(string appealStatus, OrganisationRegisterStatus registerStatus, string ukprn)
         {

@@ -3,11 +3,12 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpOversight.Domain;
+using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Services;
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.ResponseCaching.Internal;
+using SFA.DAS.RoatpOversight.Domain.Interfaces;
 
 namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 {
@@ -16,6 +17,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
     {
         private Mock<IApplyApiClient> _applicationApiClient;
         private Mock<IRoatpRegisterApiClient> _roatpRegisterApiClient;
+        private Mock<IRoatpOversightApiClient> _roatpOversightApiClient;
         private Mock<ILogger<ApplicationOutcomeOrchestrator>> _logger;
         private ApplicationOutcomeOrchestrator _orchestrator;
         private const string UserName = "test user";
@@ -31,6 +33,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         {
             _applicationApiClient = new Mock<IApplyApiClient>();
             _roatpRegisterApiClient = new Mock<IRoatpRegisterApiClient>();
+            _roatpOversightApiClient = new Mock<IRoatpOversightApiClient>();
             _logger = new Mock<ILogger<ApplicationOutcomeOrchestrator>>();
             _applicationId = Guid.NewGuid();
 
@@ -63,14 +66,18 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
                         It.Is<GetOrganisationRegisterStatusRequest>(r => r.UKPRN == _registrationDetails.UKPRN)))
                 .ReturnsAsync(() => _registerStatus);
 
-            _orchestrator = new ApplicationOutcomeOrchestrator(_applicationApiClient.Object, _roatpRegisterApiClient.Object, _logger.Object);
+           _roatpOversightApiClient.Setup(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y => y.Ukprn == _registrationDetails.UKPRN)));
+
+            _orchestrator = new ApplicationOutcomeOrchestrator(_applicationApiClient.Object, _roatpRegisterApiClient.Object, _roatpOversightApiClient.Object, _logger.Object);
         }
 
-        [Test]
-        public async Task Application_status_and_register_updated_for_a_successful_appeal()
+        [TestCase(ProviderType.Main, 1)]
+        [TestCase(ProviderType.Employer, 0)]
+        [TestCase(ProviderType.Supporting, 0)]
+        public async Task Application_status_and_register_updated_for_a_successful_appeal(int providerType, int countRoatpOversightCreateProviderCalled)
         {
             _registerStatus.UkprnOnRegister = false;
-
+            _registrationDetails.ProviderTypeId = providerType;
             var application = new ApplicationDetails
                 { ApplicationId = _applicationId, GatewayReviewStatus = GatewayReviewStatus.Pass };
 
@@ -83,6 +90,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
             _applicationApiClient.Verify(x => x.RecordAppeal(It.Is<RecordAppealOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
             _applicationApiClient.Verify(x => x.GetRegistrationDetails(_applicationId), Times.Once);
             _roatpRegisterApiClient.Verify(x => x.CreateOrganisation(It.Is<CreateRoatpOrganisationRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Once);
+            _roatpOversightApiClient.Verify(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Exactly(countRoatpOversightCreateProviderCalled));
         }
 
 
@@ -103,6 +111,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
             _applicationApiClient.Verify(x => x.RecordAppeal(It.Is<RecordAppealOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
             _applicationApiClient.Verify(x => x.GetRegistrationDetails(_applicationId), Times.Once);
             _roatpRegisterApiClient.Verify(x => x.CreateOrganisation(It.Is<CreateRoatpOrganisationRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Never);
+            _roatpOversightApiClient.Verify(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Never);
         }
 
         [TestCase]
@@ -118,6 +127,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         
             _applicationApiClient.Verify(x => x.RecordAppeal(It.Is<RecordAppealOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
             _roatpRegisterApiClient.Verify(x => x.CreateOrganisation(It.IsAny<CreateRoatpOrganisationRequest>()), Times.Never);
+            _roatpOversightApiClient.Verify(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Never);
         }
         
         [TestCase(AppealStatus.SuccessfulAlreadyActive)]
@@ -133,6 +143,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         
             _applicationApiClient.Verify(x => x.RecordAppeal(It.Is<RecordAppealOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
             _roatpRegisterApiClient.Verify(x => x.UpdateOrganisation(It.Is<UpdateOrganisationRequest>(y => y.OrganisationId == _registerStatus.OrganisationId)), Times.Once);
+            _roatpOversightApiClient.Verify(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Never);
         }
 
         [TestCase(AppealStatus.SuccessfulAlreadyActive)]
@@ -148,6 +159,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
 
             _applicationApiClient.Verify(x => x.RecordAppeal(It.Is<RecordAppealOutcomeCommand>(y => y.ApplicationId == _applicationId)), Times.Once);
             _roatpRegisterApiClient.Verify(x => x.UpdateApplicationDeterminedDate(It.Is<UpdateOrganisationApplicationDeterminedDateRequest>(y => y.OrganisationId == _registerStatus.OrganisationId)), Times.Never);
+            _roatpOversightApiClient.Verify(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Never);
         }
 
         [Test]

@@ -25,5 +25,8 @@ namespace SFA.DAS.RoatpOversight.Web.Settings
 
         [JsonRequired]
         public string EsfaAdminServicesBaseUrl { get; set; }
+
+        [JsonRequired] 
+        public RoatpOversightOuterApi RoatpOversightOuterApi { get; set; }
     }
 }

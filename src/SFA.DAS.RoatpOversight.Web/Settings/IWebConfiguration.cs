@@ -13,5 +13,7 @@ namespace SFA.DAS.RoatpOversight.Web.Settings
         ClientApiAuthentication RoatpRegisterApiAuthentication { get; set; }
         RoatpOversightOuterApi RoatpOversightOuterApi { get; set; }
         string EsfaAdminServicesBaseUrl { get; set; }
+        bool UseDfeSignIn { get; set; }
+        string DfESignInServiceHelpUrl { get; set; }
     }
 }

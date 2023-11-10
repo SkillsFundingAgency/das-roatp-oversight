@@ -28,5 +28,8 @@ namespace SFA.DAS.RoatpOversight.Web.Settings
 
         [JsonRequired] 
         public RoatpOversightOuterApi RoatpOversightOuterApi { get; set; }
+        public bool UseDfeSignIn { get; set; }
+        public string DfESignInServiceHelpUrl { get; set; }
+        
     }
 }

@@ -61,6 +61,11 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
                 ? OpenIdConnectDefaults.AuthenticationScheme
                 : WsFederationDefaults.AuthenticationScheme;
 
+            foreach (var cookie in Request.Cookies.Keys)
+            {
+                Response.Cookies.Delete(cookie);
+            }
+            
             return SignOut(
                 new AuthenticationProperties
                 {

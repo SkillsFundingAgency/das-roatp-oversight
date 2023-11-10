@@ -60,7 +60,7 @@
         },
         "configNames": {
             "type": "string",
-            "defaultValue": "SFA.DAS.RoatpOversight,SFA.DAS.Provider.DfeSignIn"
+            "defaultValue": "SFA.DAS.RoatpOversight:WebConfiguration,SFA.DAS.Provider.DfeSignIn"
         },
         "version": {
             "type": "string",

@@ -269,7 +269,7 @@
                         "value": "[variables('appServiceName')]"
                     },
                     "scopedResourceId": {
-                        "value": "[reference(app-insights).outputs.AppInsightsResourceId.value]"
+                        "value": "[reference('app-insights').outputs.AppInsightsResourceId.value]"
                     }
                 }
             }

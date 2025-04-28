@@ -18,6 +18,9 @@
             "type": "string",
             "defaultValue": ""
         },
+        "sharedEnvResourceGroup": {
+            "type": "string"
+        },
         "sharedApimResourceGroup": {
             "type": "string"
         },

@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.RoatpOversight.Domain;
-using SFA.DAS.RoatpOversight.Web.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Domain;
 using SFA.DAS.RoatpOversight.Web.Exceptions;
 using SFA.DAS.RoatpOversight.Web.Extensions;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
-using SFA.DAS.RoatpOversight.Web.Models;
-using SFA.DAS.RoatpOversight.Web.Validators;
 using SFA.DAS.RoatpOversight.Web.ModelBinders;
+using SFA.DAS.RoatpOversight.Web.Models;
+using SFA.DAS.RoatpOversight.Web.Services;
+using SFA.DAS.RoatpOversight.Web.Validators;
 
 
 namespace SFA.DAS.RoatpOversight.Web.Controllers
@@ -23,15 +24,17 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         private readonly IApplicationOutcomeOrchestrator _outcomeOrchestrator;
         private readonly IOversightOrchestrator _oversightOrchestrator;
         private readonly IApplyApiClient _apiClient;
+        private readonly ILogger<OversightController> _logger;
 
         public OversightController(ISearchTermValidator searchTermValidator,
                                    IApplicationOutcomeOrchestrator outcomeOrchestrator,
-                                   IOversightOrchestrator oversightOrchestrator, IApplyApiClient apiClient)
+                                   IOversightOrchestrator oversightOrchestrator, IApplyApiClient apiClient, ILogger<OversightController> logger)
         {
             _searchTermValidator = searchTermValidator;
             _outcomeOrchestrator = outcomeOrchestrator;
             _oversightOrchestrator = oversightOrchestrator;
             _apiClient = apiClient;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Applications(string selectedTab, [StringTrim] string searchTerm, string sortColumn, string sortOrder)
@@ -53,12 +56,13 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         [HttpGet("Oversight/Outcome/{applicationId}")]
         public async Task<IActionResult> Outcome(OutcomeRequest request)
         {
+            _logger.LogInformation("Getting outcome for application with Id {applicationId}", request.ApplicationId);
             try
             {
                 var vm = await _oversightOrchestrator.GetOversightDetailsViewModel(request.ApplicationId, request.OutcomeKey);
                 return View(vm);
             }
-            catch(InvalidStateException)
+            catch (InvalidStateException)
             {
                 return RedirectToAction("Applications");
             }
@@ -66,7 +70,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
 
 
         [HttpPost("Oversight/Outcome/{applicationId}")]
-        public async Task<IActionResult> Outcome([CustomizeValidator(Interceptor = typeof(OutcomeValidatorInterceptor))]OutcomePostRequest request)
+        public async Task<IActionResult> Outcome([CustomizeValidator(Interceptor = typeof(OutcomeValidatorInterceptor))] OutcomePostRequest request)
         {
             var userId = HttpContext.User.UserId();
             var userName = HttpContext.User.UserDisplayName();
@@ -80,11 +84,11 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             if (request.IsGatewayFail)
             {
                 await _outcomeOrchestrator.RecordGatewayFailOutcome(request.ApplicationId, userId, userName);
-                return RedirectToAction("Confirmed", new {request.ApplicationId});
+                return RedirectToAction("Confirmed", new { request.ApplicationId });
             }
 
             var cacheKey = await _oversightOrchestrator.SaveOutcomePostRequestToCache(request);
-            return RedirectToAction("ConfirmOutcome", new {applicationId = request.ApplicationId, OutcomeKey = cacheKey});
+            return RedirectToAction("ConfirmOutcome", new { applicationId = request.ApplicationId, OutcomeKey = cacheKey });
         }
 
         [HttpGet("Oversight/Appeal/{applicationId}")]
@@ -201,9 +205,9 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
             var approveGateway = string.IsNullOrEmpty(request.ApproveGateway) ? default(bool?) : request.ApproveGateway == ApprovalStatus.Approve;
             var approveModeration = string.IsNullOrEmpty(request.ApproveModeration) ? default(bool?) : request.ApproveModeration == ApprovalStatus.Approve;
 
-            await _outcomeOrchestrator.RecordOutcome(request.ApplicationId,  approveGateway, approveModeration, request.OversightStatus, userId, userName, request.InternalComments, request.ExternalComments);
+            await _outcomeOrchestrator.RecordOutcome(request.ApplicationId, approveGateway, approveModeration, request.OversightStatus, userId, userName, request.InternalComments, request.ExternalComments);
 
-            return RedirectToAction("Confirmed", new {request.ApplicationId});
+            return RedirectToAction("Confirmed", new { request.ApplicationId });
         }
 
         [HttpGet("Oversight/Outcome/{applicationId}/confirmed")]

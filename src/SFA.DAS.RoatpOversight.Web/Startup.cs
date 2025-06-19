@@ -135,12 +135,6 @@ namespace SFA.DAS.RoatpOversight.Web
 
             AddAntiforgery(services);
 
-            services.AddLogging(loggingBuilder =>
-            {
-                loggingBuilder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
-                loggingBuilder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
-            });
-
             services.AddApplicationInsightsTelemetry();
             services.AddDasHealthChecks(ApplicationConfiguration, _env.IsDevelopment());
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();

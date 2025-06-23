@@ -31,7 +31,6 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         private Mock<IOversightOrchestrator> _oversightOrchestrator;
         private Mock<IApplyApiClient> _applyApiClient;
         private Mock<IApplicationOutcomeOrchestrator> _outcomeOrchestrator;
-        private Mock<Logger<OversightController>> _logger;
         private ITempDataDictionary _tempDataDictionary;
 
         private static readonly Fixture _autoFixture = new Fixture();
@@ -46,13 +45,11 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _oversightOrchestrator = new Mock<IOversightOrchestrator>();
             _outcomeOrchestrator = new Mock<IApplicationOutcomeOrchestrator>();
             _applyApiClient = new Mock<IApplyApiClient>();
-            _logger = new Mock<Logger<OversightController>>();
 
             _controller = new OversightController(_searchTermValidator.Object,
                                                   _outcomeOrchestrator.Object,
                                                   _oversightOrchestrator.Object,
-                                                  _applyApiClient.Object,
-                                                  _logger.Object)
+                                                  _applyApiClient.Object)
             {
                 ControllerContext = MockedControllerContext.Setup()
             };

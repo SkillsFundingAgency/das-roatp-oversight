@@ -24,17 +24,15 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         private readonly IApplicationOutcomeOrchestrator _outcomeOrchestrator;
         private readonly IOversightOrchestrator _oversightOrchestrator;
         private readonly IApplyApiClient _apiClient;
-        private readonly ILogger<OversightController> _logger;
 
         public OversightController(ISearchTermValidator searchTermValidator,
                                    IApplicationOutcomeOrchestrator outcomeOrchestrator,
-                                   IOversightOrchestrator oversightOrchestrator, IApplyApiClient apiClient, ILogger<OversightController> logger)
+                                   IOversightOrchestrator oversightOrchestrator, IApplyApiClient apiClient)
         {
             _searchTermValidator = searchTermValidator;
             _outcomeOrchestrator = outcomeOrchestrator;
             _oversightOrchestrator = oversightOrchestrator;
             _apiClient = apiClient;
-            _logger = logger;
         }
 
         public async Task<IActionResult> Applications(string selectedTab, [StringTrim] string searchTerm, string sortColumn, string sortOrder)
@@ -56,7 +54,6 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers
         [HttpGet("Oversight/Outcome/{applicationId}")]
         public async Task<IActionResult> Outcome(OutcomeRequest request)
         {
-            _logger.LogInformation("Getting outcome for application with Id {applicationId}", request.ApplicationId);
             try
             {
                 var vm = await _oversightOrchestrator.GetOversightDetailsViewModel(request.ApplicationId, request.OutcomeKey);

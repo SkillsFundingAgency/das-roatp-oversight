@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.Extensions.Primitives;
 using Polly;
 using Polly.Extensions.Http;
@@ -31,12 +32,12 @@ using SFA.DAS.RoatpOversight.Web.HealthChecks;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.Handlers;
+using SFA.DAS.RoatpOversight.Web.ModelBinders;
 using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Settings;
+using SFA.DAS.RoatpOversight.Web.StartupExtensions;
 using SFA.DAS.RoatpOversight.Web.Validators;
 using SFA.DAS.Validation.Mvc.Filters;
-using SFA.DAS.RoatpOversight.Web.StartupExtensions;
-using SFA.DAS.RoatpOversight.Web.ModelBinders;
 
 namespace SFA.DAS.RoatpOversight.Web
 {
@@ -57,7 +58,7 @@ namespace SFA.DAS.RoatpOversight.Web
         {
             _env = env;
             _logger = logger;
-            
+
             var config = new ConfigurationBuilder()
                 .AddConfiguration(configuration)
                 .SetBasePath(Directory.GetCurrentDirectory());
@@ -108,7 +109,7 @@ namespace SFA.DAS.RoatpOversight.Web
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(Culture);
-                options.SupportedCultures = new List<CultureInfo> {new CultureInfo(Culture) };
+                options.SupportedCultures = new List<CultureInfo> { new CultureInfo(Culture) };
                 options.RequestCultureProviders.Clear();
             });
 
@@ -205,10 +206,10 @@ namespace SFA.DAS.RoatpOversight.Web
             services.AddTransient<IRoatpOversightOuterApi>((_) => configuration);
 
             services.AddScoped<HeadersHandler>();
-            
-             services
-                .AddRestEaseClient<IRoatpOversightApiClient>(configuration.BaseUrl)
-                .AddHttpMessageHandler<HeadersHandler>();
+
+            services
+               .AddRestEaseClient<IRoatpOversightApiClient>(configuration.BaseUrl)
+               .AddHttpMessageHandler<HeadersHandler>();
         }
 
         private void ConfigureDependencyInjection(IServiceCollection services)
@@ -225,7 +226,7 @@ namespace SFA.DAS.RoatpOversight.Web
             services.AddTransient<IOversightOrchestrator, OversightOrchestrator>();
             services.AddSingleton<IPdfValidatorService, PdfValidatorService>();
             services.AddSingleton<IMultipartFormDataService, MultipartFormDataService>();
-          
+
             DependencyInjection.ConfigureDependencyInjection(services);
         }
 
@@ -252,7 +253,7 @@ namespace SFA.DAS.RoatpOversight.Web
             {
                 if (!context.Response.Headers.ContainsKey("X-Permitted-Cross-Domain-Policies"))
                 {
-                context.Response.Headers.Add("X-Permitted-Cross-Domain-Policies", new StringValues("none"));
+                    context.Response.Headers.Add("X-Permitted-Cross-Domain-Policies", new StringValues("none"));
                 }
                 await next();
             });

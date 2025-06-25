@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.AdminService.Common.Testing.MockedObjects;
@@ -43,7 +44,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             _searchTermValidator = new Mock<ISearchTermValidator>();
             _oversightOrchestrator = new Mock<IOversightOrchestrator>();
             _outcomeOrchestrator = new Mock<IApplicationOutcomeOrchestrator>();
-            _applyApiClient=new Mock<IApplyApiClient>();
+            _applyApiClient = new Mock<IApplyApiClient>();
 
             _controller = new OversightController(_searchTermValidator.Object,
                                                   _outcomeOrchestrator.Object,
@@ -64,12 +65,12 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         {
             var applicationsPending = new PendingOversightReviews
             {
-                Reviews = new List<PendingOversightReview> { new PendingOversightReview {  ApplicationId = _applicationDetailsApplicationId} }
+                Reviews = new List<PendingOversightReview> { new PendingOversightReview { ApplicationId = _applicationDetailsApplicationId } }
             };
 
             var applicationsDone = new CompletedOversightReviews
             {
-                Reviews = new List<CompletedOversightReview> { new CompletedOversightReview { Ukprn = _ukprnOfCompletedOversightApplication} }
+                Reviews = new List<CompletedOversightReview> { new CompletedOversightReview { Ukprn = _ukprnOfCompletedOversightApplication } }
             };
 
             var PendingAppealapplications = new PendingAppealOutcomes
@@ -82,11 +83,11 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 Reviews = new List<CompletedAppealOutcome> { new CompletedAppealOutcome { Ukprn = _ukprnOfCompletedOversightApplication } }
             };
 
-            var viewModel = new ApplicationsViewModel {ApplicationDetails = applicationsPending,ApplicationCount = 1, OverallOutcomeDetails = applicationsDone, OverallOutcomeCount = 1,PendingAppealsDetails=PendingAppealapplications,AppealsCount=1,CompleteAppealsDetails=CompletedAppealapplications,AppealsOutcomeCount=1};
+            var viewModel = new ApplicationsViewModel { ApplicationDetails = applicationsPending, ApplicationCount = 1, OverallOutcomeDetails = applicationsDone, OverallOutcomeCount = 1, PendingAppealsDetails = PendingAppealapplications, AppealsCount = 1, CompleteAppealsDetails = CompletedAppealapplications, AppealsOutcomeCount = 1 };
 
-            _oversightOrchestrator.Setup(x => x.GetApplicationsViewModel(null,null,null,null)).ReturnsAsync(viewModel);
+            _oversightOrchestrator.Setup(x => x.GetApplicationsViewModel(null, null, null, null)).ReturnsAsync(viewModel);
 
-            var result = await _controller.Applications(null,null,null,null) as ViewResult;
+            var result = await _controller.Applications(null, null, null, null) as ViewResult;
             var actualViewModel = result?.Model as ApplicationsViewModel;
 
             Assert.That(result, Is.Not.Null);
@@ -101,10 +102,10 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [Test]
         public async Task GetOutcome_returns_view_with_expected_viewModel()
         {
-            var viewModel = new OutcomeDetailsViewModel { ApplicationSummary = new ApplicationSummaryViewModel{ ApplicationId = _applicationDetailsApplicationId} };
+            var viewModel = new OutcomeDetailsViewModel { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
 
-            var request = new OutcomeRequest {ApplicationId = _applicationDetailsApplicationId};
+            var request = new OutcomeRequest { ApplicationId = _applicationDetailsApplicationId };
             var result = await _controller.Outcome(request) as ViewResult;
             var actualViewModel = result?.Model as OutcomeDetailsViewModel;
 
@@ -193,7 +194,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
         [Test]
         public async Task Post_Outcome_redirects_to_confirmation()
         {
-            var viewModel = new OutcomeDetailsViewModel { ApplicationSummary = new ApplicationSummaryViewModel{ ApplicationId = _applicationDetailsApplicationId }};
+            var viewModel = new OutcomeDetailsViewModel { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };
 
             _oversightOrchestrator.Setup(x => x.GetOversightDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
 
@@ -203,7 +204,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 OversightStatus = OversightReviewStatus.Unsuccessful,
                 ApproveGateway = GatewayReviewStatus.Fail,
                 ApproveModeration = ModerationReviewStatus.Fail,
-                UnsuccessfulText =  "test",
+                UnsuccessfulText = "test",
                 IsGatewayFail = false
             };
 
@@ -217,7 +218,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
             var viewModel = new AppealViewModel() { ApplicationSummary = new ApplicationSummaryViewModel { ApplicationId = _applicationDetailsApplicationId } };
 
             _oversightOrchestrator.Setup(x => x.GetAppealDetailsViewModel(_applicationDetailsApplicationId, null)).ReturnsAsync(viewModel);
-                
+
             var command = new AppealPostRequest()
             {
                 ApplicationId = _applicationDetailsApplicationId,

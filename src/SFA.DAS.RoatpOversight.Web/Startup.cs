@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.Extensions.Primitives;
 using Polly;
 using Polly.Extensions.Http;
@@ -118,11 +117,6 @@ namespace SFA.DAS.RoatpOversight.Web
                 options.Filters.Add<ValidateModelStateFilter>(int.MaxValue);
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                 options.ModelBinderProviders.Insert(0, new StringTrimmingModelBinderProvider());
-            })
-            // NOTE: Can we move this to 2.2 to match the version of .NET Core we're coding against?
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(options =>
-            {
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             })
             .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<OutcomePostRequestValidator>());
 
@@ -245,6 +239,7 @@ namespace SFA.DAS.RoatpOversight.Web
 
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
+            app.UseRouting();
             app.UseSession();
             app.UseRequestLocalization();
             app.UseStatusCodePagesWithReExecute("/ErrorPage/{0}");
@@ -253,18 +248,19 @@ namespace SFA.DAS.RoatpOversight.Web
             {
                 if (!context.Response.Headers.ContainsKey("X-Permitted-Cross-Domain-Policies"))
                 {
-                    context.Response.Headers.Add("X-Permitted-Cross-Domain-Policies", new StringValues("none"));
+                    context.Response.Headers.Append("X-Permitted-Cross-Domain-Policies", new StringValues("none"));
                 }
                 await next();
             });
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.UseAuthorization();
             app.UseDasHealthChecks();
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    "default",
+                    "{controller=Home}/{action=Index}/{id?}");
             });
         }
 

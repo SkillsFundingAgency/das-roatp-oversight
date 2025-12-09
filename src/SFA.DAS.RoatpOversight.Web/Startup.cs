@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Polly;
@@ -38,40 +39,24 @@ using SFA.DAS.RoatpOversight.Web.StartupExtensions;
 using SFA.DAS.RoatpOversight.Web.Validators;
 using SFA.DAS.Validation.Mvc.Filters;
 
-namespace SFA.DAS.RoatpOversight.Web
-{
+namespace SFA.DAS.RoatpOversight.Web;
+
     [ExcludeFromCodeCoverage]
     public class Startup
     {
-        private const string ServiceName = "SFA.DAS.RoatpOversight";
-        private const string Version = "1.0";
         private const string Culture = "en-GB";
 
         private readonly IConfiguration _configuration;
-        private readonly IHostingEnvironment _env;
-        private readonly ILogger<Startup> _logger;
+    private readonly IWebHostEnvironment _env;
 
         public IWebConfiguration ApplicationConfiguration { get; set; }
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env, ILogger<Startup> logger)
+    public Startup(IConfiguration configuration, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             _env = env;
-            _logger = logger;
 
-            var config = new ConfigurationBuilder()
-                .AddConfiguration(configuration)
-                .SetBasePath(Directory.GetCurrentDirectory());
-#if DEBUG
-            if (!configuration["EnvironmentName"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
-            {
-                config.AddJsonFile("appsettings.json", true)
-                    .AddJsonFile("appsettings.Development.json", true);
-            }
-#endif
-            config.AddEnvironmentVariables();
+        var config = new ConfigurationBuilder().AddConfiguration(configuration);
 
-            if (!configuration["EnvironmentName"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
-            {
                 config.AddAzureTableStorage(options =>
                     {
                         options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
@@ -80,7 +65,6 @@ namespace SFA.DAS.RoatpOversight.Web
                         options.PreFixConfigurationKeys = false;
                     }
                 );
-            }
 
             _configuration = config.Build();
             ApplicationConfiguration = _configuration.GetSection(nameof(WebConfiguration)).Get<WebConfiguration>();
@@ -195,7 +179,7 @@ namespace SFA.DAS.RoatpOversight.Web
 
         }
 
-        private void AddOuterApi(IServiceCollection services, RoatpOversightOuterApi configuration)
+    private static void AddOuterApi(IServiceCollection services, RoatpOversightOuterApi configuration)
         {
             services.AddTransient<IRoatpOversightOuterApi>((_) => configuration);
 
@@ -225,7 +209,7 @@ namespace SFA.DAS.RoatpOversight.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+    public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -269,8 +253,6 @@ namespace SFA.DAS.RoatpOversight.Web
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
                 .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound)
-                .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,
-                    retryAttempt)));
-        }
+            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
     }
 }

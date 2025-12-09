@@ -1,27 +1,27 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using SFA.DAS.RoatpOversight.Web.Settings;
 using StackExchange.Redis;
 
-namespace SFA.DAS.RoatpOversight.Web.StartupExtensions
+namespace SFA.DAS.RoatpOversight.Web.StartupExtensions;
+
+public static class DataProtectionStartupExtensions
 {
-    public static class DataProtectionStartupExtensions
+    public static IServiceCollection AddDataProtection(this IServiceCollection services, IWebConfiguration configuration, IWebHostEnvironment environment)
     {
-        public static IServiceCollection AddDataProtection(this IServiceCollection services, IWebConfiguration configuration, IHostingEnvironment environment)
-        {
-            if (!environment.IsDevelopment())
-            {
-                var redisConnectionString = configuration.SessionRedisConnectionString;
-                var dataProtectionKeysDatabase = configuration.DataProtectionKeysDatabase;
+        if (environment.IsDevelopment()) return services;
 
-                var redis = ConnectionMultiplexer.Connect($"{redisConnectionString},{dataProtectionKeysDatabase}");
+        var redisConnectionString = configuration.SessionRedisConnectionString;
+        var dataProtectionKeysDatabase = configuration.DataProtectionKeysDatabase;
 
-                services.AddDataProtection()
-                    .SetApplicationName("das-admin-service-web")
-                    .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
-            }
-            return services;
-        }
+        var redis = ConnectionMultiplexer.Connect($"{redisConnectionString},{dataProtectionKeysDatabase}");
+
+        services.AddDataProtection()
+            .SetApplicationName("das-admin-service-web")
+            .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
+
+        return services;
     }
 }

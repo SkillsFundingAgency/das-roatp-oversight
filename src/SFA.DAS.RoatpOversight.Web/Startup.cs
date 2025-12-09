@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
 using System.Net;
 using System.Net.Http;
-using FluentValidation.AspNetCore;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Builder;
@@ -37,222 +36,221 @@ using SFA.DAS.RoatpOversight.Web.Services;
 using SFA.DAS.RoatpOversight.Web.Settings;
 using SFA.DAS.RoatpOversight.Web.StartupExtensions;
 using SFA.DAS.RoatpOversight.Web.Validators;
-using SFA.DAS.Validation.Mvc.Filters;
 
 namespace SFA.DAS.RoatpOversight.Web;
 
-    [ExcludeFromCodeCoverage]
-    public class Startup
-    {
-        private const string Culture = "en-GB";
+[ExcludeFromCodeCoverage]
+public class Startup
+{
+    private const string Culture = "en-GB";
 
-        private readonly IConfiguration _configuration;
+    private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _env;
 
-        public IWebConfiguration ApplicationConfiguration { get; set; }
+    public IWebConfiguration ApplicationConfiguration { get; set; }
 
     public Startup(IConfiguration configuration, IWebHostEnvironment env, ILogger<Startup> logger)
-        {
-            _env = env;
+    {
+        _env = env;
 
         var config = new ConfigurationBuilder().AddConfiguration(configuration);
 
-                config.AddAzureTableStorage(options =>
-                    {
-                        options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
-                        options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
-                        options.EnvironmentName = configuration["EnvironmentName"];
-                        options.PreFixConfigurationKeys = false;
-                    }
-                );
-
-            _configuration = config.Build();
-            ApplicationConfiguration = _configuration.GetSection(nameof(WebConfiguration)).Get<WebConfiguration>();
-        }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.Configure<CookiePolicyOptions>(options =>
+        config.AddAzureTableStorage(options =>
             {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => false; // Default is true, make it false
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
-            services.Configure<CookieTempDataProviderOptions>(options =>
-            {
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-            });
-
-            AddAuthentication(services);
-
-            services.Configure<RequestLocalizationOptions>(options =>
-            {
-                options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(Culture);
-                options.SupportedCultures = new List<CultureInfo> { new CultureInfo(Culture) };
-                options.RequestCultureProviders.Clear();
-            });
-
-            services.AddMvc(options =>
-            {
-                options.Filters.Add<ValidateModelStateFilter>(int.MaxValue);
-                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                options.ModelBinderProviders.Insert(0, new StringTrimmingModelBinderProvider());
-            })
-            .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<OutcomePostRequestValidator>());
-
-            services.AddSession(opt => { opt.IdleTimeout = TimeSpan.FromHours(1); });
-
-            services.AddCache(ApplicationConfiguration, _env);
-            services.AddDataProtection(ApplicationConfiguration, _env);
-
-            services.AddTransient<ICacheStorageService, CacheStorageService>();
-
-            AddAntiforgery(services);
-
-            services.AddApplicationInsightsTelemetry();
-            services.AddDasHealthChecks(ApplicationConfiguration, _env.IsDevelopment());
-            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            ConfigureHttpClients(services);
-            ConfigureDependencyInjection(services);
-        }
-
-        private void AddAuthentication(IServiceCollection services)
-        {
-            if (ApplicationConfiguration.UseDfeSignIn)
-            {
-                services.AddAndConfigureDfESignInAuthentication(_configuration,
-                    "SFA.DAS.AdminService.Web.Auth",
-                    typeof(CustomServiceRole),
-                    ClientName.RoatpServiceAdmin,
-                    "/SignOut",
-                    "");
+                options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
+                options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
+                options.EnvironmentName = configuration["EnvironmentName"];
+                options.PreFixConfigurationKeys = false;
             }
-            else
-            {
-                services.AddAuthentication(sharedOptions =>
-                {
-                    sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
-                    sharedOptions.DefaultSignOutScheme = WsFederationDefaults.AuthenticationScheme;
-                }).AddWsFederation(options =>
-                {
-                    options.Wtrealm = ApplicationConfiguration.StaffAuthentication.WtRealm;
-                    options.MetadataAddress = ApplicationConfiguration.StaffAuthentication.MetadataAddress;
-                    options.TokenValidationParameters.RoleClaimType = Roles.RoleClaimType;
-                }).AddCookie();
-            }
-        }
+        );
 
-        private void AddAntiforgery(IServiceCollection services)
+        _configuration = config.Build();
+        ApplicationConfiguration = _configuration.GetSection(nameof(WebConfiguration)).Get<WebConfiguration>();
+    }
+
+    // This method gets called by the runtime. Use this method to add services to the container.
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.Configure<CookiePolicyOptions>(options =>
         {
-            services.AddAntiforgery(options => options.Cookie = new CookieBuilder() { Name = ".RoatpOversight.Staff.AntiForgery", HttpOnly = false });
-        }
+            // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+            options.CheckConsentNeeded = context => false; // Default is true, make it false
+            options.MinimumSameSitePolicy = SameSiteMode.None;
+        });
 
-        private void ConfigureHttpClients(IServiceCollection services)
+        services.Configure<CookieTempDataProviderOptions>(options =>
         {
-            var acceptHeaderName = "Accept";
-            var acceptHeaderValue = "application/json";
-            var handlerLifeTime = TimeSpan.FromMinutes(5);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        });
 
-            services.AddHttpClient<IApplyApiClient, ApplyApiClient>(config =>
-            {
-                config.BaseAddress = new Uri(ApplicationConfiguration.ApplyApiAuthentication.ApiBaseAddress);
-                config.DefaultRequestHeaders.Add(acceptHeaderName, acceptHeaderValue);
-            })
-            .SetHandlerLifetime(handlerLifeTime)
-            .AddPolicyHandler(GetRetryPolicy());
+        AddAuthentication(services);
 
-            services.AddHttpClient<IRoatpRegisterApiClient, RoatpRegisterApiClient>(config =>
-            {
-                config.BaseAddress = new Uri(ApplicationConfiguration.RoatpRegisterApiAuthentication.ApiBaseAddress);
-                config.DefaultRequestHeaders.Add(acceptHeaderName, acceptHeaderValue);
-            })
-           .SetHandlerLifetime(handlerLifeTime)
-           .AddPolicyHandler(GetRetryPolicy());
+        services.Configure<RequestLocalizationOptions>(options =>
+        {
+            options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(Culture);
+            options.SupportedCultures = new List<CultureInfo> { new CultureInfo(Culture) };
+            options.RequestCultureProviders.Clear();
+        });
 
-            AddOuterApi(services, ApplicationConfiguration.RoatpOversightOuterApi);
+        services.AddMvc(options =>
+        {
+            options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            options.ModelBinderProviders.Insert(0, new StringTrimmingModelBinderProvider());
+        });
+        
+        services.AddValidatorsFromAssembly(typeof(AppealPostRequestValidator).Assembly);
 
+        services.AddSession(opt => { opt.IdleTimeout = TimeSpan.FromHours(1); });
+
+        services.AddCache(ApplicationConfiguration, _env);
+        services.AddDataProtection(ApplicationConfiguration, _env);
+
+        services.AddTransient<ICacheStorageService, CacheStorageService>();
+
+        AddAntiforgery(services);
+
+        services.AddApplicationInsightsTelemetry();
+        services.AddDasHealthChecks(ApplicationConfiguration, _env.IsDevelopment());
+        services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+        ConfigureHttpClients(services);
+        ConfigureDependencyInjection(services);
+    }
+
+    private void AddAuthentication(IServiceCollection services)
+    {
+        if (ApplicationConfiguration.UseDfeSignIn)
+        {
+            services.AddAndConfigureDfESignInAuthentication(_configuration,
+                "SFA.DAS.AdminService.Web.Auth",
+                typeof(CustomServiceRole),
+                ClientName.RoatpServiceAdmin,
+                "/SignOut",
+                "");
         }
+        else
+        {
+            services.AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
+                sharedOptions.DefaultSignOutScheme = WsFederationDefaults.AuthenticationScheme;
+            }).AddWsFederation(options =>
+            {
+                options.Wtrealm = ApplicationConfiguration.StaffAuthentication.WtRealm;
+                options.MetadataAddress = ApplicationConfiguration.StaffAuthentication.MetadataAddress;
+                options.TokenValidationParameters.RoleClaimType = Roles.RoleClaimType;
+            }).AddCookie();
+        }
+    }
+
+    private void AddAntiforgery(IServiceCollection services)
+    {
+        services.AddAntiforgery(options => options.Cookie = new CookieBuilder() { Name = ".RoatpOversight.Staff.AntiForgery", HttpOnly = false });
+    }
+
+    private void ConfigureHttpClients(IServiceCollection services)
+    {
+        var acceptHeaderName = "Accept";
+        var acceptHeaderValue = "application/json";
+        var handlerLifeTime = TimeSpan.FromMinutes(5);
+
+        services.AddHttpClient<IApplyApiClient, ApplyApiClient>(config =>
+        {
+            config.BaseAddress = new Uri(ApplicationConfiguration.ApplyApiAuthentication.ApiBaseAddress);
+            config.DefaultRequestHeaders.Add(acceptHeaderName, acceptHeaderValue);
+        })
+        .SetHandlerLifetime(handlerLifeTime)
+        .AddPolicyHandler(GetRetryPolicy());
+
+        services.AddHttpClient<IRoatpRegisterApiClient, RoatpRegisterApiClient>(config =>
+        {
+            config.BaseAddress = new Uri(ApplicationConfiguration.RoatpRegisterApiAuthentication.ApiBaseAddress);
+            config.DefaultRequestHeaders.Add(acceptHeaderName, acceptHeaderValue);
+        })
+       .SetHandlerLifetime(handlerLifeTime)
+       .AddPolicyHandler(GetRetryPolicy());
+
+        AddOuterApi(services, ApplicationConfiguration.RoatpOversightOuterApi);
+
+    }
 
     private static void AddOuterApi(IServiceCollection services, RoatpOversightOuterApi configuration)
-        {
-            services.AddTransient<IRoatpOversightOuterApi>((_) => configuration);
+    {
+        services.AddTransient<IRoatpOversightOuterApi>((_) => configuration);
 
-            services.AddScoped<HeadersHandler>();
+        services.AddScoped<HeadersHandler>();
 
-            services
-               .AddRestEaseClient<IRoatpOversightApiClient>(configuration.BaseUrl)
-               .AddHttpMessageHandler<HeadersHandler>();
-        }
+        services
+           .AddRestEaseClient<IRoatpOversightApiClient>(configuration.BaseUrl)
+           .AddHttpMessageHandler<HeadersHandler>();
+    }
 
-        private void ConfigureDependencyInjection(IServiceCollection services)
-        {
-            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+    private void ConfigureDependencyInjection(IServiceCollection services)
+    {
+        services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddTransient(x => ApplicationConfiguration);
+        services.AddTransient(x => ApplicationConfiguration);
 
-            services.AddTransient<ISearchTermValidator, SearchTermValidator>();
+        services.AddTransient<ISearchTermValidator, SearchTermValidator>();
 
-            services.AddTransient<IRoatpApplicationTokenService, RoatpApplicationTokenService>();
-            services.AddTransient<IApplicationOutcomeOrchestrator, ApplicationOutcomeOrchestrator>();
-            services.AddTransient<IRoatpRegisterTokenService, RoatpRegisterTokenService>();
-            services.AddTransient<IOversightOrchestrator, OversightOrchestrator>();
-            services.AddSingleton<IPdfValidatorService, PdfValidatorService>();
-            services.AddSingleton<IMultipartFormDataService, MultipartFormDataService>();
+        services.AddTransient<IRoatpApplicationTokenService, RoatpApplicationTokenService>();
+        services.AddTransient<IApplicationOutcomeOrchestrator, ApplicationOutcomeOrchestrator>();
+        services.AddTransient<IRoatpRegisterTokenService, RoatpRegisterTokenService>();
+        services.AddTransient<IOversightOrchestrator, OversightOrchestrator>();
+        services.AddSingleton<IPdfValidatorService, PdfValidatorService>();
+        services.AddSingleton<IMultipartFormDataService, MultipartFormDataService>();
 
-            DependencyInjection.ConfigureDependencyInjection(services);
-        }
+        DependencyInjection.ConfigureDependencyInjection(services);
+    }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
-
-            app.UseHttpsRedirection();
-            app.UseCookiePolicy();
-            app.UseRouting();
-            app.UseSession();
-            app.UseRequestLocalization();
-            app.UseStatusCodePagesWithReExecute("/ErrorPage/{0}");
-            app.UseSecurityHeaders();
-            app.Use(async (context, next) =>
-            {
-                if (!context.Response.Headers.ContainsKey("X-Permitted-Cross-Domain-Policies"))
-                {
-                    context.Response.Headers.Append("X-Permitted-Cross-Domain-Policies", new StringValues("none"));
-                }
-                await next();
-            });
-            app.UseStaticFiles();
-            app.UseAuthentication();
-            app.UseAuthorization();
-            app.UseDasHealthChecks();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    "default",
-                    "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseDeveloperExceptionPage();
+        }
+        else
+        {
+            app.UseExceptionHandler("/Home/Error");
+            app.UseHsts();
         }
 
-        static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        app.UseHttpsRedirection();
+        app.UseCookiePolicy();
+        app.UseRouting();
+        app.UseSession();
+        app.UseRequestLocalization();
+        app.UseStatusCodePagesWithReExecute("/ErrorPage/{0}");
+        app.UseSecurityHeaders();
+        app.Use(async (context, next) =>
         {
-            return HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound)
+            if (!context.Response.Headers.ContainsKey("X-Permitted-Cross-Domain-Policies"))
+            {
+                context.Response.Headers.Append("X-Permitted-Cross-Domain-Policies", new StringValues("none"));
+            }
+            await next();
+        });
+        app.UseStaticFiles();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseDasHealthChecks();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllerRoute(
+                "default",
+                "{controller=Home}/{action=Index}/{id?}");
+        });
+    }
+
+    static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+    {
+        return HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound)
             .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
     }
 }

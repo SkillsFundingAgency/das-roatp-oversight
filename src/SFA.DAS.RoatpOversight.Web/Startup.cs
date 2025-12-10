@@ -99,7 +99,7 @@ public class Startup
             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             options.ModelBinderProviders.Insert(0, new StringTrimmingModelBinderProvider());
         });
-        
+
         services.AddValidatorsFromAssembly(typeof(AppealPostRequestValidator).Assembly);
 
         services.AddSession(opt => { opt.IdleTimeout = TimeSpan.FromHours(1); });
@@ -193,8 +193,6 @@ public class Startup
         services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
         services.AddTransient(x => ApplicationConfiguration);
-
-        services.AddTransient<ISearchTermValidator, SearchTermValidator>();
 
         services.AddTransient<IRoatpApplicationTokenService, RoatpApplicationTokenService>();
         services.AddTransient<IApplicationOutcomeOrchestrator, ApplicationOutcomeOrchestrator>();

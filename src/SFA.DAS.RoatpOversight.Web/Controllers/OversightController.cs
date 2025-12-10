@@ -17,7 +17,7 @@ namespace SFA.DAS.RoatpOversight.Web.Controllers;
 [Authorize(Roles = Roles.RoatpApplicationOversightTeam)]
 public class OversightController : Controller
 {
-    private readonly ISearchTermValidator _searchTermValidator;
+    private readonly SearchTermValidator _searchTermValidator;
     private readonly IApplicationOutcomeOrchestrator _outcomeOrchestrator;
     private readonly IOversightOrchestrator _oversightOrchestrator;
     private readonly IApplyApiClient _apiClient;
@@ -26,9 +26,9 @@ public class OversightController : Controller
     private readonly ConfirmOutcomePostRequestValidator _confirmOutcomePostRequestValidator;
     private readonly ConfirmAppealOutcomePostRequestValidator _confirmAppealOutcomePostRequestValidator;
 
-    public OversightController(ISearchTermValidator searchTermValidator,
+    public OversightController(SearchTermValidator searchTermValidator,
                                IApplicationOutcomeOrchestrator outcomeOrchestrator,
-                               IOversightOrchestrator oversightOrchestrator, 
+                               IOversightOrchestrator oversightOrchestrator,
                                IApplyApiClient apiClient,
                                AppealPostRequestValidator appealPostRequestValidator,
                                OutcomePostRequestValidator outcomePostRequestValidator,
@@ -50,11 +50,7 @@ public class OversightController : Controller
         if (searchTerm != null)
         {
             var validationResponse = _searchTermValidator.Validate(searchTerm);
-
-            foreach (var error in validationResponse.Errors)
-            {
-                ModelState.AddModelError(error.Field, error.ErrorMessage);
-            }
+            ModelState.AddValidationErrors(validationResponse.Errors);
         }
 
         var viewModel = await _oversightOrchestrator.GetApplicationsViewModel(selectedTab, ModelState.IsValid ? searchTerm : null, sortColumn, sortOrder);

@@ -25,7 +25,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight;
 [TestFixture]
 public class OversightControllerTests
 {
-    private Mock<ISearchTermValidator> _searchTermValidator;
+    private Mock<SearchTermValidator> _searchTermValidator;
     private Mock<IOversightOrchestrator> _oversightOrchestrator;
     private Mock<IApplyApiClient> _applyApiClient;
     private Mock<IApplicationOutcomeOrchestrator> _outcomeOrchestrator;
@@ -39,7 +39,7 @@ public class OversightControllerTests
     [SetUp]
     public void SetUp()
     {
-        _searchTermValidator = new Mock<ISearchTermValidator>();
+        _searchTermValidator = new Mock<SearchTermValidator>();
         _oversightOrchestrator = new Mock<IOversightOrchestrator>();
         _outcomeOrchestrator = new Mock<IApplicationOutcomeOrchestrator>();
         _applyApiClient = new Mock<IApplyApiClient>();

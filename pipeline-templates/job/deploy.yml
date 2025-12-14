@@ -55,7 +55,7 @@ jobs:
             ConfigurationSecrets: 
               RoatpApiAuthenticationClientSecret: $(RoatpApiAuthenticationClientSecret)
               SessionRedisConnectionString: $(SessionRedisConnectionString)
-              RoatpOversightOuterApiSubscriptionKey: $(RoatpOversightApimSubscriptionKey)
+              RoatpOversightApimSubscriptionKey: $(RoatpOversightApimSubscriptionKey)
         - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
@@ -66,4 +66,4 @@ jobs:
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
             AppServiceName: $(AppServiceName)
-            DeploymentPackagePath: $(Pipeline.Workspace)/${{ parameters.SolutionBaseName }}/${{ parameters.SolutionBaseName }}.Web.zip
+            DeploymentPackagePath: $(Pipeline.Workspace)/${{ parameters.SolutionBaseName }}/${{ parameters.SolutionBaseName }}Web.zip

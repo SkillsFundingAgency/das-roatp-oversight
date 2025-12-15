@@ -33,6 +33,14 @@ jobs:
       TargetFolder: "$(build.artifactstagingdirectory)/publish"
       OverWrite: true
 
+  - task: ArchiveFiles@2
+    displayName: 'Archive published content'
+    inputs:
+      rootFolderOrFile: '$(build.artifactstagingdirectory)/publish'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(build.artifactstagingdirectory)/publish/$(SolutionBaseName).zip'
+
   - task: PublishPipelineArtifact@1
     displayName: Publish Build Artifact
     inputs:

@@ -26,23 +26,14 @@ jobs:
       arguments: "--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build"
 
   - task: CopyFiles@2
-    displayName: "Copy Files to: $(build.artifactstagingdirectory)"
+    displayName: Copy Files to $(build.artifactstagingdirectory)/publish
     inputs:
       Contents: |
         azure/**
-      TargetFolder: "$(build.artifactstagingdirectory)/publish"
-      OverWrite: true
-
-  - task: ArchiveFiles@2
-    displayName: 'Archive published content'
-    inputs:
-      rootFolderOrFile: '$(build.artifactstagingdirectory)/publish'
-      includeRootFolder: false
-      archiveType: 'zip'
-      archiveFile: '$(build.artifactstagingdirectory)/artifacts/${{ parameters.SolutionBaseName }}/SFA.DAS.RoatpOversight.Web.zip'
+      TargetFolder: $(build.artifactstagingdirectory)/publish
 
   - task: PublishPipelineArtifact@1
     displayName: Publish Build Artifact
     inputs:
-      targetPath: $(build.artifactstagingdirectory)/artifacts/${{ parameters.SolutionBaseName }}
+      targetPath: $(build.artifactstagingdirectory)/publish
       artifactName: ${{ parameters.SolutionBaseName }}

@@ -39,10 +39,10 @@ jobs:
       rootFolderOrFile: '$(build.artifactstagingdirectory)/publish'
       includeRootFolder: false
       archiveType: 'zip'
-      archiveFile: '$(build.artifactstagingdirectory)/publish/$(SolutionBaseName).zip'
+      archiveFile: '$(build.artifactstagingdirectory)/artifacts/${{ parameters.SolutionBaseName }}/SFA.DAS.RoatpOversight.Web.zip'
 
   - task: PublishPipelineArtifact@1
     displayName: Publish Build Artifact
     inputs:
-      targetPath: $(build.artifactstagingdirectory)/publish
+      targetPath: $(build.artifactstagingdirectory)/artifacts/${{ parameters.SolutionBaseName }}
       artifactName: ${{ parameters.SolutionBaseName }}

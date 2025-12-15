@@ -187,10 +187,6 @@
                                     "value": "/ping"
                                 },
                                 {
-                                    "name": "WEBSITE_SWAP_WARMUP_PING_STATUSES",
-                                    "value": "200"
-                                },
-                                {
                                     "name": "ConfigNames",
                                     "value": "[parameters('configNames')]"
                                 },

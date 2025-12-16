@@ -26,14 +26,14 @@ jobs:
       arguments: "--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build"
 
   - task: CopyFiles@2
-    displayName: "Copy Files to: $(build.artifactstagingdirectory)"
+    displayName: Copy Files to $(build.artifactstagingdirectory)/publish
     inputs:
       Contents: |
         azure/**
-      TargetFolder: "$(build.artifactstagingdirectory)/publish"
-      OverWrite: true
+      TargetFolder: $(build.artifactstagingdirectory)/publish
 
-  - task: PublishBuildArtifacts@1
-    displayName: "Publish Artifact"
+  - task: PublishPipelineArtifact@1
+    displayName: Publish Build Artifact
     inputs:
-      PathtoPublish: "$(build.artifactstagingdirectory)/publish"
+      targetPath: $(build.artifactstagingdirectory)/publish
+      artifactName: ${{ parameters.SolutionBaseName }}

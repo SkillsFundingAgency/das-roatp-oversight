@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Refit;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Domain.ApiTypes;
 using SFA.DAS.RoatpOversight.Web.Domain;
@@ -66,8 +67,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             if (applicationDetails?.Ukprn != null)
             {
-                var registerStatus = await _registerApiClient.GetOrganisationRegisterStatus(new GetOrganisationRegisterStatusRequest { UKPRN = applicationDetails.Ukprn });
-                onRegister = registerStatus.UkprnOnRegister;
+                ApiResponse<Organisation> organisationResponse = await _registerApiClient.GetOrganisation(int.Parse(applicationDetails.Ukprn));
+                onRegister = organisationResponse.IsSuccessful;
             }
 
             var viewModel = new AppealViewModel
@@ -123,8 +124,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
             if (applicationDetails?.Ukprn != null)
             {
-                var registerStatus = await _registerApiClient.GetOrganisationRegisterStatus(new GetOrganisationRegisterStatusRequest { UKPRN = applicationDetails.Ukprn });
-                onRegister = registerStatus.UkprnOnRegister;
+                ApiResponse<Organisation> organisationResponse = await _registerApiClient.GetOrganisation(int.Parse(applicationDetails.Ukprn));
+                onRegister = organisationResponse.IsSuccessful;
             }
 
 
@@ -176,13 +177,12 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             var applicationDetails = _applyApiClient.GetApplicationDetails(applicationId).Result;
             var oversightReview = _applyApiClient.GetOversightReview(applicationId).Result;
             var onRegister = false;
-            
+
             if (applicationDetails?.Ukprn != null)
             {
-                var registerStatus = await _registerApiClient.GetOrganisationRegisterStatus(new GetOrganisationRegisterStatusRequest { UKPRN = applicationDetails.Ukprn });
-                onRegister = registerStatus.UkprnOnRegister;
+                ApiResponse<Organisation> organisationResponse = await _registerApiClient.GetOrganisation(int.Parse(applicationDetails.Ukprn));
+                onRegister = organisationResponse.IsSuccessful;
             }
-
 
             var viewModel = new OutcomeViewModel
             {
@@ -331,7 +331,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 AppealStatus = cachedItem.AppealStatus
             };
 
-                 switch (cachedItem.AppealStatus)
+            switch (cachedItem.AppealStatus)
             {
                 case AppealStatus.Successful:
                     viewModel.InternalComments = cachedItem.SuccessfulText;
@@ -544,6 +544,6 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             };
         }
 
-       
+
     }
 }

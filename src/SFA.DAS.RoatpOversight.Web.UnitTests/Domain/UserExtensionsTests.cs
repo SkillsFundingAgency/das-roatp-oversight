@@ -1,53 +1,51 @@
-﻿using NUnit.Framework;
-using SFA.DAS.AdminService.Common.Extensions;
+﻿using System.Security.Claims;
+using NUnit.Framework;
 using SFA.DAS.AdminService.Common.Testing.MockedObjects;
-using SFA.DAS.RoatpOversight.Web.Domain;
-using System.Security.Claims;
+using SFA.DAS.RoatpOversight.Web.Extensions;
 
-namespace SFA.DAS.RoatpOversight.Web.UnitTests.Domain
+namespace SFA.DAS.RoatpOversight.Web.UnitTests.Domain;
+
+[TestFixture]
+public class UserExtensionsTests
 {
-    [TestFixture]
-    public class UserExtensionsTests
+    private const string GivenName = "Test";
+    private const string Surname = "User";
+
+    private ClaimsPrincipal _user;
+
+    [SetUp]
+    public void Setup()
     {
-        private const string GivenName = "Test";
-        private const string Surname = "User";
+        _user = MockedUser.Setup();
+    }
 
-        private ClaimsPrincipal _user;
+    [Test]
+    public void UserDisplayName_returns_expected_result()
+    {
+        var expectedresult = $"{GivenName} {Surname}";
 
-        [SetUp]
-        public void Setup()
-        {
-            _user = MockedUser.Setup();
-        }
+        var actualResult = _user.UserDisplayName();
 
-        [Test]
-        public void UserDisplayName_returns_expected_result()
-        {
-            var expectedresult = $"{GivenName} {Surname}";
+        Assert.That(actualResult, Is.EqualTo(expectedresult));
+    }
 
-            var actualResult = _user.UserDisplayName();
+    [Test]
+    public void GivenName_returns_expected_result()
+    {
+        var expectedresult = $"{GivenName}";
 
-            Assert.That(actualResult, Is.EqualTo(expectedresult));          
-        }
+        var actualResult = _user.GivenName();
 
-        [Test]
-        public void GivenName_returns_expected_result()
-        {
-            var expectedresult = $"{GivenName}";
+        Assert.That(actualResult, Is.EqualTo(expectedresult));
+    }
 
-            var actualResult = _user.GivenName();
+    [Test]
+    public void Surname_returns_expected_result()
+    {
+        var expectedresult = $"{Surname}";
 
-            Assert.That(actualResult, Is.EqualTo(expectedresult));
-        }
+        var actualResult = _user.Surname();
 
-        [Test]
-        public void Surname_returns_expected_result()
-        {
-            var expectedresult = $"{Surname}";
-
-            var actualResult = _user.Surname();
-
-            Assert.That(actualResult, Is.EqualTo(expectedresult));
-        }
+        Assert.That(actualResult, Is.EqualTo(expectedresult));
     }
 }

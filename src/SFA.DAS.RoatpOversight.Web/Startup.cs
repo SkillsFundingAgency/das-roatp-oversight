@@ -5,8 +5,6 @@ using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,17 +17,15 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Polly;
 using Polly.Extensions.Http;
-using RestEase.HttpClientFactory;
-using SFA.DAS.AdminService.Common;
-using SFA.DAS.AdminService.Common.Extensions;
+using Refit;
+using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.DfESignIn.Auth.AppStart;
 using SFA.DAS.DfESignIn.Auth.Enums;
 using SFA.DAS.RoatpOversight.Domain.Interfaces;
-using SFA.DAS.RoatpOversight.Web.Domain;
+using SFA.DAS.RoatpOversight.Web.Extensions;
 using SFA.DAS.RoatpOversight.Web.HealthChecks;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
-using SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients.TokenService;
 using SFA.DAS.RoatpOversight.Web.Infrastructure.Handlers;
 using SFA.DAS.RoatpOversight.Web.ModelBinders;
 using SFA.DAS.RoatpOversight.Web.Services;
@@ -65,7 +61,7 @@ public class Startup
         );
 
         _configuration = config.Build();
-        ApplicationConfiguration = _configuration.GetSection(nameof(WebConfiguration)).Get<WebConfiguration>();
+        ApplicationConfiguration = _configuration.Get<WebConfiguration>();
     }
 
     // This method gets called by the runtime. Use this method to add services to the container.
@@ -120,30 +116,12 @@ public class Startup
 
     private void AddAuthentication(IServiceCollection services)
     {
-        if (ApplicationConfiguration.UseDfeSignIn)
-        {
-            services.AddAndConfigureDfESignInAuthentication(_configuration,
-                "SFA.DAS.AdminService.Web.Auth",
-                typeof(CustomServiceRole),
-                ClientName.RoatpServiceAdmin,
-                "/SignOut",
-                "");
-        }
-        else
-        {
-            services.AddAuthentication(sharedOptions =>
-            {
-                sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultSignOutScheme = WsFederationDefaults.AuthenticationScheme;
-            }).AddWsFederation(options =>
-            {
-                options.Wtrealm = ApplicationConfiguration.StaffAuthentication.WtRealm;
-                options.MetadataAddress = ApplicationConfiguration.StaffAuthentication.MetadataAddress;
-                options.TokenValidationParameters.RoleClaimType = Roles.RoleClaimType;
-            }).AddCookie();
-        }
+        services.AddAndConfigureDfESignInAuthentication(_configuration,
+            "SFA.DAS.AdminService.Web.Auth",
+            typeof(CustomServiceRole),
+            ClientName.RoatpServiceAdmin,
+            "/SignOut",
+            "");
     }
 
     private void AddAntiforgery(IServiceCollection services)
@@ -153,39 +131,24 @@ public class Startup
 
     private void ConfigureHttpClients(IServiceCollection services)
     {
-        var acceptHeaderName = "Accept";
-        var acceptHeaderValue = "application/json";
         var handlerLifeTime = TimeSpan.FromMinutes(5);
 
-        services.AddHttpClient<IApplyApiClient, ApplyApiClient>(config =>
-        {
-            config.BaseAddress = new Uri(ApplicationConfiguration.ApplyApiAuthentication.ApiBaseAddress);
-            config.DefaultRequestHeaders.Add(acceptHeaderName, acceptHeaderValue);
-        })
-        .SetHandlerLifetime(handlerLifeTime)
-        .AddPolicyHandler(GetRetryPolicy());
+        services.AddRefitClient<IApplyApiClient>()
+            .ConfigureHttpClient(c => c.BaseAddress = new Uri(ApplicationConfiguration.ApplyApiAuthentication.ApiBaseAddress))
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(_configuration), ApplicationConfiguration.ApplyApiAuthentication.Identifier))
+            .SetHandlerLifetime(handlerLifeTime)
+            .AddPolicyHandler(GetRetryPolicy());
 
-        services.AddHttpClient<IRoatpRegisterApiClient, RoatpRegisterApiClient>(config =>
-        {
-            config.BaseAddress = new Uri(ApplicationConfiguration.RoatpRegisterApiAuthentication.ApiBaseAddress);
-            config.DefaultRequestHeaders.Add(acceptHeaderName, acceptHeaderValue);
-        })
-       .SetHandlerLifetime(handlerLifeTime)
-       .AddPolicyHandler(GetRetryPolicy());
-
-        AddOuterApi(services, ApplicationConfiguration.RoatpOversightOuterApi);
-
-    }
-
-    private static void AddOuterApi(IServiceCollection services, RoatpOversightOuterApi configuration)
-    {
-        services.AddTransient<IRoatpOversightOuterApi>((_) => configuration);
-
-        services.AddScoped<HeadersHandler>();
+        services.AddRefitClient<IRoatpRegisterApiClient>()
+            .ConfigureHttpClient(c => c.BaseAddress = new Uri(ApplicationConfiguration.RoatpRegisterApiAuthentication.ApiBaseAddress))
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(_configuration), ApplicationConfiguration.RoatpRegisterApiAuthentication.Identifier))
+            .SetHandlerLifetime(handlerLifeTime)
+            .AddPolicyHandler(GetRetryPolicy()); ;
 
         services
-           .AddRestEaseClient<IRoatpOversightApiClient>(configuration.BaseUrl)
-           .AddHttpMessageHandler<HeadersHandler>();
+           .AddRefitClient<IRoatpOversightOuterApiClient>()
+           .ConfigureHttpClient(c => c.BaseAddress = new Uri(ApplicationConfiguration.RoatpOversightOuterApi.BaseUrl))
+           .AddHttpMessageHandler(() => new OuterApiAuthenticationHeadersHandler(ApplicationConfiguration.RoatpOversightOuterApi.SubscriptionKey));
     }
 
     private void ConfigureDependencyInjection(IServiceCollection services)
@@ -194,14 +157,10 @@ public class Startup
 
         services.AddTransient(x => ApplicationConfiguration);
 
-        services.AddTransient<IRoatpApplicationTokenService, RoatpApplicationTokenService>();
         services.AddTransient<IApplicationOutcomeOrchestrator, ApplicationOutcomeOrchestrator>();
-        services.AddTransient<IRoatpRegisterTokenService, RoatpRegisterTokenService>();
         services.AddTransient<IOversightOrchestrator, OversightOrchestrator>();
         services.AddSingleton<IPdfValidatorService, PdfValidatorService>();
         services.AddSingleton<IMultipartFormDataService, MultipartFormDataService>();
-
-        DependencyInjection.ConfigureDependencyInjection(services);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

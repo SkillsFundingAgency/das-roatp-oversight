@@ -1,28 +1,53 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Refit;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Domain.ApiTypes;
 
-namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
+namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
+
+public interface IApplyApiClient
 {
-    public interface IApplyApiClient
-    {
-        Task Ping();
-        Task<PendingOversightReviews> GetOversightsPending(string searchTerm, string sortColumn, string sortOrder);
-        Task<CompletedOversightReviews> GetOversightsCompleted(string searchTerm, string sortColumn, string sortOrder);
-        Task<PendingAppealOutcomes> GetPendingAppealOutcomes(string searchTerm, string sortColumn, string sortOrder);
-        Task<CompletedAppealOutcomes> GetCompletedAppealOutcomesCompleted(string searchTerm, string sortColumn, string sortOrder);
-        Task<ApplicationDetails> GetApplicationDetails(Guid applicationId);
-        Task<RoatpRegistrationDetails> GetRegistrationDetails(Guid applicationId);
-        Task<bool> RecordOutcome(RecordOversightOutcomeCommand command);
-        Task RecordGatewayFailOutcome(RecordOversightGatewayFailOutcomeCommand command);
-        Task RecordGatewayRemovedOutcome(RecordOversightGatewayRemovedOutcomeCommand command);
+    [Get("/ping")]
+    Task Ping();
 
-        Task<bool> RecordAppeal(RecordAppealOutcomeCommand command);
-        Task<GetOversightReviewResponse> GetOversightReview(Guid applicationId);
+    [Get("/Oversights/Pending")]
+    Task<PendingOversightReviews> GetOversightsPending([Query] string searchTerm, [Query] string sortColumn, [Query] string sortOrder);
 
-        Task<AppealDetails> GetAppealDetails(Guid applicationId);
-        Task<HttpResponseMessage> DownloadFile(Guid applicationId, string fileName);
-    }
+    [Get("/Oversights/Completed")]
+    Task<CompletedOversightReviews> GetOversightsCompleted([Query] string searchTerm, [Query] string sortColumn, [Query] string sortOrder);
+
+    [Get("/Oversights/PendingAppeal")]
+    Task<PendingAppealOutcomes> GetPendingAppealOutcomes([Query] string searchTerm, [Query] string sortColumn, [Query] string sortOrder);
+
+    [Get("/Oversights/CompletedAppeal")]
+    Task<CompletedAppealOutcomes> GetCompletedAppealOutcomesCompleted([Query] string searchTerm, [Query] string sortColumn, [Query] string sortOrder);
+
+    [Get("/Oversights/{applicationId}")]
+    Task<ApplicationDetails> GetApplicationDetails(Guid applicationId);
+
+    [Get("/Oversights/RegistrationDetails/{applicationId}")]
+    Task<RoatpRegistrationDetails> GetRegistrationDetails(Guid applicationId);
+
+    [Post("/Oversights/Outcome")]
+    Task<bool> RecordOutcome([Body] RecordOversightOutcomeCommand command);
+
+    [Post("/Oversights/Appeal")]
+    Task<bool> RecordAppeal([Body] RecordAppealOutcomeCommand command);
+
+    [Post("/Oversights/GatewayFailOutcome")]
+    Task RecordGatewayFailOutcome([Body] RecordOversightGatewayFailOutcomeCommand command);
+
+    [Post("/Oversights/GatewayRemovedOutcome")]
+    Task RecordGatewayRemovedOutcome([Body] RecordOversightGatewayRemovedOutcomeCommand command);
+
+    [Get("/Oversight/{applicationId}/review")]
+    Task<GetOversightReviewResponse> GetOversightReview(Guid applicationId);
+
+    [Get("/Appeals/{applicationId")]
+    Task<AppealDetails> GetAppealDetails(Guid applicationId);
+
+    [Get("/Appeals/{applicationId}/files/{fileName}")]
+    Task<HttpResponseMessage> DownloadFile(Guid applicationId, string fileName);
 }

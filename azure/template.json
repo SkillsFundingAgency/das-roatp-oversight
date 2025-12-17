@@ -64,14 +64,6 @@
         "sharedAppServicePlanResourceGroup": {
             "type": "string"
         },
-        "configNames": {
-            "type": "string",
-            "defaultValue": "SFA.DAS.RoatpOversight,SFA.DAS.Provider.DfeSignIn"
-        },
-        "version": {
-            "type": "string",
-            "defaultValue": "1.0"
-        },
         "cdnUrl": {
             "type": "string"
         },
@@ -85,7 +77,8 @@
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "appServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
-        "privateLinkScopeName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-shared-ampls'))]"
+        "privateLinkScopeName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-shared-ampls'))]",
+        "configNames": "SFA.DAS.RoatpOversight,SFA.DAS.Provider.DfeSignIn"
     },
     "resources": [
         {
@@ -184,7 +177,7 @@
                                 },
                                 {
                                     "name": "ConfigNames",
-                                    "value": "[parameters('configNames')]"
+                                    "value": "[variables('configNames')]"
                                 },
                                 {
                                     "name": "Version",

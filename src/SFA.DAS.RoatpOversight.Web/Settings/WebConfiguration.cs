@@ -24,7 +24,6 @@ public class WebConfiguration : IWebConfiguration
 
     [JsonRequired]
     public RoatpOversightOuterApi RoatpOversightOuterApi { get; set; }
-    public bool UseDfeSignIn { get; set; }
-    public string DfESignInServiceHelpUrl { get; set; }
 
+    public string DfESignInServiceHelpUrl { get; set; }
 }

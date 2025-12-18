@@ -183,14 +183,6 @@
                                     "value": "[toUpper(parameters('resourceEnvironmentName'))]"
                                 },
                                 {
-                                    "name": "WEBSITE_SWAP_WARMUP_PING_PATH",
-                                    "value": "/ping"
-                                },
-                                {
-                                    "name": "WEBSITE_SWAP_WARMUP_PING_STATUSES",
-                                    "value": "200"
-                                },
-                                {
                                     "name": "ConfigNames",
                                     "value": "[parameters('configNames')]"
                                 },

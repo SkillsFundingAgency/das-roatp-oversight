@@ -171,7 +171,7 @@
                                     "value": "[parameters('loggingRedisKey')]"
                                 },
                                 {
-                                    "name": "APPINSIGHTS_CONNECTION_STRING",
+                                    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
                                     "value": "[reference('app-insights').outputs.ConnectionString.value]"
                                 },
                                 {

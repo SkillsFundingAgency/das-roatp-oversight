@@ -108,6 +108,7 @@ public class Startup
         AddAntiforgery(services);
 
         services.AddApplicationInsightsTelemetry();
+        services.AddTelemetryRegistration(_configuration);
         services.AddDasHealthChecks(ApplicationConfiguration, _env.IsDevelopment());
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         ConfigureHttpClients(services);

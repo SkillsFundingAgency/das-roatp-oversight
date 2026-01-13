@@ -33,13 +33,13 @@ public interface IApplyApiClient
     [Post("/Oversight/Outcome")]
     Task<bool> RecordOutcome([Body] RecordOversightOutcomeCommand command);
 
-    [Post("/Oversights/Appeal")]
+    [Post("/Oversight/Appeal")]
     Task<bool> RecordAppeal([Body] RecordAppealOutcomeCommand command);
 
-    [Post("/Oversights/GatewayFailOutcome")]
+    [Post("/Oversight/GatewayFailOutcome")]
     Task RecordGatewayFailOutcome([Body] RecordOversightGatewayFailOutcomeCommand command);
 
-    [Post("/Oversights/GatewayRemovedOutcome")]
+    [Post("/Oversight/GatewayRemovedOutcome")]
     Task RecordGatewayRemovedOutcome([Body] RecordOversightGatewayRemovedOutcomeCommand command);
 
     [Get("/Oversight/{applicationId}/review")]

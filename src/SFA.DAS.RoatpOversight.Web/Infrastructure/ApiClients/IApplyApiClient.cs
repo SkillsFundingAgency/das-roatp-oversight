@@ -27,10 +27,10 @@ public interface IApplyApiClient
     [Get("/Oversights/{applicationId}")]
     Task<ApplicationDetails> GetApplicationDetails(Guid applicationId);
 
-    [Get("/Oversights/RegistrationDetails/{applicationId}")]
+    [Get("/Oversight/RegistrationDetails/{applicationId}")]
     Task<RoatpRegistrationDetails> GetRegistrationDetails(Guid applicationId);
 
-    [Post("/Oversights/Outcome")]
+    [Post("/Oversight/Outcome")]
     Task<bool> RecordOutcome([Body] RecordOversightOutcomeCommand command);
 
     [Post("/Oversights/Appeal")]

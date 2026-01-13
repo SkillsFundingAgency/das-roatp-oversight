@@ -134,7 +134,7 @@ public class Startup
     {
         var handlerLifeTime = TimeSpan.FromMinutes(5);
 
-        services.AddRefitClient<IApplyApiClient>()
+        services.AddRefitClient<IApplyApiClient>(new RefitSettings(new NewtonsoftJsonContentSerializer(), null, null))
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(ApplicationConfiguration.ApplyApiAuthentication.ApiBaseAddress))
             .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(_configuration), ApplicationConfiguration.ApplyApiAuthentication.Identifier))
             .SetHandlerLifetime(handlerLifeTime)

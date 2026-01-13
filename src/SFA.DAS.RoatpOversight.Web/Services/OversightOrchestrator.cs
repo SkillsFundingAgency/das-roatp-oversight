@@ -112,14 +112,14 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             return viewModel;
         }
 
-
         public async Task<OutcomeDetailsViewModel> GetOversightDetailsViewModel(Guid applicationId, Guid? outcomeKey)
         {
             var applicationDetailsTask = _applyApiClient.GetApplicationDetails(applicationId);
             var oversightReviewTask = _applyApiClient.GetOversightReview(applicationId);
             await Task.WhenAll(applicationDetailsTask, oversightReviewTask);
-            var applicationDetails = _applyApiClient.GetApplicationDetails(applicationId).Result;
-            var oversightReview = _applyApiClient.GetOversightReview(applicationId).Result;
+            var applicationDetails = applicationDetailsTask.Result;
+            var oversightReview = oversightReviewTask.Result;
+
             var onRegister = false;
 
             if (applicationDetails?.Ukprn != null)
@@ -168,62 +168,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             return viewModel;
         }
 
-
-        public async Task<OutcomeViewModel> GetOversightViewModel(Guid applicationId, Guid? outcomeKey)
-        {
-            var applicationDetailsTask = _applyApiClient.GetApplicationDetails(applicationId);
-            var oversightReviewTask = _applyApiClient.GetOversightReview(applicationId);
-            await Task.WhenAll(applicationDetailsTask, oversightReviewTask);
-            var applicationDetails = _applyApiClient.GetApplicationDetails(applicationId).Result;
-            var oversightReview = _applyApiClient.GetOversightReview(applicationId).Result;
-            var onRegister = false;
-
-            if (applicationDetails?.Ukprn != null)
-            {
-                ApiResponse<Organisation> organisationResponse = await _registerApiClient.GetOrganisation(int.Parse(applicationDetails.Ukprn));
-                onRegister = organisationResponse.IsSuccessful;
-            }
-
-            var viewModel = new OutcomeViewModel
-            {
-                IsNew = oversightReview == null,
-                ApplicationSummary = CreateApplicationSummaryViewModel(applicationDetails),
-                GatewayOutcome = CreateGatewayOutcomeViewModel(applicationDetails, oversightReview),
-                FinancialHealthOutcome = CreateFinancialHealthOutcomeViewModel(applicationDetails),
-                ModerationOutcome = CreateModerationOutcomeViewModel(applicationDetails, oversightReview),
-                InProgressDetails = CreateInProgressDetailsViewModel(oversightReview),
-                OverallOutcome = CreateOverallOutcomeViewModel(oversightReview),
-                ShowInProgressDetails = oversightReview?.InProgressDate != null,
-                OversightStatus = oversightReview?.Status ?? OversightReviewStatus.None,
-                ApproveGateway = GetStringValueForApprovalStatusBoolean(oversightReview?.GatewayApproved),
-                ApproveModeration = GetStringValueForApprovalStatusBoolean(oversightReview?.ModerationApproved),
-                IsGatewayRemoved = applicationDetails.ApplicationStatus == ApplicationStatus.Removed,
-                IsGatewayFail = applicationDetails.GatewayReviewStatus == GatewayReviewStatus.Fail,
-                HasFinalOutcome = oversightReview != null && oversightReview.Status != OversightReviewStatus.None && oversightReview.Status != OversightReviewStatus.InProgress,
-                OnRegister = onRegister
-            };
-
-            if (oversightReview == null || oversightReview.Status == OversightReviewStatus.InProgress)
-            {
-                var cachedItem = await _cacheStorageService.RetrieveFromCache<OutcomePostRequest>(outcomeKey.ToString());
-                if (cachedItem == null) return viewModel;
-
-                viewModel.OversightStatus = cachedItem.OversightStatus;
-                viewModel.ApproveGateway = cachedItem.ApproveGateway;
-                viewModel.ApproveModeration = cachedItem.ApproveModeration;
-                viewModel.SuccessfulText = cachedItem.SuccessfulText;
-                viewModel.SuccessfulAlreadyActiveText = cachedItem.SuccessfulAlreadyActiveText;
-                viewModel.SuccessfulFitnessForFundingText = cachedItem.SuccessfulFitnessForFundingText;
-                viewModel.UnsuccessfulText = cachedItem.UnsuccessfulText;
-                viewModel.UnsuccessfulExternalText = cachedItem.UnsuccessfulExternalText;
-                viewModel.InProgressInternalText = cachedItem.InProgressInternalText;
-                viewModel.InProgressExternalText = cachedItem.InProgressExternalText;
-            }
-
-            return viewModel;
-        }
-
-        private string GetStringValueForApprovalStatusBoolean(bool? approvalStatusBoolean)
+        private static string GetStringValueForApprovalStatusBoolean(bool? approvalStatusBoolean)
         {
             if (!approvalStatusBoolean.HasValue) return string.Empty;
             return approvalStatusBoolean.Value ? ApprovalStatus.Approve : ApprovalStatus.Overturn;
@@ -242,8 +187,8 @@ namespace SFA.DAS.RoatpOversight.Web.Services
             var applicationDetailsTask = _applyApiClient.GetApplicationDetails(applicationId);
             var oversightReviewTask = _applyApiClient.GetOversightReview(applicationId);
             await Task.WhenAll(applicationDetailsTask, oversightReviewTask);
-            var applicationDetails = _applyApiClient.GetApplicationDetails(applicationId).Result;
-            var oversightReview = _applyApiClient.GetOversightReview(applicationId).Result;
+            var applicationDetails = applicationDetailsTask.Result;
+            var oversightReview = oversightReviewTask.Result;
 
             VerifyApplicationHasNoFinalOutcome(oversightReview);
 

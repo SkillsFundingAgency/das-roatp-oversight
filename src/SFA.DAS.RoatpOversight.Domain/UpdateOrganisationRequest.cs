@@ -2,7 +2,7 @@
 
 public class UpdateOrganisationRequest
 {
-    public int ProviderTypeId { get; set; }
+    public ProviderType ProviderType { get; set; }
     public int OrganisationTypeId { get; set; }
     public string LegalName { get; set; }
     public string TradingName { get; set; }

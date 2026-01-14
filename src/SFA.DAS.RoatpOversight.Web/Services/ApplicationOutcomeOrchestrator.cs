@@ -76,13 +76,14 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                     CharityNumber = registrationDetails.CharityNumber,
                     CompanyNumber = registrationDetails.CompanyNumber,
                     OrganisationTypeId = registrationDetails.OrganisationTypeId,
-                    ProviderTypeId = registrationDetails.ProviderTypeId,
+                    ProviderType = (ProviderType)registrationDetails.ProviderTypeId,
                     TradingName = registrationDetails.TradingName,
                 };
 
                 _logger.LogInformation("Updating organisation details for application {ApplicationId}", applicationId);
 
-                return await _registerApiClient.UpdateOrganisation(int.Parse(registrationDetails.UKPRN), updateOrganisationRequest);
+                var response = await _registerApiClient.UpdateOrganisation(int.Parse(registrationDetails.UKPRN), updateOrganisationRequest);
+                return response.IsSuccessStatusCode;
             }
 
             return true;
@@ -161,13 +162,14 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                         CharityNumber = registrationDetails.CharityNumber,
                         CompanyNumber = registrationDetails.CompanyNumber,
                         OrganisationTypeId = registrationDetails.OrganisationTypeId,
-                        ProviderTypeId = registrationDetails.ProviderTypeId,
+                        ProviderType = (ProviderType)registrationDetails.ProviderTypeId,
                         TradingName = registrationDetails.TradingName,
                     };
 
                     _logger.LogInformation("Updating organisation details for application {ApplicationId}", applicationId);
 
-                    return await _registerApiClient.UpdateOrganisation(int.Parse(registrationDetails.UKPRN), updateOrganisationRequest);
+                    var response = await _registerApiClient.UpdateOrganisation(int.Parse(registrationDetails.UKPRN), updateOrganisationRequest);
+                    return response.IsSuccessStatusCode;
                 }
 
                 if (appealStatus == AppealStatus.Successful)

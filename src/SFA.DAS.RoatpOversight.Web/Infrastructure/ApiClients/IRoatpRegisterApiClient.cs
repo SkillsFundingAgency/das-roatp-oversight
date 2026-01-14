@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
 using Refit;
 using SFA.DAS.RoatpOversight.Domain;
 
@@ -13,5 +14,5 @@ public interface IRoatpRegisterApiClient
     Task<ApiResponse<Organisation>> GetOrganisation(int ukprn);
 
     [Put("/organisations/{ukprn}")]
-    Task<bool> UpdateOrganisation(int ukprn, [Body] UpdateOrganisationRequest request);
+    Task<HttpResponseMessage> UpdateOrganisation(int ukprn, [Body] UpdateOrganisationRequest request);
 }

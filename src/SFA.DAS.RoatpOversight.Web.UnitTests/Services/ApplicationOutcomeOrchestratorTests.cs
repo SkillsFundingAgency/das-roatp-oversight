@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -108,6 +109,10 @@ public class ApplicationOutcomeOrchestratorTests
         _roatpRegisterApiClient
             .Setup(x => x.GetOrganisation(It.IsAny<int>()))
             .ReturnsAsync(new ApiResponse<Organisation>(new(HttpStatusCode.OK), new Organisation() { OrganisationId = Guid.NewGuid() }, null));
+
+        _roatpRegisterApiClient
+            .Setup(x => x.UpdateOrganisation(int.Parse(_registrationDetails.UKPRN), It.IsAny<UpdateOrganisationRequest>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
 
         var applicationDetails = new ApplicationDetails
         {

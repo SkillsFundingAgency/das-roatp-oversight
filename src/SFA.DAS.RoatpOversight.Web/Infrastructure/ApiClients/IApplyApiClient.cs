@@ -45,7 +45,7 @@ public interface IApplyApiClient
     [Get("/Oversight/{applicationId}/review")]
     Task<GetOversightReviewResponse> GetOversightReview(Guid applicationId);
 
-    [Get("/Appeals/{applicationId")]
+    [Get("/Appeals/{applicationId}")]
     Task<AppealDetails> GetAppealDetails(Guid applicationId);
 
     [Get("/Appeals/{applicationId}/files/{fileName}")]

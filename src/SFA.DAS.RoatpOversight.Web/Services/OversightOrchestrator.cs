@@ -256,11 +256,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                 throw new ConfirmOutcomeCacheKeyNotFoundException();
             }
 
-            var applicationDetailsTask = _applyApiClient.GetApplicationDetails(applicationId);
-            var oversightReviewTask = _applyApiClient.GetOversightReview(applicationId);
-            await Task.WhenAll(applicationDetailsTask, oversightReviewTask);
-            var applicationDetails = _applyApiClient.GetApplicationDetails(applicationId).Result;
-            var oversightReview = _applyApiClient.GetOversightReview(applicationId).Result;
+            var applicationDetails = await _applyApiClient.GetApplicationDetails(applicationId);
 
             var viewModel = new ConfirmAppealViewModel
             {

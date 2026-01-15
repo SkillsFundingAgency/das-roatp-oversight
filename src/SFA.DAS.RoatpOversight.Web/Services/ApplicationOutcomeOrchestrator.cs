@@ -58,7 +58,7 @@ namespace SFA.DAS.RoatpOversight.Web.Services
 
 
                 var createOrganisationResponse = await _registerApiClient.CreateOrganisation(request);
-                if (createOrganisationResponse)
+                if (createOrganisationResponse.IsSuccessStatusCode)
                 {
                     await AddProviderToRoatpCourseManagement(registrationDetails, userId, userName,
                         (int)request.ProviderType);
@@ -177,12 +177,12 @@ namespace SFA.DAS.RoatpOversight.Web.Services
                     var request = BuildCreateOrganisationRequest(userName, registrationDetails);
 
                     var hasSuccessfullyCreatedOrganisation = await _registerApiClient.CreateOrganisation(request);
-                    if (hasSuccessfullyCreatedOrganisation)
+                    if (hasSuccessfullyCreatedOrganisation.IsSuccessStatusCode)
                     {
                         await AddProviderToRoatpCourseManagement(registrationDetails, userId, userName, (int)request.ProviderType);
                     }
 
-                    return hasSuccessfullyCreatedOrganisation;
+                    return hasSuccessfullyCreatedOrganisation.IsSuccessStatusCode;
                 }
 
             }

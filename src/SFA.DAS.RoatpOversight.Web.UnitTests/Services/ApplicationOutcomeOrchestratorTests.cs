@@ -59,7 +59,7 @@ public class ApplicationOutcomeOrchestratorTests
                 It.Is<RecordOversightGatewayFailOutcomeCommand>(y => y.ApplicationId == _applicationId)))
             .Returns(Task.CompletedTask);
 
-        _roatpRegisterApiClient.Setup(x => x.CreateOrganisation(It.Is<CreateRoatpOrganisationRequest>(y => y.Ukprn == _registrationDetails.UKPRN))).ReturnsAsync(() => true);
+        _roatpRegisterApiClient.Setup(x => x.CreateOrganisation(It.Is<CreateRoatpOrganisationRequest>(y => y.Ukprn == _registrationDetails.UKPRN))).ReturnsAsync(new HttpResponseMessage(HttpStatusCode.Created));
 
         _roatpOversightApiClient.Setup(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y => y.Ukprn == _registrationDetails.UKPRN)));
 

@@ -54,7 +54,7 @@ public class ApplicationOutcomeOrchestratorRecordAppealTests
 
         _applicationApiClient.Setup(x => x.RecordAppeal(It.Is<RecordAppealOutcomeCommand>(y => y.ApplicationId == _applicationId))).ReturnsAsync(true);
 
-        _roatpRegisterApiClient.Setup(x => x.CreateOrganisation(It.Is<CreateRoatpOrganisationRequest>(y => y.Ukprn == _registrationDetails.UKPRN))).ReturnsAsync(() => true);
+        _roatpRegisterApiClient.Setup(x => x.CreateOrganisation(It.Is<CreateRoatpOrganisationRequest>(y => y.Ukprn == _registrationDetails.UKPRN))).ReturnsAsync(new HttpResponseMessage(HttpStatusCode.Created));
 
         _roatpOversightApiClient.Setup(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y => y.Ukprn == _registrationDetails.UKPRN)));
 

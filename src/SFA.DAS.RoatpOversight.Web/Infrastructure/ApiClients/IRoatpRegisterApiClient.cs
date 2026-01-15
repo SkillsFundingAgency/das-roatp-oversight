@@ -8,7 +8,7 @@ namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 public interface IRoatpRegisterApiClient
 {
     [Post("/organisations")]
-    Task<bool> CreateOrganisation([Body] CreateRoatpOrganisationRequest organisationRequest);
+    Task<HttpResponseMessage> CreateOrganisation([Body] CreateRoatpOrganisationRequest organisationRequest);
 
     [Get("/organisations/{ukprn}")]
     Task<ApiResponse<Organisation>> GetOrganisation(int ukprn);

@@ -1,10 +1,7 @@
-﻿using SFA.DAS.RoatpOversight.Domain.Interfaces;
+﻿namespace SFA.DAS.RoatpOversight.Web.Settings;
 
-namespace SFA.DAS.RoatpOversight.Web.Settings
+public class RoatpOversightOuterApi
 {
-    public class RoatpOversightOuterApi: IRoatpOversightOuterApi
-    {
-        public string BaseUrl { get; set; } 
-        public string SubscriptionKey { get; set; }
-    }
+    public string BaseUrl { get; set; }
+    public string SubscriptionKey { get; set; }
 }

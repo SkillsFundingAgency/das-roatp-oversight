@@ -36,7 +36,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 UnsuccessfulText = oversightStatus == OversightReviewStatus.Unsuccessful ? "comments" : null
             };
 
-            var result = _validator.Validate(request, options => options.IncludeRuleSets(OutcomePostRequestValidator.RuleSets.Default));
+            var result = _validator.Validate(request);
             Assert.AreEqual(errorsExpected,!result.IsValid);
         }
 
@@ -58,7 +58,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 InProgressExternalText = externalComments
             };
 
-            var result = _validator.Validate(request, options => options.IncludeRuleSets(OutcomePostRequestValidator.RuleSets.Default));
+            var result = _validator.Validate(request);
             Assert.AreEqual(numberOfErrorsExpected, result.Errors.Count);
         }
 
@@ -72,7 +72,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 ApproveGateway = ApprovalStatus.Approve,
                 ApproveModeration = ApprovalStatus.Approve
             };
-            var result = _validator.Validate(request, options => options.IncludeRuleSets(OutcomePostRequestValidator.RuleSets.Default));
+            var result = _validator.Validate(request);
 
             Assert.IsTrue(result.Errors.Any(x => x.PropertyName == "OversightStatus" && x.ErrorMessage == "Select the overall outcome of this application"));
         }
@@ -92,7 +92,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Controllers.Oversight
                 UnsuccessfulExternalText = string.Empty
             };
 
-            var result = _validator.Validate(request, options => options.IncludeRuleSets(OutcomePostRequestValidator.RuleSets.Default));
+            var result = _validator.Validate(request);
 
             Assert.AreEqual(expectError, result.Errors.Any(x => x.PropertyName == nameof(OutcomePostRequest.UnsuccessfulExternalText) && x.ErrorMessage == "Enter external comments"));
         }

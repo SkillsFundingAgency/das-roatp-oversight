@@ -1,16 +1,18 @@
-﻿using SFA.DAS.RoatpOversight.Domain;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
+using Refit;
+using SFA.DAS.RoatpOversight.Domain;
 
-namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients
+namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
+
+public interface IRoatpRegisterApiClient
 {
-    public interface IRoatpRegisterApiClient
-    {
-        Task<bool> CreateOrganisation(CreateRoatpOrganisationRequest organisationRequest);
+    [Post("/organisations")]
+    Task<HttpResponseMessage> CreateOrganisation([Body] CreateRoatpOrganisationRequest organisationRequest);
 
-        Task<OrganisationRegisterStatus> GetOrganisationRegisterStatus(GetOrganisationRegisterStatusRequest request);
+    [Get("/organisations/{ukprn}")]
+    Task<ApiResponse<Organisation>> GetOrganisation(int ukprn);
 
-        Task<bool> UpdateApplicationDeterminedDate(UpdateOrganisationApplicationDeterminedDateRequest request);
-
-        Task<bool> UpdateOrganisation(UpdateOrganisationRequest request);
-    }
+    [Put("/organisations/{ukprn}")]
+    Task<HttpResponseMessage> UpdateOrganisation(int ukprn, [Body] UpdateOrganisationRequest request);
 }

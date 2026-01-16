@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoFixture;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using NUnit.Framework;
 using SFA.DAS.RoatpOversight.Web.Services;
 
@@ -38,7 +37,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
         public async Task CreateMultipartFormData_adds_http_content_for_each_request_property()
         {
             var result = _multipartFormDataService.CreateMultipartFormDataContent(_testClass).ToList();
-           
+
             Assert.AreEqual(5, result.Count);
 
             await AssertContent(result[0], "Property1", _testClass.Property1);
@@ -61,7 +60,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
             Assert.AreEqual(key, content.Headers.ContentDisposition.Name);
             Assert.AreEqual(_testClass.Property5.ContentType, content.Headers.ContentType.ToString());
             Assert.AreEqual(_testClass.Property5.FileName, content.Headers.ContentDisposition.FileName);
-            
+
             var actualValue = await content.ReadAsStringAsync();
             var expectedValue = "";
 
@@ -69,7 +68,7 @@ namespace SFA.DAS.RoatpOversight.Web.UnitTests.Services
             {
                 expectedValue = reader.ReadToEnd();
             }
-            
+
             Assert.AreEqual(expectedValue, actualValue);
         }
 

@@ -65,7 +65,6 @@ namespace SFA.DAS.RoatpOversight.Web.Models
                         return "'in progress'";
                     case OversightReviewStatus.Unsuccessful:
                         return "unsuccessful";
-                        break;
                     default:
                         return string.Empty;
                 }

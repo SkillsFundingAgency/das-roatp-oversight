@@ -2,37 +2,36 @@
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Web.Models;
 
-namespace SFA.DAS.RoatpOversight.Web.Validators
-{
-    public class ConfirmAppealOutcomePostRequestValidator : AbstractValidator<ConfirmAppealOutcomePostRequest>
-    {
-        public ConfirmAppealOutcomePostRequestValidator()
-        {
-            RuleFor(x => x.Confirm).NotEmpty().WithMessage(GetConfirmationErrorMessage);
-        }
-    
+namespace SFA.DAS.RoatpOversight.Web.Validators;
 
-    private string GetConfirmationErrorMessage(ConfirmAppealOutcomePostRequest arg)
+public class ConfirmAppealOutcomePostRequestValidator : AbstractValidator<ConfirmAppealOutcomePostRequest>
+{
+    public ConfirmAppealOutcomePostRequestValidator()
+    {
+        RuleFor(x => x.Confirm).NotEmpty().WithMessage(GetConfirmationErrorMessage);
+    }
+
+
+private static string GetConfirmationErrorMessage(ConfirmAppealOutcomePostRequest arg)
+    {
+        var statusLabel = "";
+        switch (arg.AppealStatus)
         {
-            var statusLabel = "";
-            switch (arg.AppealStatus)
-            {
-                case AppealStatus.Successful:
-                case AppealStatus.SuccessfulAlreadyActive:
-                case AppealStatus.SuccessfulFitnessForFunding:
-                    statusLabel = "successful";
-                    break;
-                case AppealStatus.InProgress:
-                    statusLabel = "'in progress'";
-                    break;
-                case AppealStatus.Unsuccessful:
-                    statusLabel = "unsuccessful";
-                    break;
-                default:
-                    statusLabel = string.Empty;
-                    break;
-            }
-            return $"Select if you want to mark this appeal as {statusLabel}";
+            case AppealStatus.Successful:
+            case AppealStatus.SuccessfulAlreadyActive:
+            case AppealStatus.SuccessfulFitnessForFunding:
+                statusLabel = "successful";
+                break;
+            case AppealStatus.InProgress:
+                statusLabel = "'in progress'";
+                break;
+            case AppealStatus.Unsuccessful:
+                statusLabel = "unsuccessful";
+                break;
+            default:
+                statusLabel = string.Empty;
+                break;
         }
+        return $"Select if you want to mark this appeal as {statusLabel}";
     }
 }

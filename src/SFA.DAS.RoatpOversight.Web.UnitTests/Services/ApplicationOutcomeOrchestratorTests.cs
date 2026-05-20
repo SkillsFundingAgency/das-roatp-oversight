@@ -86,6 +86,47 @@ public class ApplicationOutcomeOrchestratorTests
         _roatpOversightApiClient.Verify(x => x.CreateProvider(It.Is<CreateRoatpV2ProviderRequest>(y => y.Ukprn == _registrationDetails.UKPRN)), Times.Exactly(countRoatpOversightCreateProviderCalled));
     }
 
+    [TestCase(ProviderTypeConstants.Main, 1)]
+    [TestCase(ProviderTypeConstants.Employer, 1)]
+    [TestCase(ProviderTypeConstants.Supporting, 0)]
+    public async Task RecordSuccessfullOutCome_NewProvider_AssignsAllowedCoursesInRoatp(int providerType, int countUpdateCourseTypesCalled)
+    {
+        _registrationDetails.ProviderTypeId = providerType;
+        _roatpRegisterApiClient
+            .Setup(x => x.GetOrganisation(It.IsAny<int>()))
+            .ReturnsAsync(new ApiResponse<Organisation>(new(HttpStatusCode.NotFound), null, null));
+
+        var result = await _orchestrator.RecordOutcome(_applicationId, false, false, OversightReviewStatus.Successful, UserId, UserName, InternalComments, ExternalComments);
+
+        result.Should().BeTrue();
+
+        _roatpRegisterApiClient.Verify(x => x.UpdateCourseTypes(int.Parse(_registrationDetails.UKPRN), It.Is<UpdateCourseTypesRequest>(y => y.UserId == UserName)), Times.Exactly(countUpdateCourseTypesCalled), $"Allowed course should be invoked {countUpdateCourseTypesCalled} times for {(ProviderType)providerType}");
+    }
+
+    [TestCase(ProviderTypeConstants.Main)]
+    [TestCase(ProviderTypeConstants.Employer)]
+    public async Task RecordSuccessfullOutCome_ExistingProviderWithAllowedApprenticeship_DoesNotUpdateAllowedCoursesInRoatp(int providerType)
+    {
+        var apprenticeshipCourseType = new AllowedCourseType(CourseType.Apprenticeship, nameof(CourseType.Apprenticeship));
+        Organisation organisation = new()
+        {
+            AllowedCourseTypes = [apprenticeshipCourseType]
+        };
+        _registrationDetails.ProviderTypeId = providerType;
+        _roatpRegisterApiClient
+            .Setup(x => x.GetOrganisation(It.IsAny<int>()))
+            .ReturnsAsync(new ApiResponse<Organisation>(new(HttpStatusCode.OK), organisation, null));
+        _roatpRegisterApiClient
+            .Setup(x => x.UpdateOrganisation(int.Parse(_registrationDetails.UKPRN), It.IsAny<UpdateOrganisationRequest>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
+
+        var result = await _orchestrator.RecordOutcome(_applicationId, false, false, OversightReviewStatus.SuccessfulAlreadyActive, UserId, UserName, InternalComments, ExternalComments);
+
+        result.Should().BeTrue();
+
+        _roatpRegisterApiClient.Verify(x => x.UpdateCourseTypes(int.Parse(_registrationDetails.UKPRN), It.IsAny<UpdateCourseTypesRequest>()), Times.Never, "For existing organisation if the Apprenticeship course type is already allowed then make no changes.");
+    }
+
     [Test]
     public async Task Application_status_updated_only_for_an_unsuccessful_oversight_review()
     {

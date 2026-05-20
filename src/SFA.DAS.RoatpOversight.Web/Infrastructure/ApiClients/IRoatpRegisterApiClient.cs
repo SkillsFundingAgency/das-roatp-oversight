@@ -15,4 +15,7 @@ public interface IRoatpRegisterApiClient
 
     [Put("/organisations/{ukprn}")]
     Task<HttpResponseMessage> UpdateOrganisation(int ukprn, [Body] UpdateOrganisationRequest request);
+
+    [Put("/organisations/{ukprn}/course-types")]
+    Task<HttpResponseMessage> UpdateCourseTypes(int ukprn, [Body] UpdateCourseTypesRequest request);
 }

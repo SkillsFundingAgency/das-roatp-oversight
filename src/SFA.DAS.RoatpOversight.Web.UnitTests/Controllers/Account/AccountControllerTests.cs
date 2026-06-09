@@ -35,8 +35,9 @@ public class AccountControllerTests
         var result = _controller.SignIn() as ChallengeResult;
 
         Assert.That(result, Is.Not.Null);
-        CollectionAssert.IsNotEmpty(result.AuthenticationSchemes);
-        CollectionAssert.Contains(result.AuthenticationSchemes, OpenIdConnectDefaults.AuthenticationScheme);
+        Assert.That(result.AuthenticationSchemes, Is.Not.Null);
+        Assert.That(result.AuthenticationSchemes, Is.Not.Empty);
+        Assert.That(result.AuthenticationSchemes, Does.Contain(OpenIdConnectDefaults.AuthenticationScheme));
     }
 
     [Test]
@@ -54,9 +55,10 @@ public class AccountControllerTests
         var result = _controller.SignOut() as SignOutResult;
 
         Assert.That(result, Is.Not.Null);
-        CollectionAssert.IsNotEmpty(result.AuthenticationSchemes);
-        CollectionAssert.Contains(result.AuthenticationSchemes, OpenIdConnectDefaults.AuthenticationScheme);
-        CollectionAssert.Contains(result.AuthenticationSchemes, CookieAuthenticationDefaults.AuthenticationScheme);
+        Assert.That(result.AuthenticationSchemes, Is.Not.Null);
+        Assert.That(result.AuthenticationSchemes, Is.Not.Empty);
+        Assert.That(result.AuthenticationSchemes, Does.Contain(OpenIdConnectDefaults.AuthenticationScheme));
+        Assert.That(result.AuthenticationSchemes, Does.Contain(CookieAuthenticationDefaults.AuthenticationScheme));
     }
 
     [Test]

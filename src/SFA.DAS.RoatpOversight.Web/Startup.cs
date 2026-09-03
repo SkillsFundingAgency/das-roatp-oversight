@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json.Serialization;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json.Converters;
 using Polly;
 using Polly.Extensions.Http;
 using Refit;
@@ -94,7 +96,9 @@ public class Startup
         {
             options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             options.ModelBinderProviders.Insert(0, new StringTrimmingModelBinderProvider());
-        });
+        })
+        .AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new StringEnumConverter()))
+        .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
         services.AddValidatorsFromAssembly(typeof(AppealPostRequestValidator).Assembly);
 
@@ -140,7 +144,7 @@ public class Startup
             .SetHandlerLifetime(handlerLifeTime)
             .AddPolicyHandler(GetRetryPolicy());
 
-        services.AddRefitClient<IRoatpRegisterApiClient>()
+        services.AddRefitClient<IRoatpRegisterApiClient>(new RefitSettings { ContentSerializer = new NewtonsoftJsonContentSerializer() })
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(ApplicationConfiguration.RoatpRegisterApiAuthentication.ApiBaseAddress))
             .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(_configuration), ApplicationConfiguration.RoatpRegisterApiAuthentication.Identifier))
             .SetHandlerLifetime(handlerLifeTime)

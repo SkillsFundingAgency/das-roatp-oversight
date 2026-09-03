@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 using Refit;
 using SFA.DAS.RoatpOversight.Domain;
@@ -146,9 +147,34 @@ public class ApplicationOutcomeOrchestrator : IApplicationOutcomeOrchestrator
 
             _logger.LogInformation("Updating organisation details for application {ApplicationId}", applicationId);
 
-            HttpResponseMessage response = await _registerApiClient.UpdateOrganisation(int.Parse(registrationDetails.UKPRN), updateOrganisationRequest);
+            HttpResponseMessage updateResponse = await _registerApiClient.UpdateOrganisation(int.Parse(registrationDetails.UKPRN), updateOrganisationRequest);
 
-            if (!response.IsSuccessStatusCode) return false;
+            if (!updateResponse.IsSuccessStatusCode) return false;
+
+            var patchDocument = new JsonPatchDocument<PatchOrganisationModel>();
+            patchDocument.Replace(x => x.OrganisationTypeId, updateOrganisationRequest.OrganisationTypeId);
+            patchDocument.Replace(x => x.ProviderType, updateOrganisationRequest.ProviderType);
+            patchDocument.Replace(x => x.Status,
+                updateOrganisationRequest.ProviderType == ProviderType.Supporting ? OrganisationStatus.Active : OrganisationStatus.OnBoarding);
+
+            HttpResponseMessage patchResponse =
+                await _registerApiClient.PatchOrganisation(int.Parse(registrationDetails.UKPRN), patchDocument);
+
+            if (!patchResponse.IsSuccessStatusCode) return false;
+
+            if (updateOrganisationRequest.ProviderType == ProviderType.Main)
+            {
+                var createProviderRequest = new CreateRoatpV2ProviderRequest
+                {
+                    LegalName = updateOrganisationRequest.LegalName,
+                    TradingName = updateOrganisationRequest.TradingName,
+                    Ukprn = registrationDetails.UKPRN,
+                    UserDisplayName = userName,
+                    UserId = userId
+                };
+
+                await _roatpV2ApiClient.CreateProvider(createProviderRequest);
+            }
         }
         else
         {

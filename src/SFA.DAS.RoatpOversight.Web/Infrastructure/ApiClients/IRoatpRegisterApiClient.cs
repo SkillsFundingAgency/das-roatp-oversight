@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.JsonPatch;
 using Refit;
 using SFA.DAS.RoatpOversight.Domain;
 
@@ -18,4 +19,7 @@ public interface IRoatpRegisterApiClient
 
     [Put("/organisations/{ukprn}/course-types")]
     Task<HttpResponseMessage> UpdateCourseTypes(int ukprn, [Body] UpdateCourseTypesRequest request);
+
+    [Patch("/organisations/{ukprn}")]
+    Task<HttpResponseMessage> PatchOrganisation(int ukrpn, [Body] JsonPatchDocument<PatchOrganisationModel> patchDoc);
 }

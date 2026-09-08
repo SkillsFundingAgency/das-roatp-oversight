@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.JsonPatch;
 using Refit;
 using SFA.DAS.RoatpOversight.Domain;
+using SFA.DAS.RoatpOversight.Web.Domain;
 
 namespace SFA.DAS.RoatpOversight.Web.Infrastructure.ApiClients;
 
@@ -21,5 +22,5 @@ public interface IRoatpRegisterApiClient
     Task<HttpResponseMessage> UpdateCourseTypes(int ukprn, [Body] UpdateCourseTypesRequest request);
 
     [Patch("/organisations/{ukprn}")]
-    Task<HttpResponseMessage> PatchOrganisation(int ukrpn, [Body] JsonPatchDocument<PatchOrganisationModel> patchDoc);
+    Task<HttpResponseMessage> PatchOrganisation(int ukprn, [Header(RequestHeaders.RequestingUserIdHeader)] string userId, [Header(RequestHeaders.RequestingUserNameHeader)] string userName, [Body] JsonPatchDocument<PatchOrganisationModel> patchDoc);
 }

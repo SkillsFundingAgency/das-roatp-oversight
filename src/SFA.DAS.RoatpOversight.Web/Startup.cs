@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Polly;
 using Polly.Extensions.Http;
@@ -144,7 +145,10 @@ public class Startup
             .SetHandlerLifetime(handlerLifeTime)
             .AddPolicyHandler(GetRetryPolicy());
 
-        services.AddRefitClient<IRoatpRegisterApiClient>(new RefitSettings { ContentSerializer = new NewtonsoftJsonContentSerializer() })
+        JsonSerializerSettings jsonSerializerSettings = new();
+        jsonSerializerSettings.Converters.Add(new StringEnumConverter());
+
+        services.AddRefitClient<IRoatpRegisterApiClient>(new RefitSettings { ContentSerializer = new NewtonsoftJsonContentSerializer(jsonSerializerSettings) })
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(ApplicationConfiguration.RoatpRegisterApiAuthentication.ApiBaseAddress))
             .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(_configuration), ApplicationConfiguration.RoatpRegisterApiAuthentication.Identifier))
             .SetHandlerLifetime(handlerLifeTime)

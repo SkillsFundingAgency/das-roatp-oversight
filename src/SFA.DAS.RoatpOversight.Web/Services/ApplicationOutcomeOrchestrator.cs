@@ -5,7 +5,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Refit;
+using SFA.DAS.DfESignIn.Auth.Extensions;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Domain.Interfaces;
 using SFA.DAS.RoatpOversight.Web.Domain;
@@ -151,14 +155,32 @@ public class ApplicationOutcomeOrchestrator : IApplicationOutcomeOrchestrator
 
             if (!updateResponse.IsSuccessStatusCode) return false;
 
-            var patchDocument = new JsonPatchDocument<PatchOrganisationModel>();
-            patchDocument.Replace(x => x.OrganisationTypeId, updateOrganisationRequest.OrganisationTypeId);
-            patchDocument.Replace(x => x.ProviderType, updateOrganisationRequest.ProviderType);
-            patchDocument.Replace(x => x.Status,
-                updateOrganisationRequest.ProviderType == ProviderType.Supporting ? OrganisationStatus.Active : OrganisationStatus.OnBoarding);
+            var patchDocument = new JsonPatchDocument<PatchOrganisationModel>
+            {
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                }
+            };
+            //debug variables
+            var thing = updateOrganisationRequest.ProviderType.GetDescription();
+            var thing2 = updateOrganisationRequest.ProviderType.GetDisplayName();
+
+            if (updateOrganisationRequest.ProviderType == ProviderType.Supporting)
+            {
+                patchDocument.Replace(x => x.Status, OrganisationStatus.Active);
+            }
+            else
+            {
+                patchDocument.Replace(x => x.Status, OrganisationStatus.OnBoarding);
+            }
+            //debug variable
+            var json = JsonConvert.SerializeObject(patchDocument);
 
             HttpResponseMessage patchResponse =
-                await _registerApiClient.PatchOrganisation(int.Parse(registrationDetails.UKPRN), patchDocument);
+                await _registerApiClient.PatchOrganisation(int.Parse(registrationDetails.UKPRN), userId, userName, patchDocument);
+            //debug variable
+            var responseBody = await patchResponse.Content.ReadAsStringAsync();
 
             if (!patchResponse.IsSuccessStatusCode) return false;
 

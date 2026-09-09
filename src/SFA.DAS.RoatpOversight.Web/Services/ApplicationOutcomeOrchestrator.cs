@@ -162,9 +162,6 @@ public class ApplicationOutcomeOrchestrator : IApplicationOutcomeOrchestrator
                     NamingStrategy = new CamelCaseNamingStrategy()
                 }
             };
-            //debug variables
-            var thing = updateOrganisationRequest.ProviderType.GetDescription();
-            var thing2 = updateOrganisationRequest.ProviderType.GetDisplayName();
 
             if (updateOrganisationRequest.ProviderType == ProviderType.Supporting)
             {
@@ -174,13 +171,9 @@ public class ApplicationOutcomeOrchestrator : IApplicationOutcomeOrchestrator
             {
                 patchDocument.Replace(x => x.Status, OrganisationStatus.OnBoarding);
             }
-            //debug variable
-            var json = JsonConvert.SerializeObject(patchDocument);
 
             HttpResponseMessage patchResponse =
-                await _registerApiClient.PatchOrganisation(int.Parse(registrationDetails.UKPRN), userId, userName, patchDocument);
-            //debug variable
-            var responseBody = await patchResponse.Content.ReadAsStringAsync();
+                await _registerApiClient.PatchOrganisation(int.Parse(registrationDetails.UKPRN), userName, patchDocument);
 
             if (!patchResponse.IsSuccessStatusCode) return false;
 

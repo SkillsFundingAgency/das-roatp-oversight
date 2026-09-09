@@ -22,5 +22,5 @@ public interface IRoatpRegisterApiClient
     Task<HttpResponseMessage> UpdateCourseTypes(int ukprn, [Body] UpdateCourseTypesRequest request);
 
     [Patch("/organisations/{ukprn}")]
-    Task<HttpResponseMessage> PatchOrganisation(int ukprn, [Header(RequestHeaders.RequestingUserIdHeader)] string userId, [Header(RequestHeaders.RequestingUserNameHeader)] string userName, [Body] JsonPatchDocument<PatchOrganisationModel> patchDoc);
+    Task<HttpResponseMessage> PatchOrganisation(int ukprn, [Header(RequestHeaders.RequestingUserIdHeader)] string userId, [Body] JsonPatchDocument<PatchOrganisationModel> patchDoc);
 }

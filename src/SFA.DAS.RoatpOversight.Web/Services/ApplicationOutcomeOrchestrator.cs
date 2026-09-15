@@ -176,20 +176,6 @@ public class ApplicationOutcomeOrchestrator : IApplicationOutcomeOrchestrator
                 await _registerApiClient.PatchOrganisation(int.Parse(registrationDetails.UKPRN), userName, patchDocument);
 
             if (!patchResponse.IsSuccessStatusCode) return false;
-
-            if (updateOrganisationRequest.ProviderType == ProviderType.Main)
-            {
-                var createProviderRequest = new CreateRoatpV2ProviderRequest
-                {
-                    LegalName = updateOrganisationRequest.LegalName,
-                    TradingName = updateOrganisationRequest.TradingName,
-                    Ukprn = registrationDetails.UKPRN,
-                    UserDisplayName = userName,
-                    UserId = userId
-                };
-
-                await _roatpV2ApiClient.CreateProvider(createProviderRequest);
-            }
         }
         else
         {

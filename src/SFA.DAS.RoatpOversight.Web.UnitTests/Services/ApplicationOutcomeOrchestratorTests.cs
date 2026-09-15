@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -116,9 +117,15 @@ public class ApplicationOutcomeOrchestratorTests
         _roatpRegisterApiClient
             .Setup(x => x.GetOrganisation(It.IsAny<int>()))
             .ReturnsAsync(new ApiResponse<Organisation>(new(HttpStatusCode.OK), organisation, null));
+
         _roatpRegisterApiClient
             .Setup(x => x.UpdateOrganisation(int.Parse(_registrationDetails.UKPRN), It.IsAny<UpdateOrganisationRequest>()))
             .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
+
+        _roatpRegisterApiClient
+            .Setup(x => x.PatchOrganisation(It.IsAny<int>(), It.IsAny<string>(),
+                It.IsAny<JsonPatchDocument<PatchOrganisationModel>>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
 
         var result = await _orchestrator.RecordOutcome(_applicationId, false, false, OversightReviewStatus.SuccessfulAlreadyActive, UserId, UserName, InternalComments, ExternalComments);
 
@@ -153,6 +160,11 @@ public class ApplicationOutcomeOrchestratorTests
 
         _roatpRegisterApiClient
             .Setup(x => x.UpdateOrganisation(int.Parse(_registrationDetails.UKPRN), It.IsAny<UpdateOrganisationRequest>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
+
+        _roatpRegisterApiClient
+            .Setup(x => x.PatchOrganisation(It.IsAny<int>(), It.IsAny<string>(),
+                It.IsAny<JsonPatchDocument<PatchOrganisationModel>>()))
             .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
 
         var applicationDetails = new ApplicationDetails

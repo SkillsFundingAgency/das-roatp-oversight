@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Newtonsoft.Json.Serialization;
 using NUnit.Framework;
 using Refit;
 using SFA.DAS.RoatpOversight.Domain;
@@ -116,9 +121,15 @@ public class ApplicationOutcomeOrchestratorTests
         _roatpRegisterApiClient
             .Setup(x => x.GetOrganisation(It.IsAny<int>()))
             .ReturnsAsync(new ApiResponse<Organisation>(new(HttpStatusCode.OK), organisation, null));
+
         _roatpRegisterApiClient
             .Setup(x => x.UpdateOrganisation(int.Parse(_registrationDetails.UKPRN), It.IsAny<UpdateOrganisationRequest>()))
             .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
+
+        _roatpRegisterApiClient
+            .Setup(x => x.PatchOrganisation(It.IsAny<int>(), It.IsAny<string>(),
+                It.IsAny<JsonPatchDocument<PatchOrganisationModel>>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
 
         var result = await _orchestrator.RecordOutcome(_applicationId, false, false, OversightReviewStatus.SuccessfulAlreadyActive, UserId, UserName, InternalComments, ExternalComments);
 
@@ -153,6 +164,11 @@ public class ApplicationOutcomeOrchestratorTests
 
         _roatpRegisterApiClient
             .Setup(x => x.UpdateOrganisation(int.Parse(_registrationDetails.UKPRN), It.IsAny<UpdateOrganisationRequest>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
+
+        _roatpRegisterApiClient
+            .Setup(x => x.PatchOrganisation(It.IsAny<int>(), It.IsAny<string>(),
+                It.IsAny<JsonPatchDocument<PatchOrganisationModel>>()))
             .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
 
         var applicationDetails = new ApplicationDetails
@@ -200,5 +216,66 @@ public class ApplicationOutcomeOrchestratorTests
         await _orchestrator.RecordGatewayFailOutcome(_applicationId, UserId, UserName);
 
         _applicationApiClient.Verify(x => x.RecordGatewayFailOutcome(It.Is<RecordOversightGatewayFailOutcomeCommand>(c => c.ApplicationId == _applicationId && c.UserId == UserId && c.UserName == UserName)));
+    }
+
+    [Test]
+    public async Task RecordOutcome_UkprnIsOnRegisterAndOutcomeIsSuccessful_PatchOrganisationIsCalled()
+    {
+        _roatpRegisterApiClient.Setup(x => x.PatchOrganisation(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<JsonPatchDocument<PatchOrganisationModel>>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
+
+        _roatpRegisterApiClient.Setup(x => x.GetOrganisation(It.IsAny<int>()))
+            .ReturnsAsync(new ApiResponse<Organisation>(new(HttpStatusCode.OK), new Organisation() { OrganisationId = Guid.NewGuid() }, null));
+
+        _roatpRegisterApiClient.Setup(x => x.UpdateOrganisation(It.IsAny<int>(), It.IsAny<UpdateOrganisationRequest>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
+
+        await _orchestrator.RecordOutcome(_applicationId, false, false, OversightReviewStatus.SuccessfulAlreadyActive, UserId, UserName, InternalComments, ExternalComments);
+
+        _roatpRegisterApiClient.Verify(x => x.PatchOrganisation(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<JsonPatchDocument<PatchOrganisationModel>>()), Times.Once);
+    }
+
+    [Test]
+    public async Task RecordOutcome_UkprnIsOnRegisterAndOutcomeIsSuccessful_PatchOrganisationFails_ReturnsFalse()
+    {
+        _roatpRegisterApiClient.Setup(x => x.PatchOrganisation(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<JsonPatchDocument<PatchOrganisationModel>>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.BadRequest));
+
+        _roatpRegisterApiClient.Setup(x => x.GetOrganisation(It.IsAny<int>()))
+            .ReturnsAsync(new ApiResponse<Organisation>(new(HttpStatusCode.OK), new Organisation() { OrganisationId = Guid.NewGuid() }, null));
+
+        _roatpRegisterApiClient.Setup(x => x.UpdateOrganisation(It.IsAny<int>(), It.IsAny<UpdateOrganisationRequest>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
+
+        var result = await _orchestrator.RecordOutcome(_applicationId, false, false, OversightReviewStatus.SuccessfulAlreadyActive, UserId, UserName, InternalComments, ExternalComments);
+
+        Assert.That(result, Is.False);
+    }
+
+    [TestCase(ProviderType.Main, OrganisationStatus.OnBoarding)]
+    [TestCase(ProviderType.Employer, OrganisationStatus.OnBoarding)]
+    [TestCase(ProviderType.Supporting, OrganisationStatus.Active)]
+    public async Task RecordOutcome_UkprnIsOnRegisterAndOutcomeIsSuccessful_OrganisationStatusIsSetCorrectly(
+        ProviderType providerType, OrganisationStatus organisationStatus)
+    {
+        _registrationDetails.ProviderTypeId = (int)providerType;
+
+        JsonPatchDocument<PatchOrganisationModel> patchDocument = null;
+
+        _roatpRegisterApiClient.Setup(x => x.PatchOrganisation(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<JsonPatchDocument<PatchOrganisationModel>>()))
+            .Callback<int, string, JsonPatchDocument<PatchOrganisationModel>>((_, _, patch) => patchDocument = patch)
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
+
+        _roatpRegisterApiClient.Setup(x => x.GetOrganisation(It.IsAny<int>()))
+            .ReturnsAsync(new ApiResponse<Organisation>(new(HttpStatusCode.OK), new Organisation() { OrganisationId = Guid.NewGuid() }, null));
+
+        _roatpRegisterApiClient.Setup(x => x.UpdateOrganisation(It.IsAny<int>(), It.IsAny<UpdateOrganisationRequest>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
+
+        await _orchestrator.RecordOutcome(_applicationId, false, false, OversightReviewStatus.SuccessfulAlreadyActive, UserId, UserName, InternalComments, ExternalComments);
+
+        var patchDocumentStatus = patchDocument!.Operations.Single(x => x.OperationType == OperationType.Replace && x.path == "/status");
+
+        Assert.That(patchDocumentStatus.value, Is.EqualTo(organisationStatus));
     }
 }

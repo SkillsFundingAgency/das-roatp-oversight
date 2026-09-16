@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Refit;
+using SFA.DAS.DfESignIn.Auth.Extensions;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Domain.Interfaces;
 using SFA.DAS.RoatpOversight.Web.Domain;
@@ -146,9 +151,31 @@ public class ApplicationOutcomeOrchestrator : IApplicationOutcomeOrchestrator
 
             _logger.LogInformation("Updating organisation details for application {ApplicationId}", applicationId);
 
-            HttpResponseMessage response = await _registerApiClient.UpdateOrganisation(int.Parse(registrationDetails.UKPRN), updateOrganisationRequest);
+            HttpResponseMessage updateResponse = await _registerApiClient.UpdateOrganisation(int.Parse(registrationDetails.UKPRN), updateOrganisationRequest);
 
-            if (!response.IsSuccessStatusCode) return false;
+            if (!updateResponse.IsSuccessStatusCode) return false;
+
+            var patchDocument = new JsonPatchDocument<PatchOrganisationModel>
+            {
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                }
+            };
+
+            if (updateOrganisationRequest.ProviderType == ProviderType.Supporting)
+            {
+                patchDocument.Replace(x => x.Status, OrganisationStatus.Active);
+            }
+            else
+            {
+                patchDocument.Replace(x => x.Status, OrganisationStatus.OnBoarding);
+            }
+
+            HttpResponseMessage patchResponse =
+                await _registerApiClient.PatchOrganisation(int.Parse(registrationDetails.UKPRN), userName, patchDocument);
+
+            if (!patchResponse.IsSuccessStatusCode) return false;
         }
         else
         {

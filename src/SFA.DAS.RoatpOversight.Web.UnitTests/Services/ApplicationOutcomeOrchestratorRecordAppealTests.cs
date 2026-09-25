@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -69,6 +70,11 @@ public class ApplicationOutcomeOrchestratorRecordAppealTests
         _roatpRegisterApiClient
             .Setup(x => x.GetOrganisation(It.IsAny<int>()))
             .ReturnsAsync(new ApiResponse<Organisation>(new(HttpStatusCode.NotFound), null, null));
+
+        _roatpRegisterApiClient
+            .Setup(x => x.PatchOrganisation(It.IsAny<int>(), It.IsAny<string>(),
+                It.IsAny<JsonPatchDocument<PatchOrganisationModel>>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.BadRequest));
 
         _registrationDetails.ProviderTypeId = providerType;
         var application = new ApplicationDetails
@@ -139,6 +145,11 @@ public class ApplicationOutcomeOrchestratorRecordAppealTests
 
         _roatpRegisterApiClient
             .Setup(x => x.UpdateOrganisation(int.Parse(_registrationDetails.UKPRN), It.IsAny<UpdateOrganisationRequest>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
+
+        _roatpRegisterApiClient
+            .Setup(x => x.PatchOrganisation(int.Parse(_registrationDetails.UKPRN), It.IsAny<string>(),
+                It.IsAny<JsonPatchDocument<PatchOrganisationModel>>()))
             .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
 
         var application = new ApplicationDetails

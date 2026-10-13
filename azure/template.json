@@ -78,6 +78,10 @@
         "utcValue": {
             "type": "string",
             "defaultValue": "[utcNow()]"
+        },
+        "vnetRouteAllEnabled": {
+            "type": "bool",
+            "defaultValue": false
         }
     },
     "variables": {
@@ -213,6 +217,9 @@
                     },
                     "certificateThumbprint": {
                         "value": "[if(greater(length(parameters('certificateName')), 0), reference('app-service-certificate').outputs.certificateThumbprint.value, '')]"
+                    },
+                    "vnetRouteAllEnabled": {
+                        "value": "[parameters('vnetRouteAllEnabled')]"
                     }
                 }
             },

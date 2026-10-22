@@ -7,4 +7,7 @@ public interface IRoatpOversightOuterApiClient
 {
     [Post("/providers")]
     Task CreateProvider([Body] CreateRoatpV2ProviderRequest providerRequest);
+
+    [Post("/providers/course-types")]
+    Task AssignCourseTypesToProvider([Body] AssignCourseTypesToProviderRequest request);
 }

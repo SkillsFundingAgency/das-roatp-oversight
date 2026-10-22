@@ -5,11 +5,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Extensions;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Refit;
-using SFA.DAS.DfESignIn.Auth.Extensions;
 using SFA.DAS.RoatpOversight.Domain;
 using SFA.DAS.RoatpOversight.Domain.Interfaces;
 using SFA.DAS.RoatpOversight.Web.Domain;
@@ -196,20 +193,33 @@ public class ApplicationOutcomeOrchestrator : IApplicationOutcomeOrchestrator
             if (!response.IsSuccessStatusCode) return false;
         }
 
-        await UpdateAllowedCourseTypes((ProviderType)registrationDetails.ProviderTypeId, registrationDetails.UKPRN, userName, organisation);
+        await UpdateAllowedCourseTypes((ProviderType)registrationDetails.ProviderTypeId, registrationDetails.UKPRN, userName, userId, organisation);
 
         await AddProviderToRoatpCourseManagement(registrationDetails, userId, userName, registrationDetails.ProviderTypeId);
 
         return true;
     }
 
-    private async Task UpdateAllowedCourseTypes(ProviderType providerType, string ukprn, string userName, Organisation organisation)
+    private async Task UpdateAllowedCourseTypes(ProviderType providerType, string ukprn, string userName, string userId, Organisation organisation)
     {
         if (providerType == ProviderType.Supporting) return;
+
+        // it is likely that the organisation already existed and hence the course types have already been set
         List<int> courseTypeIds = organisation?.AllowedCourseTypes.Select(ct => ct.CourseTypeId).ToList() ?? [];
         if (courseTypeIds.Contains(CourseType.Apprenticeship)) return;
+
         courseTypeIds.Add(CourseType.Apprenticeship);
         await _registerApiClient.UpdateCourseTypes(int.Parse(ukprn), new UpdateCourseTypesRequest(courseTypeIds, userName));
+
+        if (providerType == ProviderType.Employer)
+        {
+            await _roatpV2ApiClient.AssignCourseTypesToProvider(new AssignCourseTypesToProviderRequest
+            {
+                Ukprn = ukprn,
+                UserId = userId,
+                UserDisplayName = userName
+            });
+        }
     }
 
     private async Task AddProviderToRoatpCourseManagement(RoatpRegistrationDetails registrationDetails, string userId, string userName, int providerType)

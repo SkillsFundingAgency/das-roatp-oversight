@@ -4,12 +4,10 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Newtonsoft.Json.Serialization;
 using NUnit.Framework;
 using Refit;
 using SFA.DAS.RoatpOversight.Domain;
@@ -106,6 +104,23 @@ public class ApplicationOutcomeOrchestratorTests
         result.Should().BeTrue();
 
         _roatpRegisterApiClient.Verify(x => x.UpdateCourseTypes(int.Parse(_registrationDetails.UKPRN), It.Is<UpdateCourseTypesRequest>(y => y.UserId == UserName)), Times.Exactly(countUpdateCourseTypesCalled), $"Allowed course should be invoked {countUpdateCourseTypesCalled} times for {(ProviderType)providerType}");
+    }
+
+    [TestCase(ProviderTypeConstants.Main, 0)]
+    [TestCase(ProviderTypeConstants.Employer, 1)]
+    [TestCase(ProviderTypeConstants.Supporting, 0)]
+    public async Task RecordSuccessfullOutCome_NewEmployerProvider_AssignsAllowedCoursesInCourseManagement(int providerType, int countUpdateCourseTypesCalled)
+    {
+        _registrationDetails.ProviderTypeId = providerType;
+        _roatpRegisterApiClient
+            .Setup(x => x.GetOrganisation(It.IsAny<int>()))
+            .ReturnsAsync(new ApiResponse<Organisation>(new(HttpStatusCode.NotFound), null, null));
+
+        var result = await _orchestrator.RecordOutcome(_applicationId, false, false, OversightReviewStatus.Successful, UserId, UserName, InternalComments, ExternalComments);
+
+        result.Should().BeTrue();
+
+        _roatpOversightApiClient.Verify(c => c.AssignCourseTypesToProvider(It.IsAny<AssignCourseTypesToProviderRequest>()), Times.Exactly(countUpdateCourseTypesCalled));
     }
 
     [TestCase(ProviderTypeConstants.Main)]
